@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harness Engineering Patterns / Harness 工程模式"
+  short_description: "Diagnose workflow patterns / 诊断工作流模式"
+  default_prompt: "Use $harness-engineering-patterns to diagnose the current workflow and recommend concrete pattern adjustments. / 使用 $harness-engineering-patterns 诊断当前工作流并建议具体模式调整。"

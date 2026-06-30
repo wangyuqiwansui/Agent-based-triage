@@ -1,0 +1,41 @@
+# Extension Candidate / 扩展候选
+
+Cell / 交织点: collaboration-orchestration / 协作 x 编排
+Capability / 能力: Collaboration / 协作
+Mode / 模式: Orchestration / 编排
+Source / 来源: arXiv:2605.13850 (https://arxiv.org/html/2605.13850)
+
+Use this file as the design pattern source for this 7x6 matrix intersection. / 将本文档作为该 7x6 交织点的设计模式来源。
+
+## Design Pattern / 设计模式
+
+Use this section to define the design pattern, its source grounding, and its workflow adjustment template. / 本节定义设计模式、来源依据和工作流调整模板。
+
+### Article Grounding / 论文依据
+
+- 论文坐标 / Article Coordinate: Collaboration / 协作 x Orchestration / 编排 (Orchestration / 编排).
+- 论文依据 / Article Basis: 空白单元 / Empty cell; arXiv:2605.13850 leaves this intersection unnamed. / 空白单元 / Empty cell；arXiv:2605.13850 未命名该交织点。
+- 问题 / Problem: The article leaves this intersection unnamed; use it only if workflow evidence shows that Collaboration / 协作 needs Orchestration / 编排. / 论文未命名该交织点；仅当工作流证据表明 Collaboration / 协作 需要 Orchestration / 编排 时使用。
+- 架构方案 / Architectural Solution: Keep this as an extension candidate and define a concrete pattern only after repeated workflow evidence appears. / 将其保留为扩展候选，仅在反复出现工作流证据后再定义具体模式。
+- 工程权衡 / Engineering Trade-offs: This avoids inventing taxonomy, but leaves a deliberate gap until practice justifies the pattern. / 这避免凭空发明分类，但在实践证明前会保留有意空白。
+- 工作流诊断用途 / Workflow Diagnosis Use: Extension candidate / 扩展候选.
+
+### Pattern Template / 模式模板
+
+- 状态 / Status: 扩展候选 / Extension candidate.
+- 模式清单 / Patterns: 待发现 / To be discovered.
+- 诊断用途 / Diagnostic Use: Extension candidate / 扩展候选.
+- 适用工作流节点 / Applicable Workflow Nodes: 方案设计、发布交付 / Design, delivery.
+- 当前症状 / Current Symptoms: 待根据当前工作流诊断 / Diagnose from the current workflow.
+- 适配信号 / Fit Signals: 多角色、多工具、多交付物需要统一协调 / Multiple roles, tools, and deliverables need coordination.
+- 调整方向 / Adjustment Direction: 待根据当前工作流补充 / Add based on the current workflow.
+- 修改方式 / How To Modify: 待根据当前工作流补充 / Add based on the current workflow.
+- 输入 / Inputs: 待根据当前工作流补充 / Add based on the current workflow.
+- 输出 / Outputs: 待根据当前工作流补充 / Add based on the current workflow.
+- 风险与治理 / Risks & Governance: 待根据当前工作流补充 / Add based on the current workflow.
+
+Observability Metrics File / 可观测性指标文件: [collaboration-orchestration-observability.md](collaboration-orchestration-observability.md)
+
+## Trace Hook / 追踪钩子
+
+After this pattern is recommended or applied, add an entry to [trace.md](trace.md) in this capability folder. / 推荐或应用本模式后，在该能力文件夹的 [trace.md](trace.md) 中追加记录。

@@ -1,0 +1,14 @@
+#!/bin/sh
+set -eu
+
+changed_files="$(git diff --cached --name-only -- \
+  skills/harness-engineering-patterns/references/axes.md \
+  skills/harness-engineering-patterns/references/matrix-index.md \
+  skills/harness-engineering-patterns/references/pattern-catalog.md \
+  skills/harness-engineering-patterns/references/pattern-selection-card.md \
+  skills/harness-engineering-patterns/references/patterns || true)"
+
+if [ -n "$changed_files" ]; then
+  python scripts/generate_skill_visualization.py
+  git add harness-engineering-patterns.html
+fi
