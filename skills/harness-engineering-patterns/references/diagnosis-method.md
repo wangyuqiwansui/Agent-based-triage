@@ -69,7 +69,7 @@ Use this flow when choosing or changing a pattern. / 选择或调整模式时使
 | --- | --- | --- |
 | Every request follows the same slow path. / 所有请求都走同一条慢路径。 | Chain to routing / 链式转路由 | Context Triage, Complexity-Based Routing, Tool Dispatch / 上下文分诊、复杂度路由、工具分派 |
 | Work waits even though subtasks are independent. / 子任务独立却仍互相等待。 | Chain to parallel / 链式转并行 | Fan-Out/Gather, Parallel Exploration, Multi-Modal Fusion / 扇出汇聚、并行探索、多模态融合 |
-| The workflow loses context between attempts. / 多次尝试之间上下文丢失。 | Chain to memory loop / 链式转记忆循环 | Failure Journal, Self-Heal Loop / 失败日志、自愈循环 |
+| The workflow loses context between attempts. / 多次尝试之间上下文丢失。 | Chain to memory loop / 链式转记忆循环 | Failure Diary, Self-Heal Loop / 失败日记、自愈循环 |
 | Many tools and roles must stay consistent. / 多个工具和角色必须保持一致。 | Chain or parallel to orchestration / 链式或并行转编排 | Progressive Disclosure, Plan-and-Execute, Observability Harness / 渐进披露、计划并执行、可观测性框架 |
 | Failures are discovered too late. / 失败发现太晚。 | Add reflection or governance gate / 增加反思或治理门禁 | Generator-Critic, Approval Gate, Self-Heal Loop / 生成器-批评器、审批门禁、自愈循环 |
 | Work scope is too large for one actor. / 工作范围过大，单一参与者无法承担。 | Add hierarchy / 增加层级 | Hierarchical Delegation, Blast Radius Control, Experience Replay / 层级委派、爆炸半径控制、经验回放 |

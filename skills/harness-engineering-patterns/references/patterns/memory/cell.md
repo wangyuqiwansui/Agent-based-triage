@@ -22,7 +22,7 @@ Read this introduction before choosing a specific memory intersection. / 在选�
 
 ## 矩阵摘要 / Matrix Summary
 
-This row currently has 4 named pattern candidates and 2 extension candidates. / 本行当前包含 4 个已命名候选模式和 2 个扩展候选。
+This row currently has 5 named pattern candidates and 1 extension candidate. / 本行当前包含 5 个已命名候选模式和 1 个扩展候选。
 
 | Mode / 模式 | Status / 状态 | Pattern Cell / 模式单元 |
 | --- | --- | --- |
@@ -30,8 +30,8 @@ This row currently has 4 named pattern candidates and 2 extension candidates. / 
 | Routing / 路由 | Named / 已命名 | [Hierarchical Retrieval / 层级检索](memory-routing.md) |
 | Parallel / 并行 | Extension / 扩展 | [Extension Candidate / 扩展候选](memory-parallel.md) |
 | Orchestration / 编排 | Named / 已命名 | [Progress Tracking / 进度追踪](memory-orchestration.md) |
-| Loop / 循环 | Named / 已命名 | [Failure Journal / 失败日志](memory-loop.md) |
-| Hierarchy / 层级 | Extension / 扩展 | [Extension Candidate / 扩展候选](memory-hierarchy.md) |
+| Loop / 循环 | Named / 已命名 | [Failure Diary / 失败日记](memory-loop.md) |
+| Hierarchy / 层级 | Named / 已命名 | [Layered Retention / 分层保留](memory-hierarchy.md) |
 
 ## 选择法则 / Selection Laws
 
@@ -54,8 +54,8 @@ Record pattern usage outcomes in [trace.md](trace.md) after applying a design pa
 | Routing / 路由 | [Hierarchical Retrieval / 层级检索](memory-routing.md) |
 | Parallel / 并行 | [Extension Candidate / 扩展候选](memory-parallel.md) |
 | Orchestration / 编排 | [Progress Tracking / 进度追踪](memory-orchestration.md) |
-| Loop / 循环 | [Failure Journal / 失败日志](memory-loop.md) |
-| Hierarchy / 层级 | [Extension Candidate / 扩展候选](memory-hierarchy.md) |
+| Loop / 循环 | [Failure Diary / 失败日记](memory-loop.md) |
+| Hierarchy / 层级 | [Layered Retention / 分层保留](memory-hierarchy.md) |
 
 ## Extension Note / 扩展说明
 

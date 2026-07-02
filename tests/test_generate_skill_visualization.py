@@ -46,8 +46,8 @@ class SkillVisualizationGeneratorTest(unittest.TestCase):
         self.assertEqual(len(data["vertical_axes"]), 7)
         self.assertEqual(len(data["horizontal_axes"]), 6)
         self.assertEqual(len(data["matrix"]), 42)
-        self.assertEqual(data["summary"]["named_patterns"], 29)
-        self.assertEqual(data["summary"]["extension_candidates"], 13)
+        self.assertEqual(data["summary"]["named_patterns"], 30)
+        self.assertEqual(data["summary"]["extension_candidates"], 12)
         self.assertIn("perception-chain", data["patterns"])
         self.assertEqual(data["patterns"]["perception-chain"]["pattern"], "Semantic Compaction / 语义压缩")
         self.assertEqual(data["patterns"]["perception-chain"]["status"], "named")
@@ -239,6 +239,159 @@ class SkillVisualizationGeneratorTest(unittest.TestCase):
             "Next-Run Writeback / 下一轮回填",
             "Batch Writeback / 批量回填",
             "do not directly override L0 or permission rules",
+        ]
+        for phrase in required_phrases:
+            self.assertIn(phrase, observability)
+
+    def test_layered_retention_pattern_is_executable(self):
+        pattern = (
+            PATTERN_DIR / "memory" / "memory-hierarchy.md"
+        ).read_text(encoding="utf-8")
+        observability = (
+            PATTERN_DIR / "memory" / "memory-hierarchy-observability.md"
+        ).read_text(encoding="utf-8")
+        matrix = (SKILL_DIR / "references" / "matrix-index.md").read_text(encoding="utf-8")
+        catalog = (SKILL_DIR / "references" / "pattern-catalog.md").read_text(encoding="utf-8")
+        cell = (PATTERN_DIR / "memory" / "cell.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "[Layered Retention / 分层保留](patterns/memory/memory-hierarchy.md)",
+            matrix,
+        )
+        self.assertIn("memory-hierarchy / 记忆 x 层级 | Layered Retention / 分层保留", catalog)
+        self.assertIn("[Layered Retention / 分层保留](memory-hierarchy.md)", cell)
+
+        required_sections = [
+            "### Execution Contract / 执行契约",
+            "### Input Contract / 输入契约",
+            "### Output Contract / 输出契约",
+            "### Core Objects / 核心对象",
+            "### Execution Procedure Overview / 执行流程总览",
+            "### Node 1: Request Intake And Scenario Normalization / 节点一：接收请求与场景归一",
+            "### Node 5: Information Layer Classification / 节点五：信息分层判定",
+            "### Node 10: Write Routing / 节点十：写入路由",
+            "### Node 11: Promotion, Demotion, Discard, Human Review / 节点十一：升层、降权、丢弃、人审",
+            "### Operating Modes / 两种运行模式",
+            "### Probe Interaction / 探针交互",
+            "### Failure Modes / 失败模式与处理",
+            "### Minimum Configuration Checklist / 最小可执行清单",
+        ]
+        for section in required_sections:
+            self.assertIn(section, pattern)
+
+        required_phrases = [
+            "Layered Retention / 分层保留",
+            "Standalone Executable / 可独立执行: Yes / 是",
+            "Primary Axis / 主轴: Memory / 记忆",
+            "Primary Topology / 主拓扑: Hierarchy / 层级",
+            "User-extension pattern",
+            "COG_MEMORY__TOP_HIERARCHY",
+            "Policy / 策略层",
+            "Project / 项目层",
+            "User / 用户层",
+            "Task / 任务层",
+            "Draft / 草稿层",
+            "Retention Candidate / 保留候选",
+            "Layer Decision / 分层决策",
+            "Write Decision / 写入决策",
+            "lower layers may temporarily shape how higher-level information is used",
+            "Every durable write has source, evidence, scope, lifecycle, and route",
+        ]
+        for phrase in required_phrases:
+            self.assertIn(phrase, pattern + observability)
+
+    def test_layered_retention_observability_is_a_probe_protocol(self):
+        observability = (
+            PATTERN_DIR / "memory" / "memory-hierarchy-observability.md"
+        ).read_text(encoding="utf-8")
+
+        required_sections = [
+            "## Document Goal / 文档目标",
+            "## Position In Hanerss / 在 Hanerss 框架中的位置",
+            "## Probe Role / 探针定位",
+            "## Relationship With Execution Flow / 与执行流程的关系",
+            "## Operating Modes / 运行模式",
+            "## Probe Input Contract / 探针输入契约",
+            "## Data Model / 探针数据模型",
+            "## Event Stream / 事件流",
+            "## Probe Output Contract / 探针输出契约",
+            "## Observation Objects / 观测对象",
+            "## Probe Catalog / 探针总览",
+            "## Probe Details / 探针详情",
+            "### Probe 001: Scenario Completeness Probe / 探针_001：场景完整性探针",
+            "### Probe 018: Structured Discipline Probe / 探针_018：结构化纪律探针",
+            "## Probe-To-Execution Interaction Table / 探针与执行流程交互表",
+            "## Standalone Mode / 独立运行模式",
+            "## Interactive Mode / 交互运行模式",
+            "## Observability Metrics / 可观测性指标",
+            "## Metric System / 指标体系",
+            "## Health State / 健康状态判断",
+            "## Diagnostic Rules / 诊断规则",
+            "## Feedback Writeback Rules / 反馈回填规则",
+            "## Scenario Thresholds / 场景化阈值建议",
+            "## Aggregated Views / 聚合视图",
+            "## Alert Rules / 告警规则",
+            "## How Probe Results Complete Execution Data / 探针结果如何补全执行流程数据",
+            "## Minimum Probe Set / 最小可执行探针集",
+            "## Minimum Standalone Run / 独立运行最小流程",
+            "## Probe Configuration Template / 探针配置模板",
+            "## Output Templates / 输出模板",
+            "## Interaction Data Interface / 与执行流程交互的数据接口",
+            "## Failure Coverage / 失败模式与探针覆盖",
+            "## Skill Packaging Draft / 可包装技能草案",
+            "## Engineering Node Registration / 推荐工程节点注册项",
+            "## Version Extension Suggestions / 版本扩展建议",
+            "## Failure Modes / 常见失败模式",
+            "## Design Principles / 设计原则总结",
+        ]
+        for section in required_sections:
+            self.assertIn(section, observability)
+
+        required_phrases = [
+            "Layered Retention Probe / 分层保留的工作流可观测性探针",
+            "Probe does not own memory writes / 探针不直接拥有记忆写入",
+            "Sidecar Probe / 旁路探针",
+            "Inline Guard / 内联守卫",
+            "Shadow Evaluator / 影子评估器",
+            "Lifecycle Monitor / 生命周期监控器",
+            "Probe Definition / 探针定义",
+            "Workflow Completion Package / 工作流补全包",
+            "Scenario Completeness Probe / 场景完整性探针",
+            "Policy Boundary Probe / 策略边界探针",
+            "Layer Decision Probe / 层级判定探针",
+            "Scope Isolation Probe / 作用域隔离探针",
+            "Evidence Sufficiency Probe / 证据充分性探针",
+            "Draft Leakage Probe / 草稿泄漏探针",
+            "Override Violation Probe / 覆盖违规探针",
+            "Context Hit Probe / 上下文命中探针",
+            "Context Noise Probe / 上下文噪声探针",
+            "Context Budget Probe / 上下文预算探针",
+            "Tool Result Validation Probe / 工具结果验证探针",
+            "Checkpoint Freshness Probe / 检查点新鲜度探针",
+            "Promotion Gate Probe / 升层门禁探针",
+            "Expiry And Demotion Probe / 过期与降权探针",
+            "Failure Retrospective Probe / 失败复盘探针",
+            "Output Traceability Probe / 输出可追溯探针",
+            "Human Review Gate Probe / 人审门禁探针",
+            "Structured Discipline Probe / 结构化纪律探针",
+            "Layer Assignment Coverage / 层级判定覆盖率",
+            "Durable Write Evidence Coverage / 长期写入证据覆盖率",
+            "Low-to-High Override Attempt Count / 低层覆盖高层尝试数",
+            "Cross-Tenant Contamination Count / 跨租户污染数",
+            "Draft Leakage Count / 草稿泄漏次数",
+            "Context Hit Rate / 关键记忆命中率",
+            "Context Noise Ratio / 上下文噪声占比",
+            "Write Decision Trace Coverage / 写入决策追踪覆盖率",
+            "Completion Package Adoption Rate / 补全包采纳率",
+            "Retention Guard Decision / 保留守卫决策",
+            "Offline Probe Report / 离线探针报告",
+            "Workflow Health / 流程健康",
+            "Memory Health / 记忆健康",
+            "Context Health / 上下文健康",
+            "Minimum Probe Set / 最小可执行探针集",
+            "Probe Configuration / 探针配置",
+            "NODE_OBSERVABILITY_EVENT_CAPTURE",
+            "Do not directly override policy or permission rules from probe feedback",
         ]
         for phrase in required_phrases:
             self.assertIn(phrase, observability)

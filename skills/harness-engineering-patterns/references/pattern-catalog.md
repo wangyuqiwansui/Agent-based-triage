@@ -17,8 +17,9 @@ Each detailed pattern has two Markdown files: `<cell-key>.md` for `Design Patter
 | perception-loop / 感知 x 循环 | Progressive Discovery / 渐进式发现 | Use when a workflow must gradually locate high-signal evidence in an unknown information space. / 当工作流必须在未知信息空间中逐步定位高信号证据时使用。 |
 | memory-chain / 记忆 x 链式 | RAG Pipeline / RAG 管线 | Use when retrieval, grounding, and answer construction form a sequence. / 当检索、扎根和回答构成顺序管线时使用。 |
 | memory-routing / 记忆 x 路由 | Hierarchical Retrieval / 层级检索 | Use when the workflow must route retrieval through levels of memory. / 当工作流必须按记忆层级路由检索时使用。 |
-| memory-orchestration / 记忆 x 编排 | Progress Tracking / 进度追踪 | Use when memory must coordinate status, milestones, and task state. / 当记忆需要协调状态、里程碑和任务状态时使用。 |
-| memory-loop / 记忆 x 循环 | Failure Journal / 失败日志 | Use when failures must be recorded and reused across attempts. / 当失败必须记录并在后续尝试中复用时使用。 |
+| memory-orchestration / 记忆 x 编排 | Progress Tracking / 进度追踪 | Use when long-running work needs a recoverable control structure for goals, milestones, evidence, mechanical truth, gates, probes, and handoff state. / 当长程任务需要用可恢复的控制结构管理目标、里程碑、证据、机械真值、闸门、探针和交接状态时使用。 |
+| memory-loop / 记忆 x 循环 | Failure Diary / 失败日记 | Use when failures must be recorded, reviewed, indexed, and recalled across future attempts. / 当失败必须被记录、审查、索引，并在未来相似任务中召回时使用。 |
+| memory-hierarchy / 记忆 x 层级 | Layered Retention / 分层保留 | Use when information must be retained by scope, lifecycle, authority, evidence, and context budget across multiple memory levels. / 当信息必须按照作用域、生命周期、权威来源、证据和上下文预算跨多层记忆保留时使用。 |
 | reasoning-chain / 推理 x 链式 | Chain-of-Thought / 思维链 | Use when reasoning should proceed through ordered intermediate conclusions. / 当推理需要经过有序中间结论时使用。 |
 | reasoning-routing / 推理 x 路由 | Complexity-Based Routing / 复杂度路由 | Use when problem complexity should determine the reasoning path. / 当问题复杂度应决定推理路径时使用。 |
 | reasoning-parallel / 推理 x 并行 | Parallel Exploration / 并行探索 | Use when independent hypotheses or solution paths should be explored together. / 当多个独立假设或方案路径应同时探索时使用。 |
@@ -46,7 +47,6 @@ The article leaves these intersections structurally redundant or not yet observe
 
 - perception-hierarchy / 感知 x 层级
 - memory-parallel / 记忆 x 并行
-- memory-hierarchy / 记忆 x 层级
 - reasoning-orchestration / 推理 x 编排
 - reasoning-hierarchy / 推理 x 层级
 - action-parallel / 行动 x 并行
