@@ -87,3 +87,42 @@ Add new entries below this template. / 在此模板下方追加新记录。
 - Evidence / 证据: User-provided document "探针_分层保留_0001" and updated memory-hierarchy-observability.md. / 用户提供的《探针_分层保留_0001》及更新后的 memory-hierarchy-observability.md。
 - Follow-up / 后续: Validate tests and regenerate visualization only if the user wants the HTML artifact refreshed. / 验证测试；仅当用户需要刷新 HTML 产物时再重新生成可视化。
 - Owner / 负责人: Codex
+
+### 2026-07-03 / 2026-07-03
+
+- Date / 日期: 2026-07-03
+- Workflow / 工作流: Track the rerun of Novel Studio project-10 story_macro full-story bible. / 追踪 Novel Studio project-10 的 story_macro 全本故事圣经重跑。
+- Cell / 交织点: memory-orchestration / 记忆 x 编排
+- Pattern Used / 使用模式: Progress Tracking / 进度追踪
+- Before / 使用前: The latest known story_macro output was id 1447, and the rerun needed a recoverable record of target, command, result id, gate status, and follow-up boundary. / 重跑前已知最新 story_macro 产物为 1447，本次需要可恢复记录目标、命令、结果编号、门禁状态和后续边界。
+- Adjustment / 调整: Captured before-state, executed the single-stage command, inspected output 1801, and wrote reasoning/governance/memory trace entries as the append-only ledger. / 记录重跑前状态，执行单阶段命令，检查产物 1801，并将推理、治理、记忆 trace 作为只追加账本写入。
+- Outcome / 结果: New story_macro output id 1801 is ready; `macro_quality_gate` passed with score 100 and the rerun did not invoke volume, chapter, or body stages. / 新 story_macro 产物 1801 已就绪；`macro_quality_gate` 以 100 分通过，本次未调用分卷、拆章或正文阶段。
+- Evidence / 证据: Command result returned `latest_output_id=1801`; inspection reported `markdown_has_bible=True`, `event_chain_count=12`, `volume_blueprint_count=6`, and `can_enter_volume_strategy=True`. / 命令结果返回 `latest_output_id=1801`；检查结果显示 `markdown_has_bible=True`、`event_chain_count=12`、`volume_blueprint_count=6`、`can_enter_volume_strategy=True`。
+- Follow-up / 后续: If the user wants to continue, invoke `$novel-volume-cards project-10` as an independent stage and carry output 1801 as upstream evidence. / 如果用户要继续，应独立调用 `$novel-volume-cards project-10`，并将产物 1801 作为上游证据。
+- Owner / 负责人: Codex
+
+### 2026-07-03 Correction / 2026-07-03 更正
+
+- Date / 日期: 2026-07-03
+- Workflow / 工作流: Correct the project-10 rerun ledger after bad outputs 1801 and 1802 were identified. / 识别错误产物 1801 与 1802 后，更正 project-10 重跑账本。
+- Cell / 交织点: memory-orchestration / 记忆 x 编排
+- Pattern Used / 使用模式: Progress Tracking correction event / 进度追踪纠偏事件
+- Before / 使用前: The ledger treated 1801 and downstream 1802 as the latest usable outputs. / 账本曾将 1801 及其下游 1802 当作最新可用产物。
+- Adjustment / 调整: Marked outputs 1801 and 1802 as `superseded`, changed latest-output retrieval to skip unusable statuses, and added regression tests for both semantic contamination and superseded filtering. / 已将 1801 与 1802 标记为 `superseded`，修改最新产物读取以跳过不可用状态，并新增语义污染与 superseded 过滤回归测试。
+- Outcome / 结果: Active project-10 outputs are now `story_macro_latest_id=1447` and `volume_strategy_latest_id=1595`; the bad rerun is retained only as audit history. / project-10 当前生效产物为 `story_macro_latest_id=1447` 与 `volume_strategy_latest_id=1595`；错误重跑仅作为审计历史保留。
+- Evidence / 证据: Database readback returned 1447/1595 after correction; `tests/test_novel_planning_density.py tests/test_novel_independent_skills.py` passed 10 tests. / 更正后数据库读回 1447/1595；`tests/test_novel_planning_density.py tests/test_novel_independent_skills.py` 共 10 项测试通过。
+- Follow-up / 后续: Future reruns should require a semantic consistency check before a structural gate can advance downstream planning. / 后续重跑必须在结构门放行前执行语义一致性检查。
+- Owner / 负责人: Codex
+
+### 2026-07-03 Repair / 2026-07-03 修复
+
+- Date / 日期: 2026-07-03
+- Workflow / 工作流: Track repaired project-10 planning outputs after semantic gate implementation. / 追踪语义门实现后的 project-10 修复规划产物。
+- Cell / 交织点: memory-orchestration / 记忆 x 编排
+- Pattern Used / 使用模式: Progress Tracking with invalidation and replacement / 带失效与替换的进度追踪
+- Before / 使用前: Bad outputs 1801 and 1802 were invalidated, leaving older clean outputs 1447 and 1595 active. / 错误产物 1801 与 1802 已失效，较旧的干净产物 1447 与 1595 处于生效状态。
+- Adjustment / 调整: After code repair, reran only the independent `story_macro` and `volume_strategy` stages for project-10. / 代码修复后，仅独立重跑 project-10 的 `story_macro` 与 `volume_strategy` 阶段。
+- Outcome / 结果: Active repaired outputs are now `story_macro_latest_id=1803` and `volume_strategy_latest_id=1804`. / 当前生效修复产物为 `story_macro_latest_id=1803` 与 `volume_strategy_latest_id=1804`。
+- Evidence / 证据: Database inspection reported both outputs `ready`, both semantic gates `passed`, and forbidden-term scans returned `[]`. / 数据库检查显示两个产物均为 `ready`，两个语义门均为 `passed`，禁用词扫描返回 `[]`。
+- Follow-up / 后续: Keep 1801 and 1802 as superseded audit history; use 1803 and 1804 for further independent planning stages. / 保留 1801 与 1802 作为已废弃审计历史；后续独立规划阶段使用 1803 与 1804。
+- Owner / 负责人: Codex

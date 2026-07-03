@@ -28,6 +28,41 @@ REPRESENTATIVE_PATTERN_KEYS = {
     "governance-routing",
     "governance-hierarchy",
 }
+COMPILER_REFERENCE_FILES = {
+    "references/compiler-workflow.md": [
+        "Engineering Analysis Compiler / 工程分析编译器",
+        "Registry As Source Data / 注册表作为源数据",
+        "Control Plane First / 先抓控制面",
+    ],
+    "references/eir-schema.md": [
+        "Engineering Intermediate Representation / 工程中间表示",
+        "Business Node / 业务节点",
+        "Evidence Item / 证据项",
+    ],
+    "references/harness-source-analysis.md": [
+        "Harness Source Analysis / Harness 源码分析",
+        "Detect / 找主循环",
+        "Classify / 组件归类",
+        "Filter / 噪声过滤",
+        "Map / 落矩阵",
+        "Verify / 证据验证",
+    ],
+    "references/pattern-skill-packaging.md": [
+        "Pattern And Skill Packaging / 模式与 Skill 化",
+        "Pattern Extraction / 模式抽取",
+        "Skillization / Skill 化",
+    ],
+    "references/evaluation-governance.md": [
+        "Evaluation And Governance / 评估与治理",
+        "Quality Evaluation / 质量评估",
+        "Governance Checklist / 治理检查清单",
+    ],
+    "references/failure-modes.md": [
+        "Failure Modes / 失败模式",
+        "FAIL_0001",
+        "FAIL_0010",
+    ],
+}
 
 
 def load_generator():
@@ -749,6 +784,19 @@ class SkillVisualizationGeneratorTest(unittest.TestCase):
 
         self.assertRegex(skill, re.compile(r"description: .*engineering node", re.I))
         self.assertIn("Do not skip directly to matrix selection", card)
+
+    def test_compiler_references_are_linked_and_bilingual(self):
+        skill = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
+
+        for relative_path, required_phrases in COMPILER_REFERENCE_FILES.items():
+            self.assertIn(relative_path, skill)
+            content = (SKILL_DIR / relative_path).read_text(encoding="utf-8")
+            for phrase in required_phrases:
+                self.assertIn(phrase, content)
+
+        self.assertIn("Workflow / Harness Source / 工作流程 / Harness 源码", skill)
+        self.assertIn("Engineering Intermediate Representation / 工程中间表示", skill)
+        self.assertIn("Evidence + Evaluation + Governance / 证据 + 评估 + 治理", skill)
 
 
 if __name__ == "__main__":
