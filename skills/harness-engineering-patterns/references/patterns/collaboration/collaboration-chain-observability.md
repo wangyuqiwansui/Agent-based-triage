@@ -11,8 +11,13 @@ Design Pattern File / 设计模式文件: [collaboration-chain.md](collaboration
 
 Use these metrics to observe whether Handoff Chain / 交接链 improves the workflow after selection or application. / 使用以下指标观察 Handoff Chain / 交接链 在选型或应用后是否改善工作流。
 
-- 质量指标 / Quality Metrics: Track output acceptance, defect or rework rate, and whether the fit signal is satisfied. / 跟踪产出采纳率、缺陷或返工率，以及适配信号是否满足。
-- 时延指标 / Latency Metrics: Track time from node trigger to usable output, including waiting, routing, iteration, and handoff time. / 跟踪从节点触发到可用输出的耗时，包括等待、路由、迭代和交接时间。
-- 成本指标 / Cost Metrics: Track tool calls, token or compute spend, human review effort, and repeated work avoided. / 跟踪工具调用、Token 或计算成本、人工评审投入，以及避免的重复工作。
-- 风险指标 / Risk Metrics: Track policy violations, permission escalations, unsafe actions, missed checks, and blast-radius changes. / 跟踪策略违规、权限升级、不安全动作、遗漏检查和影响范围变化。
-- Trace 指标 / Trace Metrics: Track trace completeness, evidence freshness, outcome comparison, and whether follow-up actions are closed. / 跟踪 Trace 完整性、证据新鲜度、结果对比和后续动作是否关闭。
+- 质量指标 / Quality Metrics: `handoff_acceptance_rate` (handoffs accepted on first presentation), `context_package_completeness` (packages carrying done criteria, open risks, and decisions), and `downstream_surprise_rate` (defects traced to risks known upstream but absent from the package). / `handoff_acceptance_rate`（首次提交即被接受的交接比例）、`context_package_completeness`（携带完成标准、未决风险与取舍的包完整率）、`downstream_surprise_rate`（追溯为上游已知却未入包的风险所致缺陷比例）。
+- 时延指标 / Latency Metrics: `handoff_dwell_time` (sender-ready to receiver-accepted), acceptance-check execution time per boundary, and `reject_return_cycle` (rejection to re-presentation). / `handoff_dwell_time`（交出方就绪到接收方接受的停留时间）、每边界验收检查执行耗时、`reject_return_cycle`（拒收到再次提交的周期）。
+- 成本指标 / Cost Metrics: package assembly effort per boundary, `context_reconstruction_cost` avoided (receiver time saved by not re-deriving intent), and rework cost from boundary ping-pong. / 每边界的包组装投入、避免的 `context_reconstruction_cost`（接收方免于重建意图节省的时间）、边界来回弹产生的返工成本。
+- 风险指标 / Risk Metrics: `naked_handoff_count` (artifacts transferred without a package, watch `FAIL_0006`), `orphaned_work_incidents` (intervals with no single owner, watch `FAIL_0008`), `repeat_rejection_count` per boundary (escalation trigger per `GOV_0001`), and dropped-risk incidents (open risks lost between boundaries). / `naked_handoff_count`（无包转移的产物数，对应 `FAIL_0006`）、`orphaned_work_incidents`（无唯一负责人的悬空区间数，对应 `FAIL_0008`）、每边界 `repeat_rejection_count`（按 `GOV_0001` 触发升级）、风险掉落事件（未决风险在边界间丢失）。
+- Trace 指标 / Trace Metrics: `handoff_ledger_completeness` (package, verdict, rejection reason recorded per boundary, per `GOV_0002`), responsibility-ledger continuity (exactly one owner at every timestamp), and rejection-reason closure rate. / `handoff_ledger_completeness`（每边界的包、裁定、拒收原因记录完整率，按 `GOV_0002`）、责任账本连续性（任一时刻恰有一个负责人）、拒收原因闭环率。
+
+### Default Gate Suggestions / 默认门控建议
+
+- Alert on any `naked_handoff_count` above zero and when `downstream_surprise_rate` climbs — the former means the default-reject rule is being bypassed, the latter means packages are structurally present but semantically hollow. / `naked_handoff_count` 一旦大于零即告警，`downstream_surprise_rate` 上升同样告警——前者说明默认拒收规则被绕过，后者说明包结构俱在而语义空心。
+- Block responsibility transfer when the acceptance check has not run or the context package lacks done criteria or open risks; repeated rejections at one boundary escalate per `GOV_0001` instead of another return cycle. / 验收检查未运行或上下文包缺完成标准、未决风险时阻断责任转移；同一边界反复拒收按 `GOV_0001` 升级而非再来一轮退回。

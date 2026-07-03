@@ -11,8 +11,13 @@ Design Pattern File / 设计模式文件: [action-routing.md](action-routing.md)
 
 Use these metrics to observe whether Tool Dispatch / 工具分派 improves the workflow after selection or application. / 使用以下指标观察 Tool Dispatch / 工具分派 在选型或应用后是否改善工作流。
 
-- 质量指标 / Quality Metrics: Track output acceptance, defect or rework rate, and whether the fit signal is satisfied. / 跟踪产出采纳率、缺陷或返工率，以及适配信号是否满足。
-- 时延指标 / Latency Metrics: Track time from node trigger to usable output, including waiting, routing, iteration, and handoff time. / 跟踪从节点触发到可用输出的耗时，包括等待、路由、迭代和交接时间。
-- 成本指标 / Cost Metrics: Track tool calls, token or compute spend, human review effort, and repeated work avoided. / 跟踪工具调用、Token 或计算成本、人工评审投入，以及避免的重复工作。
-- 风险指标 / Risk Metrics: Track policy violations, permission escalations, unsafe actions, missed checks, and blast-radius changes. / 跟踪策略违规、权限升级、不安全动作、遗漏检查和影响范围变化。
-- Trace 指标 / Trace Metrics: Track trace completeness, evidence freshness, outcome comparison, and whether follow-up actions are closed. / 跟踪 Trace 完整性、证据新鲜度、结果对比和后续动作是否关闭。
+- 质量指标 / Quality Metrics: `dispatch_accuracy` (sampled audit of whether the chosen tool could serve the action), `bounce_back_rate` (dispatches rejected by the target tool), and `default_path_share` (unknown action types landing on the safe path — high values mean the table lags reality). / `dispatch_accuracy`（抽样审计所选工具能否承接动作）、`bounce_back_rate`（被目标工具拒收的分派比例）、`default_path_share`（落入默认安全路径的未知动作类型占比——过高说明分派表落后于现实）。
+- 时延指标 / Latency Metrics: `dispatch_decision_latency` (classify plus validate time), `misroute_round_trip` (time lost when a bounced action is re-dispatched), and approval-hook wait time for gated actions. / `dispatch_decision_latency`（分类加校验耗时）、`misroute_round_trip`（弹回动作重新分派损失的时间）、需审批动作在审批挂钩处的等待时间。
+- 成本指标 / Cost Metrics: `schema_validation_cost` per dispatch, wasted invocation cost from misroutes, and table maintenance effort (entries updated per tool change). / 每次分派的 `schema_validation_cost`（schema 校验成本）、误分派浪费的调用成本、分派表维护投入（每次工具变更需更新的表项数）。
+- 风险指标 / Risk Metrics: `wrong_tool_incidents` (`FAIL_0003`), `schema_reject_rate` (parameter hallucinations caught before execution, `FAIL_0004`), `unclassified_side_effect_count` (actions dispatched with an underestimated side-effect class, watch `FAIL_0005`), and out-of-sandbox execution count (violates `GOV_0003`). / `wrong_tool_incidents`（`FAIL_0003` 工具选择错误事件数）、`schema_reject_rate`（执行前被拦截的参数幻觉比例，`FAIL_0004`）、`unclassified_side_effect_count`（副作用等级被低估仍被分派的动作数，对应 `FAIL_0005`）、沙箱外执行数量（违反 `GOV_0003`）。
+- Trace 指标 / Trace Metrics: `dispatch_record_completeness` (action, target, rule hit, result recorded per `GOV_0002`), approval-hook event coverage per `GOV_0001`, and rejected-dispatch reason coverage. / `dispatch_record_completeness`（动作、目标、命中规则、结果的记录完整率，按 `GOV_0002`）、审批挂钩事件覆盖率（按 `GOV_0001`）、拒绝分派的原因覆盖率。
+
+### Default Gate Suggestions / 默认门控建议
+
+- Alert when `bounce_back_rate` or `default_path_share` climbs — both mean the dispatch table no longer matches the real tool inventory and misroutes (`FAIL_0003`) will follow. / 当 `bounce_back_rate` 或 `default_path_share` 上升时告警——两者都说明分派表已与真实工具清单脱节，误分派（`FAIL_0003`）将随之而来。
+- Block dispatch when schema validation fails or the target's permission requirement exceeds the caller's scope; return the diff to the caller instead of silently repairing parameters. / schema 校验失败或目标权限要求超出调用方范围时阻断分派；把差异退回调用方而不是静默修补参数。

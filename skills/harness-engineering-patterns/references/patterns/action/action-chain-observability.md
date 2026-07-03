@@ -11,8 +11,13 @@ Design Pattern File / 设计模式文件: [action-chain.md](action-chain.md)
 
 Use these metrics to observe whether Prompt Chaining / 提示链 improves the workflow after selection or application. / 使用以下指标观察 Prompt Chaining / 提示链 在选型或应用后是否改善工作流。
 
-- 质量指标 / Quality Metrics: Track output acceptance, defect or rework rate, and whether the fit signal is satisfied. / 跟踪产出采纳率、缺陷或返工率，以及适配信号是否满足。
-- 时延指标 / Latency Metrics: Track time from node trigger to usable output, including waiting, routing, iteration, and handoff time. / 跟踪从节点触发到可用输出的耗时，包括等待、路由、迭代和交接时间。
-- 成本指标 / Cost Metrics: Track tool calls, token or compute spend, human review effort, and repeated work avoided. / 跟踪工具调用、Token 或计算成本、人工评审投入，以及避免的重复工作。
-- 风险指标 / Risk Metrics: Track policy violations, permission escalations, unsafe actions, missed checks, and blast-radius changes. / 跟踪策略违规、权限升级、不安全动作、遗漏检查和影响范围变化。
-- Trace 指标 / Trace Metrics: Track trace completeness, evidence freshness, outcome comparison, and whether follow-up actions are closed. / 跟踪 Trace 完整性、证据新鲜度、结果对比和后续动作是否关闭。
+- 质量指标 / Quality Metrics: `step_contract_pass_rate` (step outputs passing their output contract on first try), `final_artifact_acceptance_rate`, and `error_catch_locality` (share of defects caught at the step that produced them rather than downstream). / `step_contract_pass_rate`（步骤输出首轮通过输出契约的比例）、`final_artifact_acceptance_rate`（最终产物采纳率）、`error_catch_locality`（缺陷在产生步骤即被捕获而非流到下游的比例）。
+- 时延指标 / Latency Metrics: `per_step_latency`, `handoff_overhead` (validation time between steps), and end-to-end chain latency versus the monolithic-prompt baseline. / `per_step_latency`（单步时延）、`handoff_overhead`（步骤间校验耗时）、端到端链式时延对比巨型提示基线。
+- 成本指标 / Cost Metrics: `tokens_per_step`, retry tokens per step, and full-rerun cost avoided by catching defects at handoffs. / `tokens_per_step`（单步 token）、每步重试 token、因交接处拦截缺陷而避免的整链重跑成本。
+- 风险指标 / Risk Metrics: `error_propagation_incidents` (defects that crossed one or more contract gates before detection), `implicit_state_break_count` (steps that failed because expected context was not explicitly passed, watch `FAIL_0006`), and `retry_exhaustion_rate` (steps hitting their retry bound, watch `FAIL_0007`). / `error_propagation_incidents`（被发现前穿过一个以上契约门的缺陷数）、`implicit_state_break_count`（因期望上下文未显式传递而失败的步骤数，对应 `FAIL_0006`）、`retry_exhaustion_rate`（触及重试上限的步骤比例，对应 `FAIL_0007`）。
+- Trace 指标 / Trace Metrics: `step_ledger_completeness` (input, output, validation result recorded per step, per `GOV_0002`), on-failure action record coverage, and escalation event closure rate. / `step_ledger_completeness`（每步输入、输出、校验结果的记录完整率，按 `GOV_0002`）、失败动作记录覆盖率、升级事件闭环率。
+
+### Default Gate Suggestions / 默认门控建议
+
+- Alert when `error_catch_locality` drops — defects passing contract gates mean the output contracts are too loose to stop propagation. / 当 `error_catch_locality` 下降时告警——缺陷能穿过契约门说明输出契约已松到无法阻止传播。
+- Block the next step whenever the current output fails its contract; the only legal continuations are the declared on-failure actions (retry within bound, rollback, or escalate). / 当前输出未通过契约即阻断下一步；唯一合法的继续方式是声明的失败动作（限内重试、回滚或升级）。

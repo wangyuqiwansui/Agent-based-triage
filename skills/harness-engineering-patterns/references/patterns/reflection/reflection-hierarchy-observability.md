@@ -11,8 +11,13 @@ Design Pattern File / 设计模式文件: [reflection-hierarchy.md](reflection-h
 
 Use these metrics to observe whether Experience Replay / 经验回放 improves the workflow after selection or application. / 使用以下指标观察 Experience Replay / 经验回放 在选型或应用后是否改善工作流。
 
-- 质量指标 / Quality Metrics: Track output acceptance, defect or rework rate, and whether the fit signal is satisfied. / 跟踪产出采纳率、缺陷或返工率，以及适配信号是否满足。
-- 时延指标 / Latency Metrics: Track time from node trigger to usable output, including waiting, routing, iteration, and handoff time. / 跟踪从节点触发到可用输出的耗时，包括等待、路由、迭代和交接时间。
-- 成本指标 / Cost Metrics: Track tool calls, token or compute spend, human review effort, and repeated work avoided. / 跟踪工具调用、Token 或计算成本、人工评审投入，以及避免的重复工作。
-- 风险指标 / Risk Metrics: Track policy violations, permission escalations, unsafe actions, missed checks, and blast-radius changes. / 跟踪策略违规、权限升级、不安全动作、遗漏检查和影响范围变化。
-- Trace 指标 / Trace Metrics: Track trace completeness, evidence freshness, outcome comparison, and whether follow-up actions are closed. / 跟踪 Trace 完整性、证据新鲜度、结果对比和后续动作是否关闭。
+- 质量指标 / Quality Metrics: `lesson_adoption_rate` (distilled rules and checklists actually applied in later runs), `repeat_incident_rate` (same failure class recurring after its lesson shipped — the pattern's core success measure, falling is good), and `replay_conclusion_accuracy` (sampled audit of replay conclusions against raw records). / `lesson_adoption_rate`（提炼的规则与清单在后续运行中被实际应用的比例）、`repeat_incident_rate`（教训发布后同类失败的复发率——本模式核心成效指标，下降为好）、`replay_conclusion_accuracy`（回放结论对照原始记录的抽样审计准确率）。
+- 时延指标 / Latency Metrics: `replay_turnaround` per tier (trigger to lesson artifact), lesson-to-adoption lag (artifact shipped to first application), and review latency for version-level rule changes. / 各层 `replay_turnaround`（触发到教训产物的耗时）、教训采纳滞后（产物发布到首次应用）、版本级规则变更的评审时延。
+- 成本指标 / Cost Metrics: review effort per tier per cycle, `replay_roi` (repeat-incident cost avoided versus replay effort spent), and context tokens consumed by injected lessons per run. / 每层每周期的复盘投入、`replay_roi`（避免的复发事故成本对比回放投入）、每次运行中注入教训消耗的上下文 token。
+- 风险指标 / Risk Metrics: `record_gap_rate` (replays run over incomplete records, watch `FAIL_0010`), `lesson_dump_size` (unfiltered lesson volume entering context, watch `FAIL_0001`), `tier_skip_count` (replays consuming raw records two levels down), and unreviewed version-level rule changes (violates `GOV_0001`). / `record_gap_rate`（在不完整记录上运行的回放比例，对应 `FAIL_0010`）、`lesson_dump_size`（未过滤进入上下文的教训体量，对应 `FAIL_0001`）、`tier_skip_count`（越两级消费原始记录的回放数）、未经评审的版本级规则变更数（违反 `GOV_0001`）。
+- Trace 指标 / Trace Metrics: `replay_provenance_completeness` (each lesson traceable to its source records, per `GOV_0002`), gap-disclosure coverage in replay reports, and lesson-artifact closure rate (proposed rules either adopted or explicitly rejected). / `replay_provenance_completeness`（每条教训可追溯到源记录的完整率，按 `GOV_0002`）、回放报告中缺口披露的覆盖率、教训产物闭环率（提议规则要么采纳要么显式否决）。
+
+### Default Gate Suggestions / 默认门控建议
+
+- Alert when `repeat_incident_rate` fails to fall after lessons ship or `record_gap_rate` climbs — the former means replay produces artifacts nobody applies, the latter means conclusions are being drawn from unreliable records (`FAIL_0010`). / 教训发布后 `repeat_incident_rate` 不降或 `record_gap_rate` 上升即告警——前者说明回放产物无人应用，后者说明结论正建立在不可靠记录上（`FAIL_0010`）。
+- Block a replay conclusion from becoming a binding rule when its source records have undisclosed gaps or the version-level change skipped `GOV_0001` review; return it as a provisional observation instead. / 源记录存在未披露缺口或版本级变更跳过 `GOV_0001` 评审时，阻断回放结论成为约束性规则；将其退回为临时观察。
