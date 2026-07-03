@@ -11,8 +11,13 @@ Design Pattern File / 设计模式文件: [action-orchestration.md](action-orche
 
 Use these metrics to observe whether Plan-and-Execute / 计划并执行 improves the workflow after selection or application. / 使用以下指标观察 Plan-and-Execute / 计划并执行 在选型或应用后是否改善工作流。
 
-- 质量指标 / Quality Metrics: Track output acceptance, defect or rework rate, and whether the fit signal is satisfied. / 跟踪产出采纳率、缺陷或返工率，以及适配信号是否满足。
-- 时延指标 / Latency Metrics: Track time from node trigger to usable output, including waiting, routing, iteration, and handoff time. / 跟踪从节点触发到可用输出的耗时，包括等待、路由、迭代和交接时间。
-- 成本指标 / Cost Metrics: Track tool calls, token or compute spend, human review effort, and repeated work avoided. / 跟踪工具调用、Token 或计算成本、人工评审投入，以及避免的重复工作。
-- 风险指标 / Risk Metrics: Track policy violations, permission escalations, unsafe actions, missed checks, and blast-radius changes. / 跟踪策略违规、权限升级、不安全动作、遗漏检查和影响范围变化。
-- Trace 指标 / Trace Metrics: Track trace completeness, evidence freshness, outcome comparison, and whether follow-up actions are closed. / 跟踪 Trace 完整性、证据新鲜度、结果对比和后续动作是否关闭。
+- 质量指标 / Quality Metrics: `plan_completion_rate` (subtasks meeting done criteria without rework), `decomposition_fitness` (share of subtasks that needed neither splitting nor merging during execution), and goal acceptance after final synthesis. / `plan_completion_rate`（无返工满足完成判据的子任务比例）、`decomposition_fitness`（执行中既不需再拆也不需合并的子任务占比）、最终合成后的目标采纳率。
+- 时延指标 / Latency Metrics: planning latency (goal to plan artifact), critical-path execution time versus sum of subtask times (parallelism gain), and replan turnaround. / 规划时延（目标到计划产物）、关键路径执行时间对比子任务时间总和（并行收益）、重规划周转时间。
+- 成本指标 / Cost Metrics: coordination overhead ratio (planner plus coordinator tokens over executor tokens), wasted work from discarded plans, and compensation-action spend. / 协调开销比（规划器加协调器 token 除以执行器 token）、被废弃计划造成的浪费、补偿动作花销。
+- 风险指标 / Risk Metrics: subtasks completed on self-report without observable criteria, state-changing subtasks lacking compensation, replan count hitting stop conditions, and high-risk subtasks bypassing the approval gate. / 仅凭自述、无可观测判据即判完成的子任务数；缺补偿的改状态子任务数；触达停止条件的重规划次数；绕过审批门禁的高风险子任务数。
+- Trace 指标 / Trace Metrics: plan artifact versioning (every replan preserved), per-subtask execution record completeness, and compensation log coverage for failed branches. / 计划产物版本化（每次重规划留存）、逐子任务执行记录完整率、失败分支的补偿日志覆盖率。
+
+### Default Gate Suggestions / 默认门控建议
+
+- Block completion marking when `done_criteria` is empty for a state-changing subtask. / 改状态子任务 `done_criteria` 为空时阻止标记完成。
+- Alert when replan count reaches the stop condition — the plan model no longer matches reality (`FAIL_0006` risk if progress records are also missing). / 重规划次数触达停止条件时告警——计划模型已与现实脱节（若进度记录同时缺失则有 `FAIL_0006` 风险）。

@@ -798,6 +798,37 @@ class SkillVisualizationGeneratorTest(unittest.TestCase):
         self.assertIn("Engineering Intermediate Representation / 工程中间表示", skill)
         self.assertIn("Evidence + Evaluation + Governance / 证据 + 评估 + 治理", skill)
 
+    def test_pattern_ids_are_unique_and_consistent(self):
+        packaging = (SKILL_DIR / "references" / "pattern-skill-packaging.md").read_text(encoding="utf-8")
+        seed_rows = re.findall(r"^\| `(PATTERN_\d{4})` \| ([^/|]+?) /", packaging, re.MULTILINE)
+        seed_ids = [pattern_id for pattern_id, _ in seed_rows]
+        self.assertEqual(len(seed_ids), len(set(seed_ids)), "duplicate PATTERN_* id in seed table")
+        id_to_name = {pattern_id: name.strip() for pattern_id, name in seed_rows}
+
+        binding_re = re.compile(r"(PATTERN_\d{4}) / ([^/\n]+?) /")
+        skill_id_re = re.compile(r"skill_id[^:\n]*:\s*(SKILL_[A-Z0-9_]+)")
+        skill_id_sources = {}
+        for path in SKILL_DIR.rglob("*.md"):
+            content = path.read_text(encoding="utf-8")
+            for pattern_id, name in binding_re.findall(content):
+                self.assertIn(
+                    pattern_id,
+                    id_to_name,
+                    f"{path}: {pattern_id} is not registered in pattern-skill-packaging.md",
+                )
+                self.assertEqual(
+                    id_to_name[pattern_id],
+                    name.strip(),
+                    f"{path}: {pattern_id} bound to '{name.strip()}' but registered as '{id_to_name[pattern_id]}'",
+                )
+            for skill_id in skill_id_re.findall(content):
+                previous = skill_id_sources.setdefault(skill_id, path)
+                self.assertEqual(
+                    previous,
+                    path,
+                    f"duplicate skill_id {skill_id} in {previous} and {path}",
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -3,7 +3,7 @@
 Cell / 交织点: perception-parallel / 感知 x 并行  
 Capability / 能力: Perception / 感知  
 Mode / 模式: Parallel / 并行  
-Pattern ID / 模式标识: PATTERN_0001  
+Pattern ID / 模式标识: PATTERN_0021
 Matrix Coordinate / 矩阵坐标: COG_PERCEPTION__TOP_PARALLEL  
 Status / 状态: Draft, executable pattern / 草稿，可执行模式  
 Source / 来源: arXiv:2605.13850 (https://arxiv.org/html/2605.13850)
@@ -204,12 +204,12 @@ output_contract:
 
 ### 0. Bind Task / 任务绑定
 
-Generate `workflow_id`, confirm `PATTERN_0001`, set `COG_PERCEPTION__TOP_PARALLEL`, and decide whether the observability probe is enabled. / 生成 `workflow_id`，确认 `PATTERN_0001`，设置 `COG_PERCEPTION__TOP_PARALLEL`，并判断是否启用可观测性探针。
+Generate `workflow_id`, confirm `PATTERN_0021`, set `COG_PERCEPTION__TOP_PARALLEL`, and decide whether the observability probe is enabled. / 生成 `workflow_id`，确认 `PATTERN_0021`，设置 `COG_PERCEPTION__TOP_PARALLEL`，并判断是否启用可观测性探针。
 
 ```yaml
 workflow_binding:
   workflow_id: string
-  enabled_pattern: PATTERN_0001
+  enabled_pattern: PATTERN_0021
   cognition_ref: COG_PERCEPTION
   topology_ref: TOP_PARALLEL
   scenario_type: research | ops | contract | customer_service | code_review | knowledge_base | other

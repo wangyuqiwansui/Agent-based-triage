@@ -15,7 +15,7 @@ Use this section to define the design pattern, its source grounding, and its wor
 
 - 论文坐标 / Article Coordinate: Action / 行动 x Routing / 路由 (Routing / 路由).
 - 论文依据 / Article Basis: 矩阵列名模式 / Matrix-listed pattern; source table maps Action / 行动 x Routing / 路由 in arXiv:2605.13850. / 矩阵列名模式 / Matrix-listed pattern；来源表将 Action / 行动 x Routing / 路由 映射到该单元。
-- 问题 / Problem: The matrix lists this named pattern for the cell; use it when Use when the workflow chooses a tool based on request type or state. / 当工作流根据请求类型或状态选择工具时使用。 Core fit signal: 不同动作需要分派给不同工具、权限或负责人 / Different actions must be routed to different tools, permissions, or owners. / 矩阵在该单元列出此命名模式；当 Use when the workflow chooses a tool based on request type or state. / 当工作流根据请求类型或状态选择工具时使用。 时使用。核心适配信号：不同动作需要分派给不同工具、权限或负责人 / Different actions must be routed to different tools, permissions, or owners。
+- 问题 / Problem: The matrix lists this named pattern for the cell; use it when the workflow chooses a tool based on request type or state. Core fit signal: Different actions must be routed to different tools, permissions, or owners. / 矩阵在该单元列出此命名模式；当工作流根据请求类型或状态选择工具时使用。核心适配信号：不同动作需要分派给不同工具、权限或负责人。
 - 架构方案 / Architectural Solution: Use Tool Dispatch / 工具分派 to classify first, then route to the right path, owner, tool, or depth / 先分类，再路由到合适路径、负责人、工具或深度 within the Action / 行动 capability. / 在 Action / 行动 能力内使用 Tool Dispatch / 工具分派，classify first, then route to the right path, owner, tool, or depth / 先分类，再路由到合适路径、负责人、工具或深度。
 - 工程权衡 / Engineering Trade-offs: Routing saves effort, but wrong classification can send work down the wrong path. / 路由节省成本，但错误分类会把工作送到错误路径。
 - 工作流诊断用途 / Workflow Diagnosis Use: Use when the workflow chooses a tool based on request type or state. / 当工作流根据请求类型或状态选择工具时使用。

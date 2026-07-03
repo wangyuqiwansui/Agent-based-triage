@@ -15,7 +15,7 @@ Use this section to define the design pattern, its source grounding, and its wor
 
 - 论文坐标 / Article Coordinate: Reasoning / 推理 x Loop / 循环 (Loop / 循环).
 - 论文依据 / Article Basis: 矩阵列名模式 / Matrix-listed pattern; source table maps Reasoning / 推理 x Loop / 循环 in arXiv:2605.13850. / 矩阵列名模式 / Matrix-listed pattern；来源表将 Reasoning / 推理 x Loop / 循环 映射到该单元。
-- 问题 / Problem: The matrix lists this named pattern for the cell; use it when Use when reasoning must revise hypotheses after evidence or tests. / 当推理必须根据证据或测试修正假设时使用。 Core fit signal: 推理需要根据验证结果持续修正 / Reasoning must revise itself based on verification results. / 矩阵在该单元列出此命名模式；当 Use when reasoning must revise hypotheses after evidence or tests. / 当推理必须根据证据或测试修正假设时使用。 时使用。核心适配信号：推理需要根据验证结果持续修正 / Reasoning must revise itself based on verification results。
+- 问题 / Problem: The matrix lists this named pattern for the cell; use it when reasoning must revise hypotheses after evidence or tests. Core fit signal: Reasoning must revise itself based on verification results. / 矩阵在该单元列出此命名模式；当推理必须根据证据或测试修正假设时使用。核心适配信号：推理需要根据验证结果持续修正。
 - 架构方案 / Architectural Solution: Use Iterative Hypothesis Testing / 迭代假设测试 to repeat observe, decide, act, and check until an exit condition is met / 重复观察、决策、行动和检查，直到满足退出条件 within the Reasoning / 推理 capability. / 在 Reasoning / 推理 能力内使用 Iterative Hypothesis Testing / 迭代假设测试，repeat observe, decide, act, and check until an exit condition is met / 重复观察、决策、行动和检查，直到满足退出条件。
 - 工程权衡 / Engineering Trade-offs: Loops improve through feedback, but need stop conditions to avoid runaway retries. / 循环通过反馈改进，但需要停止条件避免失控重试。
 - 工作流诊断用途 / Workflow Diagnosis Use: Use when reasoning must revise hypotheses after evidence or tests. / 当推理必须根据证据或测试修正假设时使用。

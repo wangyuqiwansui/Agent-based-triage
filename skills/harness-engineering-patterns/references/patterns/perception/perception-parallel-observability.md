@@ -3,7 +3,7 @@
 Cell / 交织点: perception-parallel / 感知 x 并行  
 Capability / 能力: Perception / 感知  
 Mode / 模式: Parallel / 并行  
-Pattern ID / 模式标识: PATTERN_0001  
+Pattern ID / 模式标识: PATTERN_0021
 Probe ID / 探针标识: PROBE_MMF_0001  
 Matrix Coordinate / 矩阵坐标: COG_PERCEPTION__TOP_PARALLEL  
 Status / 状态: Draft, executable observability probe / 草稿，可执行可观测性探针  

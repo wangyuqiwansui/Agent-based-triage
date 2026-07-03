@@ -51,6 +51,18 @@ Use this flow when choosing or changing a pattern. / 选择或调整模式时使
 - Depth drives hierarchy. / 深度推动层级：目标需要递归拆解或分层授权时，使用层级。
 - Risk can override topology. / 风险可以覆盖拓扑：高风险场景优先加入治理门禁、审计和爆炸半径控制。
 
+## Environmental Constraint Laws / 环境约束定律
+
+arXiv:2605.13850 derives five empirical laws from four cross-domain case studies. Use them to check whether the selected architecture matches the environment, not just the task. / arXiv:2605.13850 从四个跨领域案例研究中归纳出五条经验定律。用它们检查所选架构是否匹配环境约束，而不只是匹配任务。
+
+| Law / 定律 | Rule / 规则 | Selection Impact / 选型影响 |
+| --- | --- | --- |
+| 1. Time pressure determines architectural complexity. / 时间压力决定架构复杂度。 | Days of budget allow Hierarchy plus Orchestration with 10+ patterns; second-level deadlines force Chain with 3-5 patterns. / 天级预算允许层级加编排、10+ 模式；秒级时限只容链式、3-5 个模式。 | Under tight deadlines, cut topology depth before cutting governance. / 时限紧张时先裁拓扑深度，不裁治理。 |
+| 2. Action authority determines the governance pattern. / 行动权限决定治理模式。 | Advisory-only work needs Approval Gate; low-risk auto-execution needs Blast Radius Control; irreversible actions need Guardrail Sandwich; mixed authority needs tiers. / 仅建议型工作配审批门禁；低风险自动执行配爆炸半径控制；不可逆动作配护栏夹层；混合权限用分级。 | Pick the governance cell from what the agent may do, not from what it usually does. / 依据 Agent 被允许做什么选治理单元，而非它通常做什么。 |
+| 3. Failure-cost asymmetry reshapes reflection. / 失败成本不对称重塑反思。 | When one failure direction is far costlier, bias the critic toward the expensive direction (the article's healthcare critic upgrades acuity because under-triage is fatal). / 当某一失败方向代价远高时，让批评器偏向昂贵方向（论文医疗案例批评器偏向提升急重度，因为低估分诊致命）。 | Encode the asymmetry into critique criteria and gate thresholds explicitly. / 将不对称显式写进批评判据与门禁阈值。 |
+| 4. Volume determines collaboration needs. / 处理量决定协作需求。 | One item needs no collaboration; 10-50 items fit Fan-Out/Gather; 100-500 add Hierarchical Delegation; continuous streams need Routing plus auto-scaling. / 单项无需协作；10-50 项适用扇出汇聚；100-500 项叠加层级委派；持续流用路由加自动伸缩。 | Size the collaboration row by measured volume, not by ambition. / 依实测处理量确定协作行规模，而非按预期野心。 |
+| 5. Same pattern, different parameterization. / 同一模式，不同参数化。 | "A pattern is a structural template, not a behavioral prescription" — identical cells across domains carry different thresholds, budgets, and criteria. / “模式是结构模板，不是行为处方”——跨领域的同一单元携带不同阈值、预算和判据。 | Never copy another workflow's parameters with its pattern; re-derive them from local evidence. / 不要连同参数照抄他人工作流的模式；参数必须由本地证据重推。 |
+
 ## Problem Types / 问题类型
 
 | Problem | 中文 | Symptom / 症状 | Typical Adjustment / 常见调整 |

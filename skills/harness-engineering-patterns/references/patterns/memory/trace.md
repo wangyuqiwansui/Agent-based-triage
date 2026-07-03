@@ -4,6 +4,8 @@
 
 Use this file to record what happened after a memory pattern was applied to a workflow. / 使用本文档记录记忆模式应用到工作流之后发生了什么。
 
+Boundary note / 边界说明: entries carry pattern-level lessons; application-specific identifiers inside them (such as Novel Studio stage-output ids) are evidence pointers frozen at write time, not current application state. During Trace Insert, reuse the lesson, but verify any concrete id or status against the application's own data before acting on it. / 记录承载模式层经验；其中的应用专属标识（如 Novel Studio 阶段产物编号）是写入时刻冻结的证据指针，不代表应用当前状态。Trace 插入时可复用经验，但任何具体编号或状态在采用前必须与应用自身数据核对。
+
 ## Usage Log / 使用日志
 
 Add new entries below this template. / 在此模板下方追加新记录。

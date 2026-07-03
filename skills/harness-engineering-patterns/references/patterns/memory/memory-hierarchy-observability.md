@@ -1207,7 +1207,7 @@ Skill Draft / 技能草案:
   version / 版本: 0.1.0
   status / 状态: draft / 草稿
   related_patterns / 关联模式:
-    - PATTERN_0001 / Layered Retention / 分层保留
+    - PATTERN_0022 / Layered Retention / 分层保留
   related_cognition / 关联认知:
     - COG_PERCEPTION
     - COG_MEMORY

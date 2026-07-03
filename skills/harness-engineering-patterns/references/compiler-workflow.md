@@ -35,6 +35,8 @@ Keep IDs stable once introduced, even when definitions evolve. / 一旦引入 ID
 
 Examples / 示例: `COG_PERCEPTION`, `TOP_ROUTING`, `PATTERN_0005`, `SKILL_ANALYSIS_0003`, `NODE_0001`, `SRC_0001`, `EVIDENCE_0001`.
 
+Storage note / 存储说明: these registries are conceptual — no standalone registry files exist. Their contents live inline in the reference files: cognition and topology in `axes.md`, the pattern registry seed table in `pattern-skill-packaging.md`, matrix membership in `matrix-index.md` and `pattern-catalog.md`, business nodes in `workflow-nodes.md`, source components in `harness-source-analysis.md`, evaluation and governance rules in `evaluation-governance.md`, and evidence plus trace records in each analysis output and `patterns/<capability-key>/trace.md`. When adding a new ID, register it in the file that owns its registry. / 存储说明：这些注册表是概念性的——不存在独立注册表文件。其内容内联存放在参考文件中：认知与拓扑在 `axes.md`，模式注册表种子表在 `pattern-skill-packaging.md`，矩阵成员在 `matrix-index.md` 与 `pattern-catalog.md`，业务节点在 `workflow-nodes.md`，源码组件在 `harness-source-analysis.md`，评估与治理规则在 `evaluation-governance.md`，证据与追踪记录在各分析产出及 `patterns/<capability-key>/trace.md`。新增 ID 时，在拥有该注册表的文件中登记。
+
 ## Input Types / 输入类型
 
 | Input Type / 输入类型 | Use When / 使用场景 | Primary Output / 主要输出 |

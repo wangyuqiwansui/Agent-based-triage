@@ -41,6 +41,15 @@ Each detailed pattern has two Markdown files: `<cell-key>.md` for `Design Patter
 | governance-orchestration / 治理 x 编排 | Observability Harness / 可观测性框架 | Use when governance requires coordinated evidence, traces, metrics, and review. / 当治理需要协调证据、追踪、指标和评审时使用。 |
 | governance-hierarchy / 治理 x 层级 | Blast Radius Control / 爆炸半径控制 | Use when permissions, rollout, or impact must be limited by level. / 当权限、发布或影响范围必须按层级限制时使用。 |
 
+## Cross-Domain Tiers / 跨域分级
+
+The article validates the catalog on four domains (financial lending, legal due diligence, network operations, healthcare triage) and tiers patterns by how often they recur. Use tiers to order selection: check foundational patterns first, treat conditional patterns as environment-triggered. / 论文在四个领域（金融信贷、法务尽调、网络运维、医疗分诊）验证目录，并按复现频率给模式分级。选型时先查基础模式，条件模式按环境触发。
+
+| Tier / 级别 | Patterns / 模式 | Meaning / 含义 |
+| --- | --- | --- |
+| Foundational / 基础（3+ 领域复现） | Context Triage / 上下文分诊, RAG Pipeline / RAG 管线, Complexity-Based Routing / 复杂度路由, Generator-Critic / 生成器-批评器 | Appear in most agent workflows regardless of domain; absence needs justification. / 与领域无关地出现在多数 Agent 工作流中；缺席需要说明理由。 |
+| Conditional / 条件 | Blast Radius Control / 爆炸半径控制, Fan-Out/Gather / 扇出汇聚 | Triggered by environment: action authority triggers blast radius, volume triggers fan-out (see Environmental Constraint Laws / 环境约束定律 in `diagnosis-method.md`). / 由环境触发：行动权限触发爆炸半径，处理量触发扇出（见 `diagnosis-method.md` 环境约束定律）。 |
+
 ## Empty Or Exploratory Cells / 空白或探索单元
 
 The article leaves these intersections structurally redundant or not yet observed in practice. Keep them as extension candidates: / 文章将这些交织点视为结构上冗余或尚未在实践中观察到。本技能中将它们保留为扩展候选：
@@ -51,8 +60,8 @@ The article leaves these intersections structurally redundant or not yet observe
 - reasoning-hierarchy / 推理 x 层级
 - action-parallel / 行动 x 并行
 - action-loop / 行动 x 循环
-- reflection-parallel / 反思 x 并行
-- reflection-orchestration / 反思 x 编排
+- reflection-parallel / 反思 x 并行 (article hypothesis: Parallel Reflection, multiple simultaneous critics / 论文假设：并行反思，多个批评器同时评审)
+- reflection-orchestration / 反思 x 编排 (article hypothesis: Reflection Orchestrate, a meta-critic dispatching domain evaluators / 论文假设：反思编排，元批评器分派领域评估器)
 - collaboration-routing / 协作 x 路由
 - collaboration-orchestration / 协作 x 编排
 - governance-chain / 治理 x 链式

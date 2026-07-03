@@ -22,6 +22,7 @@ Start by selecting the input type, then keep an EIR and evidence trail through t
 5. For Agent Harness source analysis, read `references/harness-source-analysis.md` and run Detect / Classify / Filter / Map / Verify. / 对 Agent Harness 源码分析，读取 `references/harness-source-analysis.md` 并执行找主循环、组件归类、噪声过滤、落矩阵和证据验证。
 6. For pattern extraction or Skill recommendations, read `references/pattern-skill-packaging.md`. / 对模式抽取或 Skill 化建议，读取 `references/pattern-skill-packaging.md`。
 7. For quality scoring, evidence checks, governance gaps, or risk controls, read `references/evaluation-governance.md` and `references/failure-modes.md`. / 对质量评分、证据检查、治理缺口或风险控制，读取 `references/evaluation-governance.md` 和 `references/failure-modes.md`。
+8. For an end-to-end worked example of the whole pipeline (article cases plus a repository case with a failure and repair), read `references/example-compilation.md`. / 需要整条管线的端到端示例（论文案例加带失败与修复的仓库案例）时，读取 `references/example-compilation.md`。
 
 ## Automatic Engineering Node Analysis / 工程节点自动分析
 

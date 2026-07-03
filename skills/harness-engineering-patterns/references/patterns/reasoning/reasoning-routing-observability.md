@@ -11,8 +11,13 @@ Design Pattern File / 设计模式文件: [reasoning-routing.md](reasoning-routi
 
 Use these metrics to observe whether Complexity-Based Routing / 复杂度路由 improves the workflow after selection or application. / 使用以下指标观察 Complexity-Based Routing / 复杂度路由 在选型或应用后是否改善工作流。
 
-- 质量指标 / Quality Metrics: Track output acceptance, defect or rework rate, and whether the fit signal is satisfied. / 跟踪产出采纳率、缺陷或返工率，以及适配信号是否满足。
-- 时延指标 / Latency Metrics: Track time from node trigger to usable output, including waiting, routing, iteration, and handoff time. / 跟踪从节点触发到可用输出的耗时，包括等待、路由、迭代和交接时间。
-- 成本指标 / Cost Metrics: Track tool calls, token or compute spend, human review effort, and repeated work avoided. / 跟踪工具调用、Token 或计算成本、人工评审投入，以及避免的重复工作。
-- 风险指标 / Risk Metrics: Track policy violations, permission escalations, unsafe actions, missed checks, and blast-radius changes. / 跟踪策略违规、权限升级、不安全动作、遗漏检查和影响范围变化。
-- Trace 指标 / Trace Metrics: Track trace completeness, evidence freshness, outcome comparison, and whether follow-up actions are closed. / 跟踪 Trace 完整性、证据新鲜度、结果对比和后续动作是否关闭。
+- 质量指标 / Quality Metrics: `route_accuracy` (sampled audit of whether the chosen tier could solve the request), `underroute_rate` (hard requests sent to System 1 that later failed), `overroute_rate` (simple requests sent to deep tiers), and per-tier acceptance rate. / `route_accuracy`（抽样审计所选档位能否解决请求）、`underroute_rate`（被送入直觉档后失败的难请求比例）、`overroute_rate`（被送入深档的简单请求比例）以及各档位采纳率。
+- 时延指标 / Latency Metrics: classifier decision latency, per-tier end-to-end latency, and escalation delay (time lost when a request bounces from a low tier to a higher one). / 分类器决策时延、各档位端到端时延、升级延迟（请求从低档反弹到高档损失的时间）。
+- 成本指标 / Cost Metrics: token spend per tier, blended cost per request versus single-deep-path baseline (article anchor: RouteLLM ~85% reduction), and misroute cost (wasted deep-tier tokens plus rework tokens from failed cheap-tier runs). / 各档位 token 消耗、单请求混合成本对比单一深路径基线（论文锚点：RouteLLM 约降 85%）、误路由成本（浪费的深档 token 加低档失败返工 token）。
+- 风险指标 / Risk Metrics: escalation-loop count (same request escalating more than once, watch `FAIL_0007`), high-impact requests served by System 1, and share of route decisions made with confidence below threshold. / 升级循环次数（同一请求升级超过一次，对应 `FAIL_0007`）、高影响请求被直觉档处理的数量、低于置信阈值仍作出的路由决策占比。
+- Trace 指标 / Trace Metrics: route decision record completeness (tier, signals, confidence per request), escalation event coverage, and misroute audit closure rate. / 路由决策记录完整率（每请求含档位、信号、置信度）、升级事件覆盖率、误路由审计闭环率。
+
+### Default Gate Suggestions / 默认门控建议
+
+- Alert when `underroute_rate` exceeds `overroute_rate` on high-impact request classes — failure-cost asymmetry says under-routing is the expensive direction. / 当高影响请求类别的 `underroute_rate` 超过 `overroute_rate` 时告警——失败成本不对称意味着低估方向更昂贵。
+- Block tier de-escalation inside a single request; require a trace entry for every escalation. / 阻止单请求内部降档；每次升级必须留 trace 记录。

@@ -89,3 +89,7 @@ Use these seeds as candidates, not as forced labels. / 将这些种子作为候�
 | `PATTERN_0018` | Identity Permission Binding / 身份与权限绑定模式 | `COG_GOVERNANCE__TOP_HIERARCHY` | Bind user, device, channel, and scope. / 绑定用户、设备、channel 与权限范围。 |
 | `PATTERN_0019` | Protocol Bridge / 协议桥接模式 | `COG_ACTION__TOP_ORCHESTRATION` | Connect CLI, IDE, web, and remote services through protocols. / 通过协议层连接 CLI、IDE、Web 和远程服务。 |
 | `PATTERN_0020` | Trace Replay Debugging / Trace Replay 调试模式 | `COG_REFLECTION__TOP_CHAIN` | Replay historical events for debugging and review. / 重放历史事件用于调试与复盘。 |
+| `PATTERN_0021` | Multi-Modal Fusion / 多模态融合模式 | `COG_PERCEPTION__TOP_PARALLEL` | Fuse text, image, log, and structured sources into one perception result. / 将文本、图像、日志和结构化来源融合为一个感知结果。 |
+| `PATTERN_0022` | Layered Retention / 分层保留模式 | `COG_MEMORY__TOP_HIERARCHY` | Route memory writes and recalls through scoped retention layers. / 将记忆写入与召回路由到分域保留层。 |
+
+Scope note / 范围说明: arXiv:2605.13850 deliberately excludes the outer reason-act main loop from its pattern catalog and treats it as runtime substrate. `PATTERN_0001` Main Loop Progression is kept here because Harness source analysis must still name the main loop as a component; treat it as a source-analysis anchor, not an article-matrix cell pattern. / arXiv:2605.13850 明确将外层"推理-行动"主循环排除在模式目录之外，视为运行时基座。这里保留 `PATTERN_0001` 主循环推进模式，是因为 Harness 源码分析仍需将主循环作为组件命名；应将其视为源码分析锚点，而不是论文矩阵单元模式。

@@ -14,7 +14,7 @@ Use this section to define the design pattern, its source grounding, and its wor
 ### Article Grounding / 论文依据
 
 - 论文坐标 / Article Coordinate: Reflection / 反思 x Parallel / 并行 (Parallel / 并行).
-- 论文依据 / Article Basis: 空白单元 / Empty cell; arXiv:2605.13850 leaves this intersection unnamed. / 空白单元 / Empty cell；arXiv:2605.13850 未命名该交织点。
+- 论文依据 / Article Basis: 空白单元 / Empty cell; arXiv:2605.13850 leaves this intersection unnamed but hypothesizes a future pattern: Parallel Reflection / 并行反思 — multiple critics evaluate the same output simultaneously along different dimensions, then merge findings. Treat this as a literature hypothesis, not a named pattern; naming still requires repeated workflow evidence. / 空白单元 / Empty cell；arXiv:2605.13850 未命名该交织点，但给出未来模式假设：Parallel Reflection / 并行反思——多个批评器沿不同维度同时评估同一产出，再合并发现。此为文献假设而非命名模式；命名仍需反复的工作流证据。
 - 问题 / Problem: The article leaves this intersection unnamed; use it only if workflow evidence shows that Reflection / 反思 needs Parallel / 并行. / 论文未命名该交织点；仅当工作流证据表明 Reflection / 反思 需要 Parallel / 并行 时使用。
 - 架构方案 / Architectural Solution: Keep this as an extension candidate and define a concrete pattern only after repeated workflow evidence appears. / 将其保留为扩展候选，仅在反复出现工作流证据后再定义具体模式。
 - 工程权衡 / Engineering Trade-offs: This avoids inventing taxonomy, but leaves a deliberate gap until practice justifies the pattern. / 这避免凭空发明分类，但在实践证明前会保留有意空白。

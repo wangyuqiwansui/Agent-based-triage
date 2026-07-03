@@ -15,7 +15,7 @@ Use this section to define the design pattern, its source grounding, and its wor
 
 - 论文坐标 / Article Coordinate: Collaboration / 协作 x Chain / 链式 (Sequential / 顺序).
 - 论文依据 / Article Basis: 矩阵列名模式 / Matrix-listed pattern; source table maps Collaboration / 协作 x Chain / 链式 in arXiv:2605.13850. / 矩阵列名模式 / Matrix-listed pattern；来源表将 Collaboration / 协作 x Chain / 链式 映射到该单元。
-- 问题 / Problem: The matrix lists this named pattern for the cell; use it when Use when work passes through ordered actors or roles. / 当工作按顺序经过多个参与者或角色时使用。 Core fit signal: 协作按明确顺序交接，前一角色完成后后一角色接手 / Collaboration hands off in order from one role to the next. / 矩阵在该单元列出此命名模式；当 Use when work passes through ordered actors or roles. / 当工作按顺序经过多个参与者或角色时使用。 时使用。核心适配信号：协作按明确顺序交接，前一角色完成后后一角色接手 / Collaboration hands off in order from one role to the next。
+- 问题 / Problem: The matrix lists this named pattern for the cell; use it when work passes through ordered actors or roles. Core fit signal: Collaboration hands off in order from one role to the next. / 矩阵在该单元列出此命名模式；当工作按顺序经过多个参与者或角色时使用。核心适配信号：协作按明确顺序交接，前一角色完成后后一角色接手。
 - 架构方案 / Architectural Solution: Use Handoff Chain / 交接链 to apply the pattern as an ordered sequence whose outputs feed the next step / 将模式作为输出逐步传递的有序序列应用 within the Collaboration / 协作 capability. / 在 Collaboration / 协作 能力内使用 Handoff Chain / 交接链，apply the pattern as an ordered sequence whose outputs feed the next step / 将模式作为输出逐步传递的有序序列应用。
 - 工程权衡 / Engineering Trade-offs: Sequential flow is easy to audit, but weak when branching or feedback dominates. / 顺序流程易审计，但当分支或反馈占主导时较弱。
 - 工作流诊断用途 / Workflow Diagnosis Use: Use when work passes through ordered actors or roles. / 当工作按顺序经过多个参与者或角色时使用。

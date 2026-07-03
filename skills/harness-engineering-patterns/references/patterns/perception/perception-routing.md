@@ -252,7 +252,7 @@ Probe feedback can adjust / 探针反馈可以调整:
 - 修改方式 / How To Modify: Normalize candidate items, classify by L0-L3, assemble by budget order, emit decision trace, and optionally receive probe feedback. / 规范化候选项，按零级到三级分类，按预算顺序装配，输出决策 Trace，并可接收探针反馈。
 - 输入 / Inputs: task request, runtime context, candidate items, triage policy, optional probe feedback. / 任务请求、运行时上下文、候选信息项、分诊策略、可选探针反馈。
 - 输出 / Outputs: context package, decision record, compression task list, read handle list, risk notes, probe-readable events. / 上下文包、分诊决策记录、压缩任务清单、读取入口清单、风险提示、探针可读事件。
-- 风险与治理 / Risks & Governance: L0 cannot be dropped; unclear permission blocks production flow; read handles must carry scope; every decision must be traceable. / 零级不可丢弃，权限不清时阻断生产流程，读取入口必须带作用域，所有决策必须可追溯。
+- 风险与治理 / Risks & Governance: L0 cannot be dropped; unclear permission blocks production flow; read handles must carry scope; every decision must be traceable; over-aggressive filtering causes context starvation `FAIL_0012` — watch rejection rate and downstream rework, and keep L3 read handles as the escape hatch. / 零级不可丢弃，权限不清时阻断生产流程，读取入口必须带作用域，所有决策必须可追溯；过度过滤会导致上下文饥饿 `FAIL_0012`——监控拒绝率与下游返工，并保留三级读取入口作为逃生通道。
 
 Observability Metrics File / 可观测性指标文件: [perception-routing-observability.md](perception-routing-observability.md)
 

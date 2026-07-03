@@ -16,6 +16,24 @@ Score qualitatively when exact metrics are unavailable. / 没有精确指标时�
 | Governance / 治理完整度 | Are permission, sandbox, audit, and rollback clear? / 权限、沙箱、审计和回滚是否明确？ | `governance_score` |
 | Evaluability / 可评估性 | Are tests, probes, or evaluation cases defined? / 是否定义测试、探针或评估用例？ | `evaluation_score` |
 
+## Scoring Anchors / 评分锚点
+
+Score each dimension 0-100 using these bands. Anchors make scores comparable across analyses and reviewers; without them a score is an opinion. / 每个维度按 0-100 打分并使用以下分段。锚点让分数在不同分析和评审者之间可比；没有锚点的分数只是观点。
+
+| Band / 分段 | Label / 标签 | Criteria / 判据 |
+| --- | --- | --- |
+| 90-100 | Verified / 已验证 | Claim holds with direct evidence (source, tests, runtime records) and has been checked against at least one counterexample or failure path. / 判断有直接证据（源码、测试、运行记录）支撑，且至少对照过一个反例或失败路径。 |
+| 70-89 | Grounded / 有依据 | Claim has direct evidence but no counterexample check; gaps are named. / 判断有直接证据但未做反例检查；缺口已被点名。 |
+| 50-69 | Plausible / 貌似合理 | Claim rests on descriptive evidence (docs, README, config) only. / 判断仅依赖描述性证据（文档、README、配置）。 |
+| 25-49 | Asserted / 仅断言 | Claim is stated without evidence references; treat as hypothesis. / 判断未引用证据；视为假说。 |
+| 0-24 | Unknown / 未知 | The dimension was not analyzed. / 该维度未被分析。 |
+
+Anchor rules / 锚点规则:
+
+- A structural pass alone caps the score at 89: full marks require a semantic or behavioral check on top of structure (repository evidence: a structurally perfect `score=100` gate output was later superseded for semantic contamination — see `example-compilation.md`). / 仅结构通过最高 89 分：满分要求在结构之上叠加语义或行为检查（仓库实证：结构满分 `score=100` 的门禁产物后来因语义污染被废弃——见 `example-compilation.md`）。
+- Do not average across bands to hide a weak dimension; report the lowest-scoring dimension alongside the aggregate. / 不要用跨维度平均掩盖薄弱维度；聚合分旁必须报告最低分维度。
+- Re-derive band thresholds locally when a domain has stricter norms (Law 5 in `diagnosis-method.md`). / 当领域有更严格规范时，按本地证据重推分段阈值（见 `diagnosis-method.md` 定律 5）。
+
 ## Evidence Priority / 证据优先级
 
 Prefer direct evidence over descriptive evidence. / 优先直接证据，而不是描述性证据。

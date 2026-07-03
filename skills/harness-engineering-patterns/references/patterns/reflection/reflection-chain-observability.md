@@ -11,8 +11,14 @@ Design Pattern File / 设计模式文件: [reflection-chain.md](reflection-chain
 
 Use these metrics to observe whether Generator-Critic / 生成器-批评器 improves the workflow after selection or application. / 使用以下指标观察 Generator-Critic / 生成器-批评器 在选型或应用后是否改善工作流。
 
-- 质量指标 / Quality Metrics: Track output acceptance, defect or rework rate, and whether the fit signal is satisfied. / 跟踪产出采纳率、缺陷或返工率，以及适配信号是否满足。
-- 时延指标 / Latency Metrics: Track time from node trigger to usable output, including waiting, routing, iteration, and handoff time. / 跟踪从节点触发到可用输出的耗时，包括等待、路由、迭代和交接时间。
-- 成本指标 / Cost Metrics: Track tool calls, token or compute spend, human review effort, and repeated work avoided. / 跟踪工具调用、Token 或计算成本、人工评审投入，以及避免的重复工作。
-- 风险指标 / Risk Metrics: Track policy violations, permission escalations, unsafe actions, missed checks, and blast-radius changes. / 跟踪策略违规、权限升级、不安全动作、遗漏检查和影响范围变化。
-- Trace 指标 / Trace Metrics: Track trace completeness, evidence freshness, outcome comparison, and whether follow-up actions are closed. / 跟踪 Trace 完整性、证据新鲜度、结果对比和后续动作是否关闭。
+- 质量指标 / Quality Metrics: `critique_catch_rate` (defects found by critic versus defects found downstream), `revision_improvement` (acceptance of revised output versus first draft), and per-criterion finding distribution (criteria that never fire are dead weight). / `critique_catch_rate`（批评器发现缺陷对比下游发现缺陷）、`revision_improvement`（修订稿相对初稿的采纳率提升）、逐判据发现分布（从不命中的判据是死重）。
+- 时延指标 / Latency Metrics: critique pass latency, end-to-end generate→critique→revise time versus generate-only baseline, and escalation delay to reflection-loop or human review. / 批评轮时延、"生成→批评→修订"端到端时间对比纯生成基线、升级到 reflection-loop 或人工评审的延迟。
+- 成本指标 / Cost Metrics: critique overhead ratio (critic plus revision tokens over generator tokens), cost per caught defect, and cross-model or tool invocation spend by feedback variant. / 批评开销比（批评加修订 token 除以生成 token）、单缺陷捕获成本、按反馈变体统计的跨模型或工具调用花销。
+- 风险指标 / Risk Metrics: critic approval rate (near 100% signals rubber-stamping; near 0% signals mis-calibrated criteria), share of correctness-critical outputs reviewed only by self-critique, and unresolved-finding leak rate into delivery. / 批评通过率（接近 100% 提示橡皮图章，接近 0% 提示判据失准）、仅经自评的正确性关键产出占比、未解决发现泄漏进交付的比例。
+- Trace 指标 / Trace Metrics: critique report completeness (every finding mapped to a criterion and a resolution), pass-count distribution (should concentrate at 1–2 per the article), and escalation record coverage. / 批评报告完整率（每个发现对应判据与处置）、轮次分布（按论文应集中在 1–2 轮）、升级记录覆盖率。
+
+### Default Gate Suggestions / 默认门控建议
+
+- Alert when critic approval rate stays above ~95% across a sampling window — the critic is likely not discriminating. / 批评通过率在采样窗口内持续高于约 95% 时告警——批评器很可能失去区分度。
+- Block delivery of correctness-critical output that received only self-critique when tool-grounded feedback was available. / 当工具接地反馈可用时，阻止仅经自评的正确性关键产出直接交付。
+- Alert when pass count exceeds 2 — the work belongs in Self-Heal Loop (reflection-loop), not a longer chain. / 轮次超过 2 时告警——该工作应转入自愈循环（reflection-loop）而非加长链。

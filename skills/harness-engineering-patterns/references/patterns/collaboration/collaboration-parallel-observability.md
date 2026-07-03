@@ -9,10 +9,16 @@ Design Pattern File / 设计模式文件: [collaboration-parallel.md](collaborat
 
 ## Observability Metrics / 可观测性指标
 
-Use these metrics to observe whether Fan-Out/Gather / 扇出汇聚 improves the workflow after selection or application. / 使用以下指标观察 Fan-Out/Gather / 扇出汇聚 在选型或应用后是否改善工作流。
+Use these metrics to observe whether Fan-Out/Gather / 扇出汇聚 improves the workflow after selection or application. / 使用以下指标观察 扇出汇聚 在选型或应用后是否改善工作流。
 
-- 质量指标 / Quality Metrics: Track output acceptance, defect or rework rate, and whether the fit signal is satisfied. / 跟踪产出采纳率、缺陷或返工率，以及适配信号是否满足。
-- 时延指标 / Latency Metrics: Track time from node trigger to usable output, including waiting, routing, iteration, and handoff time. / 跟踪从节点触发到可用输出的耗时，包括等待、路由、迭代和交接时间。
-- 成本指标 / Cost Metrics: Track tool calls, token or compute spend, human review effort, and repeated work avoided. / 跟踪工具调用、Token 或计算成本、人工评审投入，以及避免的重复工作。
-- 风险指标 / Risk Metrics: Track policy violations, permission escalations, unsafe actions, missed checks, and blast-radius changes. / 跟踪策略违规、权限升级、不安全动作、遗漏检查和影响范围变化。
-- Trace 指标 / Trace Metrics: Track trace completeness, evidence freshness, outcome comparison, and whether follow-up actions are closed. / 跟踪 Trace 完整性、证据新鲜度、结果对比和后续动作是否关闭。
+- 质量指标 / Quality Metrics: `synthesis_fidelity` (worker findings traceable in the final synthesis, including minority findings), `worker_output_contract_compliance`, and result diversity across workers (identical outputs mean isolation failed or fan-out was unnecessary). / `synthesis_fidelity`（worker 发现在最终综合中可追溯，含少数派发现）、`worker_output_contract_compliance`（worker 产出契约符合率）、worker 间结果多样性（完全相同意味着隔离失败或无需扇出）。
+- 时延指标 / Latency Metrics: wall-clock speedup versus serial baseline, slowest-worker drag (gather waits on the stragglers), and synthesis-step latency share. / 相对串行基线的墙钟加速比、最慢 worker 拖尾（汇聚等待掉队者）、综合步骤时延占比。
+- 成本指标 / Cost Metrics: total token multiple versus single-worker baseline (article anchor: ~n×), cost per accepted finding, and wasted-worker rate (outputs discarded at synthesis). / 相对单 worker 基线的总 token 倍数（论文锚点约 n 倍）、单条被采纳发现的成本、worker 浪费率（综合时被弃产出）。
+- 风险指标 / Risk Metrics: context-leak incidents between workers (`FAIL_0008`), minority-finding drop rate at synthesis (aggregation is the article-named bottleneck), and conflicts silently merged without evidence retention. / worker 间上下文泄漏事件（`FAIL_0008`）、综合时少数派发现丢弃率（论文点名聚合为瓶颈）、未保留证据即被静默合并的冲突数。
+- Trace 指标 / Trace Metrics: per-worker result and evidence archival completeness, conflict register coverage, and synthesis decision record (why each finding was kept, merged, or dropped). / 逐 worker 结果与证据归档完整率、冲突台账覆盖率、综合决策记录（每条发现被保留、合并或丢弃的原因）。
+
+### Default Gate Suggestions / 默认门控建议
+
+- Block synthesis sign-off when any worker output lacks its evidence attachment. / 任一 worker 产出缺证据附件时阻止综合定稿。
+- Alert when result diversity is near zero across workers — either isolation leaked or the task did not need fan-out. / worker 间结果多样性接近零时告警——要么隔离泄漏，要么任务本不需要扇出。
+- Alert when volume exceeds ~100 items without Hierarchical Delegation layered on top (article Law 4). / 处理量超过约 100 项却未叠加层级委派时告警（论文定律 4）。

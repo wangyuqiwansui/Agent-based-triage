@@ -15,7 +15,7 @@ Use this section to define the design pattern, its source grounding, and its wor
 
 - 论文坐标 / Article Coordinate: Memory / 记忆 x Routing / 路由 (Routing / 路由).
 - 论文依据 / Article Basis: 矩阵列名模式 / Matrix-listed pattern; source table maps Memory / 记忆 x Routing / 路由 in arXiv:2605.13850. / 矩阵列名模式 / Matrix-listed pattern；来源表将 Memory / 记忆 x Routing / 路由 映射到该单元。
-- 问题 / Problem: The matrix lists this named pattern for the cell; use it when Use when the workflow must route retrieval through levels of memory. / 当工作流必须按记忆层级路由检索时使用。 Core fit signal: 需要按历史案例、项目知识或决策记录选择路径 / History, project knowledge, or decisions choose the path. / 矩阵在该单元列出此命名模式；当 Use when the workflow must route retrieval through levels of memory. / 当工作流必须按记忆层级路由检索时使用。 时使用。核心适配信号：需要按历史案例、项目知识或决策记录选择路径 / History, project knowledge, or decisions choose the path。
+- 问题 / Problem: The matrix lists this named pattern for the cell; use it when the workflow must route retrieval through levels of memory. Core fit signal: History, project knowledge, or decisions choose the path. / 矩阵在该单元列出此命名模式；当工作流必须按记忆层级路由检索时使用。核心适配信号：需要按历史案例、项目知识或决策记录选择路径。
 - 架构方案 / Architectural Solution: Use Hierarchical Retrieval / 层级检索 to classify first, then route to the right path, owner, tool, or depth / 先分类，再路由到合适路径、负责人、工具或深度 within the Memory / 记忆 capability. / 在 Memory / 记忆 能力内使用 Hierarchical Retrieval / 层级检索，classify first, then route to the right path, owner, tool, or depth / 先分类，再路由到合适路径、负责人、工具或深度。
 - 工程权衡 / Engineering Trade-offs: Routing saves effort, but wrong classification can send work down the wrong path. / 路由节省成本，但错误分类会把工作送到错误路径。
 - 工作流诊断用途 / Workflow Diagnosis Use: Use when the workflow must route retrieval through levels of memory. / 当工作流必须按记忆层级路由检索时使用。

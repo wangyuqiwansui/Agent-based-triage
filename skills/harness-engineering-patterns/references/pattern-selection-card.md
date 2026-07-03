@@ -70,6 +70,8 @@ Judge the main running shape quickly. Do not calculate precisely; use the domina
 
 Use Chain for ordered steps, Routing for conditional paths, Parallel for independent streams, Orchestration for controller-managed dependencies, Loop for feedback and exit criteria, and Hierarchy for recursive or layered decomposition. / 有序步骤用链式，条件路径用路由，独立流用并行，控制器管理依赖用编排，反馈与退出条件用循环，递归或分层拆解用层级。
 
+After the shape judgement, check the Environmental Constraint Laws / 环境约束定律 in `diagnosis-method.md`: time pressure bounds topology depth, action authority picks the governance pattern, failure-cost asymmetry tunes reflection, volume sizes collaboration, and parameters must be re-derived locally. / 形态判断后，对照 `diagnosis-method.md` 中的环境约束定律：时间压力限定拓扑深度，行动权限决定治理模式，失败成本不对称调校反思，处理量确定协作规模，参数必须本地重推。
+
 ### SELECT / 查矩阵
 
 Inspect `matrix-index.md`, then read the vertical introduction and the dedicated pattern file. Select at least one pattern; use a hybrid when the node needs more than one capability or mode. / 检查 `matrix-index.md`，再读取纵轴导论和独立模式文件。至少选择一个模式；当节点需要多个能力或模式时使用混合模式。
