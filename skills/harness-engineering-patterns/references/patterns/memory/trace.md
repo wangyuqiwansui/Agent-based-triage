@@ -128,3 +128,16 @@ Add new entries below this template. / 在此模板下方追加新记录。
 - Evidence / 证据: Database inspection reported both outputs `ready`, both semantic gates `passed`, and forbidden-term scans returned `[]`. / 数据库检查显示两个产物均为 `ready`，两个语义门均为 `passed`，禁用词扫描返回 `[]`。
 - Follow-up / 后续: Keep 1801 and 1802 as superseded audit history; use 1803 and 1804 for further independent planning stages. / 保留 1801 与 1802 作为已废弃审计历史；后续独立规划阶段使用 1803 与 1804。
 - Owner / 负责人: Codex
+
+### 2026-07-07 / 2026-07-07
+
+- Date / 日期: 2026-07-07
+- Workflow / 工作流: Apply Progress Tracking and Failure Diary to OpenClaw Novel Studio current-session body flow. / 将进度追踪与失败日记应用到 OpenClaw Novel Studio 当前会话正文流程。
+- Cell / 交织点: memory-orchestration + memory-loop / 记忆 x 编排 + 记忆 x 循环
+- Pattern Used / 使用模式: Progress Tracking + Failure Diary / 进度追踪 + 失败日记
+- Before / 使用前: `body_flow_trace` recorded only the state order and recovery package; quality repair emitted a temporary stagnation candidate that was not a governed, recallable diary card. / 使用前：`body_flow_trace` 只记录状态顺序和恢复包；质量修复只输出临时停滞候选，尚不是受治理、可召回的失败日记卡。
+- Adjustment / 调整: Added goal contracts, milestone acceptance records, mechanical state, progress events, ledger observability, draft failure diary entries for no-change or stagnation, and enabled-entry recall into later preflight forbidden-inference cards. / 调整：加入目标契约、里程碑验收记录、机械状态、进度事件、账本可观测指标、no-change 或停滞时的草稿失败日记，以及已启用条目到后续预检禁止推断卡的召回。
+- Outcome / 结果: The body flow is now more recoverable and can reuse reviewed failure lessons before repeating deterministic repair mistakes. / 结果：正文流程更可恢复，并能在重复确定性修复错误前复用已审查的失败经验。
+- Evidence / 证据: Updated `src/novel/current_session_body.py`, `src/novel/body_preprocessor.py`, `src/novel/quality_repair_hook.py`, and related tests; `python -m pytest tests -q` passed 242 tests. / 已更新 `src/novel/current_session_body.py`、`src/novel/body_preprocessor.py`、`src/novel/quality_repair_hook.py` 及相关测试；`python -m pytest tests -q` 通过 242 项测试。
+- Follow-up / 后续: Observe false-reminder rate and repeat-failure rate before promoting draft failure diary entries automatically. / 后续观察误召回率与重复失败率，再决定是否自动提升草稿失败日记条目。
+- Owner / 负责人: Codex
