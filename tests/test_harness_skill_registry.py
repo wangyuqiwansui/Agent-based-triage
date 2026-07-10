@@ -161,6 +161,44 @@ class HarnessSkillRegistryTest(unittest.TestCase):
 
         self.assertTrue(any("registry_shape" in error for error in report.errors))
 
+    def test_maturity_requirements_are_explicit(self):
+        requirements = self.load_registry()["maturity_requirements"]
+
+        self.assertEqual(requirements["validated"]["minimum_independent_cases"], 2)
+        self.assertTrue(requirements["validated"]["failure_path_check_required"])
+        self.assertTrue(requirements["operational"]["recurring_monitoring_required"])
+        self.assertTrue(requirements["operational"]["owned_thresholds_required"])
+
+    def test_validated_maturity_requires_failure_path_check(self):
+        with copied_skill() as skill_dir:
+            registry = read_registry(skill_dir)
+            cell = registry["cells"][0]
+            cell["maturity"] = "validated"
+            cell["local_evidence_count"] = 2
+            cell["independent_case_count"] = 2
+            cell["failure_path_checked"] = False
+            write_registry(skill_dir, registry)
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(any("registry_shape" in error for error in report.errors))
+
+    def test_operational_maturity_requires_monitoring_owner(self):
+        with copied_skill() as skill_dir:
+            registry = read_registry(skill_dir)
+            cell = registry["cells"][0]
+            cell["maturity"] = "operational"
+            cell["local_evidence_count"] = 2
+            cell["independent_case_count"] = 2
+            cell["failure_path_checked"] = True
+            cell["recurring_monitoring"] = False
+            cell["threshold_owner"] = ""
+            write_registry(skill_dir, registry)
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(any("registry_shape" in error for error in report.errors))
+
     def test_registry_declares_governance_and_failure_references(self):
         registry = self.load_registry()
 
@@ -302,6 +340,23 @@ class HarnessSkillRegistryTest(unittest.TestCase):
                 content.replace(
                     "# Semantic Compaction / 语义压缩",
                     "# Stale Pattern / 过期模式",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(any("catalog_drift" in error for error in report.errors))
+
+    def test_stale_guide_row_fails(self):
+        with copied_skill() as skill_dir:
+            guide = skill_dir / "references" / "patterns" / "perception" / "cell.md"
+            content = guide.read_text(encoding="utf-8")
+            guide.write_text(
+                content.replace(
+                    "[Semantic Compaction / 语义压缩](perception-chain.md)",
+                    "[Context Triage / 上下文分诊](perception-chain.md)",
                     1,
                 ),
                 encoding="utf-8",

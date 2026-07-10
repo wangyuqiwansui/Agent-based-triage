@@ -42,6 +42,40 @@
       "verified"
     ]
   },
+  "maturity_requirements": {
+    "seed": {
+      "description_en": "Named or hypothesized, not behaviorally validated.",
+      "description_zh": "已命名或提出假设，尚未行为验证。",
+      "minimum_independent_cases": 0,
+      "failure_path_check_required": false,
+      "recurring_monitoring_required": false,
+      "owned_thresholds_required": false
+    },
+    "draft": {
+      "description_en": "Executable contract exists, validation evidence is incomplete.",
+      "description_zh": "已有可执行契约，但验证证据不完整。",
+      "minimum_independent_cases": 0,
+      "failure_path_check_required": false,
+      "recurring_monitoring_required": false,
+      "owned_thresholds_required": false
+    },
+    "validated": {
+      "description_en": "Exercised on at least two independent cases with evidence and a failure-path check.",
+      "description_zh": "至少在两个独立案例中使用，有证据并检查过失败路径。",
+      "minimum_independent_cases": 2,
+      "failure_path_check_required": true,
+      "recurring_monitoring_required": false,
+      "owned_thresholds_required": false
+    },
+    "operational": {
+      "description_en": "Validated and monitored in recurring use with owned thresholds.",
+      "description_zh": "已验证，并在持续使用中由明确负责人监控阈值。",
+      "minimum_independent_cases": 2,
+      "failure_path_check_required": true,
+      "recurring_monitoring_required": true,
+      "owned_thresholds_required": true
+    }
+  },
   "governance_rules": [
     {
       "id": "GOV_RULE_0001",

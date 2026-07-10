@@ -104,6 +104,7 @@ def validate_registry_shape(
         "skill",
         "upstream_sources",
         "allowed_values",
+        "maturity_requirements",
         "governance_rules",
         "failure_mode_refs",
         "capabilities",
@@ -189,6 +190,17 @@ def validate_registry_shape(
     allowed_status = set(allowed_values.get("cell_status", []))
     allowed_maturity = set(allowed_values.get("maturity", []))
     allowed_source_kind = set(allowed_values.get("source_kind", []))
+    maturity_requirements = registry.get("maturity_requirements", {})
+    if (
+        not isinstance(maturity_requirements, dict)
+        or set(maturity_requirements) != allowed_maturity
+    ):
+        report.error(
+            "registry_shape",
+            "maturity requirements must cover every allowed maturity value",
+            "成熟度要求必须覆盖每个允许的成熟度值",
+        )
+        maturity_requirements = {}
     pattern_ids = {pattern.get("id") for pattern in patterns}
     capability_by_id = {item.get("id"): item for item in capabilities}
     topology_by_id = {item.get("id"): item for item in topologies}
@@ -258,12 +270,46 @@ def validate_registry_shape(
                     f"{cell_id} {numeric_field} must be a non-negative integer",
                     f"{cell_id} 的 {numeric_field} 必须是非负整数",
                 )
-        if maturity in {"validated", "operational"} and cell.get("local_evidence_count", 0) < 2:
+        requirement = maturity_requirements.get(maturity, {})
+        minimum_cases = requirement.get("minimum_independent_cases", 0)
+        if type(minimum_cases) is not int or minimum_cases < 0:
             report.error(
                 "registry_shape",
-                f"{cell_id} maturity {maturity} requires at least two evidence cases",
-                f"{cell_id} 的成熟度 {maturity} 至少需要两个证据案例",
+                f"invalid maturity requirement for {maturity}",
+                f"成熟度 {maturity} 的要求无效",
             )
+            minimum_cases = 0
+        if maturity in {"validated", "operational"}:
+            evidence_count = cell.get("local_evidence_count", 0)
+            independent_case_count = cell.get("independent_case_count", 0)
+            promotion_ready = (
+                type(evidence_count) is int
+                and evidence_count >= minimum_cases
+                and type(independent_case_count) is int
+                and independent_case_count >= minimum_cases
+                and (
+                    not requirement.get("failure_path_check_required")
+                    or cell.get("failure_path_checked") is True
+                )
+            )
+            if maturity == "operational":
+                promotion_ready = (
+                    promotion_ready
+                    and (
+                        not requirement.get("recurring_monitoring_required")
+                        or cell.get("recurring_monitoring") is True
+                    )
+                    and (
+                        not requirement.get("owned_thresholds_required")
+                        or bool(str(cell.get("threshold_owner", "")).strip())
+                    )
+                )
+            if not promotion_ready:
+                report.error(
+                    "registry_shape",
+                    f"{cell_id} does not satisfy {maturity} promotion gates",
+                    f"{cell_id} 不满足 {maturity} 晋升门槛",
+                )
 
         design_path = skill_dir / str(cell.get("design_path", ""))
         observability_path = skill_dir / str(cell.get("observability_path", ""))
@@ -430,6 +476,32 @@ def parse_catalog_records(catalog: str) -> tuple[dict[str, tuple[str, str]], set
     return named, extensions
 
 
+def parse_guide_records(
+    guide: str,
+    topologies: list[dict[str, object]],
+) -> dict[object, tuple[str, str, str]]:
+    topology_labels = {
+        f"{item.get('name_en')} / {item.get('name_zh')}": item.get("id")
+        for item in topologies
+    }
+    records: dict[object, tuple[str, str, str]] = {}
+    for line in guide.splitlines():
+        if not line.startswith("|"):
+            continue
+        columns = [column.strip() for column in line.strip().strip("|").split("|")]
+        if len(columns) != 3:
+            continue
+        topology_id = topology_labels.get(columns[0])
+        match = re.fullmatch(r"\[(?P<label>.+)\]\((?P<path>[^)]+)\)", columns[2])
+        if topology_id is not None and match:
+            records[topology_id] = (
+                columns[1],
+                match.group("label"),
+                match.group("path"),
+            )
+    return records
+
+
 def validate_markdown_views(
     registry: dict[str, object],
     skill_dir: pathlib.Path,
@@ -538,9 +610,44 @@ def validate_markdown_views(
             f"# {capability.get('name_en')} Cells Introduction / "
             f"{capability.get('name_zh')}交织点导论"
         )
-        if not guide_path.is_file() or not guide_path.read_text(
-            encoding="utf-8"
-        ).startswith(expected_title + "\n"):
+        guide = guide_path.read_text(encoding="utf-8") if guide_path.is_file() else ""
+        guide_records = parse_guide_records(guide, topologies)
+        capability_cells = {
+            cell.get("topology_ref"): cell
+            for cell in registry.get("cells", [])
+            if cell.get("capability_ref") == capability.get("id")
+        }
+        guide_matches = len(guide_records) == len(topologies)
+        for topology in topologies:
+            cell = capability_cells.get(topology.get("id"), {})
+            expected_status = (
+                "Named / 已命名"
+                if cell.get("status") == "named"
+                else "Extension / 扩展"
+            )
+            expected_record = (
+                expected_status,
+                f"{cell.get('local_name_en')} / {cell.get('local_name_zh')}",
+                pathlib.PurePosixPath(str(cell.get("design_path", ""))).name,
+            )
+            if guide_records.get(topology.get("id")) != expected_record:
+                guide_matches = False
+        named_count = sum(
+            cell.get("status") == "named" for cell in capability_cells.values()
+        )
+        extension_count = len(topologies) - named_count
+        summary = (
+            f"This row currently has {named_count} named pattern candidates and "
+            f"{extension_count} extension candidate"
+        )
+        if extension_count != 1:
+            summary += "s"
+        summary += "."
+        if (
+            not guide.startswith(expected_title + "\n")
+            or not guide_matches
+            or summary not in guide
+        ):
             report.error(
                 "catalog_drift",
                 f"{capability.get('id')} guide does not match registry",
