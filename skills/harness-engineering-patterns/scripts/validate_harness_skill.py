@@ -52,8 +52,8 @@ EVALUATION_KEYS = (
 
 MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]*\]\((?P<target>[^)]+)\)")
 BUNDLED_TRACE_WRITE = re.compile(
-    r"(?is)\b(?:append|write|update|record)\b.{0,180}"
-    r"references/patterns/<capability-key>/trace\.md"
+    r"(?is)\b(?:add\s+an\s+entry|append|write|update|record)\b.{0,180}"
+    r"(?:references/patterns/<capability-key>/trace\.md|\[trace\.md\]\(trace\.md\))"
 )
 
 
@@ -217,6 +217,12 @@ def validate_markdown_views(
         design_path = skill_dir / str(cell.get("design_path", ""))
         if design_path.is_file():
             content = design_path.read_text(encoding="utf-8")
+            if BUNDLED_TRACE_WRITE.search(content):
+                report.error(
+                    "bundled_trace_write",
+                    f"{cell_key} writes normal-use Trace to bundled history",
+                    f"{cell_key} 将普通运行 Trace 写入 Skill 内置历史",
+                )
             for field in DESIGN_FIELDS:
                 if field not in content:
                     report.error(

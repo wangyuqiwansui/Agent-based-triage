@@ -258,4 +258,4 @@ Observability Metrics File / 可观测性指标文件: [perception-routing-obser
 
 ## Trace Hook / 追踪钩子
 
-After this pattern is recommended or applied, add an entry to [trace.md](trace.md) in this capability folder. Record the scene type, candidate count, L0-L3 counts, rejected count, used budget, selected route, failures, and probe feedback. / 推荐或应用本模式后，在该能力文件夹的 [trace.md](trace.md) 中追加记录。记录场景类型、候选数量、零级到三级数量、拒绝数量、已用预算、选中路由、失败项和探针反馈。
+After this pattern is recommended or applied, produce a project-local Trace proposal at `.harness-analysis/<analysis_id>/trace.yaml` using `references/trace-schema.md`. Record the scene type, candidate count, L0-L3 counts, rejected count, used budget, selected route, failures, and probe feedback. / 推荐或应用本模式后，使用 `references/trace-schema.md` 在 `.harness-analysis/<analysis_id>/trace.yaml` 生成项目本地 Trace 建议。记录场景类型、候选数量、零级到三级数量、拒绝数量、已用预算、选中路由、失败项和探针反馈。

@@ -1,109 +1,96 @@
 ---
 name: harness-engineering-patterns
-description: Use when Codex needs to compile a workflow, engineering node, or Agent Harness source into an Engineering Intermediate Representation (EIR), cognition x topology matrix, pattern cards, skillization recommendations, evidence table, governance gaps, or concrete pattern adjustments. / 当需要将工作流程、工程节点或 Agent Harness 源码编译为工程中间表示（EIR）、认知 x 拓扑矩阵、模式卡、Skill 化建议、证据表、治理缺口或具体模式调整时使用。
+description: Use when a request explicitly needs Agent Harness architecture analysis, cognition x topology mapping, workflow or engineering node diagnosis, pattern governance, evidence-backed EIR, or Skillization decisions. / 当请求明确需要 Agent Harness 架构分析、认知 x 拓扑映射、工作流或工程节点诊断、模式治理、有证据的 EIR 或 Skill 化决策时使用。
 ---
 
 # Harness Engineering Patterns / Harness 工程模式
 
 ## Overview / 概览
 
-Use this skill to compile a workflow or Agent Harness source into a reusable engineering map. The path is: Workflow / Harness Source / 工作流程 / Harness 源码 -> Engineering Intermediate Representation / 工程中间表示 -> cognition x topology matrix / 认知 x 拓扑矩阵 -> pattern cards / 模式卡 -> reusable Skills / 可复用技能 -> Evidence + Evaluation + Governance / 证据 + 评估 + 治理. / 使用本技能将工作流程或 Agent Harness 源码编译为可复用工程地图。路径是：工作流程 / Harness 源码 -> 工程中间表示 -> 认知 x 拓扑矩阵 -> 模式卡 -> 可复用技能 -> 证据 + 评估 + 治理。
+Compile a Workflow / Harness Source / 工作流程 / Harness 源码 into an Engineering Intermediate Representation / 工程中间表示, map it onto cognition x topology coordinates, and produce Evidence + Evaluation + Governance / 证据 + 评估 + 治理 decisions that can be verified and maintained. / 将工作流程或 Harness 源码编译为工程中间表示，映射到认知 x 拓扑坐标，并产出可验证、可维护的证据、评估与治理决策。
 
-The vertical capability axis, horizontal topology axis, and intersection matrix are extensible diagnostic views, not fixed taxonomies. Registries are the source data; the matrix is a view over them. / 纵轴能力、横轴拓扑和交织表是可扩展诊断视图，不是固定分类表。注册表是源数据，矩阵是视图。
+Treat `references/registry.json` as the authoritative structural source. Treat the matrix, catalog, cell guides, design files, observability files, and HTML as maintained views or detailed guidance. / 将 `references/registry.json` 视为权威结构数据源；将矩阵、目录、纵轴导论、设计文件、可观测性文件和 HTML 视为维护视图或详细指导。
+
+## When To Use / 适用场景
+
+- Analyze an Agent Harness repository, runtime, tool system, memory system, sandbox, permission layer, subagent system, or event log. / 分析 Agent Harness 仓库、runtime、工具系统、记忆系统、沙箱、权限层、子 Agent 系统或事件日志。
+- Diagnose a workflow or engineering node whose capability, topology, feedback, memory, ownership, or governance is unclear. / 诊断能力、拓扑、反馈、记忆、归属或治理不清的工作流或工程节点。
+- Produce an EIR, matrix mapping, pattern card, evidence table, governance gap, evaluation, or Skillization decision. / 生成 EIR、矩阵映射、模式卡、证据表、治理缺口、评价或 Skill 化决策。
+- Evaluate whether repeated workflow evidence justifies promoting an extension candidate into a named pattern. / 评价反复工作流证据是否足以把扩展候选晋升为命名模式。
+
+## When Not To Use / 不适用场景
+
+- Ordinary code review that does not need Harness architecture mapping. / 不需要 Harness 架构映射的普通代码评审。
+- Isolated bug diagnosis where the task is to find one root cause, not classify a workflow. / 只需定位单一根因、不需要工作流分类的单点缺陷诊断。
+- General product or UX workflow critique that does not need the cognition x topology matrix. / 不需要认知 x 拓扑矩阵的通用产品或 UX 流程评审。
+- Simple implementation, rewriting, formatting, or factual questions with no reusable pattern decision. / 不涉及可复用模式决策的简单实现、改写、格式调整或事实问答。
+
+Use the focused domain Skill instead when another Skill directly covers the task. / 当其他领域 Skill 能直接覆盖任务时，使用更聚焦的领域 Skill。
 
 ## Compiler Spine / 编译主线
 
-Start by selecting the input type, then keep an EIR and evidence trail through the whole analysis. / 先选择输入类型，再在整个分析过程中维护 EIR 和证据链。
-
-1. Read `references/compiler-workflow.md` for the overall compiler workflow, stable-ID rules, and control-plane-first principle. / 读取 `references/compiler-workflow.md`，理解总体编译流程、稳定 ID 规则和先抓控制面的原则。
-2. Classify the input as workflow, harness_source, or mixed. / 将输入分类为 workflow、harness_source 或 mixed。
-3. Read `references/eir-schema.md` and maintain an Engineering Intermediate Representation / 工程中间表示 for nodes, source components, mappings, evidence, evaluation, and governance. / 读取 `references/eir-schema.md`，为节点、源码组件、映射、证据、评估和治理维护工程中间表示。
-4. For workflow or engineering-node diagnosis, follow the automatic Trace Insert / Trace 插入 and Pattern Selection Card / 模式选型卡 flow below. / 对工作流或工程节点诊断，执行下方自动 Trace 插入与模式选型卡流程。
-5. For Agent Harness source analysis, read `references/harness-source-analysis.md` and run Detect / Classify / Filter / Map / Verify. / 对 Agent Harness 源码分析，读取 `references/harness-source-analysis.md` 并执行找主循环、组件归类、噪声过滤、落矩阵和证据验证。
-6. For pattern extraction or Skill recommendations, read `references/pattern-skill-packaging.md`. / 对模式抽取或 Skill 化建议，读取 `references/pattern-skill-packaging.md`。
-7. For quality scoring, evidence checks, governance gaps, or risk controls, read `references/evaluation-governance.md` and `references/failure-modes.md`. / 对质量评分、证据检查、治理缺口或风险控制，读取 `references/evaluation-governance.md` 和 `references/failure-modes.md`。
-8. For an end-to-end worked example of the whole pipeline (article cases plus a repository case with a failure and repair), read `references/example-compilation.md`. / 需要整条管线的端到端示例（论文案例加带失败与修复的仓库案例）时，读取 `references/example-compilation.md`。
+1. Read `references/compiler-workflow.md` and classify the input as `workflow`, `harness_source`, or `mixed`. / 读取 `references/compiler-workflow.md`，将输入分类为 `workflow`、`harness_source` 或 `mixed`。
+2. Read `references/eir-schema.md` and maintain evidence-backed nodes, components, flows, mappings, patterns, evaluations, and governance items. / 读取 `references/eir-schema.md`，维护有证据的节点、组件、流、映射、模式、评价和治理项。
+3. For workflow or engineering-node diagnosis, use Trace Insert / Trace 插入 before Pattern Selection Card / 模式选型卡. / 对工作流或工程节点诊断，先执行 Trace 插入，再运行模式选型卡。
+4. For Harness source, read `references/harness-source-analysis.md` and run Detect / Classify / Filter / Map / Verify. / 对 Harness 源码，读取 `references/harness-source-analysis.md`，执行找主循环、归类、过滤、映射和验证。
+5. For pattern or Skill packaging, read `references/pattern-skill-packaging.md`. / 对模式或 Skill 封装，读取 `references/pattern-skill-packaging.md`。
+6. For quality, evidence, risk, and governance, read `references/evaluation-governance.md` and `references/failure-modes.md`. / 对质量、证据、风险和治理，读取 `references/evaluation-governance.md` 与 `references/failure-modes.md`。
+7. For controlled extension, read `references/extension-rules.md`; for an end-to-end example, read `references/example-compilation.md`. / 对受控扩展读取 `references/extension-rules.md`；需要端到端示例时读取 `references/example-compilation.md`。
 
 ## Automatic Engineering Node Analysis / 工程节点自动分析
 
-Whenever the task is to analyze an engineering node, automatically run Trace Insert / 自动运行 Trace 插入 first, then run Pattern Selection Card / 模式选型卡 after node evidence is ready. / 只要任务是分析工程节点，就先自动运行 Trace 插入；节点证据就绪后，再运行模式选型卡。
+When the request is to analyze an engineering node, automatically run Trace Insert / 自动运行 Trace 插入 before any matrix decision. / 当请求是分析工程节点时，在任何矩阵决策前自动运行 Trace 插入。
 
-Do not answer with only a free-form judgment. Use the automatic flow to produce grounded node evidence, ASSESS, ROUTE, SELECT, and a modification plan. / 不要只输出自由判断；使用自动流程产出有依据的节点证据、评估、判拓扑、查矩阵和修改规划。
+Collect the node responsibility, owner, boundary, trigger, inputs, outputs, current behavior, failure signals, risk, and available evidence. Then run ASSESS / 评估, ROUTE / 判拓扑, and SELECT / 查矩阵 using `references/pattern-selection-card.md`. / 采集节点职责、负责人、边界、触发、输入、输出、当前行为、失败信号、风险和可用证据；然后使用 `references/pattern-selection-card.md` 执行评估、判拓扑和查矩阵。
 
-## Usage / 使用方式
+If evidence is incomplete, return a preliminary / 初步 result with gaps and verification tasks. Block only final pattern promotion or high-confidence selection; do not suppress useful preliminary analysis. / 如果证据不完整，输出带缺口和验证任务的初步结果；只阻断最终模式晋升或高置信选型，不压制有用的初步分析。
 
-### Workflow And Node Diagnosis / 工作流与节点诊断
+## Workflow And Node Diagnosis / 工作流与节点诊断
 
-1. Capture the current workflow from the user request, repository context, documents, delivery process, review process, automation flow, or operational flow. / 从用户请求、仓库上下文、文档、交付流程、评审流程、自动化流程或运维流程中采集当前工作流。
-2. Read `references/workflow-nodes.md` to split the workflow into business nodes. / 读取 `references/workflow-nodes.md`，把工作流拆成业务节点。
-3. Read `references/pattern-selection-card.md` for Trace Insert / Trace 插入, then gather complete node evidence before selecting patterns. / 读取 `references/pattern-selection-card.md` 中的 Trace Insert / Trace 插入，并在选型前采集完整节点证据。
-4. If related trace files already contain usage evidence, read `references/patterns/<capability-key>/trace.md` before running the Pattern Selection Card / 模式选型卡. / 如果相关追踪文件已有使用证据，在运行 Pattern Selection Card / 模式选型卡 前读取 `references/patterns/<capability-key>/trace.md`。
-5. Read `references/axes.md` and run ASSESS / 评估 to determine the node's needed capability. / 读取 `references/axes.md`，并执行 ASSESS / 评估 判断节点需要的能力。
-6. Run ROUTE / 判拓扑 to choose the dominant topology mode using quick fit signals and risk override. / 执行 ROUTE / 判拓扑，使用快速适配信号和风险覆盖规则选择主导拓扑模式。
-7. Run SELECT / 查矩阵 by reading `references/matrix-index.md`, the relevant vertical introduction at `references/patterns/<capability-key>/cell.md`, and the dedicated design pattern file at `references/patterns/<capability-key>/<cell-key>.md`. / 执行 SELECT / 查矩阵，读取 `references/matrix-index.md`、`references/patterns/<capability-key>/cell.md` 中对应纵轴导论，以及 `references/patterns/<capability-key>/<cell-key>.md` 中的独立设计模式文件。
-8. For every selected pattern, also read its observability metrics file at `references/patterns/<capability-key>/<cell-key>-observability.md`. / 对每个已选模式，同时读取 `references/patterns/<capability-key>/<cell-key>-observability.md` 中的可观测性指标文件。
-9. Read `references/pattern-catalog.md` when a matrix cell has named candidate patterns or when the user asks for concrete pattern options. / 当交织点已有命名候选模式，或用户要求具体模式选项时，读取 `references/pattern-catalog.md`。
-10. Read `references/diagnosis-method.md` to identify mismatch, missing feedback, missing memory, over-linear flow, weak governance, unclear ownership, or poor handoff. / 读取 `references/diagnosis-method.md`，识别错配、反馈缺失、记忆缺失、过度链式、治理薄弱、归属不清或交接低效。
-11. After recommending or applying a pattern, append or propose a trace entry in `references/patterns/<capability-key>/trace.md`. / 推荐或应用模式后，在 `references/patterns/<capability-key>/trace.md` 中追加或建议一条追踪记录。
+1. Read `references/workflow-nodes.md` and split by business responsibility, input, output, owner, decision, and risk. / 读取 `references/workflow-nodes.md`，按业务职责、输入、输出、负责人、决策和风险拆分节点。
+2. Read `references/axes.md`, then select the smallest capability and topology that preserve required dependencies. / 读取 `references/axes.md`，选择能保留必要依赖的最小能力与拓扑。
+3. Read `references/matrix-index.md`, the relevant `references/patterns/<capability-key>/cell.md`, the selected design file, and its observability file. / 读取 `references/matrix-index.md`、相关纵轴导论、已选设计文件及其可观测性文件。
+4. Read `references/pattern-catalog.md` for named candidates and `references/diagnosis-method.md` for concrete workflow modification. / 使用 `references/pattern-catalog.md` 查命名候选，使用 `references/diagnosis-method.md` 形成具体工作流修改。
+5. Cite evidence for every architecture judgment and name at least one failure mode, mitigation, verification method, and observation point. / 每个架构判断都引用证据，并至少命名一个失败模式、缓解方式、验证方法和观察点。
 
-### Harness Source Compilation / Harness 源码编译
+## Harness Source Compilation / Harness 源码编译
 
-1. Read `references/harness-source-analysis.md` before analyzing source files. / 分析源码文件前读取 `references/harness-source-analysis.md`。
-2. Detect the main loop and control plane before inspecting peripheral implementation details. / 先定位主循环和控制面，再检查边缘实现细节。
-3. Classify core source components into perception, memory, reasoning, action, reflection, collaboration, and governance. / 将核心源码组件归类到感知、记忆、推理、行动、反思、协作和治理。
-4. Filter noise aggressively: first-round reading should prioritize files that change context, state, tools, permissions, execution, retry, audit, or handoff. / 主动过滤噪声：第一轮优先读取会改变上下文、状态、工具、权限、执行、重试、审计或交接的文件。
-5. Map each retained component to cognition x topology coordinates and attach evidence before extracting patterns. / 将每个保留组件映射到认知 x 拓扑坐标，并在抽取模式前挂载证据。
+1. Detect the main loop and control plane before peripheral implementation details. / 先定位主循环和控制面，再读边缘实现细节。
+2. Classify retained components into perception, memory, reasoning, action, reflection, collaboration, and governance. / 将保留组件归类到感知、记忆、推理、行动、反思、协作和治理。
+3. Keep files that change context, state, tools, permissions, execution, retry, audit, or handoff; defer boilerplate until needed. / 保留会改变上下文、状态、工具、权限、执行、重试、审计或交接的文件；样板内容按需延后。
+4. Map each component to one primary coordinate, add secondary coordinates only when they change the diagnosis, and attach evidence before extracting patterns. / 将每个组件映射到一个主坐标；只有副坐标会改变诊断时才补充，并在抽取模式前挂载证据。
 
-### Extension And Packaging / 扩展与封装
+## Output Profiles / 输出档位
 
-1. Read `references/extension-rules.md` when the current axes or matrix cannot express the workflow accurately. / 当当前轴或交织表无法准确表达工作流时，读取 `references/extension-rules.md`。
-2. Read `references/pattern-skill-packaging.md` before producing pattern cards, Skill specs, or Skillization / Skill 化 recommendations. / 生成模式卡、Skill 规格或 Skill 化建议前读取 `references/pattern-skill-packaging.md`。
-3. Read `references/evaluation-governance.md` before finalizing evidence, evaluation, governance, and verification sections. / 最终确定证据、评估、治理和验证章节前读取 `references/evaluation-governance.md`。
-4. Read `references/failure-modes.md` when naming risks, failure modes, mitigations, or observability probes. / 命名风险、失败模式、缓解方式或可观测性探针时读取 `references/failure-modes.md`。
+Choose the smallest profile that satisfies the request. / 选择能满足请求的最小档位。
 
-## Output Contract / 输出约定
+### quick / 快速
 
-Always return a practical adjustment proposal, not only a classification. / 始终输出可执行的调整建议，而不只是分类结果。
+Return coordinate, evidence, diagnosed problem, practical adjustment, risk, and verification. / 输出坐标、证据、诊断问题、可执行调整、风险和验证方式。
 
-Include these sections when diagnosing a workflow: / 诊断工作流时包含以下部分：
+### standard / 标准
 
-- Current workflow summary / 当前工作流摘要
-- Business node breakdown / 业务节点拆解
-- Trace Insert and node evidence / Trace 插入与节点证据
-- Pattern Selection Card: ASSESS, ROUTE, SELECT / 模式选型卡：评估、判拓扑、查矩阵
-- Axis and matrix mapping / 纵横轴与交织表映射
-- Diagnosed problems / 诊断出的问题
-- Recommended pattern adjustments / 推荐的模式调整
-- Observability metrics for selected patterns / 已选模式的可观测性指标
-- Concrete modification steps / 具体修改步骤
-- Trace entry or logging recommendation / 追踪记录或日志建议
-- Extension needs for axes or matrix / 纵轴、横轴或交织表扩展需求
-- Risks, verification, and observation points / 风险、验证方式和观察点
+Return an EIR slice, node or component map, ASSESS / ROUTE / SELECT result, selected patterns, observability metrics, risks, governance, verification, and a project-local Trace proposal. / 输出 EIR 切片、节点或组件图、评估/判拓扑/查矩阵结果、已选模式、可观测性指标、风险、治理、验证和项目本地 Trace 建议。
 
-Include these sections when compiling Harness source: / 编译 Harness 源码时包含以下部分：
+### full / 完整
 
-- Analysis scope and input references / 分析范围与输入引用
-- Main loop map / 主循环图
-- Source component classification / 源码组件归类
-- Noise filter table / 噪声过滤表
-- Cognition x topology matrix mapping / 认知 x 拓扑矩阵映射
-- Pattern candidates and Skillization recommendations / 模式候选与 Skill 化建议
-- Evidence verification table / 证据验证表
-- Failure modes and mitigations / 失败模式与缓解方式
-- Governance gaps / 治理缺口
-- Evaluation scores or readiness notes / 评估分数或就绪说明
+Return the complete compiler output: scope, main flow, EIR, noise filter, matrix mapping, pattern and Skillization candidates, evidence verification, evaluation scores, governance gaps, failure modes, extension analysis, and implementation plan. / 输出完整编译结果：范围、主流程、EIR、噪声过滤、矩阵映射、模式与 Skill 化候选、证据验证、评价分数、治理缺口、失败模式、扩展分析和实施规划。
+
+## Runtime Trace / 运行 Trace
+
+Read `references/trace-schema.md`. Normal use produces a Trace proposal at `.harness-analysis/<analysis_id>/trace.yaml`. / 读取 `references/trace-schema.md`。普通使用在 `.harness-analysis/<analysis_id>/trace.yaml` 生成 Trace 建议。
+
+Bundled `references/patterns/*/trace.md` files are curated historical snapshots, not runtime state. Modify curated history only when the user explicitly requests a Skill evidence update and the evidence has been reviewed. / Skill 内置 `references/patterns/*/trace.md` 是精选历史快照，不是运行状态。只有用户明确要求更新 Skill 证据且证据经过复核时，才能修改精选历史。
+
+If the project-local destination is unavailable, return the Trace payload in the response with the intended path; never redirect runtime data into bundled history. / 如果项目本地目标不可用，在响应中返回 Trace 载荷和预期路径；绝不把运行数据重定向到内置历史。
 
 ## Constraints / 约束
 
-- Keep all skill content bilingual in Chinese and English. / 所有技能内容保持中英双语。
-- Keep new Skill files under `.\skills`. / 新建 Skill 文件统一放在 `.\skills` 下。
-- Treat registries as source data and the matrix as a generated or maintained view. / 将注册表视为源数据，将矩阵视为生成或维护的视图。
-- Keep IDs stable after introduction: COG_*, TOP_*, PATTERN_*, SKILL_*, NODE_*, SRC_*, EVIDENCE_*. / 引入后保持 ID 稳定：COG_*、TOP_*、PATTERN_*、SKILL_*、NODE_*、SRC_*、EVIDENCE_*。
-- Capture the control plane before implementation details. / 先捕捉控制面，再分析实现细节。
-- Every architecture judgment must cite source, test, official documentation, config, log, trace, runtime record, or protocol evidence. / 每个架构判断必须引用源码、测试、官方文档、配置、日志、Trace、运行记录或协议证据。
-- Treat README evidence as supporting evidence, not the strongest proof. / 将 README 证据视为辅助证据，而不是最强证明。
-- Treat the initial 7x6 matrix as a starting framework only. / 将初始 7x6 交织表视为起始框架。
-- Prefer a controlled extension over forcing a workflow into an inaccurate existing axis. / 当现有轴无法准确表达工作流时，优先提出受控扩展，而不是强行归类。
-- Do not fill every cell with invented patterns. Add concrete patterns only when the user supplies or requests a specific workflow case. / 不要凭空填满所有交织点；仅在用户提供或要求具体工作流案例时补充具体模式。
-- Keep every matrix cell represented by two linked Markdown files: one design pattern file and one observability metrics file. / 每个交织点都由两个互相链接的 Markdown 文件表示：一个设计模式文件，一个可观测性指标文件。
-- When adding a vertical or horizontal axis, update axes, grouped cell folders, trace files, matrix index, and affected pattern files together. / 新增纵轴或横轴时，同步更新轴定义、按 cell 分组的文件夹、追踪文件、矩阵索引和受影响的模式文件。
+- Keep all Skill metadata and core instructions bilingual in Chinese and English. / 所有 Skill 元数据和核心说明保持中英双语。
+- Keep newly created Skill resources under `.\skills`. / 新建 Skill 资源统一放在 `.\skills` 下。
+- Keep stable IDs and registry records after introduction; deprecate instead of reusing. / 稳定 ID 与注册表记录引入后保持不变；使用废弃标记，不复用。
+- Treat `registry.json` as source data and Markdown matrices as maintained views. / 将 `registry.json` 视为源数据，将 Markdown 矩阵视为维护视图。
+- Cite source, test, official documentation, config, log, Trace, runtime record, or protocol evidence for every architecture judgment. / 每个架构判断都引用源码、测试、官方文档、配置、日志、Trace、运行记录或协议证据。
+- Treat README evidence as supporting evidence, not the strongest proof. / README 只作为辅助证据，不作为最强证明。
+- Prefer controlled extension over forcing a workflow into an inaccurate cell. / 优先受控扩展，不强行把工作流塞入不准确的单元。
+- Do not invent patterns to fill empty cells. Promote a candidate only with repeated evidence, failure-path checks, and explicit provenance. / 不为填满空白单元而虚构模式；只有存在反复证据、失败路径检查和明确来源时才晋升候选。

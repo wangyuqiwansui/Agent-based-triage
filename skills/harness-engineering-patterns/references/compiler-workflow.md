@@ -19,23 +19,20 @@ Workflow / Harness Source / 工作流程 / Harness 源码
 
 ## Registry As Source Data / 注册表作为源数据
 
-Do not force every fact into the 7 x 6 matrix. Treat these registries as source data and the matrix as a view. / 不要把所有事实硬塞进 7 x 6 矩阵。将以下注册表视为源数据，将矩阵视为视图。
+Do not force every fact into the 7 x 6 matrix. Treat `registry.json` as the authoritative structural source and the Markdown matrix, catalog, cell guides, design files, observability files, and HTML as maintained views or detailed guidance. / 不要把所有事实硬塞进 7 x 6 矩阵。将 `registry.json` 视为权威结构数据源，将 Markdown 矩阵、目录、纵轴导论、设计文件、可观测性文件和 HTML 视为维护视图或详细指导。
 
-- Cognition registry / 认知注册表
-- Topology registry / 拓扑注册表
-- Engineering pattern registry / 工程模式注册表
-- Business node registry / 业务节点注册表
-- Source component registry / 源码组件注册表
-- Skill registry / Skill 注册表
-- Evidence registry / 证据注册表
-- Evaluation registry / 评估注册表
-- Governance registry / 治理注册表
+The registry owns these stable records: / 注册表负责以下稳定记录：
 
-Keep IDs stable once introduced, even when definitions evolve. / 一旦引入 ID，即使定义演进也要保持稳定。
+- Cognition and topology IDs / 认知与拓扑 ID
+- Matrix cell IDs, coordinates, paths, status, provenance, and maturity / 矩阵单元 ID、坐标、路径、状态、来源和成熟度
+- Engineering pattern IDs, names, aliases, and lifecycle / 工程模式 ID、名称、别名和生命周期
+- Allowed status, source-kind, maturity, and lifecycle values / 允许的状态、来源类型、成熟度和生命周期值
 
-Examples / 示例: `COG_PERCEPTION`, `TOP_ROUTING`, `PATTERN_0005`, `SKILL_ANALYSIS_0003`, `NODE_0001`, `SRC_0001`, `EVIDENCE_0001`.
+Analysis-local business nodes, source components, evidence, evaluation, and governance records live in the EIR and project-local Trace output. They reference registry IDs but are not global registry entries. / 分析内的业务节点、源码组件、证据、评价和治理记录存放在 EIR 与项目本地 Trace 中；它们引用注册表 ID，但不是全局注册表记录。
 
-Storage note / 存储说明: these registries are conceptual — no standalone registry files exist. Their contents live inline in the reference files: cognition and topology in `axes.md`, the pattern registry seed table in `pattern-skill-packaging.md`, matrix membership in `matrix-index.md` and `pattern-catalog.md`, business nodes in `workflow-nodes.md`, source components in `harness-source-analysis.md`, evaluation and governance rules in `evaluation-governance.md`, and evidence plus trace records in each analysis output and `patterns/<capability-key>/trace.md`. When adding a new ID, register it in the file that owns its registry. / 存储说明：这些注册表是概念性的——不存在独立注册表文件。其内容内联存放在参考文件中：认知与拓扑在 `axes.md`，模式注册表种子表在 `pattern-skill-packaging.md`，矩阵成员在 `matrix-index.md` 与 `pattern-catalog.md`，业务节点在 `workflow-nodes.md`，源码组件在 `harness-source-analysis.md`，评估与治理规则在 `evaluation-governance.md`，证据与追踪记录在各分析产出及 `patterns/<capability-key>/trace.md`。新增 ID 时，在拥有该注册表的文件中登记。
+Keep IDs stable once introduced, even when definitions evolve. Examples / 示例: `COG_PERCEPTION`, `TOP_ROUTING`, `CELL_ACTION_ROUTING`, `PATTERN_0036`, `SKILL_ANALYSIS_0003`, `NODE_0001`, `SRC_0001`, `EVIDENCE_0001`.
+
+Run `scripts/validate_harness_skill.py` after structural changes. The validator rejects ID reuse, missing paired files, registry-to-Markdown drift, missing provenance, broken links, incomplete schemas, and unsafe bundled-Trace write instructions. / 结构变更后运行 `scripts/validate_harness_skill.py`。校验器会拒绝 ID 复用、配对文件缺失、注册表与 Markdown 漂移、来源缺失、断链、Schema 不完整和不安全的内置 Trace 写入说明。
 
 ## Input Types / 输入类型
 

@@ -20,7 +20,7 @@ Before extending, inspect `pattern-catalog.md` for named patterns and extension 
 1. Add the capability to `axes.md` with key, bilingual names, fit signals, and boundary. / 在 `axes.md` 中加入 key、中英文名、适配信号和边界。
 2. Add a new row to `matrix-index.md`. / 在 `matrix-index.md` 增加新行。
 3. Create `references/patterns/<capability-key>/cell.md` as the vertical introduction and navigation file. / 创建 `references/patterns/<capability-key>/cell.md` 作为纵轴导论和导航文件。
-4. Create `references/patterns/<capability-key>/trace.md` as the post-use trace log. / 创建 `references/patterns/<capability-key>/trace.md` 作为模式使用后的追踪日志。
+4. Do not create a bundled runtime trace target. If the user explicitly asks to maintain curated Skill evidence, create `references/patterns/<capability-key>/trace.md` only as reviewed example history. / 不要创建 Skill 内置的运行时 Trace 目标；仅当用户明确要求维护经过审阅的 Skill 证据时，才创建 `references/patterns/<capability-key>/trace.md` 作为示例历史。
 5. Create one design pattern file under `references/patterns/<capability-key>/<capability-key>-<mode-key>.md` for every horizontal mode. / 为每个横轴模式在 `references/patterns/<capability-key>/<capability-key>-<mode-key>.md` 创建一个设计模式文件。
 6. Create one observability metrics file under `references/patterns/<capability-key>/<capability-key>-<mode-key>-observability.md` for every horizontal mode. / 为每个横轴模式在 `references/patterns/<capability-key>/<capability-key>-<mode-key>-observability.md` 创建一个可观测性指标文件。
 7. Link every new matrix cell to its dedicated design pattern file, link every design pattern file to its observability metrics file, and link every new pattern file from the vertical introduction. / 将每个新增矩阵单元链接到对应独立设计模式文件，将每个设计模式文件链接到对应可观测性指标文件，并从纵轴导论链接每个新模式文件。
@@ -72,9 +72,9 @@ Use this template: / 使用此模板：
 - `Navigation / 导航`
 - `Extension Note / 扩展说明`
 
-## Adding Or Updating Trace / 新增或更新追踪
+## Runtime And Curated Trace / 运行时与精选追踪
 
-Keep one trace file per vertical capability at `references/patterns/<capability-key>/trace.md`. Use Trace before selection as inserted node evidence, and after application as outcome evidence. / 在 `references/patterns/<capability-key>/trace.md` 为每个纵轴能力保留一个追踪文件。选型前将 Trace 作为插入式节点证据，应用后将 Trace 作为结果证据。
+Write normal runtime Trace to the analyzed project at `.harness-analysis/<analysis_id>/trace.yaml`, using `references/trace-schema.md`. Treat any bundled `references/patterns/<capability-key>/trace.md` file as curated example or historical evidence, never as the normal runtime write target. Update bundled history only when the user explicitly asks to maintain Skill evidence. / 普通运行时 Trace 应依据 `references/trace-schema.md` 写入被分析项目的 `.harness-analysis/<analysis_id>/trace.yaml`。任何 Skill 内置的 `references/patterns/<capability-key>/trace.md` 仅作为精选示例或历史证据，绝不能作为普通运行时写入目标；只有用户明确要求维护 Skill 证据时才能更新内置历史。
 
 Use this template: / 使用此模板：
 
@@ -89,7 +89,7 @@ Use this template: / 使用此模板：
 - `Follow-up / 后续`
 - `Owner / 负责人`
 
-When updating Trace for pre-selection evidence, include the engineering node, observed symptom, available evidence, and missing data. / 当为选型前证据更新 Trace 时，包含工程节点、已观察症状、可用证据和缺失数据。
+For project-local pre-selection evidence, include the engineering node, observed symptom, available evidence, and missing data. / 对项目本地的选型前证据，应包含工程节点、已观察症状、可用证据和缺失数据。
 
 ## Extension Output / 扩展建议输出
 

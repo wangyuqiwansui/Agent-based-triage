@@ -2,6 +2,8 @@
 
 Use this index to locate the diagnostic cell for a capability and orchestration mode. The initial matrix is 7x6, but rows and columns are extensible. Pattern names are adapted from arXiv:2605.13850. / 使用本索引定位能力与编排模式对应的诊断单元。初始矩阵为 7x6，但行和列都可扩展。模式名称参考 arXiv:2605.13850 并调整为诊断用途。
 
+Provenance summary / 来源摘要: 28 upstream named patterns / 上游 28 个命名模式, 14 upstream blank cells / 上游 14 个空白单元, two local promotions / 2 个本地晋升模式 (`Progressive Discovery`, `Layered Retention`), and 12 remaining extension candidates / 剩余 12 个扩展候选。Use `registry.json` for authoritative IDs, source names, local aliases, status, and maturity. / 权威 ID、来源名称、本地别名、状态和成熟度以 `registry.json` 为准。
+
 ## Initial Matrix / 初始交织表
 
 | Capability / 能力 | Chain / 链式 | Routing / 路由 | Parallel / 并行 | Orchestration / 编排 | Loop / 循环 | Hierarchy / 层级 |

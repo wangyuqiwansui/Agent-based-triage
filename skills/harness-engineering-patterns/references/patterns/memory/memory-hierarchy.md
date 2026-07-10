@@ -3,7 +3,7 @@
 Cell / 交织点: memory-hierarchy / 记忆 x 层级
 Capability / 能力: Memory / 记忆
 Mode / 模式: Hierarchy / 层级
-Source / 来源: User-extension pattern grounded in Hanerss workflow practice; arXiv:2605.13850 leaves this matrix cell unnamed. / 用户扩展模式，基于 Hanerss 工作流实践；arXiv:2605.13850 未命名该交织点。
+Source / 来源: Local extension grounded in Harness workflow practice; arXiv:2605.13850 v2 leaves this matrix cell unnamed. / 本地扩展模式，基于 Harness 工作流实践；arXiv:2605.13850 v2 未命名该交织点。
 Alias / 别名: Layered Retention Execution Flow / 分层保留执行流程
 Standalone Executable / 可独立执行: Yes / 是
 Primary Axis / 主轴: Memory / 记忆
@@ -22,7 +22,7 @@ The pattern can run alone or interact with a workflow observability probe. In st
 ### Article Grounding / 论文依据
 
 - 论文坐标 / Article Coordinate: Memory / 记忆 x Hierarchy / 层级.
-- 论文依据 / Article Basis: 用户扩展模式 / User-extension pattern; the source matrix leaves this cell unnamed, and the provided Hanerss workflow supplies concrete repeated evidence for a hierarchy-based memory pattern. / 用户扩展模式；来源矩阵未命名该单元，用户提供的 Hanerss 流程为基于层级的记忆模式提供了具体、可复用的工作流证据。
+- 论文依据 / Article Basis: 本地扩展模式 / Local-extension pattern; the source matrix leaves this cell unnamed, and a concrete Harness workflow supplies draft evidence for a hierarchy-based memory pattern. / 本地扩展模式；来源矩阵未命名该单元，一个具体 Harness 工作流为基于层级的记忆模式提供了草案证据。
 - 问题 / Problem: Long-running agents can confuse temporary signals with durable knowledge, let low-level context override higher-level rules, overfill working context with history, or write unverified guesses into long-term memory. / 长程智能体容易把临时信号当作长期知识，让低层上下文覆盖高层规则，将历史全量塞入工作上下文，或把未验证猜测写入长期记忆。
 - 架构方案 / Architectural Solution: Establish explicit memory layers, classify every retention candidate, enforce coverage and conflict rules, assemble only necessary context, route writes by evidence strength, and manage lifecycle through promotion, demotion, archive, deletion, and human review. / 建立显式记忆层，对每条待保留信息做分层判定，执行覆盖与冲突规则，只装配必要上下文，按证据强度路由写入，并通过升层、降权、归档、删除和人审管理生命周期。
 - 工程权衡 / Engineering Trade-offs: Layering protects durable knowledge and auditability, but it adds routing, evidence, lifecycle, and probe overhead; use the full flow for long-running, high-risk, or reusable work, and use the minimum checklist for lightweight work. / 分层能保护长期知识和审计能力，但会增加路由、证据、生命周期和探针成本；长程、高风险或可复用工作使用完整流程，轻量任务使用最小清单。
@@ -44,7 +44,7 @@ The process governs seven actions / 本流程治理七类动作:
 | Discard / 丢弃 | Remove temporary, noisy, sensitive, or low-value material when retention is unjustified. / 在无保留价值时清理临时、噪声、敏感或低价值材料。 |
 | Audit / 审计 | Preserve decisions, evidence, and blocked actions for replay and governance. / 保留决策、证据和阻断动作，支持复盘与治理。 |
 
-### Position In Hanerss / 在 Hanerss 框架中的位置
+### Position In Harness / 在 Harness 框架中的位置
 
 | Foundation / 基座 | Alignment / 归属 |
 |---|---|
@@ -766,4 +766,4 @@ Observability Metrics File / 可观测性指标文件: [memory-hierarchy-observa
 
 ## Trace Hook / 追踪钩子
 
-After this pattern is recommended or applied, add an entry to [trace.md](trace.md) in this capability folder. Record the scenario, layer model, write-routing changes, promotion gates, context assembly effect, blocked writes, evidence coverage, and observed outcome. / 推荐或应用本模式后，在该能力文件夹的 [trace.md](trace.md) 中追加记录。记录场景、层级模型、写入路由变化、升层门禁、上下文装配效果、阻断写入、证据覆盖和观察结果。
+After this pattern is recommended or applied, produce a project-local Trace proposal at `.harness-analysis/<analysis_id>/trace.yaml` using `references/trace-schema.md`. Record the scenario, layer model, write-routing changes, promotion gates, context assembly effect, blocked writes, evidence coverage, and observed outcome. / 推荐或应用本模式后，使用 `references/trace-schema.md` 在 `.harness-analysis/<analysis_id>/trace.yaml` 生成项目本地 Trace 建议。记录场景、层级模型、写入路由变化、升层门禁、上下文装配效果、阻断写入、证据覆盖和观察结果。

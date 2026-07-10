@@ -402,4 +402,4 @@ Observability Metrics File / 可观测性指标文件: [perception-chain-observa
 
 ## Trace Hook / 追踪钩子
 
-After this pattern is recommended or applied, add an entry to [trace.md](trace.md) in this capability folder. Record trigger reason, compression level, before/after context usage, preserved evidence count, handle count, updated anchor fields, quality gate result, repair actions, handoff status, and outcome. / 推荐或应用本模式后，在该能力文件夹的 [trace.md](trace.md) 中追加记录。记录触发原因、压缩级别、压缩前后占用、保留证据数量、句柄数量、更新的锚点字段、质量门禁结果、修复动作、交接状态和结果。
+After this pattern is recommended or applied, produce a project-local Trace proposal at `.harness-analysis/<analysis_id>/trace.yaml` using `references/trace-schema.md`. Record trigger reason, compression level, before/after context usage, preserved evidence count, handle count, updated anchor fields, quality gate result, repair actions, handoff status, and outcome. / 推荐或应用本模式后，使用 `references/trace-schema.md` 在 `.harness-analysis/<analysis_id>/trace.yaml` 生成项目本地 Trace 建议。记录触发原因、压缩级别、压缩前后占用、保留证据数量、句柄数量、更新的锚点字段、质量门禁结果、修复动作、交接状态和结果。

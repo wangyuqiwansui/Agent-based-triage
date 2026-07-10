@@ -3,7 +3,9 @@
 Cell / 交织点: memory-loop / 记忆 x 循环
 Capability / 能力: Memory / 记忆
 Mode / 模式: Loop / 循环
-Source / 来源: arXiv:2605.13850 (https://arxiv.org/html/2605.13850), extended with user-provided failure diary workflow. / 来源：arXiv:2605.13850，并结合用户提供的失败日记执行流程扩展。
+Source / 来源: arXiv:2605.13850 v2 (https://arxiv.org/abs/2605.13850v2), extended with a local executable workflow. / 来源：arXiv:2605.13850 v2，并结合本地可执行工作流扩展。
+Upstream Source Name / 上游来源名称: Failure Journal / 失败日志
+Local Alias / 本地别名: Failure Diary / 失败日记
 
 Use this file as the design pattern source for this matrix intersection. / 将本文档作为该交织点的设计模式来源。
 
@@ -26,6 +28,13 @@ This pattern is not a normal error log. It turns a failure into a reviewed exper
 
 - 状态 / Status: 已命名候选 / Named candidate.
 - 模式清单 / Patterns: Failure Diary / 失败日记.
+- 诊断用途 / Diagnostic Use: Use when reviewed failure evidence must change future behavior before the same mistake repeats. / 当经过审查的失败证据必须在同类错误重复前改变未来行为时使用。
+- 当前症状 / Current Symptoms: Failures are logged but not reviewed, indexed, recalled, or converted into action constraints. / 失败虽有记录，但没有被审查、索引、召回或转化为行动约束。
+- 适配信号 / Fit Signals: Similar failures recur across attempts and prior outcomes can be written back into later planning or pre-action checks. / 相似失败跨尝试重复出现，既往结果可以回写到后续规划或动作前检查。
+- 调整方向 / Adjustment Direction: Convert raw failure events into scoped, reviewed, recallable danger cards with lifecycle controls. / 将原始失败事件转化为带作用域、经过审查、可召回且受生命周期控制的危险卡。
+- 修改方式 / How To Modify: Capture evidence, classify the failure boundary, distill a lesson, run review states, index enabled cards, recall at the constrained boundary, and update validity after observing outcomes. / 捕获证据、分类失败边界、提炼教训、运行审查状态、索引已启用卡片、在受约束边界召回，并在观察结果后更新有效状态。
+- 输入 / Inputs: Failure event, task and scope identifiers, evidence package, current rules, permission boundary, and review policy. / 失败事件、任务与范围标识、证据包、当前规则、权限边界和审查策略。
+- 输出 / Outputs: Reviewed diary entry, danger card, recall index, validity event, follow-up task, and project-local Trace proposal. / 经过审查的日记条目、危险卡、召回索引、有效状态事件、后续任务和项目本地 Trace 建议。
 - 论文坐标 / Article Coordinate: Memory / 记忆 x Loop / 循环.
 - 论文依据 / Article Basis: 矩阵列名模式 / Matrix-listed pattern; extended as a user-provided executable workflow. / 矩阵列名模式；并扩展为用户提供的可执行工作流。
 - 问题 / Problem: A workflow repeats the same failure because prior failures are logged but not converted into reviewed, recallable action constraints. / 工作流重复同类失败，因为过去失败只被记录，没有转化为经过审查、可召回的行动约束。
@@ -189,4 +198,4 @@ Retention policy / 留存策略：
 
 ## Trace Hook / 追踪钩子
 
-After this pattern is recommended or applied, add an entry to [trace.md](trace.md) in this capability folder. / 推荐或应用本模式后，在该能力文件夹的 [trace.md](trace.md) 中追加记录。
+After this pattern is recommended or applied, produce a project-local Trace proposal at `.harness-analysis/<analysis_id>/trace.yaml` using `references/trace-schema.md`. / 推荐或应用本模式后，使用 `references/trace-schema.md` 在 `.harness-analysis/<analysis_id>/trace.yaml` 生成项目本地 Trace 建议。

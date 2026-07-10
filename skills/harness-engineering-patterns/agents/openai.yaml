@@ -1,4 +1,4 @@
 interface:
   display_name: "Harness Engineering Patterns / Harness 工程模式"
-  short_description: "Compile workflow and Harness maps / 编译工程地图"
-  default_prompt: "Use $harness-engineering-patterns to compile this workflow or Agent Harness source into an EIR, matrix map, evidence table, and concrete pattern adjustments. / 使用 $harness-engineering-patterns 将此工作流或 Agent Harness 源码编译为 EIR、矩阵映射、证据表和具体模式调整。"
+  short_description: "Map Harness architecture with evidence / 用证据映射 Harness 架构"
+  default_prompt: "Use $harness-engineering-patterns to analyze this workflow, engineering node, or Agent Harness source with the smallest suitable output profile, cite evidence, and propose project-local Trace data. / 使用 $harness-engineering-patterns，以最小合适输出档位分析此工作流、工程节点或 Agent Harness 源码，引用证据，并提出项目本地 Trace 数据。"

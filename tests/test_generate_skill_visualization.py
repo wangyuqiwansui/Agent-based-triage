@@ -179,6 +179,7 @@ class SkillVisualizationGeneratorTest(unittest.TestCase):
                 self.assertTrue(
                     "矩阵列名模式 / Matrix-listed pattern" in content
                     or "用户扩展模式 / User-extension pattern" in content
+                    or "本地扩展模式 / Local-extension pattern" in content
                 )
             else:
                 self.assertIn("空白单元 / Empty cell", content)
@@ -327,7 +328,7 @@ class SkillVisualizationGeneratorTest(unittest.TestCase):
             "Standalone Executable / 可独立执行: Yes / 是",
             "Primary Axis / 主轴: Memory / 记忆",
             "Primary Topology / 主拓扑: Hierarchy / 层级",
-            "User-extension pattern",
+            "Local-extension pattern",
             "COG_MEMORY__TOP_HIERARCHY",
             "Policy / 策略层",
             "Project / 项目层",
@@ -350,7 +351,7 @@ class SkillVisualizationGeneratorTest(unittest.TestCase):
 
         required_sections = [
             "## Document Goal / 文档目标",
-            "## Position In Hanerss / 在 Hanerss 框架中的位置",
+            "## Position In Harness / 在 Harness 框架中的位置",
             "## Probe Role / 探针定位",
             "## Relationship With Execution Flow / 与执行流程的关系",
             "## Operating Modes / 运行模式",

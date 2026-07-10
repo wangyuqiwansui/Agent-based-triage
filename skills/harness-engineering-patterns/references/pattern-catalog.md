@@ -1,6 +1,8 @@
 # Pattern Catalog / 模式目录
 
-Source: arXiv:2605.13850, adapted for workflow diagnosis rather than general agent taxonomy. / 来源：arXiv:2605.13850，已从通用 Agent 分类调整为工作流诊断用途。
+Source: arXiv:2605.13850 v2, adapted for workflow diagnosis rather than general agent taxonomy. / 来源：arXiv:2605.13850 v2，已从通用 Agent 分类调整为工作流诊断用途。
+
+Provenance summary / 来源摘要: 28 upstream named patterns / 上游 28 个命名模式, 14 upstream blank cells / 上游 14 个空白单元, two local promotions / 2 个本地晋升模式 (`Progressive Discovery`, `Layered Retention`), and 12 remaining extension candidates / 剩余 12 个扩展候选。 The authoritative identity, source name, local alias, status, and maturity are stored in `registry.json`. / 权威身份、来源名称、本地别名、状态和成熟度存储在 `registry.json`。
 
 Use this catalog as a compact index after locating a matrix cell. Detailed source content lives in one grouped folder per vertical capability under `references/patterns/<capability-key>/`. Empty cells are intentional gaps: propose an extension only when the current workflow repeatedly needs that intersection. / 定位交织点后，将本目录作为紧凑索引使用。详细来源内容按每个纵轴能力分组存放在 `references/patterns/<capability-key>/` 下。空白单元是有意保留的缺口：仅当当前工作流反复需要该交织点时，才建议扩展。
 
@@ -18,7 +20,7 @@ Each detailed pattern has two Markdown files: `<cell-key>.md` for `Design Patter
 | memory-chain / 记忆 x 链式 | RAG Pipeline / RAG 管线 | Use when retrieval, grounding, and answer construction form a sequence. / 当检索、扎根和回答构成顺序管线时使用。 |
 | memory-routing / 记忆 x 路由 | Hierarchical Retrieval / 层级检索 | Use when the workflow must route retrieval through levels of memory. / 当工作流必须按记忆层级路由检索时使用。 |
 | memory-orchestration / 记忆 x 编排 | Progress Tracking / 进度追踪 | Use when long-running work needs a recoverable control structure for goals, milestones, evidence, mechanical truth, gates, probes, and handoff state. / 当长程任务需要用可恢复的控制结构管理目标、里程碑、证据、机械真值、闸门、探针和交接状态时使用。 |
-| memory-loop / 记忆 x 循环 | Failure Diary / 失败日记 | Use when failures must be recorded, reviewed, indexed, and recalled across future attempts. / 当失败必须被记录、审查、索引，并在未来相似任务中召回时使用。 |
+| memory-loop / 记忆 x 循环 | Failure Diary / 失败日记（source name: Failure Journal / 来源名称：失败日志） | Use when failures must be recorded, reviewed, indexed, and recalled across future attempts. / 当失败必须被记录、审查、索引，并在未来相似任务中召回时使用。 |
 | memory-hierarchy / 记忆 x 层级 | Layered Retention / 分层保留 | Use when information must be retained by scope, lifecycle, authority, evidence, and context budget across multiple memory levels. / 当信息必须按照作用域、生命周期、权威来源、证据和上下文预算跨多层记忆保留时使用。 |
 | reasoning-chain / 推理 x 链式 | Chain-of-Thought / 思维链 | Use when reasoning should proceed through ordered intermediate conclusions. / 当推理需要经过有序中间结论时使用。 |
 | reasoning-routing / 推理 x 路由 | Complexity-Based Routing / 复杂度路由 | Use when problem complexity should determine the reasoning path. / 当问题复杂度应决定推理路径时使用。 |
@@ -52,7 +54,7 @@ The article validates the catalog on four domains (financial lending, legal due 
 
 ## Empty Or Exploratory Cells / 空白或探索单元
 
-The article leaves these intersections structurally redundant or not yet observed in practice. Keep them as extension candidates: / 文章将这些交织点视为结构上冗余或尚未在实践中观察到。本技能中将它们保留为扩展候选：
+The paper leaves 14 intersections structurally redundant or not yet observed in practice. This Skill locally promotes perception-loop and memory-hierarchy, leaving these 12 as extension candidates: / 论文将 14 个交织点保留为空白或未观察单元。本 Skill 在本地晋升 perception-loop 与 memory-hierarchy，剩余以下 12 个扩展候选：
 
 - perception-hierarchy / 感知 x 层级
 - memory-parallel / 记忆 x 并行

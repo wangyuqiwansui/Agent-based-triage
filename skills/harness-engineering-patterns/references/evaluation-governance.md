@@ -70,30 +70,82 @@ Ask these questions for any Agent Harness or workflow. / 对任何 Agent Harness
 
 ## Evaluation Output / 评估输出
 
-Use this shape when a user needs a scored result. / 当用户需要评分结果时使用此结构。
+Use this seven-dimension shape when a user needs a scored result. Every dimension declares how it is judged, which direction is better, which evidence is used, and which observation window the score covers. / 当用户需要评分结果时使用以下七维结构。每个维度都声明判断方式、优劣方向、证据来源和评分覆盖的观察窗口。
 
 ```yaml
 evaluation_id: EVAL_0001
 target_type: pattern | skill | workflow | harness_source
-target_ref: TODO
+target_ref: ANALYSIS_20260710_0001
 status: draft
 
 criteria:
   coverage:
+    rubric: "required control-plane areas covered / 必需控制面区域覆盖率"
+    direction: higher_is_better
+    evidence_sources: []
+    observation_window: current_analysis
     score: null
-    notes: TODO
-  evidence:
-    score: null
-    notes: TODO
+    confidence: null
+    notes: ""
   mapping_accuracy:
+    rubric: "mappings supported by boundaries and counterexamples / 映射有边界与反例支撑"
+    direction: higher_is_better
+    evidence_sources: []
+    observation_window: current_analysis
     score: null
-    notes: TODO
-  governance:
+    confidence: null
+    notes: ""
+  evidence:
+    rubric: "claims with fresh resolvable evidence / 具备新鲜可解析证据的判断比例"
+    direction: higher_is_better
+    evidence_sources: []
+    observation_window: current_analysis
     score: null
-    notes: TODO
+    confidence: null
+    notes: ""
+  reuse:
+    rubric: "independent workflows supported without copying local parameters / 不复制本地参数时可支持的独立工作流"
+    direction: higher_is_better
+    evidence_sources: []
+    observation_window: observed_cases
+    score: null
+    confidence: null
+    notes: ""
   skill_readiness:
+    rubric: "bounded input, output, tools, failure handling, tests, and risk / 输入输出工具失败处理测试与风险边界完整度"
+    direction: higher_is_better
+    evidence_sources: []
+    observation_window: current_pattern_version
     score: null
-    notes: TODO
+    confidence: null
+    notes: ""
+  governance:
+    rubric: "permission, sandbox, audit, rollback, retention, and ownership coverage / 权限沙箱审计回滚留存与归属覆盖度"
+    direction: higher_is_better
+    evidence_sources: []
+    observation_window: current_analysis
+    score: null
+    confidence: null
+    notes: ""
+  evaluability:
+    rubric: "executable tests, probes, thresholds, and failure-path checks / 可执行测试探针阈值与失败路径检查完整度"
+    direction: higher_is_better
+    evidence_sources: []
+    observation_window: current_pattern_version
+    score: null
+    confidence: null
+    notes: ""
 
+lowest_dimension: null
+aggregate_score: null
+aggregate_method: "report mean and lowest dimension separately / 分别报告均值与最低维度"
 open_verification_tasks: []
 ```
+
+Metric metadata rules / 指标元数据规则：
+
+- `rubric` may be a formula when measurable or a bounded scoring rule when qualitative. / 可量化时 `rubric` 使用公式；定性时使用有边界的评分规则。
+- `direction` is `higher_is_better`, `lower_is_better`, or `target_range`. / `direction` 使用 `higher_is_better`、`lower_is_better` 或 `target_range`。
+- `evidence_sources` contains resolvable EIR evidence IDs or external references. / `evidence_sources` 包含可解析的 EIR 证据 ID 或外部引用。
+- `observation_window` prevents scores from silently mixing versions or time periods. / `observation_window` 防止评分静默混合不同版本或时间区间。
+- `confidence` is `high`, `medium`, or `low` and does not substitute for a score. / `confidence` 使用 `high`、`medium` 或 `low`，不能替代分数。

@@ -199,6 +199,145 @@ class HarnessSkillRegistryTest(unittest.TestCase):
             any("bundled_trace_write" in error for error in report.errors)
         )
 
+    def test_skill_has_bounded_output_and_project_local_trace_contracts(self):
+        validator = load_validator()
+        skill = (SKILL_DIR / "SKILL.md").read_text(encoding="utf-8")
+
+        self.assertIn("When Not To Use / 不适用场景", skill)
+        self.assertIn("Output Profiles / 输出档位", skill)
+        self.assertIn("quick / 快速", skill)
+        self.assertIn("standard / 标准", skill)
+        self.assertIn("full / 完整", skill)
+        self.assertIn("preliminary / 初步", skill)
+        self.assertIn("references/trace-schema.md", skill)
+        self.assertIn(".harness-analysis/<analysis_id>/trace.yaml", skill)
+        self.assertIsNone(validator.BUNDLED_TRACE_WRITE.search(skill))
+
+    def test_eir_schema_covers_every_declared_collection(self):
+        eir = (SKILL_DIR / "references" / "eir-schema.md").read_text(
+            encoding="utf-8"
+        )
+        required_headings = [
+            "## Control Flow / 控制流",
+            "## State Flow / 状态流",
+            "## Tool Flow / 工具流",
+            "## Permission Flow / 权限流",
+            "## Pattern Record / 模式记录",
+            "## Skill Recommendation / Skill 建议",
+            "## Evaluation Reference / 评价引用",
+            "## Governance Item / 治理项",
+        ]
+
+        for heading in required_headings:
+            self.assertIn(heading, eir)
+        for prefix in (
+            "ANALYSIS_",
+            "MAP_",
+            "EVAL_",
+            "GOV_",
+            "FAIL_",
+            "PROBE_",
+        ):
+            self.assertIn(prefix, eir)
+
+    def test_evaluation_output_has_seven_operational_dimensions(self):
+        evaluation = (
+            SKILL_DIR / "references" / "evaluation-governance.md"
+        ).read_text(encoding="utf-8")
+        for key in (
+            "coverage",
+            "mapping_accuracy",
+            "evidence",
+            "reuse",
+            "skill_readiness",
+            "governance",
+            "evaluability",
+        ):
+            self.assertRegex(evaluation, rf"(?m)^  {key}:$")
+        for field in (
+            "rubric:",
+            "direction:",
+            "evidence_sources:",
+            "observation_window:",
+            "score:",
+            "confidence:",
+            "notes:",
+        ):
+            self.assertGreaterEqual(evaluation.count(f"    {field}"), 7)
+
+    def test_every_design_file_has_the_full_pattern_template(self):
+        validator = load_validator()
+        registry = read_registry(SKILL_DIR)
+
+        for cell in registry["cells"]:
+            content = (SKILL_DIR / cell["design_path"]).read_text(
+                encoding="utf-8"
+            )
+            for field in validator.DESIGN_FIELDS:
+                self.assertIn(field, content, f"{cell['cell_key']}: {field}")
+
+    def test_source_aliases_and_harness_spelling_are_explicit(self):
+        memory_loop = (
+            SKILL_DIR / "references" / "patterns" / "memory" / "memory-loop.md"
+        ).read_text(encoding="utf-8")
+        catalog = (SKILL_DIR / "references" / "pattern-catalog.md").read_text(
+            encoding="utf-8"
+        )
+        matrix = (SKILL_DIR / "references" / "matrix-index.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("Failure Journal / 失败日志", memory_loop)
+        self.assertIn("Failure Diary / 失败日记", memory_loop)
+        for content in (catalog, matrix):
+            self.assertIn("28 upstream named patterns / 上游 28 个命名模式", content)
+            self.assertIn("two local promotions / 2 个本地晋升模式", content)
+
+        for path in SKILL_DIR.rglob("*.md"):
+            self.assertNotIn(
+                "Hanerss",
+                path.read_text(encoding="utf-8"),
+                str(path),
+            )
+
+    def test_trace_schema_is_bilingual_and_project_scoped(self):
+        trace_schema = SKILL_DIR / "references" / "trace-schema.md"
+        content = trace_schema.read_text(encoding="utf-8")
+
+        self.assertIn("Runtime Trace Contract / 运行 Trace 契约", content)
+        self.assertIn(".harness-analysis/<analysis_id>/trace.yaml", content)
+        for field in (
+            "analysis_id",
+            "project_scope",
+            "tenant_scope",
+            "sensitivity",
+            "source_revision",
+            "evidence_refs",
+            "validity",
+            "retention",
+            "expires_at",
+            "owner",
+        ):
+            self.assertIn(field, content)
+
+    def test_design_trace_hooks_are_project_local(self):
+        registry = read_registry(SKILL_DIR)
+
+        for cell in registry["cells"]:
+            content = (SKILL_DIR / cell["design_path"]).read_text(
+                encoding="utf-8"
+            )
+            self.assertNotIn(
+                "add an entry to [trace.md](trace.md)",
+                content,
+                cell["cell_key"],
+            )
+            self.assertIn(
+                ".harness-analysis/<analysis_id>/trace.yaml",
+                content,
+                cell["cell_key"],
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

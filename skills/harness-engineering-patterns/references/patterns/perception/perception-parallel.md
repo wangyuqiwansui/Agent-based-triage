@@ -33,7 +33,12 @@ Do not treat this pattern as "send every file to a multimodal model." Treat it a
 - 模式清单 / Patterns: Multi-Modal Fusion / 多模态融合.
 - 诊断用途 / Diagnostic Use: Use when multiple signal types should be gathered and fused. / 当多类信号需要采集并融合时使用。
 - 适用工作流节点 / Applicable Workflow Nodes: 输入预处理、上下文感知、文档分析、日志诊断、事实核查、报告生成 / Intake preprocessing, context sensing, document analysis, log diagnosis, fact checking, report generation.
+- 当前症状 / Current Symptoms: Heterogeneous sources are blindly converted to text or loaded wholesale, losing structure, source identity, confidence, or budget control. / 异构来源被盲目转文本或整体加载，导致结构、来源身份、置信度或预算控制丢失。
 - 适配信号 / Fit Signals: Multiple independent signal sources can be observed in parallel and merged. / 多个独立信号源可以并行观察后汇总。
+- 调整方向 / Adjustment Direction: Route each modality through a suitable extractor, normalize results into evidence blocks, align metadata, and fuse only task-relevant evidence. / 将每种模态路由到合适的抽取器，把结果标准化为证据块，对齐元数据，并只融合与任务相关的证据。
+- 修改方式 / How To Modify: Register sources, classify modality and role, process independent branches, preserve page or event references, align scope and time, merge with conflict rules, and verify precise claims against structured evidence. / 登记来源、分类模态与角色、处理独立分支、保留页码或事件引用、对齐范围与时间、按冲突规则合并，并用结构化证据核验精确判断。
+- 输入 / Inputs: Task contract, source registry, modality metadata, extraction capabilities, context budget, permission scope, and evidence requirements. / 任务契约、来源注册表、模态元数据、抽取能力、上下文预算、权限范围和证据要求。
+- 输出 / Outputs: Fused context package, evidence blocks, source map, conflicts, degraded branches, confidence labels, and project-local Trace proposal. / 融合上下文包、证据块、来源图、冲突、降级分支、置信标签和项目本地 Trace 建议。
 - 风险与治理 / Risks & Governance: Require source references for precise numbers, avoid whole-PDF or raw-log stuffing, preserve original evidence when extraction is uncertain, and mark low-confidence or degraded branches for review. / 精确数字必须有来源引用，避免整份 PDF 或原始长日志塞入上下文；抽取不确定时保留原始证据，并将低置信或降级分支标记为待复核。
 
 Core law / 核心法则:
@@ -357,6 +362,6 @@ degradation_result:
 
 ## Trace Hook / 追踪钩子
 
-After this pattern is recommended or applied, add an entry to [trace.md](trace.md) in this capability folder. / 推荐或应用本模式后，在该能力文件夹的 [trace.md](trace.md) 中追加记录。
+After this pattern is recommended or applied, produce a project-local Trace proposal at `.harness-analysis/<analysis_id>/trace.yaml` using `references/trace-schema.md`. / 推荐或应用本模式后，使用 `references/trace-schema.md` 在 `.harness-analysis/<analysis_id>/trace.yaml` 生成项目本地 Trace 建议。
 
 Trace entry should include task type, input modalities, selected routes, degraded branches, evidence coverage, cache decisions, and outcome. / 追踪记录应包含任务类型、输入模态、已选路由、降级分支、证据覆盖率、缓存决策和结果。

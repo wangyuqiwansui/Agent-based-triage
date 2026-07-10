@@ -353,4 +353,4 @@ Observability Metrics File / 可观测性指标文件: [perception-loop-observab
 
 ## Trace Hook / 追踪钩子
 
-After this pattern is recommended or applied, add an entry to [trace.md](trace.md) in this capability folder. Record task type, information space, loop count, search boundary, candidate counts, selected regions, evidence items, verification result, stop or escalation reason, cost, confidence, and outcome. / 推荐或应用本模式后，在该能力文件夹的 [trace.md](trace.md) 中追加记录。记录任务类型、信息空间、循环次数、搜索边界、候选数量、入选区域、证据项、验证结果、停止或升级原因、成本、置信度和结果。
+After this pattern is recommended or applied, produce a project-local Trace proposal at `.harness-analysis/<analysis_id>/trace.yaml` using `references/trace-schema.md`. Record task type, information space, loop count, search boundary, candidate counts, selected regions, evidence items, verification result, stop or escalation reason, cost, confidence, and outcome. / 推荐或应用本模式后，使用 `references/trace-schema.md` 在 `.harness-analysis/<analysis_id>/trace.yaml` 生成项目本地 Trace 建议。记录任务类型、信息空间、循环次数、搜索边界、候选数量、入选区域、证据项、验证结果、停止或升级原因、成本、置信度和结果。

@@ -3,7 +3,7 @@
 Cell / 交织点: memory-hierarchy / 记忆 x 层级
 Capability / 能力: Memory / 记忆
 Mode / 模式: Hierarchy / 层级
-Source / 来源: User-extension pattern grounded in Hanerss workflow practice; arXiv:2605.13850 leaves this matrix cell unnamed. / 用户扩展模式，基于 Hanerss 工作流实践；arXiv:2605.13850 未命名该交织点。
+Source / 来源: Local extension grounded in Harness workflow practice; arXiv:2605.13850 v2 leaves this matrix cell unnamed. / 本地扩展模式，基于 Harness 工作流实践；arXiv:2605.13850 v2 未命名该交织点。
 Alias / 别名: Layered Retention Probe / 分层保留的工作流可观测性探针
 Standalone Executable / 可独立执行: Yes / 是
 Primary Axes / 主轴: Perception / 感知; Governance / 治理
@@ -20,7 +20,7 @@ This document defines a general workflow observability probe system for observin
 
 This probe system can run independently or interactively with the Layered Retention execution flow. In standalone mode, it analyzes historical logs, conversation traces, memory write records, and context assembly records, then outputs risk reports and completion advice. In interactive mode, it receives runtime events at key execution nodes and returns completion packages to correct layering, evidence, context, write routing, and governance actions. / 本探针系统可以独立运行，也可以与分层保留执行流程交互运行。独立运行时，它分析历史日志、对话轨迹、记忆写入记录和上下文装配记录，输出风险报告和补全建议。交互运行时，它在执行流程关键节点实时接收事件，并返回补全包，用于修正分层、证据、上下文、写入路由和治理动作。
 
-## Position In Hanerss / 在 Hanerss 框架中的位置
+## Position In Harness / 在 Harness 框架中的位置
 
 | Foundation / 基座 | Alignment / 归属 |
 |---|---|
