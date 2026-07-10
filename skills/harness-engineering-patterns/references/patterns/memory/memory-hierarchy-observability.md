@@ -14,6 +14,18 @@ Secondary Topologies / 辅拓扑: Loop / 循环; Orchestration / 编排; Hierarc
 Use this file as the observability metrics and probe protocol source for Layered Retention / 分层保留. / 将本文档作为分层保留的可观测性指标与探针协议来源。
 Design Pattern File / 设计模式文件: [memory-hierarchy.md](memory-hierarchy.md)
 
+## Quick Navigation / 快速导航
+
+- [Document Goal / 文档目标](#document-goal--文档目标)
+- [Probe Input Contract / 探针输入契约](#probe-input-contract--探针输入契约)
+- [Data Model / 探针数据模型](#data-model--探针数据模型)
+- [Probe Catalog / 探针总览](#probe-catalog--探针总览)
+- [Probe Details / 探针详情](#probe-details--探针详情)
+- [Observability Metrics / 可观测性指标](#observability-metrics--可观测性指标)
+- [Diagnostic And Alert Rules / 诊断与告警规则](#diagnostic-rules--诊断规则)
+- [Minimum Standalone Run / 独立运行最小流程](#minimum-standalone-run--独立运行最小流程)
+- [Skill Packaging Draft / 可包装技能草案](#skill-packaging-draft--可包装技能草案)
+
 ## Document Goal / 文档目标
 
 This document defines a general workflow observability probe system for observing, completing, and correcting key data in the Layered Retention / 分层保留 execution flow. It is not only a metric list; it is a set of probes that can connect to workflow nodes. Each probe must answer what to observe, where to get data, how to identify abnormal states, what to feed back to the execution flow, when to block, and when to request human review. / 本文档定义一套通用的工作流可观测性探针系统，用于观察、补全和校正分层保留执行流程中的关键数据。它不是单纯的指标清单，而是一组可以接入工作流节点的探针。每个探针都要回答：观察什么、从哪里取数、如何判断异常、向执行流程补回什么数据、何时阻断、何时人审。

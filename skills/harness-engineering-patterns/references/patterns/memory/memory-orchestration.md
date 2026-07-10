@@ -9,6 +9,17 @@ Use this file as the design pattern source for long-running task progress tracki
 
 Observability Metrics File / 可观测性指标文件: [memory-orchestration-observability.md](memory-orchestration-observability.md)
 
+## Quick Navigation / 快速导航
+
+- [Design Pattern / 设计模式](#design-pattern--设计模式)
+- [Core State Objects / 核心状态对象](#core-state-objects--核心状态对象)
+- [State Machine / 状态机](#state-machine--状态机)
+- [Execution Workflow / 执行流程](#execution-workflow--执行流程)
+- [Probe Interaction Protocol / 探针交互协议](#probe-interaction-protocol--探针交互协议)
+- [Scenario Adaptation / 场景适配](#scenario-adaptation-template--场景适配模板)
+- [Exception Handling / 异常处理](#exception-handling--异常处理)
+- [Completion And Failure / 完成条件与失败模式](#completion-conditions--完成条件)
+
 ## Design Pattern / 设计模式
 
 Progress Tracking is a memory-orchestration pattern for tasks that cannot be safely completed from a plain checklist. It freezes the goal, splits work into milestones, maintains separate narrative, scheduling, and mechanical state, records append-only progress events, uses acceptance gates, asks probes to fill gaps, and emits recovery packages after each cycle. / 进度追踪是一种记忆 x 编排模式，适用于不能仅靠普通待办清单安全完成的任务。它先冻结目标，再拆分里程碑，分别维护叙事态、调度态和机械态，追加式记录进度事件，使用验收闸门，在缺口出现时请求探针补数，并在每轮循环后生成恢复包。

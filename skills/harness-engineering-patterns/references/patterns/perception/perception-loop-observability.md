@@ -10,6 +10,17 @@ Standalone Executable / 可独立执行: Yes / 是
 
 Use this file as the observability metrics and probe protocol source for this 7x6 matrix intersection. / 将本文档作为该 7x6 交织点的可观测性指标与探针协议来源。
 
+## Quick Navigation / 快速导航
+
+- [Probe Role / 探针定位](#probe-role--探针定位)
+- [Probe Input Contract / 探针输入契约](#probe-input-contract--探针输入契约)
+- [Observation Objects / 观测对象](#observation-objects--观测对象)
+- [Observability Metrics / 可观测性指标](#observability-metrics--可观测性指标)
+- [Diagnostic Rules / 诊断规则](#diagnostic-rules--诊断规则)
+- [Probe Report Template / 探针报告模板](#probe-report-template--探针报告模板)
+- [Minimum Standalone Run / 独立运行最小流程](#minimum-standalone-run--独立运行最小流程)
+- [Interaction Data Interface / 交互数据接口](#interaction-data-interface--与执行流程交互的数据接口)
+
 ## Probe Role / 探针定位
 
 Progressive Discovery Probe / 渐进发现的工作流可观测性探针 observes, records, diagnoses, and improves the discovery workflow. It answers whether a discovery run is healthy, where cost was wasted, where focus drifted, what evidence is missing, and how the next loop should improve. / 渐进发现的工作流可观测性探针负责观测、记录、诊断和改进发现流程，回答本次寻找是否健康、哪里浪费成本、哪里选错方向、哪些证据缺失、下一轮如何改进。

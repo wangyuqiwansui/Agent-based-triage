@@ -13,6 +13,18 @@ Secondary Topologies / 辅拓扑: Routing / 路由; Loop / 循环; Orchestration
 
 Use this file as the design pattern source for the Memory / 记忆 x Hierarchy / 层级 intersection. / 将本文档作为 Memory / 记忆 x Hierarchy / 层级交织点的设计模式来源。
 
+## Quick Navigation / 快速导航
+
+- [Article Grounding / 论文依据](#article-grounding--论文依据)
+- [Default Memory Layer Model / 默认记忆层模型](#default-memory-layer-model--默认记忆层模型)
+- [Input And Output Contracts / 输入与输出契约](#input-contract--输入契约)
+- [Core Objects / 核心对象](#core-objects--核心对象)
+- [Execution Procedure Overview / 执行流程总览](#execution-procedure-overview--执行流程总览)
+- [Operating Modes / 两种运行模式](#operating-modes--两种运行模式)
+- [Probe Interaction / 探针交互](#probe-interaction--探针交互)
+- [Failure Modes / 失败模式与处理](#failure-modes--失败模式与处理)
+- [Pattern Template / 模式模板](#pattern-template--模式模板)
+
 ## Design Pattern / 设计模式
 
 Layered Retention / 分层保留 is a long-running agent memory governance flow. It decides how information should be read, used, written, promoted, demoted, discarded, reviewed, and audited across different memory layers. It is not a single business workflow; it is a reusable engineering pattern that can be mounted onto assistants, coding agents, course coaches, enterprise knowledge assistants, support agents, approval agents, operations agents, and research agents. / 分层保留是一套长程智能体记忆治理流程，用于判断信息应该如何读取、使用、写入、升层、降权、丢弃、复核和审计。它不是某一个业务流程，而是可挂载到个人助理、编程助手、课程教练、企业知识助手、客服助手、审批助手、运维助手和研究助手等场景的工程模式。

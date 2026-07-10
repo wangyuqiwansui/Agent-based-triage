@@ -14,6 +14,17 @@ Secondary Topologies / 辅拓扑: Chain / 链式; Loop / 循环; Orchestration /
 Use this file as the observability metrics and probe protocol source for Semantic Compaction / 语义压缩. / 将本文档作为语义压缩的可观测性指标与探针协议来源。
 Design Pattern File / 设计模式文件: [perception-chain.md](perception-chain.md)
 
+## Quick Navigation / 快速导航
+
+- [Probe Role / 探针定位](#probe-role--探针定位)
+- [Probe Input Contract / 探针输入契约](#probe-input-contract--探针输入契约)
+- [Core Objects / 核心对象](#core-objects--核心对象)
+- [Probe Execution Procedure / 探针执行流程](#probe-execution-procedure--探针执行流程)
+- [Observability Metrics / 可观测性指标](#observability-metrics--可观测性指标)
+- [Quality Gate / 质量门禁](#quality-gate--质量门禁)
+- [Minimum Standalone Run / 独立运行最小版本](#minimum-standalone-run--独立运行最小版本)
+- [Interaction Data Interface / 交互数据接口](#interaction-data-interface--与执行流程交互的数据接口)
+
 ## Probe Role / 探针定位
 
 Probe does not compress / 探针不压缩. It observes the workflow, fills missing runtime data, produces compression advice, and checks quality after compression. / 探针不直接压缩、不删除历史、不改写上下文；它观察工作流、补全运行数据、生成压缩建议，并在压缩后执行质量检查。

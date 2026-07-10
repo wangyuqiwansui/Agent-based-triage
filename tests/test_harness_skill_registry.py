@@ -338,6 +338,20 @@ class HarnessSkillRegistryTest(unittest.TestCase):
                 cell["cell_key"],
             )
 
+    def test_references_over_500_lines_have_quick_navigation(self):
+        for path in SKILL_DIR.joinpath("references").rglob("*.md"):
+            content = path.read_text(encoding="utf-8")
+            if len(content.splitlines()) > 500:
+                self.assertIn(
+                    "## Quick Navigation / 快速导航",
+                    content,
+                    str(path),
+                )
+
+    def test_real_skill_passes_full_validation(self):
+        report = load_validator().validate_skill(SKILL_DIR)
+        self.assertEqual(report.errors, [])
+
 
 if __name__ == "__main__":
     unittest.main()
