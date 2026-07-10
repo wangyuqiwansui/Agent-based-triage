@@ -1,6 +1,8 @@
 import importlib.util
 import pathlib
 import re
+import shutil
+import tempfile
 import unittest
 
 
@@ -73,6 +75,36 @@ def load_generator():
 
 
 class SkillVisualizationGeneratorTest(unittest.TestCase):
+    def test_source_hash_normalizes_markdown_line_endings(self):
+        generator = load_generator()
+
+        with tempfile.TemporaryDirectory(dir=ROOT) as temp_dir:
+            temp_skill = pathlib.Path(temp_dir) / "harness-engineering-patterns"
+            shutil.copytree(SKILL_DIR, temp_skill)
+            target = temp_skill / "references" / "axes.md"
+            normalized = target.read_text(encoding="utf-8").replace("\r\n", "\n")
+            target.write_bytes(normalized.encode("utf-8"))
+            lf_hash = generator.source_hash(temp_skill)
+
+            target.write_bytes(normalized.replace("\n", "\r\n").encode("utf-8"))
+            self.assertEqual(lf_hash, generator.source_hash(temp_skill))
+
+    def test_source_hash_ignores_unrendered_curated_trace_body(self):
+        generator = load_generator()
+
+        with tempfile.TemporaryDirectory(dir=ROOT) as temp_dir:
+            temp_skill = pathlib.Path(temp_dir) / "harness-engineering-patterns"
+            shutil.copytree(SKILL_DIR, temp_skill)
+            trace = temp_skill / "references" / "patterns" / "memory" / "trace.md"
+            before = generator.source_hash(temp_skill)
+
+            trace.write_text(
+                trace.read_text(encoding="utf-8")
+                + "\nCurated note not rendered by the visualization.\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(before, generator.source_hash(temp_skill))
+
     def test_loads_axes_matrix_and_pattern_counts(self):
         generator = load_generator()
 

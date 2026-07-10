@@ -318,9 +318,13 @@ def source_files(skill_dir: pathlib.Path) -> list[pathlib.Path]:
 def source_hash(skill_dir: pathlib.Path) -> str:
     digest = hashlib.sha256()
     for path in source_files(skill_dir):
-        digest.update(path.relative_to(ROOT).as_posix().encode("utf-8"))
+        digest.update(path.relative_to(skill_dir).as_posix().encode("utf-8"))
         digest.update(b"\0")
-        digest.update(path.read_bytes())
+        if path.name == "trace.md":
+            digest.update(b"curated-trace-link")
+        else:
+            normalized = read_text(path).replace("\r\n", "\n").replace("\r", "\n")
+            digest.update(normalized.encode("utf-8"))
         digest.update(b"\0")
     return digest.hexdigest()[:16]
 
