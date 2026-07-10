@@ -83,6 +83,14 @@ class SkillVisualizationGeneratorTest(unittest.TestCase):
         self.assertEqual(len(data["matrix"]), 42)
         self.assertEqual(data["summary"]["named_patterns"], 30)
         self.assertEqual(data["summary"]["extension_candidates"], 12)
+        self.assertEqual(data["matrix"][0]["id"], "CELL_PERCEPTION_CHAIN")
+        self.assertEqual(data["matrix"][0]["pattern_ref"], "PATTERN_0023")
+        self.assertEqual(data["matrix"][0]["source_kind"], "paper_v2")
+        self.assertEqual(data["matrix"][0]["maturity"], "draft")
+        self.assertIn(
+            SKILL_DIR / "references" / "registry.json",
+            generator.source_files(SKILL_DIR),
+        )
         self.assertIn("perception-chain", data["patterns"])
         self.assertEqual(data["patterns"]["perception-chain"]["pattern"], "Semantic Compaction / 语义压缩")
         self.assertEqual(data["patterns"]["perception-chain"]["status"], "named")
@@ -738,6 +746,8 @@ class SkillVisualizationGeneratorTest(unittest.TestCase):
         self.assertIn("Trace Insert / Trace 插入", html)
         self.assertIn("Design Pattern / 设计模式", html)
         self.assertIn("Observability Metrics / 可观测性指标", html)
+        self.assertIn("Provenance / 来源", html)
+        self.assertIn("Maturity / 成熟度", html)
         self.assertIn("data-source-hash=", html)
         self.assertNotIn("{{", html)
 

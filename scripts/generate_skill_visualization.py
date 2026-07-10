@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import html
+import json
 import pathlib
 import re
 from typing import Any
@@ -12,10 +13,94 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 DEFAULT_SKILL_DIR = ROOT / "skills" / "harness-engineering-patterns"
 DEFAULT_OUTPUT = ROOT / "harness-engineering-patterns.html"
 CELL_ORDER = ["chain", "routing", "parallel", "orchestration", "loop", "hierarchy"]
+PROVENANCE_LABELS = {
+    "paper_v2": "Paper v2 / 论文 v2",
+    "paper_blank": "Paper blank / 论文空白",
+    "local_extension": "Local extension / 本地扩展",
+    "local_seed": "Local seed / 本地种子",
+}
+MATURITY_LABELS = {
+    "seed": "Seed / 种子",
+    "draft": "Draft / 草案",
+    "validated": "Validated / 已验证",
+    "operational": "Operational / 运行中",
+}
 
 
 def read_text(path: pathlib.Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def load_registry(skill_dir: pathlib.Path) -> dict[str, Any]:
+    return json.loads(read_text(skill_dir / "references" / "registry.json"))
+
+
+def registry_axes(
+    registry: dict[str, Any],
+) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
+    vertical_axes = [
+        {
+            "id": axis["id"],
+            "key": axis["key"],
+            "en": axis["name_en"],
+            "zh": axis["name_zh"],
+            "question": f"{axis['question_en']} / {axis['question_zh']}",
+            "fit": f"{axis['fit_en']} / {axis['fit_zh']}",
+            "boundary": f"{axis['boundary_en']} / {axis['boundary_zh']}",
+        }
+        for axis in registry["capabilities"]
+    ]
+    horizontal_axes = [
+        {
+            "id": mode["id"],
+            "key": mode["key"],
+            "en": mode["name_en"],
+            "zh": mode["name_zh"],
+            "alias": f"{mode['alias_en']} / {mode['alias_zh']}",
+            "fit": f"{mode['fit_en']} / {mode['fit_zh']}",
+            "boundary": f"{mode['boundary_en']} / {mode['boundary_zh']}",
+        }
+        for mode in registry["topologies"]
+    ]
+    return vertical_axes, horizontal_axes
+
+
+def registry_matrix(registry: dict[str, Any]) -> list[dict[str, str]]:
+    capabilities = {axis["id"]: axis for axis in registry["capabilities"]}
+    topologies = {mode["id"]: mode for mode in registry["topologies"]}
+    matrix = []
+    for cell in registry["cells"]:
+        capability = capabilities[cell["capability_ref"]]
+        topology = topologies[cell["topology_ref"]]
+        status = "named" if cell["status"] == "named" else "extension"
+        matrix.append(
+            {
+                "id": cell["id"],
+                "coordinate": cell["coordinate"],
+                "cell_key": cell["cell_key"],
+                "capability_key": capability["key"],
+                "capability": f"{capability['name_en']} / {capability['name_zh']}",
+                "capability_en": capability["name_en"],
+                "capability_zh": capability["name_zh"],
+                "mode_key": topology["key"],
+                "pattern_ref": cell["pattern_ref"],
+                "pattern": f"{cell['local_name_en']} / {cell['local_name_zh']}",
+                "status": status,
+                "source_kind": cell["source_kind"],
+                "maturity": cell["maturity"],
+                "diagnostic_use": (
+                    f"{cell['diagnostic_use_en']} / {cell['diagnostic_use_zh']}"
+                ),
+                "href": (
+                    "skills/harness-engineering-patterns/" + cell["design_path"]
+                ),
+                "observability_href": (
+                    "skills/harness-engineering-patterns/"
+                    + cell["observability_path"]
+                ),
+            }
+        )
+    return matrix
 
 
 def split_markdown_row(line: str) -> list[str]:
@@ -220,6 +305,7 @@ def parse_selection_card(skill_dir: pathlib.Path) -> dict[str, str]:
 def source_files(skill_dir: pathlib.Path) -> list[pathlib.Path]:
     references = skill_dir / "references"
     files = [
+        references / "registry.json",
         references / "axes.md",
         references / "matrix-index.md",
         references / "pattern-catalog.md",
@@ -241,26 +327,14 @@ def source_hash(skill_dir: pathlib.Path) -> str:
 
 def load_skill_data(skill_dir: pathlib.Path = DEFAULT_SKILL_DIR) -> dict[str, Any]:
     skill_dir = pathlib.Path(skill_dir)
-    vertical_axes, horizontal_axes = parse_axes(skill_dir)
-    matrix = parse_matrix(skill_dir)
+    registry = load_registry(skill_dir)
+    vertical_axes, horizontal_axes = registry_axes(registry)
+    matrix = registry_matrix(registry)
     patterns = parse_pattern_files(skill_dir)
     observability = parse_observability_files(skill_dir)
     cell_guides = parse_cell_guides(skill_dir)
     traces = parse_traces(skill_dir)
     selection_card = parse_selection_card(skill_dir)
-
-    for cell in matrix:
-        pattern_entry = patterns.get(cell["cell_key"])
-        if pattern_entry:
-            cell["status"] = pattern_entry["status"]
-            cell["pattern"] = pattern_entry["pattern"]
-            cell["diagnostic_use"] = pattern_entry["diagnostic_use"]
-        else:
-            cell["status"] = "extension"
-            cell["diagnostic_use"] = "Extension candidate / 扩展候选"
-        observability_entry = observability.get(cell["cell_key"])
-        if observability_entry:
-            cell["observability_href"] = observability_entry["href"]
 
     for axis in vertical_axes:
         guide = cell_guides.get(axis["key"])
@@ -279,6 +353,7 @@ def load_skill_data(skill_dir: pathlib.Path = DEFAULT_SKILL_DIR) -> dict[str, An
     }
     return {
         "title": "Harness Engineering Patterns",
+        "registry": registry,
         "vertical_axes": vertical_axes,
         "horizontal_axes": horizontal_axes,
         "matrix": matrix,
@@ -663,6 +738,8 @@ def render_matrix_row(
 def render_matrix_cell(cell: dict[str, str]) -> str:
     status = cell["status"]
     status_label = "Named / 已命名" if status == "named" else "Extension / 扩展"
+    provenance = PROVENANCE_LABELS.get(cell.get("source_kind", ""), "Unknown / 未知")
+    maturity = MATURITY_LABELS.get(cell.get("maturity", ""), "Unknown / 未知")
     observability_link = ""
     if cell.get("observability_href"):
         observability_link = (
@@ -675,6 +752,8 @@ def render_matrix_cell(cell: dict[str, str]) -> str:
                 <span class="tag {escape_attr(status)}">{escape(status_label)}</span>
                 <a class="pattern" href="{escape_attr(cell['href'])}">{escape(cell['pattern'])}</a>
                 <div class="cell-links"><a class="cell-link" href="{escape_attr(cell['href'])}">Design Pattern / 设计模式</a>{observability_link}</div>
+                <div class="use"><strong>Provenance / 来源:</strong> {escape(provenance)}</div>
+                <div class="use"><strong>Maturity / 成熟度:</strong> {escape(maturity)}</div>
                 <div class="use">{escape(cell['diagnostic_use'])}</div>
               </div>
             </td>"""
