@@ -313,4 +313,4 @@ fusion_probe_event:
 
 ## Trace Hook / 追踪钩子
 
-After observing a run, append a trace entry to [trace.md](trace.md) with modality distribution, route decisions, major metrics, degraded branches, evidence gaps, cache decisions, and recommended route overrides. / 观察一次运行后，在 [trace.md](trace.md) 追加追踪记录，包含模态分布、路由决策、主要指标、降级分支、证据缺口、缓存决策和建议的路由覆盖项。
+After observing a run, produce a project-local runtime Trace at `.harness-analysis/<analysis_id>/trace.yaml` using `references/trace-schema.md`. Include modality distribution, route decisions, major metrics, degraded branches, evidence gaps, cache decisions, and recommended route overrides. / 观察一次运行后，依据 `references/trace-schema.md` 在 `.harness-analysis/<analysis_id>/trace.yaml` 生成项目本地运行时 Trace，包含模态分布、路由决策、主要指标、降级分支、证据缺口、缓存决策和建议的路由覆盖项。

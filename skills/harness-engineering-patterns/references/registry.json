@@ -42,6 +42,99 @@
       "verified"
     ]
   },
+  "governance_rules": [
+    {
+      "id": "GOV_RULE_0001",
+      "name_en": "Registry Authority",
+      "name_zh": "注册表权威性",
+      "description_en": "Structural IDs, coordinates, provenance, status, maturity, and paths come from registry.json.",
+      "description_zh": "结构 ID、坐标、来源、状态、成熟度和路径以 registry.json 为准。",
+      "reference": "references/compiler-workflow.md"
+    },
+    {
+      "id": "GOV_RULE_0002",
+      "name_en": "Project-Local Runtime Trace",
+      "name_zh": "项目本地运行 Trace",
+      "description_en": "Normal analysis writes Trace only to the analyzed project, never to bundled Skill history.",
+      "description_zh": "普通分析仅向被分析项目写入 Trace，不写入 Skill 内置历史。",
+      "reference": "references/trace-schema.md"
+    },
+    {
+      "id": "GOV_RULE_0003",
+      "name_en": "Evidence-Based Maturity",
+      "name_zh": "基于证据的成熟度",
+      "description_en": "Pattern maturity and evaluation claims require explicit evidence, observation windows, and confidence.",
+      "description_zh": "模式成熟度和评价结论必须具有明确证据、观察窗口和置信度。",
+      "reference": "references/evaluation-governance.md"
+    }
+  ],
+  "failure_mode_refs": [
+    {
+      "id": "FAIL_0001",
+      "coordinate": "COG_PERCEPTION__TOP_CHAIN",
+      "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0002",
+      "coordinate": "COG_PERCEPTION__TOP_ROUTING",
+      "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0003",
+      "coordinate": "COG_ACTION__TOP_ROUTING",
+      "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0004",
+      "coordinate": "COG_ACTION__TOP_ROUTING",
+      "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0005",
+      "coordinate": "COG_GOVERNANCE__TOP_ROUTING",
+      "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0006",
+      "coordinate": "COG_MEMORY__TOP_CHAIN",
+      "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0007",
+      "coordinate": "COG_REFLECTION__TOP_LOOP",
+      "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0008",
+      "coordinate": "COG_COLLABORATION__TOP_HIERARCHY",
+      "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0009",
+      "coordinate": "COG_GOVERNANCE__TOP_ORCHESTRATION",
+      "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0010",
+      "coordinate": "COG_MEMORY__TOP_CHAIN",
+      "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0011",
+      "coordinate": "COG_GOVERNANCE__TOP_ROUTING",
+      "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0012",
+      "coordinate": "COG_PERCEPTION__TOP_ROUTING",
+      "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0013",
+      "coordinate": "COG_COLLABORATION__TOP_PARALLEL",
+      "reference": "references/failure-modes.md"
+    }
+  ],
   "capabilities": [
     {
       "id": "COG_PERCEPTION",
@@ -717,7 +810,7 @@
       "local_evidence_count": 0,
       "domain_count": 0,
       "diagnostic_use_en": "Use when incoming context must be classified before choosing a path.",
-      "diagnostic_use_zh": "当输入上下文必须先分类再选择路径时使用。"
+      "diagnostic_use_zh": "当输入上下文必须先分类再选路径时使用。"
     },
     {
       "id": "CELL_PERCEPTION_PARALLEL",
@@ -900,8 +993,8 @@
       "maturity": "draft",
       "local_evidence_count": 2,
       "domain_count": 1,
-      "diagnostic_use_en": "Use when long-running work needs a recoverable control structure for goals, milestones, evidence, gates, and handoff state.",
-      "diagnostic_use_zh": "当长程任务需要可恢复结构管理目标、里程碑、证据、闸门和交接状态时使用。"
+      "diagnostic_use_en": "Use when long-running work needs a recoverable control structure for goals, milestones, evidence, mechanical truth, gates, probes, and handoff state.",
+      "diagnostic_use_zh": "当长程任务需要用可恢复的控制结构管理目标、里程碑、证据、机械真值、闸门、探针和交接状态时使用。"
     },
     {
       "id": "CELL_MEMORY_LOOP",
@@ -950,8 +1043,8 @@
       "maturity": "draft",
       "local_evidence_count": 1,
       "domain_count": 1,
-      "diagnostic_use_en": "Use when information must be retained across scoped memory levels with lifecycle and evidence controls.",
-      "diagnostic_use_zh": "当信息必须跨有作用域的记忆层级保留，并受生命周期与证据控制时使用。"
+      "diagnostic_use_en": "Use when information must be retained by scope, lifecycle, authority, evidence, and context budget across multiple memory levels.",
+      "diagnostic_use_zh": "当信息必须按照作用域、生命周期、权威来源、证据和上下文预算跨多层记忆保留时使用。"
     },
     {
       "id": "CELL_REASONING_CHAIN",
@@ -1226,7 +1319,7 @@
       "maturity": "draft",
       "local_evidence_count": 0,
       "domain_count": 0,
-      "diagnostic_use_en": "Use when action execution must be constrained by layered pre- and post-guardrails.",
+      "diagnostic_use_en": "Use when action execution must be constrained by layered pre/post guardrails.",
       "diagnostic_use_zh": "当行动执行必须受分层前后置护栏约束时使用。"
     },
     {
@@ -1272,8 +1365,8 @@
       "maturity": "draft",
       "local_evidence_count": 0,
       "domain_count": 0,
-      "diagnostic_use_en": "Use when reflection routes work to packaged evaluators, repair Skills, or review routines.",
-      "diagnostic_use_zh": "当反思需要路由到封装评估器、修复 Skill 或评审例程时使用。"
+      "diagnostic_use_en": "Use when reflection routes work to packaged evaluators, repair skills, or review routines.",
+      "diagnostic_use_zh": "当反思需要路由到封装评估器、修复技能或评审例程时使用。"
     },
     {
       "id": "CELL_REFLECTION_PARALLEL",

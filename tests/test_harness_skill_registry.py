@@ -121,6 +121,65 @@ class HarnessSkillRegistryTest(unittest.TestCase):
             any("duplicate_pattern_id" in error for error in report.errors)
         )
 
+    def test_duplicate_registry_coordinate_fails(self):
+        with copied_skill() as skill_dir:
+            registry = read_registry(skill_dir)
+            registry["cells"][1]["coordinate"] = registry["cells"][0]["coordinate"]
+            write_registry(skill_dir, registry)
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(any("registry_shape" in error for error in report.errors))
+
+    def test_unknown_axis_reference_fails(self):
+        with copied_skill() as skill_dir:
+            registry = read_registry(skill_dir)
+            registry["cells"][0]["capability_ref"] = "COG_UNKNOWN"
+            write_registry(skill_dir, registry)
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(any("registry_shape" in error for error in report.errors))
+
+    def test_invalid_source_kind_fails(self):
+        with copied_skill() as skill_dir:
+            registry = read_registry(skill_dir)
+            registry["cells"][0]["source_kind"] = "invented_source"
+            write_registry(skill_dir, registry)
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(any("registry_shape" in error for error in report.errors))
+
+    def test_upstream_provenance_count_drift_fails(self):
+        with copied_skill() as skill_dir:
+            registry = read_registry(skill_dir)
+            registry["upstream_sources"][0]["named_pattern_count"] = 27
+            write_registry(skill_dir, registry)
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(any("registry_shape" in error for error in report.errors))
+
+    def test_registry_declares_governance_and_failure_references(self):
+        registry = self.load_registry()
+
+        self.assertGreaterEqual(len(registry["governance_rules"]), 3)
+        self.assertEqual(
+            {item["id"] for item in registry["failure_mode_refs"]},
+            {f"FAIL_{number:04d}" for number in range(1, 14)},
+        )
+
+    def test_missing_governance_references_fails(self):
+        with copied_skill() as skill_dir:
+            registry = read_registry(skill_dir)
+            registry.pop("governance_rules", None)
+            write_registry(skill_dir, registry)
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(any("registry_shape" in error for error in report.errors))
+
     def test_missing_design_file_fails(self):
         with copied_skill() as skill_dir:
             registry = read_registry(skill_dir)
@@ -198,6 +257,59 @@ class HarnessSkillRegistryTest(unittest.TestCase):
         self.assertTrue(
             any("bundled_trace_write" in error for error in report.errors)
         )
+
+    def test_path_first_bundled_trace_write_instruction_fails(self):
+        with copied_skill() as skill_dir:
+            matrix = skill_dir / "references" / "matrix-index.md"
+            matrix.write_text(
+                matrix.read_text(encoding="utf-8")
+                + "\nUse `references/patterns/<capability-key>/trace.md` "
+                "to record outcomes. / 使用该内置路径记录结果。\n",
+                encoding="utf-8",
+            )
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(
+            any("bundled_trace_write" in error for error in report.errors)
+        )
+
+    def test_matrix_labels_are_compared_per_cell(self):
+        with copied_skill() as skill_dir:
+            matrix = skill_dir / "references" / "matrix-index.md"
+            content = matrix.read_text(encoding="utf-8")
+            first = "[Semantic Compaction / 语义压缩](patterns/perception/perception-chain.md)"
+            second = "[Context Triage / 上下文分诊](patterns/perception/perception-routing.md)"
+            content = content.replace(first, "__FIRST__").replace(
+                second,
+                f"[Semantic Compaction / 语义压缩](patterns/perception/perception-routing.md)",
+            ).replace(
+                "__FIRST__",
+                "[Context Triage / 上下文分诊](patterns/perception/perception-chain.md)",
+            )
+            matrix.write_text(content, encoding="utf-8")
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(any("matrix_drift" in error for error in report.errors))
+
+    def test_stale_design_header_fails(self):
+        with copied_skill() as skill_dir:
+            registry = read_registry(skill_dir)
+            target = skill_dir / registry["cells"][0]["design_path"]
+            content = target.read_text(encoding="utf-8")
+            target.write_text(
+                content.replace(
+                    "# Semantic Compaction / 语义压缩",
+                    "# Stale Pattern / 过期模式",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(any("catalog_drift" in error for error in report.errors))
 
     def test_skill_has_bounded_output_and_project_local_trace_contracts(self):
         validator = load_validator()

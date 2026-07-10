@@ -44,7 +44,7 @@ This row currently has 5 named pattern candidates and 1 extension candidate. / �
 
 ## Trace / 追踪
 
-Record pattern usage outcomes in [trace.md](trace.md) after applying a design pattern. / 应用设计模式之后，在 [trace.md](trace.md) 中记录使用结果。
+After applying a design pattern, produce a project-local runtime Trace at `.harness-analysis/<analysis_id>/trace.yaml` using `references/trace-schema.md`. / 应用设计模式后，依据 `references/trace-schema.md` 在 `.harness-analysis/<analysis_id>/trace.yaml` 生成项目本地运行时 Trace。
 
 ## Navigation / 导航
 
