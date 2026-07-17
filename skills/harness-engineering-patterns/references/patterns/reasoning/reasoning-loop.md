@@ -7,6 +7,8 @@ Source / 来源: arXiv:2605.13850 (https://arxiv.org/html/2605.13850)
 
 Use this file as the design pattern source for this 7x6 matrix intersection. / 将本文档作为该 7x6 交织点的设计模式来源。
 
+Runtime Protocols / 运行协议: [Reasoning Execution Flow / 推理执行流程](../../reasoning-execution-flow.md); [Workflow Observability Probes / 工作流可观测性探针](../../workflow-observability-probes.md).
+
 ## Design Pattern / 设计模式
 
 Iterative Hypothesis Testing alternates hypothesis generation with evidence gathering: the agent probes the environment, observes results, updates hypothesis confidence, and repeats until a hypothesis is confirmed, refuted, or the budget is exhausted. / 迭代假设测试让假设生成与证据收集交替进行：智能体探测环境、观察结果、更新假设置信度，如此往复，直到假设被确认、被证伪或预算耗尽。
@@ -34,10 +36,18 @@ hypothesis_loop:
   exit_conditions:
     confirmed: one hypothesis passes its probe and rivals are refuted / 一个假设通过探测且竞争假设被证伪
     refuted_all: hypothesis space exhausted, escalate with evidence trail / 假设空间耗尽，携证据链升级
-    budget_exhausted: iteration or token budget hit, report best surviving hypothesis / 迭代或 token 预算触顶，报告最优存活假设
-  max_iterations: 0             # hard cap against FAIL_0007 / 防 FAIL_0007 的硬上限
+    budget_exhausted: iteration or token budget hit, fail or escalate and label every surviving hypothesis unverified / 迭代或 token 预算触顶，失败或升级，并将所有存活假设标为未验证
+    no_progress: configured streak reached, fail or escalate with the evidence trail / 达到已配置无进展连续轮次，携证据链失败或升级
+  max_iterations: 6             # positive hard cap; zero is invalid / 正整数硬上限；零为非法值
+  max_no_progress_iterations: 2 # configured stop predicate / 已配置停止谓词
   loop_log: probe, observation, confidence delta per iteration / 每轮记录探测、观察、置信度变化
 ```
+
+### Shared Execution Contract / 共享执行契约
+
+Use `PATTERN_0051` to record, per round, the key unknown, selected action, expected discrimination, external observation, retained/eliminated/added hypotheses, progress state, snapshot versions, resource use, and stop evaluation. / 使用 `PATTERN_0051` 逐轮记录关键未知、所选动作、预期判别力、外部观察、保留/淘汰/新增假设、进展状态、快照版本、资源消耗和停止判断。
+
+Require every round to add valid evidence, eliminate a hypothesis, or materially change the decision. A missing observation is an incomplete round, not progress and not proof of no progress. When a configured no-progress streak, risk boundary, permission boundary, or budget limit fires, enter `failed` or `escalated` instead of silently resetting the loop budget. A best-surviving hypothesis may be included only as an explicitly unverified candidate, never as a `completed` decision. / 每轮必须新增有效证据、淘汰假设或实质改变决定。观察缺失表示轮次不完整，既不算进展，也不能直接作为无进展证据。触发已配置无进展连续轮次、风险边界、权限边界或预算上限时，进入 `failed` 或 `escalated`，不得静默重置循环预算。最优存活假设只能作为显式标注的未验证候选附带，绝不能作为 `completed` 决定。
 
 ### Pattern Template / 模式模板
 
@@ -50,7 +60,7 @@ hypothesis_loop:
 - 调整方向 / Adjustment Direction: Make hypotheses explicit and falsifiable, and let the cheapest discriminating probe — not intuition — decide which survives. / 显式化、可证伪化假设，让最便宜的判别性探测而非直觉决定哪个假设存活。
 - 修改方式 / How To Modify: 1) Write 2-4 rival hypotheses with prior confidence into the register. 2) Design the cheapest discriminating probe for each. 3) Loop probe, observe, update confidence, logging each iteration. 4) Set max_iterations and the three exit conditions before starting. 5) On exhaustion, escalate with the evidence trail instead of guessing. / 1）把 2-4 个竞争假设连同先验置信写入台账；2）为每个假设设计最便宜的判别性探测；3）循环"探测、观察、更新置信度"并逐轮记录；4）开始前设定 max_iterations 与三类退出条件；5）耗尽时携证据链升级而不是猜测。
 - 输入 / Inputs: Failure or question statement, hypothesis register, probe toolset with permissions, iteration and token budget. / 失败或问题陈述、假设台账、带权限的探测工具集、迭代与 token 预算。
-- 输出 / Outputs: Confirmed or best-surviving hypothesis with confidence, per-iteration loop log, eliminated hypotheses with refuting evidence, escalation package on exhaustion. / 带置信度的已确认或最优存活假设、逐轮循环日志、带证伪证据的被排除假设、耗尽时的升级包。
+- 输出 / Outputs: Confirmed hypothesis after mandatory validation; otherwise explicitly unverified surviving candidates, per-iteration loop log, eliminated hypotheses with refuting evidence, and a failure or escalation package on exhaustion. / 必选验证通过后的已确认假设；否则为显式标注未验证的存活候选、逐轮循环日志、带证伪证据的被排除假设，以及耗尽时的失败或升级包。
 - 风险与治理 / Risks & Governance: Runaway retries without new evidence (`FAIL_0007`) — enforce max_iterations and require each iteration to add evidence rather than repeat the last probe; unlogged iterations make the conclusion unauditable — write the loop log per `GOV_0002`; probes that mutate the environment must run inside sandbox boundaries per `GOV_0003`. / 无新证据的失控重试（`FAIL_0007`）——强制 max_iterations 并要求每轮新增证据而非重复上一次探测；不记录迭代会让结论不可审计——循环日志按 `GOV_0002` 入账；会改变环境的探测必须按 `GOV_0003` 在沙箱边界内运行。
 
 Observability Metrics File / 可观测性指标文件: [reasoning-loop-observability.md](reasoning-loop-observability.md)

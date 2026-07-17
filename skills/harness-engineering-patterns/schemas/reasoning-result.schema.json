@@ -1,0 +1,926 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/reasoning-result.schema.json",
+  "x-contract-version": "1.0.0",
+  "title": "推理执行结果 / Reasoning Execution Result",
+  "description": "绑定候选、证据、验证结果与执行契约的可审计最终结果，不包含私密思维过程。/ An auditable final result bound to a candidate, evidence, validation results, and execution contract, without private chain-of-thought.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "result_id",
+    "result_version",
+    "result_hash",
+    "workflow_id",
+    "task_id",
+    "run_id",
+    "scene_id",
+    "terminal_state",
+    "terminal_reason",
+    "risk_level",
+    "contract_binding",
+    "candidate_binding",
+    "execution",
+    "budget_accounting",
+    "release_gate",
+    "evidence_bindings",
+    "evidence",
+    "steps",
+    "validations",
+    "claims",
+    "final_decision",
+    "unresolved_items",
+    "next_actions",
+    "output",
+    "limitations",
+    "field_provenance",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "模式版本 / Schema version",
+      "description": "本结果契约的语义版本。/ Semantic version of this result contract."
+    },
+    "result_id": { "$ref": "#/$defs/Identifier", "title": "结果标识 / Result identifier" },
+    "result_version": { "$ref": "#/$defs/SemanticVersion", "title": "结果版本 / Result version" },
+    "result_hash": { "$ref": "#/$defs/Sha256", "title": "结果哈希 / Result hash" },
+    "workflow_id": { "$ref": "#/$defs/Identifier", "title": "工作流标识 / Workflow identifier" },
+    "task_id": { "$ref": "#/$defs/Identifier", "title": "任务标识 / Task identifier" },
+    "run_id": { "$ref": "#/$defs/Identifier", "title": "运行标识 / Run identifier" },
+    "scene_id": { "$ref": "#/$defs/Identifier", "title": "场景标识 / Scene identifier" },
+    "terminal_state": {
+      "enum": ["completed", "rejected", "failed", "escalated", "cancelled", "timed_out"],
+      "title": "终态 / Terminal state",
+      "description": "结果生成时的权威终态。/ Authoritative terminal state when the result was produced."
+    },
+    "terminal_reason": {
+      "$ref": "#/$defs/TerminalReason",
+      "title": "结构化终态原因 / Structured terminal reason"
+    },
+    "risk_level": {
+      "enum": ["low", "medium", "high", "critical"],
+      "title": "风险级别 / Risk level"
+    },
+    "contract_binding": { "$ref": "#/$defs/VersionedBinding", "title": "契约绑定 / Contract binding" },
+    "candidate_binding": {
+      "$ref": "#/$defs/BindingState",
+      "title": "候选绑定状态 / Candidate binding state",
+      "description": "完成时必须观测到候选；候选生成前终止时显式标记缺失或不适用。/ Must be observed on completion; explicitly marks missing or not-applicable when execution terminates before a candidate exists."
+    },
+    "execution": {
+      "$ref": "#/$defs/ExecutionSummary",
+      "title": "执行配置摘要 / Execution configuration summary"
+    },
+    "budget_accounting": {
+      "$ref": "#/$defs/BudgetAccounting",
+      "title": "预算核算 / Budget accounting"
+    },
+    "release_gate": {
+      "$ref": "#/$defs/ReleaseGate",
+      "title": "放行门 / Release gate"
+    },
+    "release_gate_evaluated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "放行门评估时间 / Release-gate evaluation time",
+      "description": "权威放行门评估所使用的时间；证据新鲜度必须按此时间重算。/ Authoritative time used by the release gate; evidence freshness must be recomputed at this time."
+    },
+    "evidence_bindings": {
+      "type": "array",
+      "title": "证据绑定 / Evidence bindings",
+      "description": "结果实际依赖的证据标识、版本与哈希。/ Identifiers, versions, and hashes of evidence actually used by the result.",
+      "items": { "$ref": "#/$defs/EvidenceBinding" }
+    },
+    "evidence": {
+      "type": "array",
+      "title": "证据记录 / Evidence records",
+      "items": { "$ref": "#/$defs/Evidence" }
+    },
+    "steps": {
+      "type": "array",
+      "title": "步骤记录 / Step records",
+      "items": { "$ref": "#/$defs/StepRecord" }
+    },
+    "validations": {
+      "type": "array",
+      "title": "验证记录 / Validation records",
+      "items": { "$ref": "#/$defs/ValidationResult" }
+    },
+    "claims": {
+      "type": "array",
+      "title": "可核验声明 / Verifiable claims",
+      "description": "最终结果中的可核验声明及其证据绑定。/ Verifiable claims in the final result and their evidence bindings.",
+      "items": { "$ref": "#/$defs/Claim" }
+    },
+    "final_decision": {
+      "$ref": "#/$defs/ObservedValue",
+      "title": "最终决定 / Final decision",
+      "description": "结论、答案或动作结果的外部可审计表示；非完成终态可以显式标记为未知或不适用。/ Externally auditable representation of the conclusion, answer, or action result; non-completed terminal states may explicitly mark it unknown or not applicable."
+    },
+    "unresolved_items": {
+      "type": "array",
+      "title": "未解决事项 / Unresolved items",
+      "description": "仍待证据、验证或授权处理的事项。/ Items still awaiting evidence, validation, or authorization.",
+      "items": { "$ref": "#/$defs/UnresolvedItem" }
+    },
+    "next_actions": {
+      "type": "array",
+      "title": "后续动作 / Next actions",
+      "description": "由终态决定产生的外部可执行后续动作。/ Externally executable follow-up actions produced by the terminal decision.",
+      "items": { "$ref": "#/$defs/NextAction" }
+    },
+    "output": {
+      "$ref": "#/$defs/ResultOutput",
+      "title": "结果输出 / Result output"
+    },
+    "limitations": {
+      "type": "array",
+      "title": "局限 / Limitations",
+      "description": "未解决、不确定或需要人工处理的局限。/ Unresolved, uncertain, or human-dependent limitations.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["limitation_id", "kind", "severity"],
+        "properties": {
+          "limitation_id": { "$ref": "#/$defs/Identifier" },
+          "kind": { "enum": ["missing_evidence", "unknown", "scope", "budget", "validator", "human_required"] },
+          "severity": { "enum": ["info", "warning", "error", "critical"] },
+          "claim_id": { "$ref": "#/$defs/Identifier" }
+        }
+      }
+    },
+    "field_provenance": {
+      "type": "array",
+      "title": "字段来源 / Field provenance",
+      "description": "结果字段的来源、版本和值状态。/ Sources, versions, and value states for result fields.",
+      "items": { "$ref": "#/$defs/FieldProvenance" },
+      "minItems": 1
+    },
+    "created_at": { "type": "string", "format": "date-time", "title": "创建时间 / Creation time" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "terminal_state": { "const": "completed" } }, "required": ["terminal_state"] },
+      "then": {
+        "required": ["release_gate_evaluated_at"],
+        "properties": {
+          "candidate_binding": {
+            "properties": { "state": { "const": "observed" } },
+            "required": ["state", "value"]
+          },
+          "release_gate": {
+            "properties": { "evidence_sufficiency_met": { "const": true } }
+          },
+          "claims": {
+            "not": {
+              "contains": {
+                "type": "object",
+                "properties": { "criticality": { "const": "critical" }, "status": { "const": "unresolved" } },
+                "required": ["criticality", "status"]
+              }
+            }
+          },
+          "final_decision": {
+            "properties": { "state": { "const": "observed" } },
+            "required": ["state", "value"]
+          },
+          "unresolved_items": {
+            "not": {
+              "contains": {
+                "type": "object",
+                "properties": {
+                  "criticality": { "const": "critical" },
+                  "blocking": { "const": true }
+                },
+                "required": ["criticality", "blocking"]
+              }
+            }
+          },
+          "evidence": {
+            "items": {
+              "properties": {
+                "candidate_binding": {
+                  "properties": { "state": { "const": "observed" } },
+                  "required": ["state", "value"]
+                }
+              }
+            }
+          },
+          "steps": {
+            "items": {
+              "properties": {
+                "candidate_binding": {
+                  "properties": { "state": { "const": "observed" } },
+                  "required": ["state", "value"]
+                }
+              }
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "release_gate": {
+                  "properties": { "basis": { "const": "mandatory_validators" } },
+                  "required": ["basis"]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "terminal_reason": {
+                  "properties": { "code": { "const": "completed_validated" } }
+                },
+                "validations": { "minItems": 1 },
+                "release_gate": {
+                  "properties": {
+                    "validator_gates": {
+                      "contains": {
+                        "type": "object",
+                        "properties": { "required": { "const": true } },
+                        "required": ["required"]
+                      },
+                      "minContains": 1,
+                      "not": {
+                        "contains": {
+                          "type": "object",
+                          "properties": {
+                            "required": { "const": true },
+                            "result": { "not": { "const": "passed" } }
+                          },
+                          "required": ["required", "result"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "release_gate": {
+            "properties": { "basis": { "const": "direct_release_rule" } },
+            "required": ["basis"]
+          }
+        },
+        "required": ["release_gate"]
+      },
+      "then": { "properties": { "risk_level": { "const": "low" } } }
+    },
+    {
+      "if": {
+        "properties": {
+          "terminal_state": { "const": "completed" },
+          "release_gate": {
+            "properties": { "basis": { "const": "direct_release_rule" } },
+            "required": ["basis"]
+          }
+        },
+        "required": ["terminal_state", "release_gate"]
+      },
+      "then": {
+        "properties": {
+          "terminal_reason": {
+            "properties": { "code": { "const": "completed_direct_release" } }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "terminal_state": { "const": "completed" } }, "required": ["terminal_state"] },
+      "then": {
+        "properties": {
+          "terminal_reason": {
+            "properties": {
+              "category": { "const": "success" },
+              "code": { "enum": ["completed_validated", "completed_direct_release"] }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "terminal_state": { "const": "rejected" } }, "required": ["terminal_state"] },
+      "then": {
+        "properties": {
+          "terminal_reason": {
+            "properties": {
+              "category": { "enum": ["policy", "validation", "evidence"] },
+              "code": { "enum": ["policy_rejected", "validation_failed", "evidence_insufficient"] }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "terminal_state": { "const": "failed" } }, "required": ["terminal_state"] },
+      "then": {
+        "properties": {
+          "terminal_reason": {
+            "properties": {
+              "category": { "enum": ["validation", "evidence", "budget", "execution", "system"] },
+              "code": { "enum": ["validation_failed", "evidence_insufficient", "budget_exhausted", "execution_failed", "system_error", "unknown_failure"] }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "terminal_state": { "const": "escalated" } }, "required": ["terminal_state"] },
+      "then": {
+        "properties": {
+          "terminal_reason": {
+            "properties": {
+              "category": { "enum": ["policy", "validation", "evidence", "budget", "human"] },
+              "code": { "enum": ["policy_rejected", "validation_failed", "evidence_insufficient", "budget_exhausted", "human_escalation"] }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "terminal_state": { "const": "cancelled" } }, "required": ["terminal_state"] },
+      "then": {
+        "properties": {
+          "terminal_reason": {
+            "properties": {
+              "category": { "const": "cancellation" },
+              "code": { "enum": ["user_cancelled", "parent_cancelled"] }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "terminal_state": { "const": "timed_out" } }, "required": ["terminal_state"] },
+      "then": {
+        "properties": {
+          "terminal_reason": {
+            "properties": {
+              "category": { "const": "timeout" },
+              "code": { "enum": ["deadline_reached", "execution_timed_out"] }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "Identifier": {
+      "title": "稳定标识 / Stable identifier",
+      "description": "工作流内稳定且可引用的标识。/ A stable, referenceable identifier within a workflow.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "title": "语义版本 / Semantic version",
+      "description": "契约或记录的语义版本。/ Semantic version of a contract or record.",
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": {
+      "title": "SHA-256 哈希 / SHA-256 hash",
+      "description": "带算法前缀的十六进制完整性哈希。/ A hexadecimal integrity hash with an algorithm prefix.",
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "ValidationOutcome": {
+      "title": "验证结果 / Validation result",
+      "description": "验证器的权威结果枚举。/ Authoritative outcome enumeration for validators.",
+      "enum": ["not_run", "passed", "conditionally_passed", "repairable_failure", "nonrepairable_failure", "human_required", "timed_out"]
+    },
+    "VersionedBinding": {
+      "type": "object",
+      "title": "版本化绑定 / Versioned binding",
+      "description": "绑定到标识、版本和内容哈希，防止旧结果错误复用。/ Binds to identifier, version, and content hash to prevent stale-result reuse.",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "SafeExternalValue": {
+      "title": "安全外部值 / Safe external value",
+      "description": "递归拒绝私密推理字段名，仅允许可外部审计的数据。/ Recursively rejects private-reasoning field names and permits only externally auditable data.",
+      "oneOf": [
+        { "type": ["string", "number", "boolean", "null"] },
+        { "type": "array", "items": { "$ref": "#/$defs/SafeExternalValue" } },
+        {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/SafeExternalPropertyName" },
+          "additionalProperties": { "$ref": "#/$defs/SafeExternalValue" }
+        }
+      ]
+    },
+    "SafeExternalPropertyName": {
+      "title": "安全外部字段名 / Safe external property name",
+      "description": "大小写不敏感地拒绝私密推理字段名。/ Rejects private-reasoning property names case-insensitively.",
+      "type": "string",
+      "not": {
+        "pattern": "^(?:[cC][hH][aA][iI][nN]_[oO][fF]_[tT][hH][oO][uU][gG][hH][tT]|[pP][rR][iI][vV][aA][tT][eE]_[cC][oO][tT]|[hH][iI][dD][dD][eE][nN]_[rR][eE][aA][sS][oO][nN][iI][nN][gG]|[iI][nN][tT][eE][rR][nN][aA][lL]_[mM][oO][nN][oO][lL][oO][gG][uU][eE]|[rR][eE][aA][sS][oO][nN][iI][nN][gG]_[sS][cC][rR][aA][tT][cC][hH][pP][aA][dD]|[sS][cC][rR][aA][tT][cC][hH][pP][aA][dD])$"
+      }
+    },
+    "BindingState": {
+      "title": "绑定状态 / Binding state",
+      "description": "显式区分可用绑定与缺失、未知或不适用绑定。/ Explicitly distinguishes an available binding from a missing, unknown, or not-applicable binding.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": { "state": { "const": "observed" }, "value": { "$ref": "#/$defs/VersionedBinding" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+        }
+      ]
+    },
+    "TerminalReason": {
+      "type": "object",
+      "title": "结构化终态原因 / Structured terminal reason",
+      "description": "使用稳定类别和原因码记录终止原因。/ Records termination using stable categories and reason codes.",
+      "additionalProperties": false,
+      "required": ["category", "code", "source_binding"],
+      "properties": {
+        "category": { "enum": ["success", "policy", "validation", "evidence", "budget", "execution", "human", "system", "cancellation", "timeout"] },
+        "code": { "enum": ["completed_validated", "completed_direct_release", "policy_rejected", "validation_failed", "evidence_insufficient", "budget_exhausted", "execution_failed", "human_escalation", "user_cancelled", "parent_cancelled", "deadline_reached", "execution_timed_out", "system_error", "unknown_failure"] },
+        "source_binding": { "$ref": "#/$defs/BindingState" }
+      }
+    },
+    "ReasoningConfiguration": {
+      "type": "object",
+      "title": "推理配置 / Reasoning configuration",
+      "description": "分别记录执行模式、推理深度和主、支撑拓扑。/ Records execution mode, reasoning depth, and primary/supporting topologies separately.",
+      "additionalProperties": false,
+      "required": ["execution_mode", "reasoning_depth", "primary_topology", "supporting_topologies"],
+      "properties": {
+        "execution_mode": { "enum": ["direct", "chain", "parallel", "iterative"] },
+        "reasoning_depth": { "enum": ["direct", "deliberative"] },
+        "primary_topology": { "oneOf": [{ "type": "null" }, { "enum": ["chain", "parallel", "loop"] }] },
+        "supporting_topologies": { "type": "array", "items": { "enum": ["orchestration", "hierarchy"] }, "uniqueItems": true, "maxItems": 2 }
+      },
+      "allOf": [
+        { "if": { "properties": { "execution_mode": { "const": "direct" } }, "required": ["execution_mode"] }, "then": { "properties": { "reasoning_depth": { "const": "direct" }, "primary_topology": { "type": "null" } } } },
+        { "if": { "properties": { "execution_mode": { "const": "chain" } }, "required": ["execution_mode"] }, "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "chain" } } } },
+        { "if": { "properties": { "execution_mode": { "const": "parallel" } }, "required": ["execution_mode"] }, "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "parallel" } } } },
+        { "if": { "properties": { "execution_mode": { "const": "iterative" } }, "required": ["execution_mode"] }, "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "loop" } } } }
+      ]
+    },
+    "ModeSwitchRecord": {
+      "type": "object",
+      "title": "模式切换记录 / Mode-switch record",
+      "description": "绑定切换前后配置、触发原因、契约规则与时间。/ Binds pre/post configurations, trigger, contract rule, and time for a mode switch.",
+      "additionalProperties": false,
+      "required": ["switch_id", "from", "to", "trigger", "switch_rule_binding", "switched_at"],
+      "properties": {
+        "switch_id": { "$ref": "#/$defs/Identifier" },
+        "from": { "$ref": "#/$defs/ReasoningConfiguration" },
+        "to": { "$ref": "#/$defs/ReasoningConfiguration" },
+        "trigger": { "enum": ["insufficient_evidence", "conflicting_evidence", "validator_failure", "budget_pressure", "risk_increase", "human_request", "tool_unavailable"] },
+        "switch_rule_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "switched_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ExecutionSummary": {
+      "type": "object",
+      "title": "执行摘要 / Execution summary",
+      "description": "记录初始与最终推理配置以及全部模式切换。/ Records initial and final reasoning configurations and every mode switch.",
+      "additionalProperties": false,
+      "required": ["initial_configuration", "final_configuration", "mode_switches"],
+      "properties": {
+        "initial_configuration": { "$ref": "#/$defs/ReasoningConfiguration" },
+        "final_configuration": { "$ref": "#/$defs/ReasoningConfiguration" },
+        "mode_switches": { "type": "array", "items": { "$ref": "#/$defs/ModeSwitchRecord" } }
+      }
+    },
+    "PositiveLimitState": {
+      "title": "正数限制状态 / Positive limit state",
+      "description": "预算限制只能为正数，未配置或未知时使用显式状态。/ A budget limit is positive; unconfigured or unknown limits use explicit states.",
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["state", "value"], "properties": { "state": { "const": "observed" }, "value": { "type": "number", "exclusiveMinimum": 0 } } },
+        { "type": "object", "additionalProperties": false, "required": ["state"], "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } } }
+      ]
+    },
+    "NonnegativeUsageState": {
+      "title": "非负使用量状态 / Nonnegative usage state",
+      "description": "严格区分正使用量、观测零值以及缺失、未知或不适用。/ Strictly distinguishes positive usage, observed zero, and missing, unknown, or not-applicable usage.",
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["state", "value"], "properties": { "state": { "const": "observed" }, "value": { "type": "number", "exclusiveMinimum": 0 } } },
+        { "type": "object", "additionalProperties": false, "required": ["state", "value"], "properties": { "state": { "const": "observed_zero" }, "value": { "type": "number", "const": 0 } } },
+        { "type": "object", "additionalProperties": false, "required": ["state"], "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } } }
+      ]
+    },
+    "BudgetDimensions": {
+      "type": "object",
+      "title": "预算维度 / Budget dimensions",
+      "description": "覆盖所有受治理预算维度。/ Covers every governed budget dimension.",
+      "additionalProperties": false,
+      "required": ["reasoning_tokens", "latency_ms", "model_calls", "tool_calls", "parallel_paths", "iterations", "retries", "total_cost_units"],
+      "properties": {
+        "reasoning_tokens": {},
+        "latency_ms": {},
+        "model_calls": {},
+        "tool_calls": {},
+        "parallel_paths": {},
+        "iterations": {},
+        "retries": {},
+        "total_cost_units": {}
+      }
+    },
+    "BudgetAccounting": {
+      "type": "object",
+      "title": "预算核算 / Budget accounting",
+      "description": "逐维度记录预算限制、实际使用和耗尽维度，禁止跨单位相加。/ Records per-dimension limits, actual usage, and exhausted dimensions without summing heterogeneous units.",
+      "additionalProperties": false,
+      "required": ["limits", "used", "exhausted_dimensions"],
+      "properties": {
+        "limits": {
+          "allOf": [
+            { "$ref": "#/$defs/BudgetDimensions" },
+            { "properties": { "reasoning_tokens": { "$ref": "#/$defs/PositiveLimitState" }, "latency_ms": { "$ref": "#/$defs/PositiveLimitState" }, "model_calls": { "$ref": "#/$defs/PositiveLimitState" }, "tool_calls": { "$ref": "#/$defs/PositiveLimitState" }, "parallel_paths": { "$ref": "#/$defs/PositiveLimitState" }, "iterations": { "$ref": "#/$defs/PositiveLimitState" }, "retries": { "$ref": "#/$defs/PositiveLimitState" }, "total_cost_units": { "$ref": "#/$defs/PositiveLimitState" } } }
+          ]
+        },
+        "used": {
+          "allOf": [
+            { "$ref": "#/$defs/BudgetDimensions" },
+            { "properties": { "reasoning_tokens": { "$ref": "#/$defs/NonnegativeUsageState" }, "latency_ms": { "$ref": "#/$defs/NonnegativeUsageState" }, "model_calls": { "$ref": "#/$defs/NonnegativeUsageState" }, "tool_calls": { "$ref": "#/$defs/NonnegativeUsageState" }, "parallel_paths": { "$ref": "#/$defs/NonnegativeUsageState" }, "iterations": { "$ref": "#/$defs/NonnegativeUsageState" }, "retries": { "$ref": "#/$defs/NonnegativeUsageState" }, "total_cost_units": { "$ref": "#/$defs/NonnegativeUsageState" } } }
+          ]
+        },
+        "exhausted_dimensions": { "type": "array", "items": { "enum": ["reasoning_tokens", "latency_ms", "model_calls", "tool_calls", "parallel_paths", "iterations", "retries", "total_cost_units"] }, "uniqueItems": true }
+      }
+    },
+    "ValidatorGate": {
+      "type": "object",
+      "title": "验证器门记录 / Validator gate record",
+      "description": "将验证器及验证结果绑定到放行决定。/ Binds a validator and its result to the release decision.",
+      "additionalProperties": false,
+      "required": ["validator_binding", "validation_binding", "required", "result"],
+      "properties": {
+        "validator_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "validation_binding": { "$ref": "#/$defs/BindingState" },
+        "required": { "type": "boolean" },
+        "result": { "$ref": "#/$defs/ValidationOutcome" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "result": { "enum": ["passed", "conditionally_passed", "repairable_failure", "nonrepairable_failure", "human_required", "timed_out"] } }, "required": ["result"] },
+          "then": { "properties": { "validation_binding": { "properties": { "state": { "const": "observed" } }, "required": ["state", "value"] } } }
+        }
+      ]
+    },
+    "ReleaseGate": {
+      "title": "放行门 / Release gate",
+      "description": "记录 mandatory validator 或低风险 direct rule 的唯一放行依据。/ Records the sole release basis: mandatory validators or a low-risk direct rule.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["basis", "evidence_sufficiency_met", "validator_gates"],
+          "properties": {
+            "basis": { "const": "mandatory_validators" },
+            "evidence_sufficiency_met": { "type": "boolean" },
+            "validator_gates": { "type": "array", "items": { "$ref": "#/$defs/ValidatorGate" } }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["basis", "evidence_sufficiency_met", "direct_rule_binding"],
+          "properties": {
+            "basis": { "const": "direct_release_rule" },
+            "evidence_sufficiency_met": { "type": "boolean" },
+            "direct_rule_binding": { "$ref": "#/$defs/VersionedBinding" }
+          }
+        }
+      ]
+    },
+    "EvidenceBinding": {
+      "allOf": [{ "$ref": "#/$defs/VersionedBinding" }],
+      "title": "证据绑定 / Evidence binding",
+      "description": "绑定到证据版本与哈希。/ Binds to evidence version and hash."
+    },
+    "ClaimBinding": {
+      "type": "object",
+      "title": "声明绑定 / Claim binding",
+      "description": "证据与声明之间的支持、反驳或中立关系。/ Support, refutation, or neutral relationship between evidence and a claim.",
+      "additionalProperties": false,
+      "required": ["claim_id", "relation", "criticality"],
+      "properties": {
+        "claim_id": { "$ref": "#/$defs/Identifier" },
+        "relation": { "enum": ["supports", "refutes", "neutral"] },
+        "criticality": { "enum": ["noncritical", "critical"] }
+      }
+    },
+    "Evidence": {
+      "type": "object",
+      "title": "证据 / Evidence",
+      "description": "绑定候选、契约、声明、来源版本和完整性信息的证据。/ Evidence bound to candidate, contract, claims, source version, and integrity metadata.",
+      "additionalProperties": false,
+      "required": ["evidence_id", "evidence_version", "evidence_hash", "record_hash", "candidate_binding", "contract_binding", "evidence_type", "claim_bindings", "source", "valid_at", "retrieved_at", "captured_at", "scope", "freshness", "integrity_score", "sensitivity", "redaction_state", "transformation_history"],
+      "properties": {
+        "evidence_id": { "$ref": "#/$defs/Identifier" },
+        "evidence_version": { "$ref": "#/$defs/SemanticVersion" },
+        "evidence_hash": { "$ref": "#/$defs/Sha256" },
+        "record_hash": {
+          "$ref": "#/$defs/Sha256",
+          "description": "排除 record_hash 自身后对完整证据记录计算的规范摘要；evidence_hash 仍表示外部来源内容摘要。/ Canonical digest of the complete evidence record excluding record_hash itself; evidence_hash continues to identify the external source content."
+        },
+        "predecessor_evidence_binding": {
+          "$ref": "#/$defs/VersionedBinding",
+          "description": "候选绑定证据修订所来源的步骤证据记录绑定。/ Step-evidence record binding from which a candidate-bound evidence revision derives."
+        },
+        "candidate_binding": { "$ref": "#/$defs/BindingState" },
+        "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "evidence_type": { "enum": ["input", "document", "tool_result", "measurement", "test", "human_attestation", "policy"] },
+        "claim_bindings": { "type": "array", "items": { "$ref": "#/$defs/ClaimBinding" }, "minItems": 1 },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source_type", "source_ref", "source_version"],
+          "properties": {
+            "source_type": { "enum": ["user", "system", "tool", "document", "test", "human", "policy"] },
+            "source_ref": { "type": "string", "minLength": 1 },
+            "source_version": { "type": "string", "minLength": 1 }
+          }
+        },
+        "valid_at": { "type": "string", "format": "date-time" },
+        "retrieved_at": { "type": "string", "format": "date-time" },
+        "captured_at": { "type": "string", "format": "date-time" },
+        "scope": { "$ref": "#/$defs/SafeExternalValue" },
+        "freshness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "assessed_at"],
+          "properties": {
+            "status": { "enum": ["fresh", "stale", "unknown"] },
+            "assessed_at": { "type": "string", "format": "date-time" },
+            "age_seconds": { "type": "number", "minimum": 0 }
+          }
+        },
+        "integrity_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "sensitivity": { "enum": ["public", "internal", "confidential", "restricted"] },
+        "redaction_state": { "enum": ["untreated", "redacted", "not_required"] },
+        "transformation_history": { "type": "array", "items": { "$ref": "#/$defs/SafeExternalValue" } }
+      }
+    },
+    "StepRecord": {
+      "type": "object",
+      "title": "可闭合步骤记录 / Closable step record",
+      "description": "绑定候选、契约、输入输出证据和验证结果的外部可核验步骤。/ An externally verifiable step bound to candidate, contract, input/output evidence, and validations.",
+      "additionalProperties": false,
+      "required": ["step_id", "step_version", "step_hash", "record_hash", "candidate_binding", "contract_binding", "sequence_number", "attempt_number", "status", "summary", "claim", "action", "observation", "local_decision", "resource_use", "progress", "input_evidence_bindings", "output_evidence_bindings", "validation_bindings", "started_at"],
+      "properties": {
+        "step_id": { "$ref": "#/$defs/Identifier" },
+        "step_version": { "$ref": "#/$defs/SemanticVersion" },
+        "step_hash": { "$ref": "#/$defs/Sha256" },
+        "record_hash": {
+          "$ref": "#/$defs/Sha256",
+          "description": "排除 record_hash 自身后对闭合步骤完整记录计算的规范摘要；step_hash 保持步骤起始身份稳定。/ Canonical digest of the complete closed-step record excluding record_hash itself; step_hash remains the stable start identity."
+        },
+        "candidate_binding": { "$ref": "#/$defs/BindingState" },
+        "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "sequence_number": { "type": "integer", "minimum": 1 },
+        "attempt_number": { "type": "integer", "minimum": 1 },
+        "status": { "enum": ["pending", "running", "waiting_for_evidence", "validating", "completed", "failed", "cancelled", "timed_out"] },
+        "summary": { "type": "string", "minLength": 1 },
+        "claim": { "$ref": "#/$defs/SafeExternalValue" },
+        "action": { "$ref": "#/$defs/SafeExternalValue" },
+        "observation": { "$ref": "#/$defs/SafeExternalValue" },
+        "local_decision": { "$ref": "#/$defs/SafeExternalValue" },
+        "resource_use": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["reasoning_tokens", "latency_ms", "model_calls", "tool_calls", "parallel_paths", "iterations", "retries", "total_cost_units"],
+          "properties": {
+            "reasoning_tokens": { "$ref": "#/$defs/NonnegativeUsageState" },
+            "latency_ms": { "$ref": "#/$defs/NonnegativeUsageState" },
+            "model_calls": { "$ref": "#/$defs/NonnegativeUsageState" },
+            "tool_calls": { "$ref": "#/$defs/NonnegativeUsageState" },
+            "parallel_paths": { "$ref": "#/$defs/NonnegativeUsageState" },
+            "iterations": { "$ref": "#/$defs/NonnegativeUsageState" },
+            "retries": { "$ref": "#/$defs/NonnegativeUsageState" },
+            "total_cost_units": { "$ref": "#/$defs/NonnegativeUsageState" }
+          }
+        },
+        "progress": { "type": "boolean" },
+        "no_progress_streak": { "type": "integer", "minimum": 0 },
+        "input_evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" } },
+        "output_evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" } },
+        "validation_bindings": { "type": "array", "items": { "$ref": "#/$defs/VersionedBinding" } },
+        "started_at": { "type": "string", "format": "date-time" },
+        "ended_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ValidationFinding": {
+      "type": "object",
+      "title": "验证发现 / Validation finding",
+      "description": "验证器产生的结构化、可定位发现。/ Structured, locatable finding emitted by a validator.",
+      "additionalProperties": false,
+      "required": ["finding_id", "severity", "code", "field_path"],
+      "properties": {
+        "finding_id": { "$ref": "#/$defs/Identifier" },
+        "severity": { "enum": ["info", "warning", "error", "fatal"] },
+        "code": { "type": "string", "minLength": 1 },
+        "field_path": { "type": "string", "pattern": "^/" },
+        "remediation_code": { "type": "string", "minLength": 1 }
+      }
+    },
+    "ValidationResult": {
+      "type": "object",
+      "title": "验证结果 / Validation result",
+      "description": "绑定特定验证器、候选、证据集合和契约的不可转移验证结果。/ A non-transferable validation result bound to a specific validator, candidate, evidence set, and contract.",
+      "additionalProperties": false,
+      "required": ["validation_id", "validation_version", "validation_hash", "details_hash", "validator_binding", "criteria_binding", "candidate_binding", "contract_binding", "evidence_bindings", "independence_class", "started_at", "ended_at", "timeout_ms", "attempt", "actor_binding", "authority_binding", "result", "checked_at", "findings"],
+      "properties": {
+        "validation_id": { "$ref": "#/$defs/Identifier" },
+        "validation_version": { "$ref": "#/$defs/SemanticVersion" },
+        "validation_hash": { "$ref": "#/$defs/Sha256" },
+        "validator_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "criteria_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "candidate_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" } },
+        "independence_class": { "enum": ["deterministic", "independent", "same_executor", "human"] },
+        "started_at": { "type": "string", "format": "date-time" },
+        "ended_at": { "type": "string", "format": "date-time" },
+        "timeout_ms": { "type": "integer", "minimum": 1 },
+        "attempt": { "type": "integer", "minimum": 1 },
+        "actor_binding": { "$ref": "#/$defs/BindingState" },
+        "authority_binding": { "$ref": "#/$defs/BindingState" },
+        "result": { "$ref": "#/$defs/ValidationOutcome" },
+        "checked_at": { "type": "string", "format": "date-time" },
+        "findings": { "type": "array", "items": { "$ref": "#/$defs/ValidationFinding" } },
+        "details_hash": {
+          "$ref": "#/$defs/Sha256",
+          "description": "验证器详情的内容摘要；详情可存放在受控外部存储中。/ Content digest of validator details; details may live in controlled external storage."
+        },
+        "conditional_obligations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["obligation_id", "due_state"],
+            "properties": {
+              "obligation_id": { "$ref": "#/$defs/Identifier" },
+              "due_state": { "enum": ["candidate_ready", "validating", "completed", "escalated"] }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "content": { "properties": { "state": { "enum": ["observed", "observed_zero"] } }, "required": ["state"] } },
+            "required": ["content"]
+          },
+          "then": { "required": ["content_hash"] }
+        },
+        {
+          "if": { "properties": { "result": { "const": "conditionally_passed" } }, "required": ["result"] },
+          "then": { "required": ["conditional_obligations"], "properties": { "conditional_obligations": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "Claim": {
+      "type": "object",
+      "title": "声明 / Claim",
+      "description": "可审计声明及其证据状态。/ Auditable claim and its evidence status.",
+      "additionalProperties": false,
+      "required": ["claim_id", "claim_type", "statement", "criticality", "status", "evidence_bindings"],
+      "properties": {
+        "claim_id": { "$ref": "#/$defs/Identifier" },
+        "claim_type": {
+          "enum": ["fact", "inference", "decision", "recommendation"],
+          "description": "显式区分事实、推断、决定和建议。/ Explicitly distinguishes facts, inferences, decisions, and recommendations."
+        },
+        "statement": { "type": "string", "minLength": 1 },
+        "criticality": { "enum": ["noncritical", "critical"] },
+        "status": { "enum": ["supported", "refuted", "unresolved", "not_applicable"] },
+        "evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" } }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "claim_type": { "const": "fact" },
+              "status": { "const": "supported" }
+            },
+            "required": ["claim_type", "status"]
+          },
+          "then": { "properties": { "evidence_bindings": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "UnresolvedItem": {
+      "type": "object",
+      "title": "未解决事项 / Unresolved item",
+      "description": "尚未闭合的问题及其阻断性和证据状态。/ An open issue with its blocking and evidence status.",
+      "additionalProperties": false,
+      "required": ["item_id", "statement", "criticality", "blocking", "evidence_bindings"],
+      "properties": {
+        "item_id": { "$ref": "#/$defs/Identifier" },
+        "statement": { "type": "string", "minLength": 1 },
+        "criticality": { "enum": ["noncritical", "critical"] },
+        "blocking": { "type": "boolean" },
+        "evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" } }
+      }
+    },
+    "NextAction": {
+      "type": "object",
+      "title": "后续动作 / Next action",
+      "description": "可审计、可授权的后续动作。/ An auditable, authorizable follow-up action.",
+      "additionalProperties": false,
+      "required": ["action_id", "description", "action_type", "authorization_required"],
+      "properties": {
+        "action_id": { "$ref": "#/$defs/Identifier" },
+        "description": { "type": "string", "minLength": 1 },
+        "action_type": { "enum": ["gather_evidence", "retry", "switch_mode", "human_review", "remediate", "monitor"] },
+        "authorization_required": { "type": "boolean" },
+        "due_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ObservedValue": {
+      "title": "显式值状态 / Explicit value state",
+      "description": "区分观测值、观测零值、缺失、未知和不适用。/ Distinguishes observed, observed-zero, missing, unknown, and not-applicable values.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed" },
+            "value": {
+              "allOf": [
+                { "$ref": "#/$defs/SafeExternalValue" },
+                { "not": { "enum": [0, null] } }
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": { "state": { "const": "observed_zero" }, "value": { "type": "number", "const": 0 } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+        }
+      ]
+    },
+    "ResultOutput": {
+      "type": "object",
+      "title": "结果输出 / Result output",
+      "description": "用户可见输出或受控引用；不允许内嵌私密思维过程。/ User-visible output or controlled reference; private chain-of-thought must not be embedded.",
+      "additionalProperties": false,
+      "required": ["format", "content"],
+      "properties": {
+        "format": { "enum": ["text", "json", "markdown", "artifact", "decision_record"] },
+        "content": { "$ref": "#/$defs/ObservedValue" },
+        "content_ref": { "type": "string", "minLength": 1 },
+        "content_hash": { "$ref": "#/$defs/Sha256" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "content": { "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }, "required": ["state"] } }
+          },
+          "then": { "required": ["content_ref"] }
+        }
+      ]
+    },
+    "FieldProvenance": {
+      "type": "object",
+      "title": "字段来源记录 / Field provenance record",
+      "description": "逐字段记录来源、版本、完整性和值状态。/ Records source, version, integrity, and value state for each field.",
+      "additionalProperties": false,
+      "required": ["field_path", "source_type", "source_ref", "value_state"],
+      "properties": {
+        "field_path": { "type": "string", "pattern": "^/" },
+        "source_type": { "enum": ["user", "system", "model", "tool", "document", "validator", "derived", "default", "human"] },
+        "source_ref": { "type": "string", "minLength": 1 },
+        "source_version": { "type": "string", "minLength": 1 },
+        "observed_at": { "type": "string", "format": "date-time" },
+        "integrity_hash": { "$ref": "#/$defs/Sha256" },
+        "value_state": { "enum": ["observed", "observed_zero", "missing", "unknown", "not_applicable"] }
+      }
+    }
+  }
+}

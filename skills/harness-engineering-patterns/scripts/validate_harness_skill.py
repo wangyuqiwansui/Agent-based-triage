@@ -1,10 +1,19 @@
 from __future__ import annotations
 
 import argparse
+import ast
+import importlib
+import importlib.util
 import json
 import pathlib
 import re
+import sys
 from collections import Counter
+from enum import Enum
+from types import ModuleType
+
+from jsonschema import Draft202012Validator
+from jsonschema.exceptions import SchemaError
 
 
 DESIGN_FIELDS = (
@@ -50,6 +59,375 @@ EVALUATION_KEYS = (
     "evaluability",
 )
 
+RUNTIME_PROTOCOLS = {
+    "PATTERN_0051": {
+        "reference": "references/reasoning-execution-flow.md",
+        "source_draft_id": "PATTERN_0001",
+        "name_en": "Reasoning Execution Flow",
+        "name_zh": "推理执行流程",
+        "matrix_coordinates": {
+            "COG_REASONING__TOP_ROUTING",
+            "COG_REASONING__TOP_CHAIN",
+            "COG_REASONING__TOP_PARALLEL",
+            "COG_REASONING__TOP_ORCHESTRATION",
+            "COG_REASONING__TOP_LOOP",
+            "COG_GOVERNANCE__TOP_HIERARCHY",
+        },
+    },
+    "PATTERN_0052": {
+        "reference": "references/workflow-observability-probes.md",
+        "source_draft_id": "PATTERN_0002",
+        "name_en": "Workflow Observability Probes",
+        "name_zh": "工作流可观测性探针",
+        "matrix_coordinates": {
+            "COG_PERCEPTION__TOP_ORCHESTRATION",
+            "COG_MEMORY__TOP_CHAIN",
+            "COG_REFLECTION__TOP_LOOP",
+            "COG_GOVERNANCE__TOP_ORCHESTRATION",
+            "COG_GOVERNANCE__TOP_HIERARCHY",
+        },
+    },
+}
+
+REQUIRED_PROBES = tuple(f"PROBE_{number:04d}" for number in range(1, 16))
+
+RUNTIME_SCHEMA_FILES = (
+    "schemas/normalized-input.schema.json",
+    "schemas/reasoning-chain-blueprint.schema.json",
+    "schemas/reasoning-chain-checkpoint-validation.schema.json",
+    "schemas/reasoning-chain-plan.schema.json",
+    "schemas/reasoning-contract.schema.json",
+    "schemas/reasoning-event.schema.json",
+    "schemas/reasoning-result.schema.json",
+)
+
+RUNTIME_IMPLEMENTATION_FILES = (
+    "runtime/__init__.py",
+    "runtime/reasoning_chain_factory.py",
+    "runtime/reasoning_chain_compiler.py",
+    "runtime/reasoning_chain_session.py",
+    "runtime/reasoning_runtime.py",
+    "runtime/reasoning_router.py",
+    "runtime/reasoning_artifacts.py",
+    "runtime/reasoning_metrics.py",
+    "runtime/metric_registry.json",
+    "runtime/probe_registry.json",
+    "runtime/probe_dependency_matrix.json",
+)
+
+CHAIN_FACTORY_REFERENCE = (
+    "references/reasoning-chain-factory.md"
+)
+
+CHAIN_FACTORY_MARKERS = (
+    "../schemas/reasoning-chain-blueprint.schema.json",
+    "../schemas/reasoning-chain-checkpoint-validation.schema.json",
+    "../schemas/reasoning-chain-plan.schema.json",
+    "../runtime/reasoning_chain_factory.py",
+    "preflight runtime capabilities / 预检运行时能力",
+    "private chain-of-thought",
+    "私密思维链",
+)
+
+CANONICAL_RUNTIME_ENUMS = {
+    "workflow_state": (
+        "received",
+        "normalized",
+        "governance_precheck",
+        "routed",
+        "contract_established",
+        "executing",
+        "waiting_for_evidence",
+        "mode_switched",
+        "candidate_ready",
+        "validating",
+        "repairable_failure",
+        "completed",
+        "rejected",
+        "failed",
+        "escalated",
+        "cancelled",
+        "timed_out",
+    ),
+    "event_processing_status": ("accepted", "duplicate", "rejected"),
+    "validation_result": (
+        "not_run",
+        "passed",
+        "conditionally_passed",
+        "repairable_failure",
+        "nonrepairable_failure",
+        "human_required",
+        "timed_out",
+    ),
+    "execution_mode": ("direct", "chain", "parallel", "iterative"),
+    "primary_topology": ("chain", "parallel", "loop"),
+    "value_state": (
+        "observed",
+        "observed_zero",
+        "missing",
+        "unknown",
+        "not_applicable",
+    ),
+}
+
+UNIVERSAL_REASONING_PROBES = {"PROBE_0001", "PROBE_0014", "PROBE_0015"}
+
+MODE_REQUIRED_PROBE_BASELINES = {
+    "direct": {
+        "PROBE_0001",
+        "PROBE_0002",
+        "PROBE_0003",
+        "PROBE_0004",
+        "PROBE_0005",
+        "PROBE_0006",
+        "PROBE_0011",
+        "PROBE_0012",
+        "PROBE_0014",
+        "PROBE_0015",
+    },
+    "chain": {
+        "PROBE_0001",
+        "PROBE_0002",
+        "PROBE_0003",
+        "PROBE_0004",
+        "PROBE_0005",
+        "PROBE_0006",
+        "PROBE_0010",
+        "PROBE_0011",
+        "PROBE_0012",
+        "PROBE_0014",
+        "PROBE_0015",
+    },
+    "parallel": {
+        "PROBE_0001",
+        "PROBE_0002",
+        "PROBE_0003",
+        "PROBE_0004",
+        "PROBE_0005",
+        "PROBE_0006",
+        "PROBE_0008",
+        "PROBE_0010",
+        "PROBE_0011",
+        "PROBE_0012",
+        "PROBE_0014",
+        "PROBE_0015",
+    },
+    "iterative": {
+        "PROBE_0001",
+        "PROBE_0002",
+        "PROBE_0003",
+        "PROBE_0004",
+        "PROBE_0005",
+        "PROBE_0006",
+        "PROBE_0007",
+        "PROBE_0009",
+        "PROBE_0010",
+        "PROBE_0011",
+        "PROBE_0012",
+        "PROBE_0014",
+        "PROBE_0015",
+    },
+    "orchestration": {
+        "PROBE_0001",
+        "PROBE_0002",
+        "PROBE_0003",
+        "PROBE_0004",
+        "PROBE_0005",
+        "PROBE_0006",
+        "PROBE_0007",
+        "PROBE_0010",
+        "PROBE_0011",
+        "PROBE_0012",
+        "PROBE_0014",
+        "PROBE_0015",
+    },
+    "hierarchy": {
+        "PROBE_0001",
+        "PROBE_0002",
+        "PROBE_0004",
+        "PROBE_0005",
+        "PROBE_0006",
+        "PROBE_0010",
+        "PROBE_0011",
+        "PROBE_0012",
+        "PROBE_0014",
+        "PROBE_0015",
+    },
+}
+
+MODE_OBSERVABILITY_FILES = {
+    "direct": "reasoning-routing-observability.md",
+    "chain": "reasoning-chain-observability.md",
+    "parallel": "reasoning-parallel-observability.md",
+    "iterative": "reasoning-loop-observability.md",
+    "orchestration": "reasoning-orchestration-observability.md",
+    "hierarchy": "reasoning-hierarchy-observability.md",
+}
+
+SCHEMA_CANONICAL_ENUM_POINTERS = {
+    "workflow_state": (
+        ("schemas/reasoning-event.schema.json", "/$defs/WorkflowState"),
+        ("schemas/reasoning-event.schema.json", "/properties/workflow_state"),
+        ("schemas/reasoning-event.schema.json", "/properties/previous_state"),
+        ("schemas/reasoning-event.schema.json", "/properties/next_state"),
+    ),
+    "event_processing_status": (
+        ("schemas/reasoning-event.schema.json", "/$defs/EventProcessingStatus"),
+        ("schemas/reasoning-event.schema.json", "/properties/event_processing_status"),
+    ),
+    "validation_result": (
+        ("schemas/reasoning-event.schema.json", "/$defs/ValidationOutcome"),
+        (
+            "schemas/reasoning-event.schema.json",
+            "/$defs/ValidationResult/properties/result",
+        ),
+        ("schemas/reasoning-result.schema.json", "/$defs/ValidationOutcome"),
+        (
+            "schemas/reasoning-result.schema.json",
+            "/$defs/ValidationResult/properties/result",
+        ),
+    ),
+    "execution_mode": (
+        ("schemas/reasoning-contract.schema.json", "/properties/execution_mode"),
+        (
+            "schemas/reasoning-contract.schema.json",
+            "/$defs/ReasoningConfiguration/properties/execution_mode",
+        ),
+        ("schemas/reasoning-event.schema.json", "/properties/execution_mode"),
+        (
+            "schemas/reasoning-event.schema.json",
+            "/$defs/ReasoningConfiguration/properties/execution_mode",
+        ),
+    ),
+    "primary_topology": (
+        ("schemas/reasoning-contract.schema.json", "/properties/primary_topology"),
+        (
+            "schemas/reasoning-contract.schema.json",
+            "/$defs/ReasoningConfiguration/properties/primary_topology",
+        ),
+        ("schemas/reasoning-event.schema.json", "/properties/primary_topology"),
+        (
+            "schemas/reasoning-event.schema.json",
+            "/$defs/ReasoningConfiguration/properties/primary_topology",
+        ),
+    ),
+    "value_state": (
+        (
+            "schemas/normalized-input.schema.json",
+            "/$defs/FieldProvenance/properties/value_state",
+        ),
+        (
+            "schemas/reasoning-event.schema.json",
+            "/$defs/FieldProvenance/properties/value_state",
+        ),
+        (
+            "schemas/reasoning-result.schema.json",
+            "/$defs/FieldProvenance/properties/value_state",
+        ),
+    ),
+}
+
+METRIC_DIRECTIONS = {
+    "closer_to_one_is_better",
+    "higher_is_better",
+    "lower_is_better",
+}
+
+METRIC_UTILITY_EXPORTS = {
+    "bounded_ratio",
+    "budget_utilization_max",
+    "calculate_metric",
+    "metric_publication_failures",
+    "publish_metric",
+    "resolve_required_probes",
+    "safe_ratio",
+    "unavailable_metric",
+    "unbounded_ratio",
+}
+
+DOCUMENT_METRIC_ALIASES = {
+    "budget_utilization": "budget_utilization_vector",
+}
+
+RUNTIME_REQUIRED_EXPORTS = {
+    "package": {
+        "BudgetLimits",
+        "ChainPlanSession",
+        "EventStore",
+        "ReasoningEngine",
+        "ReasoningChainFactory",
+        "ReasoningEvent",
+        "RUNTIME_SUPPORTED_STOP_TYPES",
+        "RiskLevel",
+        "ValidationStatus",
+        "WorkflowState",
+        "validate_runtime_contract_capabilities",
+    },
+    "reasoning_router": {
+        "ExecutionMode",
+        "PrimaryTopology",
+        "RiskLevel",
+        "RouteDecision",
+        "RoutingPolicy",
+        "RoutingSignals",
+    },
+    "reasoning_metrics": {
+        "MetricEnvelope",
+        "MetricResult",
+        "MetricState",
+        "ProbeDependencyResolution",
+        "resolve_required_probes",
+    },
+    "reasoning_chain_factory": {
+        "ChainFactoryError",
+        "ChainPlanDriftError",
+        "ChainPlanSession",
+        "ChainPlanStateError",
+        "ChainStepOutcome",
+        "ReasoningChainFactory",
+        "validate_chain_blueprint",
+        "validate_chain_plan",
+    },
+}
+
+EXECUTION_CONTRACT_MARKERS = (
+    "## Identity And Input Contract / 标识与输入契约",
+    "## Machine-Readable Contracts / 机器可读契约",
+    "## Reasoning Contract / 推理契约",
+    "## State Machine And Main Flow / 状态机与主流程",
+    "## Routing And Execution Modes / 路由与执行模式",
+    "## Validation, Switching, And Stopping / 验证、换路与停止",
+    "## Standalone And Interactive Operation / 独立与交互运行",
+    "## Output And Acceptance / 输出与验收",
+    "task_id",
+    "run_id",
+    "step_id",
+    "parent_event_id",
+    "idempotency_key",
+    "workflow_state",
+    "event_processing_status",
+    "direct | chain | parallel | iterative",
+    "private chain-of-thought",
+    "私密思维过程",
+)
+
+OBSERVABILITY_CONTRACT_MARKERS = (
+    "## Deployment And Probe Contract / 部署与探针契约",
+    "## Identity, Event, And Provenance / 标识事件与来源",
+    "## Probe Catalog / 探针目录",
+    "## Standalone And Interactive Operation / 独立与交互运行",
+    "## Metrics And Alerts / 指标与告警",
+    "## Data Completion And Scenario Packs / 数据补全与场景包",
+    "## Report And Acceptance / 报告与验收",
+    "schema_version",
+    "field_provenance",
+    "event_processing_status",
+    "workflow_state",
+    "missing",
+    "private chain-of-thought",
+    "私密思维过程",
+)
+
 MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]*\]\((?P<target>[^)]+)\)")
 BUNDLED_TRACE_TARGET = (
     r"(?:`?references/patterns/<capability-key>/trace\.md`?|"
@@ -92,6 +470,794 @@ def has_bundled_trace_write(content: str) -> bool:
         BUNDLED_TRACE_WRITE.search(content)
         or BUNDLED_TRACE_PATH_FIRST_WRITE.search(content)
     )
+
+
+def is_bilingual_text(value: object) -> bool:
+    """Return whether text contains English and CJK content. / 判断文本是否同时含英文与中文。"""
+
+    return isinstance(value, str) and bool(re.search(r"[A-Za-z]", value)) and bool(
+        re.search(r"[\u3400-\u9fff]", value)
+    )
+
+
+def is_nonempty_string(value: object) -> bool:
+    """Return whether a value is a non-empty string. / 判断值是否为非空字符串。"""
+
+    return isinstance(value, str) and bool(value.strip())
+
+
+def is_string_list(value: object, *, allow_empty: bool = True) -> bool:
+    """Validate a JSON string array without constructing an unsafe set. / 安全校验 JSON 字符串数组。"""
+
+    return (
+        isinstance(value, list)
+        and (allow_empty or bool(value))
+        and all(is_nonempty_string(item) for item in value)
+    )
+
+
+def has_duplicates(values: list[str]) -> bool:
+    """Return whether a validated string list contains duplicates. / 判断已校验字符串列表是否重复。"""
+
+    return len(values) != len(set(values))
+
+
+def load_json_resource(
+    path: pathlib.Path,
+    report: ValidationReport,
+    code: str,
+) -> dict[str, object] | None:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
+        report.error(
+            code,
+            f"cannot load {path.name}: {error}",
+            f"无法加载 {path.name}：{error}",
+        )
+        return None
+    if not isinstance(value, dict):
+        report.error(
+            code,
+            f"{path.name} must contain a JSON object",
+            f"{path.name} 必须包含 JSON 对象",
+        )
+        return None
+    return value
+
+
+def markdown_table_rows(content: str, header_prefix: str) -> list[list[str]]:
+    """Extract one simple pipe table. / 提取一个简单管道表格。"""
+
+    lines = content.splitlines()
+    try:
+        start = next(
+            index
+            for index, line in enumerate(lines)
+            if line.strip().startswith(header_prefix)
+        )
+    except StopIteration:
+        return []
+
+    rows: list[list[str]] = []
+    for line in lines[start:]:
+        stripped = line.strip()
+        if not stripped.startswith("|"):
+            break
+        rows.append([cell.strip() for cell in stripped.strip("|").split("|")])
+    return rows
+
+
+def nested_json_keys(value: object) -> set[str]:
+    """Collect object keys recursively. / 递归收集 JSON 对象键。"""
+
+    if isinstance(value, dict):
+        keys = {str(key) for key in value}
+        for child in value.values():
+            keys.update(nested_json_keys(child))
+        return keys
+    if isinstance(value, list):
+        keys: set[str] = set()
+        for child in value:
+            keys.update(nested_json_keys(child))
+        return keys
+    return set()
+
+
+def json_pointer_value(document: object, pointer: str) -> object:
+    """Resolve an RFC 6901 JSON pointer. / 解析 RFC 6901 JSON Pointer。"""
+
+    if pointer == "":
+        return document
+    if not pointer.startswith("/"):
+        raise KeyError(pointer)
+    current = document
+    for token in pointer[1:].split("/"):
+        token = token.replace("~1", "/").replace("~0", "~")
+        if isinstance(current, dict):
+            current = current[token]
+        elif isinstance(current, list):
+            current = current[int(token)]
+        else:
+            raise KeyError(pointer)
+    return current
+
+
+def schema_enum_values(
+    schema: dict[str, object],
+    fragment: object,
+    *,
+    resolving: frozenset[str] = frozenset(),
+) -> list[str]:
+    """Resolve local refs and collect string enum values. / 解析本地引用并收集字符串枚举值。"""
+
+    if not isinstance(fragment, dict):
+        return []
+    values: list[str] = []
+    reference = fragment.get("$ref")
+    if isinstance(reference, str) and reference.startswith("#/"):
+        if reference in resolving:
+            return []
+        target = json_pointer_value(schema, reference[1:])
+        values.extend(
+            schema_enum_values(
+                schema,
+                target,
+                resolving=resolving | frozenset({reference}),
+            )
+        )
+    enum_values = fragment.get("enum")
+    if isinstance(enum_values, list):
+        values.extend(value for value in enum_values if isinstance(value, str))
+    const_value = fragment.get("const")
+    if isinstance(const_value, str):
+        values.append(const_value)
+    for keyword in ("oneOf", "anyOf"):
+        branches = fragment.get(keyword)
+        if isinstance(branches, list):
+            for branch in branches:
+                values.extend(
+                    schema_enum_values(schema, branch, resolving=resolving)
+                )
+    return list(dict.fromkeys(values))
+
+
+def schema_enum_at(schema: dict[str, object], pointer: str) -> list[str]:
+    """Read the effective string enum at a semantic pointer. / 读取语义指针处的有效字符串枚举。"""
+
+    return schema_enum_values(schema, json_pointer_value(schema, pointer))
+
+
+def markdown_section(content: str, heading: str) -> str | None:
+    """Extract one Markdown section by its exact heading. / 按准确标题提取 Markdown 小节。"""
+
+    match = re.search(
+        rf"(?ms)^{re.escape(heading)}\s*$\n(?P<body>.*?)(?=^#{{1,6}}\s|\Z)",
+        content,
+    )
+    return match.group("body") if match else None
+
+
+def document_metric_ids(content: str) -> set[str]:
+    """Extract metric assignments from the normative metrics section. / 从规范指标章节提取指标赋值。"""
+
+    match = re.search(
+        r"(?ms)^## Metrics And Alerts / 指标与告警\s*$"
+        r"(?P<body>.*?)"
+        r"(?=^## Data Completion And Scenario Packs / 数据补全与场景包\s*$)",
+        content,
+    )
+    body = match.group("body") if match else ""
+    identifiers = set(
+        re.findall(r"(?m)^\s*([a-z][a-z0-9_]*)(?:\[[^\]]+\])?\s*=", body)
+    )
+    return {DOCUMENT_METRIC_ALIASES.get(identifier, identifier) for identifier in identifiers}
+
+
+def exported_metric_function_names(path: pathlib.Path) -> set[str]:
+    """Read exported metric functions without executing the module. / 不执行模块地读取已导出指标函数。"""
+
+    try:
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    except (OSError, UnicodeError, SyntaxError):
+        return set()
+    functions = {
+        node.name for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    exported: set[str] = set()
+    for node in tree.body:
+        if not isinstance(node, ast.Assign):
+            continue
+        if not any(isinstance(target, ast.Name) and target.id == "__all__" for target in node.targets):
+            continue
+        try:
+            value = ast.literal_eval(node.value)
+        except (ValueError, TypeError):
+            continue
+        if is_string_list(value):
+            exported.update(value)
+    return (exported & functions) - METRIC_UTILITY_EXPORTS
+
+
+def validate_budget_profile_table(execution: str, report: ValidationReport) -> None:
+    rows = markdown_table_rows(execution, "| Profile / 档位")
+    if len(rows) != 6:
+        report.error(
+            "reasoning_budget_table",
+            "budget profile table must contain one header, separator, and four profiles",
+            "预算档位表必须包含一个表头、分隔行和四个档位",
+        )
+        return
+
+    expected_header = [
+        "Profile / 档位",
+        "Reasoning tokens / 推理令牌",
+        "Latency / 延迟",
+        "Model calls / 模型调用",
+        "Tool calls / 工具调用",
+        "Paths / 路径",
+        "Iterations / 轮次",
+        "Typical use / 常见用途",
+    ]
+    expected_columns = len(expected_header)
+    if rows[0] != expected_header or any(
+        len(row) != expected_columns for row in rows
+    ):
+        report.error(
+            "reasoning_budget_table",
+            "budget table header and every row must contain the canonical eight columns",
+            "预算表头及每行必须包含规范的八列",
+        )
+        return
+
+    if any(not re.fullmatch(r":?-{3,}:?", cell) for cell in rows[1]):
+        report.error(
+            "reasoning_budget_table",
+            "budget table must contain a valid Markdown separator row",
+            "预算表必须包含有效的 Markdown 分隔行",
+        )
+
+    expected_profiles = {
+        "light / 轻量",
+        "standard / 标准",
+        "deep / 深入",
+        "controlled-high-risk / 受控高风险",
+    }
+    observed_profiles = [row[0] for row in rows[2:]]
+    if (
+        set(observed_profiles) != expected_profiles
+        or len(observed_profiles) != len(set(observed_profiles))
+    ):
+        report.error(
+            "reasoning_budget_table",
+            f"budget profiles are invalid: {observed_profiles}",
+            f"预算档位无效：{observed_profiles}",
+        )
+
+    def positive_integer(cell: str) -> int | None:
+        normalized = cell.replace(",", "").strip()
+        if not re.fullmatch(r"[0-9]+", normalized):
+            return None
+        value = int(normalized)
+        return value if value > 0 else None
+
+    def positive_latency(cell: str) -> float | None:
+        match = re.fullmatch(r"([0-9]+(?:\.[0-9]+)?)\s*(ms|s)", cell.strip())
+        if not match:
+            return None
+        value = float(match.group(1))
+        return value if value > 0 else None
+
+    numeric_labels = (
+        "reasoning tokens",
+        "latency",
+        "model calls",
+        "tool calls",
+        "paths",
+        "iterations",
+    )
+    for row in rows[2:]:
+        parsed = (
+            positive_integer(row[1]),
+            positive_latency(row[2]),
+            positive_integer(row[3]),
+            positive_integer(row[4]),
+            positive_integer(row[5]),
+            positive_integer(row[6]),
+        )
+        invalid = [
+            label for label, value in zip(numeric_labels, parsed) if value is None
+        ]
+        if invalid or not is_bilingual_text(row[7]):
+            report.error(
+                "reasoning_budget_table",
+                f"{row[0]} has invalid positive dimensions {invalid} or non-bilingual use text",
+                f"{row[0]} 的正数维度 {invalid} 无效或常见用途不是双语",
+            )
+
+    expected_iterations = {
+        "light / 轻量": 1,
+        "standard / 标准": 6,
+        "deep / 深入": 12,
+        "controlled-high-risk / 受控高风险": 8,
+    }
+    observed = {row[0]: positive_integer(row[6]) for row in rows[2:]}
+    if observed != expected_iterations:
+        report.error(
+            "reasoning_budget_table",
+            f"budget iteration values are invalid: {observed}",
+            f"预算迭代次数无效：{observed}",
+        )
+
+
+def validate_reasoning_schemas(
+    skill_dir: pathlib.Path, report: ValidationReport
+) -> dict[str, dict[str, object]]:
+    schemas: dict[str, dict[str, object]] = {}
+    for relative in RUNTIME_SCHEMA_FILES:
+        path = skill_dir / relative
+        schema = load_json_resource(path, report, "reasoning_schema")
+        if schema is None:
+            continue
+        schemas[relative] = schema
+        try:
+            Draft202012Validator.check_schema(schema)
+        except SchemaError as error:
+            report.error(
+                "reasoning_schema",
+                f"{relative} is not a valid Draft 2020-12 schema: {error.message}",
+                f"{relative} 不是有效的 Draft 2020-12 Schema：{error.message}",
+            )
+        if (
+            schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema"
+            or schema.get("x-contract-version") != "1.0.0"
+            or not is_bilingual_text(schema.get("title"))
+            or not is_bilingual_text(schema.get("description"))
+        ):
+            report.error(
+                "reasoning_schema",
+                f"{relative} lacks Draft 2020-12, version 1.0.0, or bilingual metadata",
+                f"{relative} 缺少 Draft 2020-12、1.0.0 版本或双语元数据",
+            )
+        forbidden_reasoning_fields = {
+            "chain_of_thought",
+            "private_reasoning",
+            "hidden_reasoning",
+            "internal_thoughts",
+        }
+        found_forbidden = sorted(forbidden_reasoning_fields & nested_json_keys(schema))
+        if found_forbidden:
+            report.error(
+                "reasoning_schema_privacy",
+                f"{relative} exposes private reasoning fields {found_forbidden}",
+                f"{relative} 暴露私密推理字段 {found_forbidden}",
+            )
+
+    event_schema = schemas.get("schemas/reasoning-event.schema.json")
+    canonical = event_schema.get("x-canonical-enums") if event_schema else None
+    if not isinstance(canonical, dict):
+        report.error(
+            "reasoning_schema_enums",
+            "reasoning event schema must declare x-canonical-enums",
+            "推理事件 Schema 必须声明 x-canonical-enums",
+        )
+        return schemas
+    for name, expected in CANONICAL_RUNTIME_ENUMS.items():
+        observed = canonical.get(name)
+        if observed != list(expected):
+            report.error(
+                "reasoning_schema_enums",
+                f"canonical enum {name} expected {list(expected)}, observed {observed}",
+                f"权威枚举 {name} 应为 {list(expected)}，实际为 {observed}",
+            )
+
+    for name, locations in SCHEMA_CANONICAL_ENUM_POINTERS.items():
+        expected = list(CANONICAL_RUNTIME_ENUMS[name])
+        for relative, pointer in locations:
+            schema = schemas.get(relative)
+            if schema is None:
+                continue
+            try:
+                observed = schema_enum_at(schema, pointer)
+            except (KeyError, TypeError, ValueError) as error:
+                report.error(
+                    "reasoning_schema_enums",
+                    f"cannot resolve canonical enum {name} at {relative}#{pointer}: {error}",
+                    f"无法解析 {relative}#{pointer} 的权威枚举 {name}：{error}",
+                )
+                continue
+            if observed != expected:
+                report.error(
+                    "reasoning_schema_enums",
+                    f"{relative}#{pointer} expected {name}={expected}, observed {observed}",
+                    f"{relative}#{pointer} 的 {name} 应为 {expected}，实际为 {observed}",
+                )
+    return schemas
+
+
+def validate_metric_registry(skill_dir: pathlib.Path, report: ValidationReport) -> None:
+    path = skill_dir / "runtime" / "metric_registry.json"
+    registry = load_json_resource(path, report, "reasoning_metric_registry")
+    if registry is None:
+        return
+    if (
+        registry.get("schema_version") != "1.0.0"
+        or not is_nonempty_string(registry.get("name_en"))
+        or not is_nonempty_string(registry.get("name_zh"))
+        or not re.search(r"[\u3400-\u9fff]", str(registry.get("name_zh", "")))
+        or not is_nonempty_string(registry.get("description_en"))
+        or not is_nonempty_string(registry.get("description_zh"))
+        or not re.search(
+            r"[\u3400-\u9fff]", str(registry.get("description_zh", ""))
+        )
+    ):
+        report.error(
+            "reasoning_metric_registry",
+            "metric registry metadata must use schema 1.0.0 and non-empty bilingual fields",
+            "指标注册表元数据必须使用 1.0.0 Schema 和非空双语字段",
+        )
+
+    records = registry.get("metrics")
+    if not isinstance(records, list):
+        report.error(
+            "reasoning_metric_registry",
+            "metric registry must contain a metrics array",
+            "指标注册表必须包含 metrics 数组",
+        )
+        return
+
+    required_fields = {
+        "metric_id",
+        "version",
+        "name_en",
+        "name_zh",
+        "formula",
+        "inputs",
+        "unit",
+        "direction",
+        "required_probes",
+        "denominator",
+        "exclusions",
+        "minimum_sample",
+        "owner",
+    }
+    observed_ids: list[str] = []
+    for record in records:
+        if not isinstance(record, dict) or not required_fields.issubset(record):
+            report.error(
+                "reasoning_metric_registry",
+                f"metric record lacks required fields: {record}",
+                f"指标记录缺少必需字段：{record}",
+            )
+            continue
+
+        metric_id = record.get("metric_id")
+        if not isinstance(metric_id, str) or not re.fullmatch(
+            r"[a-z][a-z0-9_]*", metric_id
+        ):
+            report.error(
+                "reasoning_metric_registry",
+                f"metric record has invalid metric_id: {metric_id}",
+                f"指标记录的 metric_id 无效：{metric_id}",
+            )
+            continue
+        observed_ids.append(metric_id)
+
+        scalar_fields_valid = (
+            isinstance(record.get("version"), str)
+            and bool(
+                re.fullmatch(
+                    r"(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)"
+                    r"(?:-[0-9A-Za-z.-]+)?",
+                    str(record.get("version")),
+                )
+            )
+            and is_nonempty_string(record.get("name_en"))
+            and is_nonempty_string(record.get("name_zh"))
+            and bool(re.search(r"[\u3400-\u9fff]", str(record.get("name_zh"))))
+            and is_nonempty_string(record.get("formula"))
+            and not re.search(r"[a-z]-[a-z]", str(record.get("formula")))
+            and is_string_list(record.get("inputs"), allow_empty=False)
+            and not has_duplicates(record.get("inputs"))
+            and all(
+                bool(re.fullmatch(r"[a-z][a-z0-9_]*", input_name))
+                for input_name in record.get("inputs", [])
+            )
+            and is_nonempty_string(record.get("unit"))
+            and record.get("direction") in METRIC_DIRECTIONS
+            and is_nonempty_string(record.get("denominator"))
+            and is_nonempty_string(record.get("owner"))
+            and isinstance(record.get("minimum_sample"), int)
+            and not isinstance(record.get("minimum_sample"), bool)
+            and int(record.get("minimum_sample", 0)) > 0
+            and is_string_list(record.get("exclusions"))
+        )
+        if not scalar_fields_valid:
+            report.error(
+                "reasoning_metric_registry",
+                f"{metric_id} has invalid version, text, direction, exclusions, or minimum_sample",
+                f"{metric_id} 的版本、文本、方向、排除项或 minimum_sample 无效",
+            )
+
+        probes = record.get("required_probes")
+        probes_valid = (
+            is_string_list(probes, allow_empty=False)
+            and not has_duplicates(probes)
+            and set(probes).issubset(set(REQUIRED_PROBES))
+        )
+        if not probes_valid:
+            report.error(
+                "reasoning_metric_registry",
+                f"{metric_id} references invalid, duplicate, or empty probes",
+                f"{metric_id} 引用了无效、重复或空探针",
+            )
+        elif (
+            "outcome" in metric_id
+            or "false_release" in metric_id
+            or "correctness" in metric_id
+        ) and "PROBE_0013" not in probes:
+            report.error(
+                "reasoning_metric_registry",
+                f"outcome-backed metric {metric_id} must require PROBE_0013",
+                f"后验支撑指标 {metric_id} 必须依赖 PROBE_0013",
+            )
+
+    duplicates = sorted(
+        metric_id for metric_id, count in Counter(observed_ids).items() if count > 1
+    )
+    universal = registry.get("universal_required_probes")
+    required_buckets = registry.get("required_bucket_dimensions")
+    coverage = registry.get("coverage")
+    coverage_valid = (
+        is_string_list(universal, allow_empty=False)
+        and not has_duplicates(universal)
+        and set(universal) == UNIVERSAL_REASONING_PROBES
+        and is_string_list(required_buckets, allow_empty=False)
+        and not has_duplicates(required_buckets)
+        and set(required_buckets)
+        == {"scene_id", "risk_level", "execution_mode"}
+        and isinstance(coverage, dict)
+        and coverage.get("profile") == "mvp_core"
+        and is_nonempty_string(coverage.get("profile_en"))
+        and is_nonempty_string(coverage.get("profile_zh"))
+        and bool(re.search(r"[\u3400-\u9fff]", str(coverage.get("profile_zh", ""))))
+        and all(
+            is_string_list(coverage.get(field), allow_empty=False)
+            and not has_duplicates(coverage.get(field))
+            for field in ("implemented", "planned", "gate_eligible")
+        )
+        and set(coverage.get("implemented", [])) == set(observed_ids)
+        and set(coverage.get("gate_eligible", [])).issubset(set(observed_ids))
+        and not set(coverage.get("planned", [])) & set(observed_ids)
+    )
+    if not coverage_valid:
+        report.error(
+            "reasoning_metric_registry",
+            "metric registry universal probes or MVP coverage declaration is invalid",
+            "指标注册表通用探针或 MVP 覆盖声明无效",
+        )
+    probes_path = skill_dir / RUNTIME_PROTOCOLS["PATTERN_0052"]["reference"]
+    probe_document = (
+        probes_path.read_text(encoding="utf-8") if probes_path.is_file() else ""
+    )
+    documented_ids = document_metric_ids(probe_document)
+    exported_ids = exported_metric_function_names(
+        skill_dir / "runtime" / "reasoning_metrics.py"
+    )
+    expected_ids = documented_ids | exported_ids
+    missing = sorted(expected_ids - set(observed_ids))
+    unknown = sorted(set(observed_ids) - expected_ids)
+    if duplicates or missing or unknown:
+        report.error(
+            "reasoning_metric_registry",
+            f"metric IDs duplicates={duplicates}, missing={missing}, unknown={unknown}",
+            f"指标 ID 重复={duplicates}，缺失={missing}，未知={unknown}",
+        )
+
+
+def validate_probe_registry(
+    skill_dir: pathlib.Path, report: ValidationReport
+) -> None:
+    path = skill_dir / "runtime" / "probe_registry.json"
+    registry = load_json_resource(path, report, "reasoning_probe_registry")
+    if registry is None:
+        return
+    metadata_valid = (
+        registry.get("schema_version") == "1.0.0"
+        and is_nonempty_string(registry.get("name_en"))
+        and is_nonempty_string(registry.get("name_zh"))
+        and bool(re.search(r"[\u3400-\u9fff]", str(registry.get("name_zh", ""))))
+        and is_nonempty_string(registry.get("description_en"))
+        and is_nonempty_string(registry.get("description_zh"))
+        and bool(
+            re.search(r"[\u3400-\u9fff]", str(registry.get("description_zh", "")))
+        )
+    )
+    if not metadata_valid:
+        report.error(
+            "reasoning_probe_registry",
+            "probe registry metadata is invalid",
+            "探针注册表元数据无效",
+        )
+    records = registry.get("probes")
+    if not isinstance(records, list):
+        report.error(
+            "reasoning_probe_registry",
+            "probe registry must contain probes",
+            "探针注册表必须包含 probes",
+        )
+        return
+    required_fields = {
+        "probe_id",
+        "version",
+        "name_en",
+        "name_zh",
+        "owner",
+        "trigger_event_types",
+        "required_capture_fields",
+        "output_event_type",
+        "disposition",
+    }
+    observed: list[str] = []
+    for record in records:
+        if not isinstance(record, dict):
+            report.error(
+                "reasoning_probe_registry",
+                f"invalid probe definition {record}",
+                f"无效探针定义 {record}",
+            )
+            continue
+        probe_id = str(record.get("probe_id", ""))
+        observed.append(probe_id)
+        valid = (
+            required_fields <= set(record)
+            and re.fullmatch(r"PROBE_\d{4}", probe_id) is not None
+            and re.fullmatch(r"\d+\.\d+\.\d+", str(record.get("version", "")))
+            is not None
+            and is_nonempty_string(record.get("name_en"))
+            and is_nonempty_string(record.get("name_zh"))
+            and bool(re.search(r"[\u3400-\u9fff]", str(record.get("name_zh", ""))))
+            and is_nonempty_string(record.get("owner"))
+            and is_string_list(record.get("trigger_event_types"), allow_empty=False)
+            and not has_duplicates(record.get("trigger_event_types"))
+            and is_string_list(record.get("required_capture_fields"), allow_empty=False)
+            and not has_duplicates(record.get("required_capture_fields"))
+            and is_nonempty_string(record.get("output_event_type"))
+            and is_nonempty_string(record.get("disposition"))
+        )
+        if not valid:
+            report.error(
+                "reasoning_probe_registry",
+                f"probe definition is incomplete or invalid: {probe_id}",
+                f"探针定义不完整或无效：{probe_id}",
+            )
+    if set(observed) != set(REQUIRED_PROBES) or has_duplicates(observed):
+        report.error(
+            "reasoning_probe_registry",
+            "probe registry IDs must exactly match the canonical probe catalog",
+            "探针注册表 ID 必须与规范探针目录完全一致",
+        )
+
+
+def validate_probe_dependency_matrix(
+    skill_dir: pathlib.Path, report: ValidationReport
+) -> None:
+    path = skill_dir / "runtime" / "probe_dependency_matrix.json"
+    matrix = load_json_resource(path, report, "reasoning_probe_dependencies")
+    if matrix is None:
+        return
+    universal = matrix.get("universal_required_probes")
+    universal_valid = (
+        is_string_list(universal, allow_empty=False)
+        and not has_duplicates(universal)
+        and set(universal) == UNIVERSAL_REASONING_PROBES
+    )
+    if (
+        matrix.get("schema_version") != "1.0.0"
+        or not is_nonempty_string(matrix.get("name_en"))
+        or not is_nonempty_string(matrix.get("name_zh"))
+        or not re.search(r"[\u3400-\u9fff]", str(matrix.get("name_zh", "")))
+        or not is_nonempty_string(matrix.get("description_en"))
+        or not is_nonempty_string(matrix.get("description_zh"))
+        or not re.search(
+            r"[\u3400-\u9fff]", str(matrix.get("description_zh", ""))
+        )
+        or not universal_valid
+    ):
+        report.error(
+            "reasoning_probe_dependencies",
+            "probe dependency matrix metadata or universal probes are invalid",
+            "探针依赖矩阵元数据或通用探针无效",
+        )
+
+    entries = matrix.get("entries")
+    if not isinstance(entries, list):
+        report.error(
+            "reasoning_probe_dependencies",
+            "probe dependency matrix must contain entries",
+            "探针依赖矩阵必须包含 entries",
+        )
+        return
+    expected_modes = set(MODE_REQUIRED_PROBE_BASELINES)
+    observed_modes: list[str] = []
+    mode_requirements: dict[str, set[str]] = {}
+    for entry in entries:
+        if not isinstance(entry, dict):
+            report.error(
+                "reasoning_probe_dependencies",
+                f"invalid dependency entry {entry}",
+                f"无效依赖记录 {entry}",
+            )
+            continue
+        mode = str(entry.get("mode", ""))
+        observed_modes.append(mode)
+        required = entry.get("required_probes")
+        conditional = entry.get("conditional_probes")
+        valid_required = (
+            is_string_list(required, allow_empty=False)
+            and not has_duplicates(required)
+            and set(required).issubset(set(REQUIRED_PROBES))
+        )
+        valid_conditional = (
+            isinstance(conditional, dict)
+            and all(
+                isinstance(probe_id, str)
+                and probe_id in REQUIRED_PROBES
+                and is_bilingual_text(condition)
+                for probe_id, condition in conditional.items()
+            )
+        )
+        required_set = set(required) if valid_required else set()
+        conditional_set = set(conditional) if valid_conditional else set()
+        baseline = MODE_REQUIRED_PROBE_BASELINES.get(mode, set())
+        if (
+            not valid_required
+            or not valid_conditional
+            or not baseline.issubset(required_set)
+            or bool(required_set & conditional_set)
+            or not is_nonempty_string(entry.get("name_en"))
+            or not is_nonempty_string(entry.get("name_zh"))
+            or not re.search(r"[\u3400-\u9fff]", str(entry.get("name_zh", "")))
+        ):
+            report.error(
+                "reasoning_probe_dependencies",
+                f"invalid probe dependency entry for {mode}",
+                f"{mode} 的探针依赖记录无效",
+            )
+        elif mode in expected_modes:
+            mode_requirements[mode] = required_set
+    if set(observed_modes) != expected_modes or len(observed_modes) != len(
+        expected_modes
+    ):
+        report.error(
+            "reasoning_probe_dependencies",
+            f"dependency modes expected {sorted(expected_modes)}, observed {observed_modes}",
+            f"依赖模式应为 {sorted(expected_modes)}，实际为 {observed_modes}",
+        )
+
+    observability_root = skill_dir / "references" / "patterns" / "reasoning"
+    for mode, filename in MODE_OBSERVABILITY_FILES.items():
+        path = observability_root / filename
+        content = path.read_text(encoding="utf-8") if path.is_file() else ""
+        section = markdown_section(
+            content, "### Required Probe Coverage / 必需探针覆盖"
+        )
+        documented = set(re.findall(r"PROBE_\d{4}", section or ""))
+        required_for_mode = mode_requirements.get(mode)
+        if section is None or required_for_mode is None:
+            report.error(
+                "reasoning_probe_dependencies",
+                f"cannot validate matrix-driven probe coverage for {mode} in {filename}",
+                f"无法校验 {filename} 中 {mode} 的矩阵驱动探针覆盖",
+            )
+            continue
+        missing = sorted(required_for_mode - documented)
+        if missing:
+            report.error(
+                "reasoning_probe_dependencies",
+                f"{filename} lacks matrix-required probes for {mode}: {missing}",
+                f"{filename} 缺少 {mode} 的矩阵必需探针：{missing}",
+            )
 
 
 def validate_registry_shape(
@@ -710,6 +1876,395 @@ def validate_analysis_contracts(skill_dir: pathlib.Path, report: ValidationRepor
             )
 
 
+def validate_runtime_imports(
+    skill_dir: pathlib.Path, report: ValidationReport
+) -> dict[str, ModuleType]:
+    """Import the reference runtime in an isolated package namespace. / 在隔离包名下导入参考运行时。"""
+
+    runtime_dir = skill_dir / "runtime"
+    init_path = runtime_dir / "__init__.py"
+    package_name = "_harness_reasoning_runtime_validation"
+    modules: dict[str, ModuleType] = {}
+    previous_bytecode_setting = sys.dont_write_bytecode
+    try:
+        sys.dont_write_bytecode = True
+        for name in list(sys.modules):
+            if name == package_name or name.startswith(package_name + "."):
+                sys.modules.pop(name, None)
+        importlib.invalidate_caches()
+        spec = importlib.util.spec_from_file_location(
+            package_name,
+            init_path,
+            submodule_search_locations=[str(runtime_dir)],
+        )
+        if spec is None or spec.loader is None:
+            raise ImportError(f"cannot create package spec for {init_path}")
+        package = importlib.util.module_from_spec(spec)
+        sys.modules[package_name] = package
+        spec.loader.exec_module(package)
+        modules["package"] = package
+        for module_name in (
+            "reasoning_router",
+            "reasoning_metrics",
+            "reasoning_chain_factory",
+        ):
+            modules[module_name] = importlib.import_module(
+                f"{package_name}.{module_name}"
+            )
+    except Exception as error:
+        report.error(
+            "reasoning_runtime_import",
+            f"reference runtime import smoke failed: {type(error).__name__}: {error}",
+            f"参考运行时导入冒烟失败：{type(error).__name__}：{error}",
+        )
+    finally:
+        sys.dont_write_bytecode = previous_bytecode_setting
+        for name in list(sys.modules):
+            if name == package_name or name.startswith(package_name + "."):
+                sys.modules.pop(name, None)
+
+    for module_name, required_exports in RUNTIME_REQUIRED_EXPORTS.items():
+        module = modules.get(module_name)
+        if module is None:
+            continue
+        declared = getattr(module, "__all__", None)
+        declared_valid = isinstance(declared, (list, tuple)) and all(
+            isinstance(item, str) for item in declared
+        )
+        declared_set = set(declared) if declared_valid else set()
+        missing_required = sorted(
+            export
+            for export in required_exports
+            if export not in declared_set or not hasattr(module, export)
+        )
+        missing_declared = sorted(
+            export for export in declared_set if not hasattr(module, export)
+        )
+        if missing_required or missing_declared:
+            report.error(
+                "reasoning_runtime_import",
+                f"runtime module {module_name} lacks required exports {missing_required} or declared exports {missing_declared}",
+                f"运行时模块 {module_name} 缺少必需导出 {missing_required} 或已声明导出 {missing_declared}",
+            )
+    return modules
+
+
+def enum_class_values(value: object) -> list[str] | None:
+    """Return string Enum values or None for a non-enum. / 返回字符串枚举值，非枚举返回 None。"""
+
+    if not isinstance(value, type) or not issubclass(value, Enum):
+        return None
+    values = [member.value for member in value]
+    if not all(isinstance(item, str) for item in values):
+        return None
+    return values
+
+
+def validate_runtime_schema_enums(
+    modules: dict[str, ModuleType],
+    schemas: dict[str, dict[str, object]],
+    report: ValidationReport,
+) -> None:
+    """Cross-check imported runtime enums against normative schemas. / 将运行时枚举与规范 Schema 交叉校验。"""
+
+    bindings = (
+        ("package", "WorkflowState", "workflow_state"),
+        ("package", "ValidationStatus", "validation_result"),
+        ("reasoning_router", "ExecutionMode", "execution_mode"),
+        ("reasoning_router", "PrimaryTopology", "primary_topology"),
+    )
+    for module_name, export_name, canonical_name in bindings:
+        module = modules.get(module_name)
+        if module is None:
+            continue
+        observed = enum_class_values(getattr(module, export_name, None))
+        expected = list(CANONICAL_RUNTIME_ENUMS[canonical_name])
+        if observed != expected:
+            report.error(
+                "reasoning_runtime_schema_enums",
+                f"{module_name}.{export_name} expected {expected}, observed {observed}",
+                f"{module_name}.{export_name} 应为 {expected}，实际为 {observed}",
+            )
+
+    risk_locations = (
+        (
+            "schemas/normalized-input.schema.json",
+            "/$defs/RiskAssessment/properties/level",
+        ),
+        (
+            "schemas/reasoning-contract.schema.json",
+            "/$defs/Governance/properties/risk_level",
+        ),
+        ("schemas/reasoning-event.schema.json", "/properties/risk_level"),
+    )
+    risk_values: list[list[str]] = []
+    for relative, pointer in risk_locations:
+        schema = schemas.get(relative)
+        if schema is None:
+            continue
+        try:
+            risk_values.append(schema_enum_at(schema, pointer))
+        except (KeyError, TypeError, ValueError) as error:
+            report.error(
+                "reasoning_runtime_schema_enums",
+                f"cannot resolve risk enum at {relative}#{pointer}: {error}",
+                f"无法解析 {relative}#{pointer} 的风险枚举：{error}",
+            )
+    if risk_values:
+        expected_risk = risk_values[0]
+        if any(values != expected_risk for values in risk_values[1:]):
+            report.error(
+                "reasoning_runtime_schema_enums",
+                f"risk enums drift across schemas: {risk_values}",
+                f"不同 Schema 的风险枚举漂移：{risk_values}",
+            )
+        for module_name in ("package", "reasoning_router"):
+            module = modules.get(module_name)
+            if module is None:
+                continue
+            observed = enum_class_values(getattr(module, "RiskLevel", None))
+            if observed != expected_risk:
+                report.error(
+                    "reasoning_runtime_schema_enums",
+                    f"{module_name}.RiskLevel expected {expected_risk}, observed {observed}",
+                    f"{module_name}.RiskLevel 应为 {expected_risk}，实际为 {observed}",
+                )
+
+
+def validate_runtime_protocols(
+    registry: dict[str, object],
+    skill_dir: pathlib.Path,
+    report: ValidationReport,
+) -> None:
+    patterns = {
+        str(pattern.get("id")): pattern
+        for pattern in registry.get("patterns", [])
+        if isinstance(pattern, dict)
+    }
+
+    for pattern_id, expected in RUNTIME_PROTOCOLS.items():
+        pattern = patterns.get(pattern_id)
+        reference = skill_dir / expected["reference"]
+        if (
+            pattern is None
+            or pattern.get("name_en") != expected["name_en"]
+            or pattern.get("name_zh") != expected["name_zh"]
+            or pattern.get("source_kind") != "local_seed"
+            or pattern.get("status") != "draft"
+            or pattern.get("reference") != expected["reference"]
+            or pattern.get("source_version") != "0.2.0"
+            or pattern.get("source_draft_id") != expected["source_draft_id"]
+            or set(pattern.get("matrix_coordinates", []))
+            != expected["matrix_coordinates"]
+            or not reference.is_file()
+        ):
+            report.error(
+                "runtime_protocol_registry",
+                f"{pattern_id} runtime protocol registration is invalid",
+                f"{pattern_id} 运行协议注册无效",
+            )
+
+    execution_path = skill_dir / RUNTIME_PROTOCOLS["PATTERN_0051"]["reference"]
+    execution = execution_path.read_text(encoding="utf-8") if execution_path.is_file() else ""
+    for marker in EXECUTION_CONTRACT_MARKERS:
+        if marker not in execution:
+            report.error(
+                "reasoning_execution_contract",
+                f"reasoning execution protocol missing {marker}",
+                f"推理执行协议缺少 {marker}",
+            )
+
+    if "Version / 版本: `0.2.0`" not in execution:
+        report.error(
+            "reasoning_execution_contract",
+            "reasoning execution protocol must declare version 0.2.0",
+            "推理执行协议必须声明版本 0.2.0",
+        )
+    validate_budget_profile_table(execution, report)
+    forbidden_execution_phrases = {
+        "Answer emitted with confidence above threshold.": "confidence-only release",
+        "max_iterations: 0": "zero iteration limit",
+        "report best surviving hypothesis / 迭代或 token 预算触顶": (
+            "unverified hypothesis release on exhaustion"
+        ),
+    }
+    for phrase, meaning in forbidden_execution_phrases.items():
+        if phrase in execution:
+            report.error(
+                "reasoning_execution_semantics",
+                f"reasoning protocol retains unsafe {meaning}",
+                f"推理协议仍包含不安全语义：{meaning}",
+            )
+
+    probes_path = skill_dir / RUNTIME_PROTOCOLS["PATTERN_0052"]["reference"]
+    probes = probes_path.read_text(encoding="utf-8") if probes_path.is_file() else ""
+    for marker in OBSERVABILITY_CONTRACT_MARKERS:
+        if marker not in probes:
+            report.error(
+                "observability_probe_contract",
+                f"observability probe protocol missing {marker}",
+                f"可观测性探针协议缺少 {marker}",
+            )
+
+    if "Version / 版本: `0.2.0`" not in probes:
+        report.error(
+            "observability_probe_contract",
+            "observability probe protocol must declare version 0.2.0",
+            "可观测性探针协议必须声明版本 0.2.0",
+        )
+
+    catalog_rows = markdown_table_rows(probes, "| ID and name / ID 与名称")
+    documented_probe_ids: list[str] = []
+    catalog_structure_valid = (
+        len(catalog_rows) == len(REQUIRED_PROBES) + 2
+        and bool(catalog_rows)
+        and catalog_rows[0]
+        == [
+            "ID and name / ID 与名称",
+            "Trigger and required capture / 触发与必采集",
+            "Signals and gates / 信号与门控",
+            "Primary metrics / 主要指标",
+        ]
+        and all(len(row) == 4 for row in catalog_rows)
+        and all(
+            re.fullmatch(r":?-{3,}:?", cell) for cell in catalog_rows[1]
+        )
+    )
+    if catalog_structure_valid:
+        for row in catalog_rows[2:]:
+            match = re.fullmatch(
+                r"`(PROBE_\d{4})`\s+.+",
+                row[0],
+            )
+            if match and is_bilingual_text(row[0]):
+                documented_probe_ids.append(match.group(1))
+            else:
+                catalog_structure_valid = False
+    documented_probes = Counter(documented_probe_ids)
+    expected_probe_counts = Counter({probe_id: 1 for probe_id in REQUIRED_PROBES})
+    if not catalog_structure_valid or documented_probes != expected_probe_counts:
+        report.error(
+            "observability_probe_catalog",
+            f"probe catalog first column must declare every stable probe exactly once: {documented_probes}",
+            f"探针目录首列必须准确且仅声明一次每个稳定探针：{documented_probes}",
+        )
+
+    stale_formulas = (
+        "first_route_hit_rate =",
+        "step_closure_rate = closed_steps",
+        "hypothesis_elimination_efficiency =",
+        "budget_utilization = actual_use / configured_limit",
+    )
+    if any(formula in probes for formula in stale_formulas):
+        report.error(
+            "reasoning_metric_semantics",
+            "observability protocol retains a biased or unit-mixing formula",
+            "可观测性协议仍包含有偏或混合单位的公式",
+        )
+
+    for relative in RUNTIME_IMPLEMENTATION_FILES:
+        path = skill_dir / relative
+        if not path.is_file():
+            report.error(
+                "reasoning_runtime_implementation",
+                f"missing reference runtime file {relative}",
+                f"缺少参考运行时文件 {relative}",
+            )
+        elif path.suffix == ".py":
+            try:
+                compile(path.read_text(encoding="utf-8"), str(path), "exec")
+            except (OSError, UnicodeError, SyntaxError) as error:
+                report.error(
+                    "reasoning_runtime_implementation",
+                    f"cannot compile {relative}: {error}",
+                    f"无法编译 {relative}：{error}",
+                )
+
+    schemas = validate_reasoning_schemas(skill_dir, report)
+    runtime_modules = validate_runtime_imports(skill_dir, report)
+    validate_runtime_schema_enums(runtime_modules, schemas, report)
+    validate_metric_registry(skill_dir, report)
+    validate_probe_registry(skill_dir, report)
+    validate_probe_dependency_matrix(skill_dir, report)
+
+    factory_path = skill_dir / CHAIN_FACTORY_REFERENCE
+    factory_reference = (
+        factory_path.read_text(encoding="utf-8") if factory_path.is_file() else ""
+    )
+    if not factory_reference:
+        report.error(
+            "reasoning_chain_factory_reference",
+            f"missing chain factory reference {CHAIN_FACTORY_REFERENCE}",
+            f"缺少推理链工厂参考文档 {CHAIN_FACTORY_REFERENCE}",
+        )
+    else:
+        for marker in CHAIN_FACTORY_MARKERS:
+            if marker not in factory_reference:
+                report.error(
+                    "reasoning_chain_factory_reference",
+                    f"chain factory reference missing {marker}",
+                    f"推理链工厂参考文档缺少 {marker}",
+                )
+
+    skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+    for marker in (
+        CHAIN_FACTORY_REFERENCE,
+        "runtime/reasoning_chain_factory.py",
+        "ChainPlanSession",
+    ):
+        if marker not in skill_text:
+            report.error(
+                "reasoning_chain_factory_entrypoint",
+                f"SKILL.md does not route chain execution through {marker}",
+                f"SKILL.md 未将链式执行路由到 {marker}",
+            )
+
+    if "reasoning-chain-factory.md" not in execution:
+        report.error(
+            "reasoning_chain_factory_entrypoint",
+            "reasoning execution protocol does not link the chain factory",
+            "推理执行协议未链接推理链工厂",
+        )
+
+    for cell in registry.get("cells", []):
+        if cell.get("capability_ref") != "COG_REASONING":
+            continue
+        cell_key = str(cell.get("cell_key", ""))
+        design_path = skill_dir / str(cell.get("design_path", ""))
+        observability_path = skill_dir / str(cell.get("observability_path", ""))
+        design = design_path.read_text(encoding="utf-8") if design_path.is_file() else ""
+        observability = (
+            observability_path.read_text(encoding="utf-8")
+            if observability_path.is_file()
+            else ""
+        )
+        if (
+            "../../reasoning-execution-flow.md" not in design
+            or "../../workflow-observability-probes.md" not in design
+        ):
+            report.error(
+                "reasoning_protocol_link",
+                f"{cell_key} design does not link both runtime protocols",
+                f"{cell_key} 设计未同时链接两个运行协议",
+            )
+        if "../../workflow-observability-probes.md" not in observability:
+            report.error(
+                "reasoning_probe_link",
+                f"{cell_key} observability does not link the shared probe suite",
+                f"{cell_key} 可观测性文件未链接共享探针套件",
+            )
+        if cell_key == "reasoning-chain":
+            for document_name, document in (
+                ("design", design),
+                ("observability", observability),
+            ):
+                if "reasoning-chain-factory.md" not in document:
+                    report.error(
+                        "reasoning_chain_factory_entrypoint",
+                        f"reasoning-chain {document_name} does not link the chain factory",
+                        f"reasoning-chain {document_name} 未链接推理链工厂",
+                    )
+
 def validate_navigation(skill_dir: pathlib.Path, report: ValidationReport) -> None:
     references = skill_dir / "references"
     for path in sorted(references.rglob("*.md")):
@@ -748,6 +2303,7 @@ def validate_skill(skill_dir: pathlib.Path) -> ValidationReport:
     validate_markdown_views(registry, skill_dir, report)
     validate_relative_links(skill_dir, report)
     validate_analysis_contracts(skill_dir, report)
+    validate_runtime_protocols(registry, skill_dir, report)
     validate_navigation(skill_dir, report)
     return report
 

@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0.0",
+  "name_en": "Reasoning Mode Probe Dependency Matrix",
+  "name_zh": "推理模式探针依赖矩阵",
+  "description_en": "Machine-readable required and conditional probe coverage for each runtime reasoning mode or supporting topology.",
+  "description_zh": "每种运行时推理模式或支撑拓扑的必需与条件探针覆盖机器可读定义。",
+  "universal_required_probes": ["PROBE_0001", "PROBE_0014", "PROBE_0015"],
+  "entries": [
+    {
+      "mode": "direct",
+      "name_en": "Direct Processing",
+      "name_zh": "直接处理",
+      "required_probes": ["PROBE_0001", "PROBE_0002", "PROBE_0003", "PROBE_0004", "PROBE_0005", "PROBE_0006", "PROBE_0011", "PROBE_0012", "PROBE_0014", "PROBE_0015"],
+      "conditional_probes": {
+        "PROBE_0007": "tool_or_side_effect_action / 工具或副作用动作",
+        "PROBE_0013": "correctness_or_release_metric / 正确性或放行指标"
+      }
+    },
+    {
+      "mode": "chain",
+      "name_en": "Externally Verifiable Reasoning Chain",
+      "name_zh": "外部可核验推理链",
+      "required_probes": ["PROBE_0001", "PROBE_0002", "PROBE_0003", "PROBE_0004", "PROBE_0005", "PROBE_0006", "PROBE_0010", "PROBE_0011", "PROBE_0012", "PROBE_0014", "PROBE_0015"],
+      "conditional_probes": {
+        "PROBE_0007": "tool_or_side_effect_action / 工具或副作用动作",
+        "PROBE_0013": "downstream_adoption_or_correctness_metric / 下游采纳或正确性指标"
+      }
+    },
+    {
+      "mode": "parallel",
+      "name_en": "Parallel Exploration",
+      "name_zh": "并行探索",
+      "required_probes": ["PROBE_0001", "PROBE_0002", "PROBE_0003", "PROBE_0004", "PROBE_0005", "PROBE_0006", "PROBE_0008", "PROBE_0010", "PROBE_0011", "PROBE_0012", "PROBE_0014", "PROBE_0015"],
+      "conditional_probes": {
+        "PROBE_0007": "branch_action / 分支动作",
+        "PROBE_0013": "winner_adoption_or_correctness_metric / 胜出路径采纳或正确性指标"
+      }
+    },
+    {
+      "mode": "iterative",
+      "name_en": "Iterative Hypothesis Testing",
+      "name_zh": "迭代假设测试",
+      "required_probes": ["PROBE_0001", "PROBE_0002", "PROBE_0003", "PROBE_0004", "PROBE_0005", "PROBE_0006", "PROBE_0007", "PROBE_0009", "PROBE_0010", "PROBE_0011", "PROBE_0012", "PROBE_0014", "PROBE_0015"],
+      "conditional_probes": {
+        "PROBE_0013": "recurrence_or_correctness_metric / 复发或正确性指标"
+      }
+    },
+    {
+      "mode": "orchestration",
+      "name_en": "Supporting Orchestration",
+      "name_zh": "支撑编排",
+      "required_probes": ["PROBE_0001", "PROBE_0002", "PROBE_0003", "PROBE_0004", "PROBE_0005", "PROBE_0006", "PROBE_0007", "PROBE_0010", "PROBE_0011", "PROBE_0012", "PROBE_0014", "PROBE_0015"],
+      "conditional_probes": {
+        "PROBE_0008": "parallel_branch_exists / 存在并行分支",
+        "PROBE_0009": "iteration_exists / 存在迭代",
+        "PROBE_0013": "outcome_metric / 后验指标"
+      }
+    },
+    {
+      "mode": "hierarchy",
+      "name_en": "Supporting Hierarchy",
+      "name_zh": "支撑层级",
+      "required_probes": ["PROBE_0001", "PROBE_0002", "PROBE_0004", "PROBE_0005", "PROBE_0006", "PROBE_0010", "PROBE_0011", "PROBE_0012", "PROBE_0014", "PROBE_0015"],
+      "conditional_probes": {
+        "PROBE_0007": "delegated_action / 委派动作",
+        "PROBE_0013": "parent_or_child_outcome_metric / 父子结果指标"
+      }
+    }
+  ]
+}

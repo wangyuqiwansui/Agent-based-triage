@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hanerss.local/schemas/reasoning-chain-checkpoint-validation.schema.json",
+  "x-contract-version": "1.0.0",
+  "title": "Reasoning Chain Checkpoint Validation / 推理链检查点验证",
+  "description": "Hashed validation artifact binding a local checkpoint result to the exact plan, step, criteria, observation, evidence, actor, and authority. / 带哈希的验证制品，将局部检查点结果绑定到确切计划、步骤、准则、观察、证据、执行者与权限。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "validation_id",
+    "validation_version",
+    "validation_hash",
+    "plan_binding",
+    "step_binding",
+    "checkpoint_binding",
+    "validator_type",
+    "validator_binding",
+    "criteria_binding",
+    "observation_hash",
+    "evidence_refs",
+    "evidence_bindings",
+    "observed_evidence_types",
+    "result",
+    "checked_at",
+    "actor_binding",
+    "authority_binding",
+    "findings"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "validation_id": { "$ref": "#/$defs/Identifier" },
+    "validation_version": { "$ref": "#/$defs/SemanticVersion" },
+    "validation_hash": { "$ref": "#/$defs/Sha256" },
+    "plan_binding": { "$ref": "#/$defs/Binding" },
+    "step_binding": { "$ref": "#/$defs/Binding" },
+    "checkpoint_binding": { "$ref": "#/$defs/Binding" },
+    "validator_type": {
+      "enum": ["deterministic", "rule", "schema", "test", "external", "human"]
+    },
+    "validator_binding": { "$ref": "#/$defs/Binding" },
+    "criteria_binding": { "$ref": "#/$defs/Binding" },
+    "observation_hash": { "$ref": "#/$defs/Sha256" },
+    "evidence_refs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/Identifier" }
+    },
+    "evidence_bindings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/Binding" }
+    },
+    "observed_evidence_types": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/Identifier" }
+    },
+    "result": {
+      "enum": ["passed", "failed", "insufficient_evidence", "human_required"]
+    },
+    "checked_at": { "type": "string", "format": "date-time" },
+    "actor_binding": { "$ref": "#/$defs/BindingState" },
+    "authority_binding": { "$ref": "#/$defs/BindingState" },
+    "findings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "result": { "const": "passed" } },
+        "required": ["result"]
+      },
+      "then": {
+        "properties": {
+          "actor_binding": { "$ref": "#/$defs/Binding" },
+          "authority_binding": { "$ref": "#/$defs/Binding" }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "Binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "BindingState": {
+      "oneOf": [
+        { "$ref": "#/$defs/Binding" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": {
+            "state": { "enum": ["missing", "unknown", "not_applicable"] }
+          }
+        }
+      ]
+    }
+  }
+}

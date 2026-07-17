@@ -1,0 +1,772 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/reasoning-contract.schema.json",
+  "x-contract-version": "1.0.0",
+  "title": "推理执行契约 / Reasoning Execution Contract",
+  "description": "路由后生成的机器可执行推理契约，分别描述调度方式、推理深度与拓扑。/ A machine-executable post-routing contract that represents scheduling mode, reasoning depth, and topology independently.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "contract_version",
+    "contract_hash",
+    "workflow_id",
+    "task_id",
+    "run_id",
+    "scene_id",
+    "normalized_input_binding",
+    "created_at",
+    "routing_decision",
+    "snapshot_versions",
+    "execution_mode",
+    "reasoning_depth",
+    "primary_topology",
+    "supporting_topologies",
+    "budget",
+    "validators",
+    "evidence_sufficiency",
+    "stop_conditions",
+    "escalation_conditions",
+    "allowed_mode_switches",
+    "governance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "模式版本 / Schema version",
+      "description": "本契约的语义版本。/ Semantic version of this contract."
+    },
+    "contract_id": {
+      "$ref": "#/$defs/Identifier",
+      "title": "契约标识 / Contract identifier"
+    },
+    "contract_version": {
+      "$ref": "#/$defs/SemanticVersion",
+      "title": "契约版本 / Contract version"
+    },
+    "contract_hash": {
+      "$ref": "#/$defs/Sha256",
+      "title": "契约哈希 / Contract hash"
+    },
+    "workflow_id": {
+      "$ref": "#/$defs/Identifier",
+      "title": "工作流标识 / Workflow identifier"
+    },
+    "task_id": { "$ref": "#/$defs/Identifier", "title": "任务标识 / Task identifier" },
+    "run_id": { "$ref": "#/$defs/Identifier", "title": "运行标识 / Run identifier" },
+    "scene_id": { "$ref": "#/$defs/Identifier", "title": "场景标识 / Scene identifier" },
+    "normalized_input_binding": {
+      "$ref": "#/$defs/VersionedBinding",
+      "title": "规范化输入绑定 / Normalized input binding"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "创建时间 / Creation time"
+    },
+    "routing_decision": {
+      "$ref": "#/$defs/RoutingDecision",
+      "title": "路由决策 / Routing decision",
+      "description": "绑定确定性策略、结构化信号、类型化原因和所选配置；不使用自由文本置信度放行。/ Binds the deterministic policy, structured signals, typed reasons, and selected configuration; free-text confidence never releases execution."
+    },
+    "snapshot_versions": {
+      "$ref": "#/$defs/SnapshotVersions",
+      "title": "执行快照版本 / Execution snapshot versions",
+      "description": "绑定目标、约束和已验证事实快照。/ Binds goal, constraint, and verified-fact snapshots."
+    },
+    "execution_mode": {
+      "enum": ["direct", "chain", "parallel", "iterative"],
+      "title": "执行调度方式 / Execution scheduling mode",
+      "description": "选择执行协议；推理深度与主、支撑拓扑仍由独立字段规范化。/ Selects the execution protocol while reasoning depth and primary/supporting topologies remain independently normalized."
+    },
+    "reasoning_depth": {
+      "enum": ["direct", "deliberative"],
+      "title": "推理深度 / Reasoning depth",
+      "description": "direct 表示无需展开可审计分解；deliberative 表示需要显式可核验中间产物。/ direct avoids expanded auditable decomposition; deliberative requires explicit verifiable intermediate artifacts."
+    },
+    "primary_topology": {
+      "oneOf": [
+        { "type": "null" },
+        { "enum": ["chain", "parallel", "loop"] }
+      ],
+      "title": "主推理拓扑 / Primary reasoning topology",
+      "description": "direct 使用 null；其余模式使用 chain、parallel 或 loop。/ direct uses null; other modes use chain, parallel, or loop."
+    },
+    "supporting_topologies": {
+      "type": "array",
+      "title": "支撑拓扑 / Supporting topologies",
+      "description": "治理或组织层面的支撑拓扑，不替代主推理拓扑。/ Governance or organizational topologies that do not replace the primary reasoning topology.",
+      "items": { "enum": ["orchestration", "hierarchy"] },
+      "uniqueItems": true,
+      "maxItems": 2
+    },
+    "budget": {
+      "$ref": "#/$defs/Budget",
+      "title": "资源预算 / Resource budget"
+    },
+    "validators": {
+      "type": "array",
+      "title": "验证器契约 / Validator contracts",
+      "description": "具有明确适用条件和放行条件的验证器。/ Validators with explicit applicability and release criteria.",
+      "items": { "$ref": "#/$defs/ValidatorSpec" }
+    },
+    "evidence_sufficiency": {
+      "$ref": "#/$defs/EvidenceSufficiency",
+      "title": "证据充分条件 / Evidence sufficiency conditions"
+    },
+    "stop_conditions": {
+      "type": "array",
+      "title": "停止条件 / Stop conditions",
+      "description": "可判定、带动作的停止谓词。/ Evaluable stop predicates with explicit actions.",
+      "items": { "$ref": "#/$defs/StopCondition" },
+      "minItems": 1
+    },
+    "escalation_conditions": {
+      "type": "array",
+      "title": "升级条件 / Escalation conditions",
+      "description": "可判定的升级条件和升级动作。/ Evaluable escalation conditions and actions.",
+      "items": { "$ref": "#/$defs/EscalationCondition" }
+    },
+    "allowed_mode_switches": {
+      "type": "array",
+      "title": "允许的模式切换 / Allowed mode switches",
+      "description": "限定起点、终点、触发原因和切换次数的模式切换。/ Mode switches constrained by source, destination, trigger, and count.",
+      "items": { "$ref": "#/$defs/ModeSwitch" }
+    },
+    "direct_release_rule": {
+      "$ref": "#/$defs/DirectReleaseRule",
+      "title": "直接放行规则 / Direct release rule",
+      "description": "仅低风险 direct 模式可使用的版本化验证器豁免规则。/ A versioned validator-exemption rule available only to low-risk direct execution."
+    },
+    "governance": {
+      "$ref": "#/$defs/Governance",
+      "title": "治理策略 / Governance policy"
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "execution_mode": { "const": "direct" } }, "required": ["execution_mode"] },
+      "then": {
+        "properties": {
+          "reasoning_depth": { "const": "direct" },
+          "primary_topology": { "type": "null" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "execution_mode": { "const": "chain" } }, "required": ["execution_mode"] },
+      "then": {
+        "properties": {
+          "reasoning_depth": { "const": "deliberative" },
+          "primary_topology": { "const": "chain" }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "execution_mode": { "const": "parallel" } }, "required": ["execution_mode"] },
+      "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "parallel" } } }
+    },
+    {
+      "if": { "properties": { "execution_mode": { "const": "iterative" } }, "required": ["execution_mode"] },
+      "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "loop" } } }
+    },
+    {
+      "if": { "required": ["direct_release_rule"] },
+      "then": {
+        "properties": {
+          "execution_mode": { "const": "direct" },
+          "governance": {
+            "properties": { "risk_level": { "const": "low" } }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "execution_mode": { "const": "direct" } },
+        "required": ["execution_mode"],
+        "not": { "required": ["direct_release_rule"] }
+      },
+      "then": {
+        "properties": {
+          "validators": {
+            "contains": {
+              "type": "object",
+              "properties": { "required": { "const": true } },
+              "required": ["required"]
+            },
+            "minContains": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "governance": {
+            "properties": { "risk_level": { "enum": ["high", "critical"] } },
+            "required": ["risk_level"]
+          }
+        },
+        "required": ["governance"]
+      },
+      "then": {
+        "properties": {
+          "validators": {
+            "contains": {
+              "type": "object",
+              "properties": { "required": { "const": true } },
+              "required": ["required"]
+            },
+            "minContains": 1,
+            "not": {
+              "contains": {
+                "type": "object",
+                "properties": { "on_error": { "const": "fail_open" } },
+                "required": ["on_error"]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "governance": {
+            "properties": { "human_review_required": { "const": true } },
+            "required": ["human_review_required"]
+          }
+        },
+        "required": ["governance"]
+      },
+      "then": {
+        "not": { "required": ["direct_release_rule"] },
+        "properties": {
+          "validators": {
+            "contains": {
+              "type": "object",
+              "properties": {
+                "validator_type": { "const": "human" },
+                "required": { "const": true }
+              },
+              "required": ["validator_type", "required"]
+            },
+            "minContains": 1
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "Identifier": {
+      "title": "稳定标识 / Stable identifier",
+      "description": "工作流内稳定且可引用的标识。/ A stable, referenceable identifier within a workflow.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "title": "语义版本 / Semantic version",
+      "description": "契约或记录的语义版本。/ Semantic version of a contract or record.",
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": {
+      "title": "SHA-256 哈希 / SHA-256 hash",
+      "description": "带算法前缀的十六进制完整性哈希。/ A hexadecimal integrity hash with an algorithm prefix.",
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "VersionedBinding": {
+      "type": "object",
+      "title": "版本化绑定 / Versioned binding",
+      "description": "将消费者绑定到不可混淆的标识、版本和内容哈希。/ Binds a consumer to an unambiguous identifier, version, and content hash.",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "SafeExternalValue": {
+      "title": "安全外部值 / Safe external value",
+      "description": "递归拒绝私密推理字段名，仅允许可外部审计的数据。/ Recursively rejects private-reasoning field names and permits only externally auditable data.",
+      "oneOf": [
+        { "type": ["string", "number", "boolean", "null"] },
+        { "type": "array", "items": { "$ref": "#/$defs/SafeExternalValue" } },
+        {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/SafeExternalPropertyName" },
+          "additionalProperties": { "$ref": "#/$defs/SafeExternalValue" }
+        }
+      ]
+    },
+    "SafeExternalPropertyName": {
+      "title": "安全外部字段名 / Safe external property name",
+      "description": "大小写不敏感地拒绝私密推理字段名。/ Rejects private-reasoning property names case-insensitively.",
+      "type": "string",
+      "not": {
+        "pattern": "^(?:[cC][hH][aA][iI][nN]_[oO][fF]_[tT][hH][oO][uU][gG][hH][tT]|[pP][rR][iI][vV][aA][tT][eE]_[cC][oO][tT]|[hH][iI][dD][dD][eE][nN]_[rR][eE][aA][sS][oO][nN][iI][nN][gG]|[iI][nN][tT][eE][rR][nN][aA][lL]_[mM][oO][nN][oO][lL][oO][gG][uU][eE]|[rR][eE][aA][sS][oO][nN][iI][nN][gG]_[sS][cC][rR][aA][tT][cC][hH][pP][aA][dD]|[sS][cC][rR][aA][tT][cC][hH][pP][aA][dD])$"
+      }
+    },
+    "RouteSignalValue": {
+      "title": "路由信号值 / Route signal value",
+      "description": "使用显式状态承载受控路由值；未知值不得伪装为零或 null。/ Carries a controlled route value with explicit state; unknown values cannot masquerade as zero or null.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed" },
+            "value": { "enum": ["low", "medium", "high", "critical", "none", "partial", "full", "available", "degraded", "unavailable", "complete_consistent", "mostly_complete", "conflicting", "insufficient", "untrusted", "required", "not_required", "reversible", "partially_reversible", "irreversible", true, false] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+        }
+      ]
+    },
+    "RoutingSignal": {
+      "type": "object",
+      "title": "类型化路由信号 / Typed routing signal",
+      "description": "确定性路由器使用的结构化信号。/ A structured signal consumed by the deterministic router.",
+      "additionalProperties": false,
+      "required": ["signal", "value"],
+      "properties": {
+        "signal": { "enum": ["complexity", "uncertainty", "risk", "parallelizability", "external_verifiability", "evidence_availability", "interaction_need", "reversibility", "dominant_dependency_path", "permission_granted", "prohibited_action"] },
+        "value": { "$ref": "#/$defs/RouteSignalValue" }
+      }
+    },
+    "RoutingReason": {
+      "type": "object",
+      "title": "类型化路由原因 / Typed routing reason",
+      "description": "将路由依据绑定到稳定原因码和可选来源。/ Binds routing rationale to a stable reason code and optional source.",
+      "additionalProperties": false,
+      "required": ["reason_code", "source_binding"],
+      "properties": {
+        "reason_code": { "enum": ["direct_low_risk_release", "multi_step_dependency", "independent_hypotheses", "feedback_required", "high_risk", "insufficient_evidence", "external_validation_required", "missing_route_signal", "policy_constraint", "irreversible_action", "tool_unavailable", "human_judgment_required"] },
+        "source_binding": {
+          "oneOf": [
+            { "$ref": "#/$defs/VersionedBinding" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["state"],
+              "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+            }
+          ]
+        }
+      }
+    },
+    "RoutingDecision": {
+      "type": "object",
+      "title": "路由决策 / Routing decision",
+      "description": "版本化、可重放且不依赖自由文本置信度的路由决策。/ A versioned, replayable routing decision that does not depend on free-text confidence.",
+      "additionalProperties": false,
+      "required": ["decision_id", "policy_binding", "disposition", "signals", "reasons", "selected_configuration", "signal_fingerprint", "missing_signals", "abstained"],
+      "properties": {
+        "decision_id": { "$ref": "#/$defs/Identifier" },
+        "policy_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "disposition": {
+          "const": "execute",
+          "description": "只有 execute 路由才能建立执行契约；reject/escalate 只记录事件和终态。/ Only an execute route can establish an execution contract; reject/escalate are recorded in events and terminal state."
+        },
+        "signals": { "type": "array", "items": { "$ref": "#/$defs/RoutingSignal" }, "minItems": 1 },
+        "reasons": { "type": "array", "items": { "$ref": "#/$defs/RoutingReason" }, "minItems": 1 },
+        "selected_configuration": { "$ref": "#/$defs/ReasoningConfiguration" },
+        "signal_fingerprint": { "$ref": "#/$defs/Sha256" },
+        "missing_signals": {
+          "type": "array",
+          "items": { "enum": ["complexity", "uncertainty", "risk", "parallelizability", "external_verifiability", "evidence_availability", "interaction_need", "reversibility", "dominant_dependency_path", "permission_granted", "prohibited_action"] },
+          "maxItems": 0
+        },
+        "abstained": { "const": false }
+      }
+    },
+    "SnapshotVersions": {
+      "type": "object",
+      "title": "快照版本 / Snapshot versions",
+      "description": "目标、约束和已验证事实的单调版本。/ Monotonic versions for goal, constraints, and verified facts.",
+      "additionalProperties": false,
+      "required": ["goal", "constraints", "verified_facts"],
+      "properties": {
+        "goal": { "type": "integer", "minimum": 1 },
+        "constraints": { "type": "integer", "minimum": 1 },
+        "verified_facts": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "Budget": {
+      "type": "object",
+      "title": "预算 / Budget",
+      "description": "包含并行预留和耗尽策略的硬性或软性预算。/ Hard or soft budgets with parallel reservation and exhaustion policy.",
+      "additionalProperties": false,
+      "required": [
+        "max_reasoning_tokens",
+        "max_latency_ms",
+        "max_model_calls",
+        "max_tool_calls",
+        "max_parallel_paths",
+        "max_iterations",
+        "max_retries",
+        "max_total_cost_units",
+        "cost_unit",
+        "enforcement",
+        "parallel_reservation_policy",
+        "on_exhaustion"
+      ],
+      "properties": {
+        "max_reasoning_tokens": { "oneOf": [{ "type": "integer", "minimum": 1 }, { "type": "null" }] },
+        "max_latency_ms": { "oneOf": [{ "type": "integer", "minimum": 1 }, { "type": "null" }] },
+        "max_model_calls": { "oneOf": [{ "type": "integer", "minimum": 1 }, { "type": "null" }] },
+        "max_tool_calls": { "oneOf": [{ "type": "integer", "minimum": 1 }, { "type": "null" }] },
+        "max_parallel_paths": { "oneOf": [{ "type": "integer", "minimum": 1 }, { "type": "null" }] },
+        "max_iterations": { "oneOf": [{ "type": "integer", "minimum": 1 }, { "type": "null" }] },
+        "max_retries": { "oneOf": [{ "type": "integer", "minimum": 1 }, { "type": "null" }] },
+        "max_total_cost_units": { "oneOf": [{ "type": "number", "exclusiveMinimum": 0 }, { "type": "null" }] },
+        "cost_unit": { "enum": ["usd", "cny", "compute_credit", "provider_unit"] },
+        "enforcement": { "enum": ["hard", "soft"] },
+        "parallel_reservation_policy": { "enum": ["reserve_before_launch", "shared_atomic_ledger"] },
+        "on_exhaustion": { "enum": ["stop", "escalate", "reject", "degrade"] }
+      }
+    },
+    "Predicate": {
+      "type": "object",
+      "title": "判定谓词 / Evaluation predicate",
+      "description": "针对结构化上下文路径的可执行比较。/ Executable comparison against a structured context path.",
+      "additionalProperties": false,
+      "required": ["field_path", "operator"],
+      "properties": {
+        "field_path": { "type": "string", "pattern": "^/" },
+        "operator": { "enum": ["eq", "ne", "lt", "lte", "gt", "gte", "in", "not_in", "exists", "matches"] },
+        "expected": { "$ref": "#/$defs/SafeExternalValue" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "operator": { "const": "exists" } }, "required": ["operator"] },
+          "then": { "not": { "required": ["expected"] } },
+          "else": { "required": ["expected"] }
+        }
+      ]
+    },
+    "ValidatorSpec": {
+      "type": "object",
+      "title": "验证器规范 / Validator specification",
+      "description": "版本化验证器及其适用条件、检查项和聚合放行规则。/ Versioned validator with applicability, checks, and aggregate release policy.",
+      "additionalProperties": false,
+      "required": ["validator_id", "validator_version", "validator_type", "required", "applicability", "pass_criteria", "timeout_ms", "on_error"],
+      "properties": {
+        "validator_id": { "$ref": "#/$defs/Identifier" },
+        "validator_version": { "$ref": "#/$defs/SemanticVersion" },
+        "validator_type": { "enum": ["schema", "deterministic", "policy", "evidence", "simulation", "human"] },
+        "required": { "type": "boolean" },
+        "applicability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["aggregation", "predicates"],
+          "properties": {
+            "aggregation": { "enum": ["all", "any"] },
+            "predicates": { "type": "array", "items": { "$ref": "#/$defs/Predicate" } }
+          }
+        },
+        "pass_criteria": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["aggregation", "checks"],
+          "properties": {
+            "aggregation": { "enum": ["all", "any", "quorum", "weighted"] },
+            "minimum_pass_count": { "type": "integer", "minimum": 1 },
+            "minimum_score": { "type": "number", "minimum": 0, "maximum": 1 },
+            "checks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["check_id", "predicate", "severity", "weight"],
+                "properties": {
+                  "check_id": { "$ref": "#/$defs/Identifier" },
+                  "predicate": { "$ref": "#/$defs/Predicate" },
+                  "severity": { "enum": ["info", "warning", "error", "fatal"] },
+                  "weight": { "type": "number", "exclusiveMinimum": 0 }
+                }
+              },
+              "minItems": 1
+            }
+          },
+          "allOf": [
+            {
+              "if": { "properties": { "aggregation": { "const": "quorum" } }, "required": ["aggregation"] },
+              "then": { "required": ["minimum_pass_count"] }
+            },
+            {
+              "if": { "properties": { "aggregation": { "const": "weighted" } }, "required": ["aggregation"] },
+              "then": { "required": ["minimum_score"] }
+            }
+          ]
+        },
+        "timeout_ms": { "type": "integer", "minimum": 1 },
+        "on_error": { "enum": ["fail_closed", "retry_then_fail_closed", "escalate", "fail_open"] }
+      }
+    },
+    "EvidenceSufficiency": {
+      "type": "object",
+      "title": "证据充分性 / Evidence sufficiency",
+      "description": "在完成前必须满足的可测量证据门槛。/ Measurable evidence gates that must be satisfied before completion.",
+      "additionalProperties": false,
+      "required": [
+        "min_independent_sources",
+        "required_evidence_types",
+        "max_source_age_seconds",
+        "min_integrity_score",
+        "min_claim_coverage_ratio",
+        "max_unresolved_critical_claims",
+        "unknown_source_policy"
+      ],
+      "properties": {
+        "min_independent_sources": { "type": "integer", "minimum": 0 },
+        "required_evidence_types": {
+          "type": "array",
+          "items": { "enum": ["input", "document", "tool_result", "measurement", "test", "human_attestation", "policy"] },
+          "uniqueItems": true
+        },
+        "max_source_age_seconds": { "type": "integer", "minimum": 0 },
+        "min_integrity_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "min_claim_coverage_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "max_unresolved_critical_claims": { "type": "integer", "minimum": 0 },
+        "unknown_source_policy": { "enum": ["reject", "exclude", "allow_with_escalation"] }
+      }
+    },
+    "StopCondition": {
+      "title": "停止条件 / Stop condition",
+      "description": "按类型判别的停止条件。/ A stop condition discriminated by type.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["condition_id", "type", "on_trigger"],
+          "properties": {
+            "condition_id": { "$ref": "#/$defs/Identifier" },
+            "type": { "enum": ["validated_success", "all_critical_claims_resolved"] },
+            "on_trigger": { "const": "complete" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["condition_id", "type", "on_trigger"],
+          "properties": {
+            "condition_id": { "$ref": "#/$defs/Identifier" },
+            "type": { "const": "fatal_error" },
+            "on_trigger": { "enum": ["fail", "escalate"] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["condition_id", "type", "on_trigger"],
+          "properties": {
+            "condition_id": { "$ref": "#/$defs/Identifier" },
+            "type": { "const": "user_cancelled" },
+            "on_trigger": { "const": "cancel" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["condition_id", "type", "on_trigger"],
+          "properties": {
+            "condition_id": { "$ref": "#/$defs/Identifier" },
+            "type": { "const": "policy_blocked" },
+            "on_trigger": { "enum": ["reject", "escalate"] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["condition_id", "type", "budget_dimension", "on_trigger"],
+          "properties": {
+            "condition_id": { "$ref": "#/$defs/Identifier" },
+            "type": { "const": "budget_exhausted" },
+            "budget_dimension": { "enum": ["reasoning_tokens", "latency_ms", "model_calls", "tool_calls", "parallel_paths", "iterations", "retries", "total_cost_units"] },
+            "on_trigger": { "enum": ["fail", "escalate", "reject"] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["condition_id", "type", "consecutive_steps", "min_information_gain", "on_trigger"],
+          "properties": {
+            "condition_id": { "$ref": "#/$defs/Identifier" },
+            "type": { "const": "no_progress" },
+            "consecutive_steps": { "type": "integer", "minimum": 1 },
+            "min_information_gain": { "type": "number", "minimum": 0, "maximum": 1 },
+            "on_trigger": { "enum": ["fail", "escalate"] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["condition_id", "type", "deadline", "on_trigger"],
+          "properties": {
+            "condition_id": { "$ref": "#/$defs/Identifier" },
+            "type": { "const": "deadline_reached" },
+            "deadline": { "type": "string", "format": "date-time" },
+            "on_trigger": { "enum": ["timeout", "escalate"] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["condition_id", "type", "limit", "on_trigger"],
+          "properties": {
+            "condition_id": { "$ref": "#/$defs/Identifier" },
+            "type": { "enum": ["max_iterations", "max_retries"] },
+            "limit": { "type": "integer", "minimum": 1 },
+            "on_trigger": { "enum": ["fail", "escalate"] }
+          }
+        }
+      ]
+    },
+    "TerminalAction": {
+      "title": "终态动作 / Terminal action",
+      "description": "停止条件触发时采用的受控终态动作。/ Controlled terminal action taken when a stop condition triggers.",
+      "enum": ["complete", "escalate", "reject", "fail", "cancel", "timeout"]
+    },
+    "EscalationCondition": {
+      "type": "object",
+      "title": "升级条件 / Escalation condition",
+      "description": "带阈值和明确升级动作的结构化触发器。/ Structured trigger with a threshold and explicit escalation action.",
+      "additionalProperties": false,
+      "required": ["condition_id", "trigger", "severity", "action"],
+      "properties": {
+        "condition_id": { "$ref": "#/$defs/Identifier" },
+        "trigger": { "enum": ["insufficient_evidence", "budget_pressure", "validator_failure", "policy_uncertainty", "high_risk", "human_judgment_required", "repeated_no_progress", "tool_unavailable"] },
+        "severity": { "enum": ["warning", "error", "critical"] },
+        "threshold": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["metric", "operator", "value"],
+          "properties": {
+            "metric": { "enum": ["evidence_coverage", "budget_utilization", "failure_count", "risk_score", "no_progress_steps", "unavailable_seconds"] },
+            "operator": { "enum": ["lt", "lte", "gt", "gte", "eq"] },
+            "value": { "type": "number" }
+          }
+        },
+        "action": { "enum": ["request_evidence", "request_human_review", "switch_mode", "transfer_authority", "terminate_rejected"] }
+      }
+    },
+    "ReasoningConfiguration": {
+      "type": "object",
+      "title": "推理配置 / Reasoning configuration",
+      "description": "将推理深度与拓扑分别编码。/ Encodes reasoning depth and topology separately.",
+      "additionalProperties": false,
+      "required": ["execution_mode", "reasoning_depth", "primary_topology", "supporting_topologies"],
+      "properties": {
+        "execution_mode": { "enum": ["direct", "chain", "parallel", "iterative"] },
+        "reasoning_depth": { "enum": ["direct", "deliberative"] },
+        "primary_topology": { "oneOf": [{ "type": "null" }, { "enum": ["chain", "parallel", "loop"] }] },
+        "supporting_topologies": {
+          "type": "array",
+          "items": { "enum": ["orchestration", "hierarchy"] },
+          "uniqueItems": true,
+          "maxItems": 2
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "execution_mode": { "const": "direct" } }, "required": ["execution_mode"] },
+          "then": { "properties": { "reasoning_depth": { "const": "direct" }, "primary_topology": { "type": "null" } } }
+        },
+        {
+          "if": { "properties": { "execution_mode": { "const": "chain" } }, "required": ["execution_mode"] },
+          "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "chain" } } }
+        },
+        {
+          "if": { "properties": { "execution_mode": { "const": "parallel" } }, "required": ["execution_mode"] },
+          "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "parallel" } } }
+        },
+        {
+          "if": { "properties": { "execution_mode": { "const": "iterative" } }, "required": ["execution_mode"] },
+          "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "loop" } } }
+        }
+      ]
+    },
+    "ModeSwitch": {
+      "type": "object",
+      "title": "模式切换 / Mode switch",
+      "description": "版本化且有次数限制的允许切换。/ A versioned, count-limited allowed switch.",
+      "additionalProperties": false,
+      "required": ["switch_id", "from", "to", "trigger", "max_switches", "preserve_budget", "requires_validation"],
+      "properties": {
+        "switch_id": { "$ref": "#/$defs/Identifier" },
+        "from": { "$ref": "#/$defs/ReasoningConfiguration" },
+        "to": { "$ref": "#/$defs/ReasoningConfiguration" },
+        "trigger": { "enum": ["insufficient_evidence", "conflicting_evidence", "validator_failure", "budget_pressure", "risk_increase", "human_request", "tool_unavailable"] },
+        "max_switches": { "type": "integer", "minimum": 1 },
+        "preserve_budget": { "type": "boolean", "const": true },
+        "requires_validation": { "type": "boolean" }
+      }
+    },
+    "DirectReleaseRule": {
+      "type": "object",
+      "title": "直接放行规则 / Direct release rule",
+      "description": "低风险、可逆 direct 执行的可审计验证器豁免；缺少本对象时必须经过 mandatory validator gate。/ Auditable validator exemption for low-risk, reversible direct execution; without this object, a mandatory validator gate is required.",
+      "additionalProperties": false,
+      "required": ["rule_id", "rule_version", "allowed_risk_levels", "predicate", "criteria_version", "required_evidence", "validator_exemption_basis"],
+      "properties": {
+        "rule_id": { "$ref": "#/$defs/Identifier" },
+        "rule_version": { "$ref": "#/$defs/SemanticVersion" },
+        "allowed_risk_levels": {
+          "type": "array",
+          "items": { "const": "low" },
+          "minItems": 1,
+          "maxItems": 1,
+          "uniqueItems": true
+        },
+        "predicate": { "$ref": "#/$defs/Predicate" },
+        "criteria_version": { "$ref": "#/$defs/SemanticVersion" },
+        "required_evidence": { "$ref": "#/$defs/EvidenceSufficiency" },
+        "validator_exemption_basis": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["basis", "policy_binding"],
+          "properties": {
+            "basis": { "enum": ["deterministic_rule", "low_risk_reversible", "prevalidated_input"] },
+            "policy_binding": { "$ref": "#/$defs/VersionedBinding" }
+          }
+        }
+      }
+    },
+    "Governance": {
+      "type": "object",
+      "title": "治理策略 / Governance policy",
+      "description": "风险、失败关闭和人工复核要求。/ Risk, fail-closed, and human-review requirements.",
+      "additionalProperties": false,
+      "required": ["risk_level", "validator_failure_policy", "probe_failure_policy", "human_review_required"],
+      "properties": {
+        "risk_level": { "enum": ["low", "medium", "high", "critical"] },
+        "validator_failure_policy": { "enum": ["fail_closed", "escalate", "fail_open"] },
+        "probe_failure_policy": { "enum": ["fail_closed", "degrade_and_alert", "continue"] },
+        "human_review_required": { "type": "boolean" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "risk_level": { "enum": ["high", "critical"] } }, "required": ["risk_level"] },
+          "then": {
+            "properties": {
+              "validator_failure_policy": { "const": "fail_closed" },
+              "probe_failure_policy": { "enum": ["fail_closed", "degrade_and_alert"] }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

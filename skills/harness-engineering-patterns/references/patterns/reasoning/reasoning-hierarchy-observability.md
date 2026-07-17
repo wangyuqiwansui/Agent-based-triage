@@ -6,13 +6,20 @@ Mode / 模式: Hierarchy / 层级
 Source / 来源: arXiv:2605.13850 (https://arxiv.org/html/2605.13850)
 Use this file as the observability metrics source for this 7x6 matrix intersection. / 将本文档作为该 7x6 交织点的可观测性指标来源。
 Design Pattern File / 设计模式文件: [reasoning-hierarchy.md](reasoning-hierarchy.md)
+Shared Probe Suite / 共享探针套件: [Workflow Observability Probes / 工作流可观测性探针](../../workflow-observability-probes.md)
 
 ## Observability Metrics / 可观测性指标
 
-Use these metrics to observe whether Extension Candidate / 扩展候选 improves the workflow after selection or application. / 使用以下指标观察 Extension Candidate / 扩展候选 在选型或应用后是否改善工作流。
+Use these metrics to observe parent-child reasoning support without treating the evidence as promotion of the extension candidate. / 使用以下指标观察父子推理支撑作用，但不得将这些证据直接视为扩展候选晋升。
 
-- 质量指标 / Quality Metrics: Track output acceptance, defect or rework rate, and whether the fit signal is satisfied. / 跟踪产出采纳率、缺陷或返工率，以及适配信号是否满足。
-- 时延指标 / Latency Metrics: Track time from node trigger to usable output, including waiting, routing, iteration, and handoff time. / 跟踪从节点触发到可用输出的耗时，包括等待、路由、迭代和交接时间。
-- 成本指标 / Cost Metrics: Track tool calls, token or compute spend, human review effort, and repeated work avoided. / 跟踪工具调用、Token 或计算成本、人工评审投入，以及避免的重复工作。
-- 风险指标 / Risk Metrics: Track policy violations, permission escalations, unsafe actions, missed checks, and blast-radius changes. / 跟踪策略违规、权限升级、不安全动作、遗漏检查和影响范围变化。
-- Trace 指标 / Trace Metrics: Track trace completeness, evidence freshness, outcome comparison, and whether follow-up actions are closed. / 跟踪 Trace 完整性、证据新鲜度、结果对比和后续动作是否关闭。
+- 质量指标 / Quality Metrics: parent-child correlation success, handoff completeness, goal/constraint fidelity, evidence-traceability preservation, conflict rate, duplicate-work rate, and parent validation pass rate. / 父子关联成功率、交接完整率、目标/约束保真率、证据可追踪保留率、冲突率、重复工作率和父级验证通过率。
+- 时延指标 / Latency Metrics: child queue and execution latency, handoff wait, parent synthesis latency, escalation wait, and end-to-end critical-path latency. / 子任务排队与执行时延、交接等待、父级综合时延、升级等待和端到端关键路径时延。
+- 成本指标 / Cost Metrics: child budget utilization, budget conservation error, duplicate-work cost, parent synthesis cost, and cost per validated parent result. / 子预算利用率、预算守恒误差、重复工作成本、父级综合成本和单位父级验证成功成本。
+- 风险指标 / Risk Metrics: missing parent event, authority widening, hard-constraint dilution, evidence loss, child overrun, orphaned task, and unowned final validation. / 父事件缺失、权限扩大、硬约束弱化、证据丢失、子任务越界、孤儿任务和最终验证无人负责。
+- Trace 指标 / Trace Metrics: task/run/step/parent identity propagation, snapshot-version propagation, child stop reasons, authority and budget records, evidence handoff, conflict preservation, and parent synthesis linkage. / 任务/运行/步骤/父事件标识传播、快照版本传播、子任务停止原因、权限与预算记录、证据交接、冲突保留和父级综合关联。
+
+### Required Probe Coverage / 必需探针覆盖
+
+Enable identity and parent linkage (`PROBE_0001`), contract completeness (`PROBE_0002`), budget (`PROBE_0004`), step closure (`PROBE_0005`), evidence (`PROBE_0006`), tool and action (`PROBE_0007`) when delegated actions exist, drift (`PROBE_0010`), validation (`PROBE_0011`), stop/escalation (`PROBE_0012`), outcome (`PROBE_0013`) when available, privacy/governance (`PROBE_0014`), and self-health (`PROBE_0015`). / 启用身份与父子关联、契约完整性、预算、步骤闭环、证据、工具与动作（存在委派动作时）、漂移、验证、停止升级、结果回接（可用时）、隐私治理和自健康探针。
+
+Require `parent_event_id` propagation, inherited snapshot versions, least authority, explicit child budget, evidence-bearing handoff, child stop reason, and parent-owned final validation. Block audit-grade completion when the parent chain is irrecoverable or hard constraints diverge without an approved revision. / 强制传播 `parent_event_id`、继承快照版本、最小权限、显式子预算、带证据交接、子任务停止原因和父级最终验证责任。父子链不可恢复或硬约束未经批准发生分歧时，阻断审计级完成。

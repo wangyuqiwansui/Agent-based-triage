@@ -1,0 +1,55 @@
+trace_id: TRACE_REASONING_PROTOCOL_0001
+analysis_id: ANALYSIS_20260715_REASONING_PROTOCOL_0001
+event_time: "2026-07-16T01:22:53Z"
+status: verified
+
+scope:
+  project_scope: "D:/Agent-based-triage"
+  tenant_scope: "none"
+  environment_scope: "local"
+  task_scope: "Reasoning execution flow and workflow observability probe protocol / 推理执行流程与工作流可观测性探针协议"
+
+sensitivity: internal
+source_revision: "git:bc9780b7193a1194bddac100ce2d1a9eca0e91f0 + validated working tree 2026-07-17"
+
+subject:
+  subject_type: workflow
+  subject_ref: REASONING_RUNTIME_PROTOCOL
+  cell_refs:
+    - COG_REASONING__TOP_ROUTING
+    - COG_REASONING__TOP_CHAIN
+    - COG_REASONING__TOP_PARALLEL
+    - COG_REASONING__TOP_LOOP
+    - COG_REASONING__TOP_ORCHESTRATION
+    - COG_GOVERNANCE__TOP_HIERARCHY
+  pattern_refs:
+    - PATTERN_0051
+    - PATTERN_0052
+
+observation:
+  trigger: "User requested implementation based on two supplied reasoning documents / 用户要求依据两份推理文档开始落实完善"
+  before: "The drafts described the intended flow and probes, but executable identity lineage, artifact hashing, release binding, mode switching, feedback blocking, metric publication, and probe dependency resolution were incomplete or not uniformly enforced. / 草案描述了目标流程与探针，但标识血缘、制品哈希、放行绑定、模式切换、反馈阻断、指标发布和探针依赖解析尚未形成统一可执行约束。"
+  adjustment: "Added bilingual normative protocols, seven strict JSON Schemas, deterministic routing and split chain compiler/session/runtime kernels, atomic state/event/budget rollback, a restart-safe JSONL event adapter, exact stop and exhaustion policies, nested artifact integrity, immutable per-run results, live-authorized feedback and read-only tool dispatch, 15 versioned probes, 39 executable metrics including candidate-lineage and tool-lifecycle diagnostics, input-recomputed publication guards, finalized windows, and fail-closed tri-state probe resolution. / 增加双语规范协议、七个严格 JSON Schema、确定性路由以及拆分后的链编译器/会话/运行内核、状态/事件/预算原子回滚、可重启恢复的 JSONL 事件适配器、精确停止与耗尽策略、嵌套制品完整性、单运行不可变结果、反馈与只读工具分派实时授权、15 个版本化探针、包含候选血缘和工具生命周期诊断的 39 个可执行指标、基于输入重算的发布门控、封窗语义和默认关闭的三态探针解析。"
+  outcome: "Verified with JSON, YAML, Schema, runtime, metric, registry, and Skill validation; regenerated HTML synchronization; 442 passing tests plus 132 passing subtests; Skill validation completed with zero errors and 18 pre-existing navigation warnings. / 已通过 JSON、YAML、Schema、运行时、指标、注册表与 Skill 校验，重新生成 HTML，同步验证 442 个测试与 132 个子测试通过；Skill 校验为零错误，仅保留 18 个既有导航警告。"
+  validity: verified
+
+evidence_refs:
+  - "external:C:/Users/wangs/Downloads/推理执行流程.md"
+  - "external:C:/Users/wangs/Downloads/工作流可观测性探针.md"
+  - "local:skills/harness-engineering-patterns/references/reasoning-execution-flow.md"
+  - "local:skills/harness-engineering-patterns/references/workflow-observability-probes.md"
+  - "local:skills/harness-engineering-patterns/schemas"
+  - "local:skills/harness-engineering-patterns/runtime"
+  - "local:tests/test_reasoning_runtime.py"
+  - "local:tests/test_reasoning_runtime_schemas.py"
+  - "local:tests/test_reasoning_router.py"
+  - "local:tests/test_reasoning_metrics.py"
+verification_tasks: []
+follow_up:
+  - "Collect production outcome labels before promoting planned correctness and recurrence metrics to gate-eligible status. / 在将规划中的正确性与复发指标提升为可用于门控前，采集生产后验标签。"
+owner: "Codex and repository maintainers / Codex 与仓库维护者"
+
+retention:
+  policy: project
+  expires_at: null
+  deletion_or_archive_rule: "Archive when superseded by a verified protocol revision / 被新的已验证协议版本取代时归档"

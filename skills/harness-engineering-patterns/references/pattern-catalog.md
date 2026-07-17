@@ -8,6 +8,15 @@ Use this catalog as a compact index after locating a matrix cell. Detailed sourc
 
 Each detailed pattern has two Markdown files: `<cell-key>.md` for `Design Pattern / 设计模式` and `<cell-key>-observability.md` for `Observability Metrics / 可观测性指标`. / 每个详细模式都有两个 Markdown 文件：`<cell-key>.md` 存放 `Design Pattern / 设计模式`，`<cell-key>-observability.md` 存放 `Observability Metrics / 可观测性指标`。
 
+## Cross-Cutting Runtime Protocols / 跨单元运行协议
+
+These local draft patterns coordinate several matrix cells without changing cell identity or promoting an extension candidate. Their source-draft IDs collided with existing stable registry IDs, so the registry assigns new IDs and preserves the original values only as provenance. / 以下本地草案模式协调多个矩阵单元，但不改变单元身份，也不自动晋升扩展候选。来源草案 ID 与既有稳定注册表 ID 冲突，因此注册表分配新 ID，并仅将原值作为来源信息保留。
+
+| Pattern ID / 模式 ID | Pattern / 模式 | Use / 用途 | Reference / 参考 |
+| --- | --- | --- | --- |
+| `PATTERN_0051` | Reasoning Execution Flow / 推理执行流程 | Route work into direct, chain, parallel, or iterative execution under machine-readable identity, budget, validation, switching, stopping, replay, and audit contracts, with a deterministic router and executable reference kernel. / 在机器可读的标识、预算、验证、换路、停止、回放和审计契约下，将工作路由到直接、链式、并行或迭代执行，并提供确定性路由器与可执行参考内核。 | [reasoning-execution-flow.md](reasoning-execution-flow.md) |
+| `PATTERN_0052` | Workflow Observability Probes / 工作流可观测性探针 | Deploy stable probes with a versioned event schema, mode-probe dependency matrix, field-level provenance, reproducible metric registry, and fail-closed protected transitions. / 使用版本化事件 Schema、模式—探针依赖矩阵、字段级来源、可复现指标注册表和默认阻断的受保护转换部署稳定探针。 | [workflow-observability-probes.md](workflow-observability-probes.md) |
+
 ## Pattern Map / 模式映射
 
 | Cell / 交织点 | Pattern / 模式 | Diagnostic Use / 诊断用途 |

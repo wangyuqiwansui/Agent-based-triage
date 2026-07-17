@@ -1,0 +1,551 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/normalized-input.schema.json",
+  "x-contract-version": "1.0.0",
+  "title": "规范化推理输入 / Normalized Reasoning Input",
+  "description": "进入路由与执行阶段前的规范化、可哈希输入契约。/ A normalized, hashable input contract used before routing and execution.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "normalized_input_id",
+    "normalized_input_version",
+    "normalized_input_hash",
+    "workflow_id",
+    "request_id",
+    "received_at",
+    "request",
+    "task",
+    "risk",
+    "reasoning_context",
+    "permission_context",
+    "field_provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "模式版本 / Schema version",
+      "description": "本契约的语义版本。/ Semantic version of this contract."
+    },
+    "normalized_input_id": {
+      "$ref": "#/$defs/Identifier",
+      "title": "规范化输入标识 / Normalized input identifier"
+    },
+    "normalized_input_version": {
+      "$ref": "#/$defs/SemanticVersion",
+      "title": "规范化输入版本 / Normalized input version"
+    },
+    "normalized_input_hash": {
+      "$ref": "#/$defs/Sha256",
+      "title": "规范化输入哈希 / Normalized input hash"
+    },
+    "workflow_id": {
+      "$ref": "#/$defs/Identifier",
+      "title": "工作流标识 / Workflow identifier"
+    },
+    "request_id": {
+      "$ref": "#/$defs/Identifier",
+      "title": "请求标识 / Request identifier"
+    },
+    "received_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "接收时间 / Received time"
+    },
+    "request": {
+      "$ref": "#/$defs/Request",
+      "title": "请求内容 / Request content"
+    },
+    "task": {
+      "$ref": "#/$defs/TaskDefinition",
+      "title": "任务定义 / Task definition"
+    },
+    "risk": {
+      "$ref": "#/$defs/RiskAssessment",
+      "title": "风险评估 / Risk assessment"
+    },
+    "reasoning_context": {
+      "$ref": "#/$defs/ReasoningContext",
+      "title": "推理上下文 / Reasoning context",
+      "description": "仅包含外部可核验的事实、假设、待验证声明、偏好、证据要求和截止时间。/ Contains only externally verifiable facts, assumptions, claims to verify, preferences, evidence requirements, and deadline."
+    },
+    "permission_context": {
+      "$ref": "#/$defs/PermissionContext",
+      "title": "权限上下文 / Permission context",
+      "description": "显式绑定主体、授权、允许动作、资源范围和授权期限。/ Explicitly binds the actor, grant, allowed actions, resource scope, and authorization expiry."
+    },
+    "available_capabilities": {
+      "type": "array",
+      "title": "可用能力 / Available capabilities",
+      "description": "路由时可选择的已授权能力。/ Authorized capabilities available to the router.",
+      "items": { "$ref": "#/$defs/Capability" },
+      "uniqueItems": true,
+      "default": []
+    },
+    "field_provenance": {
+      "type": "array",
+      "title": "字段来源 / Field provenance",
+      "description": "输入字段的逐字段来源及值状态。/ Field-level sources and value states for input fields.",
+      "items": { "$ref": "#/$defs/FieldProvenance" },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "Identifier": {
+      "title": "稳定标识 / Stable identifier",
+      "description": "工作流内稳定且可引用的标识。/ A stable, referenceable identifier within a workflow.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "title": "语义版本 / Semantic version",
+      "description": "契约或记录的语义版本。/ Semantic version of a contract or record.",
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": {
+      "title": "SHA-256 哈希 / SHA-256 hash",
+      "description": "带算法前缀的十六进制完整性哈希。/ A hexadecimal integrity hash with an algorithm prefix.",
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "Request": {
+      "type": "object",
+      "title": "请求 / Request",
+      "description": "原始请求的受控表示；敏感正文可以仅保留内容引用。/ Controlled representation of the original request; sensitive content may be represented only by reference.",
+      "additionalProperties": false,
+      "required": ["content_state", "language", "channel"],
+      "properties": {
+        "content_state": { "$ref": "#/$defs/ObservedText" },
+        "content_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "正文未内联时的受控引用。/ Controlled reference when content is not embedded."
+        },
+        "language": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 35,
+          "description": "BCP 47 风格的语言标签。/ BCP 47-style language tag."
+        },
+        "channel": {
+          "enum": ["api", "chat", "batch", "event", "human_handoff"]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "content_state": {
+                "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } },
+                "required": ["state"]
+              }
+            }
+          },
+          "then": { "required": ["content_ref"] }
+        }
+      ]
+    },
+    "ObservedText": {
+      "title": "带状态文本 / Stateful text",
+      "description": "显式区分有值、缺失、未知和不适用；空字符串不是缺失。/ Explicitly distinguishes present, missing, unknown, and not-applicable values; an empty string is not missing.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed" },
+            "value": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+        }
+      ]
+    },
+    "TaskDefinition": {
+      "type": "object",
+      "title": "任务定义 / Task definition",
+      "description": "可用于路由的任务语义，不包含私密思维过程。/ Task semantics usable for routing without private chain-of-thought.",
+      "additionalProperties": false,
+      "required": ["task_type", "objectives", "constraints", "expected_output"],
+      "properties": {
+        "task_type": {
+          "enum": ["question", "decision", "diagnosis", "planning", "transformation", "verification", "classification", "other"]
+        },
+        "objectives": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["objective_id", "description", "priority"],
+            "properties": {
+              "objective_id": { "$ref": "#/$defs/Identifier" },
+              "description": { "type": "string", "minLength": 1 },
+              "priority": { "enum": ["required", "preferred", "optional"] }
+            }
+          },
+          "minItems": 1
+        },
+        "constraints": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Constraint" },
+          "default": []
+        },
+        "expected_output": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["format", "must_include_evidence"],
+          "properties": {
+            "format": { "enum": ["text", "json", "markdown", "artifact", "decision_record"] },
+            "must_include_evidence": { "type": "boolean" },
+            "locale": { "type": "string", "minLength": 2, "maxLength": 35 }
+          }
+        }
+      }
+    },
+    "Constraint": {
+      "type": "object",
+      "title": "约束 / Constraint",
+      "description": "结构化约束，避免将执行规则编码为不可判定的自由文本。/ Structured constraint that avoids encoding execution rules as non-evaluable prose.",
+      "additionalProperties": false,
+      "required": ["constraint_id", "field_path", "operator", "value", "severity"],
+      "properties": {
+        "constraint_id": { "$ref": "#/$defs/Identifier" },
+        "field_path": { "type": "string", "pattern": "^/" },
+        "operator": { "enum": ["eq", "ne", "lt", "lte", "gt", "gte", "in", "not_in", "exists", "matches"] },
+        "value": { "$ref": "#/$defs/SafeExternalValue" },
+        "severity": { "enum": ["hard", "soft"] }
+      }
+    },
+    "RiskAssessment": {
+      "type": "object",
+      "title": "风险评估 / Risk assessment",
+      "description": "用于路由和默认关闭策略的显式风险判断。/ Explicit risk judgment used for routing and default-close behavior.",
+      "additionalProperties": false,
+      "required": ["level", "dimensions", "reversibility", "requires_human_review"],
+      "properties": {
+        "level": { "enum": ["low", "medium", "high", "critical"] },
+        "dimensions": {
+          "type": "array",
+          "items": { "enum": ["safety", "privacy", "security", "financial", "legal", "medical", "operational", "reputational"] },
+          "uniqueItems": true
+        },
+        "reversibility": { "enum": ["reversible", "partially_reversible", "irreversible", "unknown"] },
+        "requires_human_review": { "type": "boolean" }
+      }
+    },
+    "Capability": {
+      "type": "object",
+      "title": "可用能力 / Available capability",
+      "description": "路由时可使用的版本化能力及其可用性。/ A versioned capability and its availability at routing time.",
+      "additionalProperties": false,
+      "required": ["capability_id", "kind", "availability"],
+      "properties": {
+        "capability_id": { "$ref": "#/$defs/Identifier" },
+        "kind": { "enum": ["model", "tool", "human", "validator", "data_source"] },
+        "availability": { "enum": ["available", "degraded", "unavailable", "unknown"] },
+        "version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "SafeExternalValue": {
+      "title": "安全外部值 / Safe external value",
+      "description": "递归拒绝私密推理字段名，仅允许可外部审计的数据。/ Recursively rejects private-reasoning field names and permits only externally auditable data.",
+      "oneOf": [
+        { "type": ["string", "number", "boolean", "null"] },
+        { "type": "array", "items": { "$ref": "#/$defs/SafeExternalValue" } },
+        {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/SafeExternalPropertyName" },
+          "additionalProperties": { "$ref": "#/$defs/SafeExternalValue" }
+        }
+      ]
+    },
+    "SafeExternalPropertyName": {
+      "title": "安全外部字段名 / Safe external property name",
+      "description": "大小写不敏感地拒绝私密推理字段名。/ Rejects private-reasoning property names case-insensitively.",
+      "type": "string",
+      "not": {
+        "pattern": "^(?:[cC][hH][aA][iI][nN]_[oO][fF]_[tT][hH][oO][uU][gG][hH][tT]|[pP][rR][iI][vV][aA][tT][eE]_[cC][oO][tT]|[hH][iI][dD][dD][eE][nN]_[rR][eE][aA][sS][oO][nN][iI][nN][gG]|[iI][nN][tT][eE][rR][nN][aA][lL]_[mM][oO][nN][oO][lL][oO][gG][uU][eE]|[rR][eE][aA][sS][oO][nN][iI][nN][gG]_[sS][cC][rR][aA][tT][cC][hH][pP][aA][dD]|[sS][cC][rR][aA][tT][cC][hH][pP][aA][dD])$"
+      }
+    },
+    "ObservedValue": {
+      "title": "显式值状态 / Explicit value state",
+      "description": "严格区分观测值、观测零值、缺失、未知和不适用；状态值不得使用 null。/ Strictly distinguishes observed, observed-zero, missing, unknown, and not-applicable; state values never use null.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed" },
+            "value": {
+              "allOf": [
+                { "$ref": "#/$defs/SafeExternalValue" },
+                { "not": { "enum": [0, null] } }
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": { "state": { "const": "observed_zero" }, "value": { "type": "number", "const": 0 } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+        }
+      ]
+    },
+    "StatefulDateTime": {
+      "title": "显式日期时间状态 / Explicit date-time state",
+      "description": "使用状态对象表示已知或未知日期时间，禁止用 null 混淆。/ Uses a state object for known or unknown date-time values and forbids ambiguous nulls.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": { "state": { "const": "observed" }, "value": { "type": "string", "format": "date-time" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+        }
+      ]
+    },
+    "VersionedBinding": {
+      "type": "object",
+      "title": "版本化绑定 / Versioned binding",
+      "description": "绑定标识、版本和完整性哈希。/ Binds an identifier, version, and integrity hash.",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "BindingState": {
+      "title": "绑定状态 / Binding state",
+      "description": "显式区分可用绑定与缺失、未知或不适用绑定。/ Explicitly distinguishes an available binding from a missing, unknown, or not-applicable binding.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": { "state": { "const": "observed" }, "value": { "$ref": "#/$defs/VersionedBinding" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+        }
+      ]
+    },
+    "KnownFact": {
+      "type": "object",
+      "title": "已知事实 / Known fact",
+      "description": "带显式值状态和来源绑定的外部可核验事实。/ An externally verifiable fact with explicit value state and source binding.",
+      "additionalProperties": false,
+      "required": ["fact_id", "value", "source_binding"],
+      "properties": {
+        "fact_id": { "$ref": "#/$defs/Identifier" },
+        "value": { "$ref": "#/$defs/ObservedValue" },
+        "source_binding": { "$ref": "#/$defs/BindingState" }
+      }
+    },
+    "Assumption": {
+      "type": "object",
+      "title": "假设 / Assumption",
+      "description": "可验证且不包含私密思维过程的显式假设。/ An explicit, verifiable assumption without private chain-of-thought.",
+      "additionalProperties": false,
+      "required": ["assumption_id", "statement", "status", "source_binding"],
+      "properties": {
+        "assumption_id": { "$ref": "#/$defs/Identifier" },
+        "statement": { "$ref": "#/$defs/ObservedText" },
+        "status": { "enum": ["unverified", "supported", "refuted", "accepted_for_execution"] },
+        "source_binding": { "$ref": "#/$defs/BindingState" }
+      }
+    },
+    "ClaimToVerify": {
+      "type": "object",
+      "title": "待验证声明 / Claim to verify",
+      "description": "需要通过证据或验证器解析的结构化声明。/ A structured claim to resolve through evidence or validators.",
+      "additionalProperties": false,
+      "required": ["claim_id", "statement", "criticality", "required_evidence_types"],
+      "properties": {
+        "claim_id": { "$ref": "#/$defs/Identifier" },
+        "statement": { "$ref": "#/$defs/ObservedText" },
+        "criticality": { "enum": ["noncritical", "critical"] },
+        "required_evidence_types": {
+          "type": "array",
+          "items": { "enum": ["input", "document", "tool_result", "measurement", "test", "human_attestation", "policy"] },
+          "uniqueItems": true
+        }
+      }
+    },
+    "Preference": {
+      "type": "object",
+      "title": "偏好 / Preference",
+      "description": "影响选择但不绕过硬约束的结构化偏好。/ A structured preference that influences selection without bypassing hard constraints.",
+      "additionalProperties": false,
+      "required": ["preference_id", "field_path", "desired_value", "strength"],
+      "properties": {
+        "preference_id": { "$ref": "#/$defs/Identifier" },
+        "field_path": { "type": "string", "pattern": "^/" },
+        "desired_value": { "$ref": "#/$defs/ObservedValue" },
+        "strength": { "enum": ["preferred", "optional"] }
+      }
+    },
+    "KnownFactsState": {
+      "title": "已知事实集合状态 / Known-facts collection state",
+      "description": "显式区分已观测集合与缺失、未知或不适用集合。/ Explicitly distinguishes an observed collection from a missing, unknown, or not-applicable collection.",
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["state", "items"], "properties": { "state": { "const": "observed" }, "items": { "type": "array", "items": { "$ref": "#/$defs/KnownFact" } } } },
+        { "type": "object", "additionalProperties": false, "required": ["state"], "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } } }
+      ]
+    },
+    "AssumptionsState": {
+      "title": "假设集合状态 / Assumptions collection state",
+      "description": "显式区分已观测集合与缺失、未知或不适用集合。/ Explicitly distinguishes an observed collection from a missing, unknown, or not-applicable collection.",
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["state", "items"], "properties": { "state": { "const": "observed" }, "items": { "type": "array", "items": { "$ref": "#/$defs/Assumption" } } } },
+        { "type": "object", "additionalProperties": false, "required": ["state"], "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } } }
+      ]
+    },
+    "ClaimsState": {
+      "title": "待验证声明集合状态 / Claims-to-verify collection state",
+      "description": "显式区分已观测集合与缺失、未知或不适用集合。/ Explicitly distinguishes an observed collection from a missing, unknown, or not-applicable collection.",
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["state", "items"], "properties": { "state": { "const": "observed" }, "items": { "type": "array", "items": { "$ref": "#/$defs/ClaimToVerify" } } } },
+        { "type": "object", "additionalProperties": false, "required": ["state"], "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } } }
+      ]
+    },
+    "PreferencesState": {
+      "title": "偏好集合状态 / Preferences collection state",
+      "description": "显式区分已观测集合与缺失、未知或不适用集合。/ Explicitly distinguishes an observed collection from a missing, unknown, or not-applicable collection.",
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["state", "items"], "properties": { "state": { "const": "observed" }, "items": { "type": "array", "items": { "$ref": "#/$defs/Preference" } } } },
+        { "type": "object", "additionalProperties": false, "required": ["state"], "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } } }
+      ]
+    },
+    "EvidenceRequirement": {
+      "type": "object",
+      "title": "证据要求 / Evidence requirement",
+      "description": "路由前的结构化证据门槛。/ Structured evidence gates available before routing.",
+      "additionalProperties": false,
+      "required": ["required_evidence_types", "min_independent_sources", "max_source_age_seconds", "min_integrity_score", "unknown_source_policy"],
+      "properties": {
+        "required_evidence_types": { "type": "array", "items": { "enum": ["input", "document", "tool_result", "measurement", "test", "human_attestation", "policy"] }, "uniqueItems": true },
+        "min_independent_sources": { "type": "integer", "minimum": 0 },
+        "max_source_age_seconds": { "type": "integer", "minimum": 0 },
+        "min_integrity_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "unknown_source_policy": { "enum": ["reject", "exclude", "allow_with_escalation"] }
+      }
+    },
+    "EvidenceRequirementState": {
+      "title": "证据要求状态 / Evidence-requirement state",
+      "description": "显式区分已知证据要求与缺失、未知或不适用要求。/ Explicitly distinguishes known evidence requirements from missing, unknown, or not-applicable requirements.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": { "state": { "const": "observed" }, "value": { "$ref": "#/$defs/EvidenceRequirement" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+        }
+      ]
+    },
+    "ReasoningContext": {
+      "type": "object",
+      "title": "推理上下文 / Reasoning context",
+      "description": "路由与验证所需的外部可核验上下文，不包含私密推理。/ Externally verifiable context needed for routing and validation, without private reasoning.",
+      "additionalProperties": false,
+      "required": ["known_facts", "assumptions", "claims_to_verify", "preferences", "evidence_requirement", "deadline"],
+      "properties": {
+        "known_facts": { "$ref": "#/$defs/KnownFactsState" },
+        "assumptions": { "$ref": "#/$defs/AssumptionsState" },
+        "claims_to_verify": { "$ref": "#/$defs/ClaimsState" },
+        "preferences": { "$ref": "#/$defs/PreferencesState" },
+        "evidence_requirement": { "$ref": "#/$defs/EvidenceRequirementState" },
+        "deadline": { "$ref": "#/$defs/StatefulDateTime" }
+      }
+    },
+    "Actor": {
+      "type": "object",
+      "title": "执行主体 / Actor",
+      "description": "被授权执行动作的版本化主体。/ A versioned actor authorized to execute actions.",
+      "additionalProperties": false,
+      "required": ["actor_id", "actor_type", "actor_version"],
+      "properties": {
+        "actor_id": { "$ref": "#/$defs/Identifier" },
+        "actor_type": { "enum": ["user", "human", "service", "agent", "system"] },
+        "actor_version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "ActorState": {
+      "title": "执行主体状态 / Actor state",
+      "description": "显式表示已知或未知执行主体。/ Explicitly represents a known or unknown actor.",
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["state", "value"], "properties": { "state": { "const": "observed" }, "value": { "$ref": "#/$defs/Actor" } } },
+        { "type": "object", "additionalProperties": false, "required": ["state"], "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } } }
+      ]
+    },
+    "StringCollectionState": {
+      "title": "字符串集合状态 / String collection state",
+      "description": "显式表示已知或未知字符串集合。/ Explicitly represents a known or unknown string collection.",
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["state", "items"], "properties": { "state": { "const": "observed" }, "items": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true } } },
+        { "type": "object", "additionalProperties": false, "required": ["state"], "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } } }
+      ]
+    },
+    "PermissionContext": {
+      "type": "object",
+      "title": "权限上下文 / Permission context",
+      "description": "权限检查所需的主体、授权、动作、范围与期限，所有未知项都显式标记。/ Actor, grant, actions, scope, and expiry required for permission checks, with every unknown explicit.",
+      "additionalProperties": false,
+      "required": ["actor", "grant", "allowed_actions", "resource_scope", "expires_at"],
+      "properties": {
+        "actor": { "$ref": "#/$defs/ActorState" },
+        "grant": { "$ref": "#/$defs/BindingState" },
+        "allowed_actions": { "$ref": "#/$defs/StringCollectionState" },
+        "resource_scope": { "$ref": "#/$defs/StringCollectionState" },
+        "expires_at": { "$ref": "#/$defs/StatefulDateTime" }
+      }
+    },
+    "FieldProvenance": {
+      "type": "object",
+      "title": "字段来源记录 / Field provenance record",
+      "description": "记录一个字段的来源与显式值状态。/ Records the source and explicit value state for one field.",
+      "additionalProperties": false,
+      "required": ["field_path", "source_type", "source_ref", "value_state"],
+      "properties": {
+        "field_path": { "type": "string", "pattern": "^/" },
+        "source_type": { "enum": ["user", "system", "tool", "document", "derived", "default", "human"] },
+        "source_ref": { "type": "string", "minLength": 1 },
+        "source_version": { "type": "string", "minLength": 1 },
+        "observed_at": { "type": "string", "format": "date-time" },
+        "integrity_hash": { "$ref": "#/$defs/Sha256" },
+        "value_state": { "enum": ["observed", "observed_zero", "missing", "unknown", "not_applicable"] }
+      }
+    }
+  }
+}

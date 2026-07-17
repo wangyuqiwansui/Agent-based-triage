@@ -7,6 +7,8 @@ Source / 来源: arXiv:2605.13850 (https://arxiv.org/html/2605.13850)
 
 Use this file as the design pattern source for this 7x6 matrix intersection. / 将本文档作为该 7x6 交织点的设计模式来源。
 
+Runtime Protocols / 运行协议: [Reasoning Execution Flow / 推理执行流程](../../reasoning-execution-flow.md); [Workflow Observability Probes / 工作流可观测性探针](../../workflow-observability-probes.md).
+
 ## Design Pattern / 设计模式
 
 Parallel Exploration runs several independent reasoning branches on the same question at once — rival hypotheses, designs, or root causes — then compares them in an explicit synthesis step that must see every branch's evidence. / 并行探索让多条独立推理分支同时处理同一问题——竞争的假设、方案或根因——再由一个显式综合步骤比较它们，且综合步骤必须看到每条分支的证据。
@@ -23,10 +25,16 @@ Parallel Exploration runs several independent reasoning branches on the same que
 ### Branch And Synthesis Rules / 分支与综合规则
 
 - Branch independence / 分支独立性: branches share inputs only and must not see each other's intermediate reasoning. / 分支只共享输入，不得看到彼此的中间推理。
-- Branch budget and pruning / 分支预算与剪枝: give each branch a token or step budget; prune a branch early, with reason recorded, when its confidence falls clearly below the weakest surviving rival. / 每条分支设 token 或步骤预算；当分支置信度明显低于最弱存活对手时带原因提前剪枝。
+- Branch budget and pruning / 分支预算与剪枝: give each branch a token or step budget; prune only when hard constraints fail, required evidence is unavailable, a common criterion is not met, or the branch cannot be validated within the remaining budget. Model self-confidence alone is not a pruning gate. / 每条分支设置 token 或步骤预算；仅当违反硬约束、必需证据不可得、不满足统一标准，或剩余预算内无法验证时剪枝。模型自信度不能单独作为剪枝闸门。
 - Synthesis owner / 综合责任方: a single owner sees every branch's conclusion plus its evidence — not summaries of summaries — and decides on evidence. / 单一责任方看到每条分支的结论及其证据——不是摘要的摘要——并基于证据作出决定。
 - Minority preservation / 少数派保留: losing and refuted branches are preserved with sources and elimination reasons, never silently dropped. / 落选与被证伪分支连同来源和排除原因保留，绝不静默丢弃。
 - Sizing / 规模: 2-4 branches for design or root-cause comparison; beyond that, aggregate cost usually exceeds marginal coverage gain — re-derive the threshold locally per Law 5. / 方案或根因比较用 2-4 条分支；再多通常成本超过边际覆盖收益——按定律 5 本地重推阈值。
+
+### Shared Execution Contract / 共享执行契约
+
+Use `PATTERN_0051` to assign `candidate_path_id`, a material-difference statement, per-path evidence, validation state, elimination reason, and resource budget. Apply one comparison and veto contract to all candidates. The selected path still requires its mandatory final validator. / 使用 `PATTERN_0051` 为每条候选分配 `candidate_path_id`、实质差异说明、逐路径证据、验证状态、淘汰原因和资源预算。所有候选使用同一比较与否决契约；选中路径仍必须通过必选最终验证器。
+
+Preserve conflicting and minority evidence. A synthesis may return conditional alternatives or escalate a material tie; it must not convert voting or confident tone into truth. / 保留冲突与少数派证据。综合可以返回条件化备选或升级重大并列，但不得把投票或自信语气转化为事实。
 
 ### Pattern Template / 模式模板
 

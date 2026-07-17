@@ -2,6 +2,7 @@ import contextlib
 import importlib.util
 import json
 import pathlib
+import re
 import shutil
 import tempfile
 import unittest
@@ -206,6 +207,452 @@ class HarnessSkillRegistryTest(unittest.TestCase):
         self.assertEqual(
             {item["id"] for item in registry["failure_mode_refs"]},
             {f"FAIL_{number:04d}" for number in range(1, 14)},
+        )
+
+    def test_runtime_protocols_preserve_existing_ids_and_use_new_ids(self):
+        registry = self.load_registry()
+        patterns = {pattern["id"]: pattern for pattern in registry["patterns"]}
+
+        self.assertEqual(patterns["PATTERN_0001"]["name_en"], "Main Loop Progression")
+        self.assertEqual(patterns["PATTERN_0002"]["name_en"], "Context Assembly")
+        self.assertEqual(
+            patterns["PATTERN_0051"]["reference"],
+            "references/reasoning-execution-flow.md",
+        )
+        self.assertEqual(patterns["PATTERN_0051"]["source_draft_id"], "PATTERN_0001")
+        self.assertEqual(patterns["PATTERN_0051"]["source_version"], "0.2.0")
+        self.assertIn(
+            "COG_REASONING__TOP_ORCHESTRATION",
+            patterns["PATTERN_0051"]["matrix_coordinates"],
+        )
+        self.assertEqual(
+            patterns["PATTERN_0052"]["reference"],
+            "references/workflow-observability-probes.md",
+        )
+        self.assertEqual(patterns["PATTERN_0052"]["source_draft_id"], "PATTERN_0002")
+        self.assertEqual(patterns["PATTERN_0052"]["source_version"], "0.2.0")
+        self.assertIn(
+            "COG_GOVERNANCE__TOP_ORCHESTRATION",
+            patterns["PATTERN_0052"]["matrix_coordinates"],
+        )
+
+    def test_runtime_protocols_are_bilingual_and_complete(self):
+        validator = load_validator()
+        execution = (
+            SKILL_DIR / "references" / "reasoning-execution-flow.md"
+        ).read_text(encoding="utf-8")
+        probes = (
+            SKILL_DIR / "references" / "workflow-observability-probes.md"
+        ).read_text(encoding="utf-8")
+
+        for marker in validator.EXECUTION_CONTRACT_MARKERS:
+            self.assertIn(marker, execution)
+        for marker in validator.OBSERVABILITY_CONTRACT_MARKERS:
+            self.assertIn(marker, probes)
+        self.assertEqual(
+            set(validator.REQUIRED_PROBES),
+            set(re.findall(r"PROBE_\d{4}", probes)),
+        )
+        for relative in validator.RUNTIME_SCHEMA_FILES:
+            self.assertTrue((SKILL_DIR / relative).is_file(), relative)
+        for relative in validator.RUNTIME_IMPLEMENTATION_FILES:
+            self.assertTrue((SKILL_DIR / relative).is_file(), relative)
+
+    def test_every_reasoning_cell_links_shared_runtime_protocols(self):
+        registry = self.load_registry()
+
+        for cell in registry["cells"]:
+            if cell["capability_ref"] != "COG_REASONING":
+                continue
+            design = (SKILL_DIR / cell["design_path"]).read_text(encoding="utf-8")
+            observability = (SKILL_DIR / cell["observability_path"]).read_text(
+                encoding="utf-8"
+            )
+            self.assertIn("../../reasoning-execution-flow.md", design)
+            self.assertIn("../../workflow-observability-probes.md", design)
+            self.assertIn("../../workflow-observability-probes.md", observability)
+
+    def test_missing_stable_probe_fails_runtime_validation(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "references" / "workflow-observability-probes.md"
+            content = target.read_text(encoding="utf-8")
+            target.write_text(
+                content.replace("`PROBE_0008`", "`MISSING_PROBE`"),
+                encoding="utf-8",
+            )
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(
+            any("observability_probe_catalog" in error for error in report.errors)
+        )
+
+    def test_budget_table_column_drift_fails_runtime_validation(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "references" / "reasoning-execution-flow.md"
+            content = target.read_text(encoding="utf-8")
+            target.write_text(
+                content.replace(
+                    "| standard / 标准 | 8,000 | 12 s | 4 | 8 | 3 | 6 |",
+                    "| standard / 标准 | 8,000 | 12 s | 4 | 8 | 3 |",
+                ),
+                encoding="utf-8",
+            )
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(any("reasoning_budget_table" in error for error in report.errors))
+
+    def test_budget_table_rejects_every_nonpositive_numeric_dimension(self):
+        validator = load_validator()
+        execution = (
+            SKILL_DIR / "references" / "reasoning-execution-flow.md"
+        ).read_text(encoding="utf-8")
+        rows = validator.markdown_table_rows(execution, "| Profile / 档位")
+        light_row = rows[2]
+        original = "| " + " | ".join(light_row) + " |"
+        invalid_values = {
+            1: "0",
+            2: "0 s",
+            3: "0",
+            4: "0",
+            5: "0",
+            6: "0",
+        }
+
+        for column, invalid_value in invalid_values.items():
+            with self.subTest(column=column):
+                mutated_row = list(light_row)
+                mutated_row[column] = invalid_value
+                mutated = "| " + " | ".join(mutated_row) + " |"
+                report = validator.ValidationReport()
+                validator.validate_budget_profile_table(
+                    execution.replace(original, mutated, 1), report
+                )
+                self.assertTrue(
+                    any("reasoning_budget_table" in error for error in report.errors)
+                )
+
+    def test_schema_enum_drift_fails_runtime_validation(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "schemas" / "reasoning-event.schema.json"
+            schema = json.loads(target.read_text(encoding="utf-8"))
+            schema["$defs"]["WorkflowState"]["enum"].remove("cancelled")
+            target.write_text(
+                json.dumps(schema, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(any("reasoning_schema_enums" in error for error in report.errors))
+
+    def test_invalid_draft_202012_schema_fails_runtime_validation(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "schemas" / "reasoning-result.schema.json"
+            schema = json.loads(target.read_text(encoding="utf-8"))
+            schema["type"] = 7
+            target.write_text(
+                json.dumps(schema, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+
+            validator = load_validator()
+            report = validator.ValidationReport()
+            validator.validate_reasoning_schemas(skill_dir, report)
+
+        self.assertTrue(any("reasoning_schema" in error for error in report.errors))
+
+    def test_result_validation_enum_drift_fails_runtime_validation(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "schemas" / "reasoning-result.schema.json"
+            schema = json.loads(target.read_text(encoding="utf-8"))
+            schema["$defs"]["ValidationOutcome"]["enum"].remove("timed_out")
+            target.write_text(
+                json.dumps(schema, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+
+            validator = load_validator()
+            report = validator.ValidationReport()
+            validator.validate_reasoning_schemas(skill_dir, report)
+
+        self.assertTrue(any("reasoning_schema_enums" in error for error in report.errors))
+
+    def test_missing_mode_probe_dependency_fails_runtime_validation(self):
+        with copied_skill() as skill_dir:
+            target = (
+                skill_dir
+                / "references"
+                / "patterns"
+                / "reasoning"
+                / "reasoning-routing-observability.md"
+            )
+            content = target.read_text(encoding="utf-8")
+            target.write_text(
+                content.replace("PROBE_0005", "MISSING_STEP_PROBE"),
+                encoding="utf-8",
+            )
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(
+            any("reasoning_probe_dependencies" in error for error in report.errors)
+        )
+
+    def test_dependency_matrix_rejects_baseline_overlap_and_nonbilingual_condition(self):
+        mutations = {
+            "missing_baseline": lambda entry: entry.update(
+                required_probes=["PROBE_0001", "PROBE_0014", "PROBE_0015"]
+            ),
+            "required_conditional_overlap": lambda entry: entry[
+                "conditional_probes"
+            ].update({"PROBE_0001": "always / 始终"}),
+            "nonbilingual_condition": lambda entry: entry[
+                "conditional_probes"
+            ].update({"PROBE_0013": "outcome only"}),
+        }
+        for name, mutation in mutations.items():
+            with self.subTest(name=name), copied_skill() as skill_dir:
+                target = skill_dir / "runtime" / "probe_dependency_matrix.json"
+                matrix = json.loads(target.read_text(encoding="utf-8"))
+                chain = next(
+                    entry for entry in matrix["entries"] if entry["mode"] == "chain"
+                )
+                mutation(chain)
+                target.write_text(
+                    json.dumps(matrix, ensure_ascii=False, indent=2) + "\n",
+                    encoding="utf-8",
+                )
+                validator = load_validator()
+                report = validator.ValidationReport()
+                validator.validate_probe_dependency_matrix(skill_dir, report)
+                self.assertTrue(
+                    any(
+                        "reasoning_probe_dependencies" in error
+                        for error in report.errors
+                    )
+                )
+
+    def test_dependency_matrix_malformed_probe_array_reports_instead_of_crashing(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "runtime" / "probe_dependency_matrix.json"
+            matrix = json.loads(target.read_text(encoding="utf-8"))
+            matrix["entries"][0]["required_probes"] = [
+                {"id": "PROBE_0001"}
+            ]
+            target.write_text(
+                json.dumps(matrix, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            validator = load_validator()
+            report = validator.ValidationReport()
+            validator.validate_probe_dependency_matrix(skill_dir, report)
+
+        self.assertTrue(
+            any("reasoning_probe_dependencies" in error for error in report.errors)
+        )
+
+    def test_probe_registry_rejects_missing_versioned_deployable_definition(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "runtime" / "probe_registry.json"
+            registry = json.loads(target.read_text(encoding="utf-8"))
+            registry["probes"][0].pop("version")
+            target.write_text(
+                json.dumps(registry, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            validator = load_validator()
+            report = validator.ValidationReport()
+            validator.validate_probe_registry(skill_dir, report)
+
+        self.assertTrue(
+            any("reasoning_probe_registry" in error for error in report.errors)
+        )
+
+    def test_probe_catalog_id_in_prose_cannot_replace_first_column_record(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "references" / "workflow-observability-probes.md"
+            content = target.read_text(encoding="utf-8")
+            content = content.replace(
+                "| `PROBE_0008` Parallel Path / 并行路径 |",
+                "| `MISSING_PROBE` Parallel Path / 并行路径 |",
+                1,
+            )
+            content = content.replace(
+                "Every applicable probe must declare",
+                "A prose cross-reference mentions PROBE_0008. / 正文交叉引用 PROBE_0008。\n\n"
+                "Every applicable probe must declare",
+                1,
+            )
+            target.write_text(content, encoding="utf-8")
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(
+            any("observability_probe_catalog" in error for error in report.errors)
+        )
+
+    def test_stale_metric_formula_fails_runtime_validation(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "references" / "workflow-observability-probes.md"
+            content = target.read_text(encoding="utf-8")
+            target.write_text(
+                content.replace("route_stability_rate =", "first_route_hit_rate ="),
+                encoding="utf-8",
+            )
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(
+            any("reasoning_metric_semantics" in error for error in report.errors)
+        )
+
+    def test_metric_registry_rejects_invalid_metadata_and_metric_semantics(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "runtime" / "metric_registry.json"
+            registry = json.loads(target.read_text(encoding="utf-8"))
+            registry["schema_version"] = "999.0.0"
+            metric = next(
+                record
+                for record in registry["metrics"]
+                if record["metric_id"] == "false_release_rate"
+            )
+            metric["formula"] = ""
+            metric["minimum_sample"] = 0
+            metric["required_probes"] = []
+            target.write_text(
+                json.dumps(registry, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            validator = load_validator()
+            report = validator.ValidationReport()
+            validator.validate_metric_registry(skill_dir, report)
+
+        self.assertTrue(
+            any("reasoning_metric_registry" in error for error in report.errors)
+        )
+
+    def test_metric_registry_malformed_probe_array_reports_instead_of_crashing(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "runtime" / "metric_registry.json"
+            registry = json.loads(target.read_text(encoding="utf-8"))
+            registry["metrics"][0]["required_probes"] = [
+                {"id": "PROBE_0001"}
+            ]
+            target.write_text(
+                json.dumps(registry, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            validator = load_validator()
+            report = validator.ValidationReport()
+            validator.validate_metric_registry(skill_dir, report)
+
+        self.assertTrue(
+            any("reasoning_metric_registry" in error for error in report.errors)
+        )
+
+    def test_metric_registry_rejects_invalid_inputs_and_mvp_coverage(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "runtime" / "metric_registry.json"
+            registry = json.loads(target.read_text(encoding="utf-8"))
+            registry["metrics"][0]["inputs"] = ["invalid-input"]
+            registry["coverage"]["implemented"] = ["not_a_registered_metric"]
+            target.write_text(
+                json.dumps(registry, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            validator = load_validator()
+            report = validator.ValidationReport()
+            validator.validate_metric_registry(skill_dir, report)
+
+        matching_errors = [
+            error
+            for error in report.errors
+            if "reasoning_metric_registry" in error
+        ]
+        self.assertGreaterEqual(len(matching_errors), 2)
+
+    def test_outcome_metric_requires_outcome_probe(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "runtime" / "metric_registry.json"
+            registry = json.loads(target.read_text(encoding="utf-8"))
+            metric = next(
+                record
+                for record in registry["metrics"]
+                if record["metric_id"] == "outcome_route_accuracy"
+            )
+            metric["required_probes"].remove("PROBE_0013")
+            target.write_text(
+                json.dumps(registry, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            validator = load_validator()
+            report = validator.ValidationReport()
+            validator.validate_metric_registry(skill_dir, report)
+
+        self.assertTrue(
+            any("must require PROBE_0013" in error for error in report.errors)
+        )
+
+    def test_missing_reference_runtime_fails_runtime_validation(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "runtime" / "reasoning_runtime.py"
+            target.unlink()
+
+            report = load_validator().validate_skill(skill_dir)
+
+        self.assertTrue(
+            any("reasoning_runtime_implementation" in error for error in report.errors)
+        )
+
+    def test_runtime_import_smoke_rejects_import_failure(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "runtime" / "reasoning_runtime.py"
+            target.write_text(
+                target.read_text(encoding="utf-8")
+                + "\nraise RuntimeError('import smoke sentinel')\n",
+                encoding="utf-8",
+            )
+            validator = load_validator()
+            report = validator.ValidationReport()
+            validator.validate_runtime_imports(skill_dir, report)
+
+        self.assertTrue(
+            any("reasoning_runtime_import" in error for error in report.errors)
+        )
+
+    def test_runtime_import_smoke_requires_public_exports(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "runtime" / "__init__.py"
+            target.write_text(
+                '"""Empty smoke-test package / 空冒烟测试包。"""\n\n__all__ = []\n',
+                encoding="utf-8",
+            )
+            validator = load_validator()
+            report = validator.ValidationReport()
+            validator.validate_runtime_imports(skill_dir, report)
+
+        self.assertTrue(
+            any("lacks required exports" in error for error in report.errors)
+        )
+
+    def test_runtime_enum_drift_from_schema_fails(self):
+        with copied_skill() as skill_dir:
+            target = skill_dir / "runtime" / "reasoning_router.py"
+            content = target.read_text(encoding="utf-8")
+            target.write_text(
+                content.replace('CHAIN = "chain"', 'CHAIN = "chain_v2"', 1),
+                encoding="utf-8",
+            )
+            validator = load_validator()
+            report = validator.ValidationReport()
+            schemas = validator.validate_reasoning_schemas(skill_dir, report)
+            modules = validator.validate_runtime_imports(skill_dir, report)
+            validator.validate_runtime_schema_enums(modules, schemas, report)
+
+        self.assertTrue(
+            any("reasoning_runtime_schema_enums" in error for error in report.errors)
         )
 
     def test_missing_governance_references_fails(self):

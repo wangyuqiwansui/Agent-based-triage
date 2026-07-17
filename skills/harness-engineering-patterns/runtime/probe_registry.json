@@ -1,0 +1,174 @@
+{
+  "schema_version": "1.0.0",
+  "name_en": "Reasoning Observability Probe Registry",
+  "name_zh": "推理可观测性探针注册表",
+  "description_en": "Versioned deployable definitions for reasoning workflow probes.",
+  "description_zh": "推理工作流探针的版本化可部署定义。",
+  "probes": [
+    {
+      "probe_id": "PROBE_0001",
+      "version": "1.0.0",
+      "name_en": "Task Identity",
+      "name_zh": "任务身份",
+      "owner": "workflow_identity",
+      "trigger_event_types": ["run_created", "task_received", "state_transitioned"],
+      "required_capture_fields": ["task_id", "workflow_id", "run_id", "event_id", "parent_event_id"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0002",
+      "version": "1.0.0",
+      "name_en": "Contract Completeness",
+      "name_zh": "任务契约完整性",
+      "owner": "reasoning_governance",
+      "trigger_event_types": ["task_normalized", "contract_established"],
+      "required_capture_fields": ["normalized_input_binding", "contract_binding", "risk_level", "payload.data"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0003",
+      "version": "1.0.0",
+      "name_en": "Route Decision",
+      "name_zh": "路由决策",
+      "owner": "reasoning_routing",
+      "trigger_event_types": ["route_selected", "mode_switched", "run_ended"],
+      "required_capture_fields": ["execution_mode", "primary_topology", "supporting_topologies", "payload.data.reason_codes"],
+      "output_event_type": "feedback_updated",
+      "disposition": "warn_and_reassess"
+    },
+    {
+      "probe_id": "PROBE_0004",
+      "version": "1.0.0",
+      "name_en": "Budget And Resources",
+      "name_zh": "预算与资源",
+      "owner": "reasoning_budget",
+      "trigger_event_types": ["budget_reserved", "budget_consumed", "budget_released", "budget_exhausted", "step_closed", "run_ended"],
+      "required_capture_fields": ["resources", "payload.data.delta", "payload.data.dimensions"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0005",
+      "version": "1.0.0",
+      "name_en": "Step Closure",
+      "name_zh": "步骤闭环",
+      "owner": "reasoning_execution",
+      "trigger_event_types": ["step_started", "action_dispatched", "action_observed", "step_closed"],
+      "required_capture_fields": ["step_id", "payload.data.claim", "payload.data.action", "payload.data.observation", "payload.data.local_decision"],
+      "output_event_type": "feedback_updated",
+      "disposition": "warn_and_reassess"
+    },
+    {
+      "probe_id": "PROBE_0006",
+      "version": "1.1.0",
+      "name_en": "Evidence Chain",
+      "name_zh": "证据链",
+      "owner": "reasoning_evidence",
+      "trigger_event_types": ["evidence_recorded", "candidate_created", "step_closed", "validation_completed"],
+      "required_capture_fields": ["payload.data.evidence_id", "payload.data.evidence_version", "payload.data.evidence_hash", "payload.data.record_hash", "payload.data.predecessor_evidence_binding", "payload.data.candidate_binding", "payload.data.evidence_record_bindings", "payload.data.source", "payload.data.claim_bindings"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0007",
+      "version": "1.1.0",
+      "name_en": "Tool And Action",
+      "name_zh": "工具与动作",
+      "owner": "tool_governance",
+      "trigger_event_types": ["action_dispatched", "action_observed"],
+      "required_capture_fields": ["step_id", "tool_call_id", "payload.data.phase", "payload.data.tool_binding", "payload.data.plan_binding", "payload.data.authorization_policy_binding", "payload.data.authorization_binding", "payload.data.authorization_verified", "payload.data.input_hash", "payload.data.outcome", "idempotency_key"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0008",
+      "version": "1.0.0",
+      "name_en": "Parallel Path",
+      "name_zh": "并行路径",
+      "owner": "reasoning_parallel",
+      "trigger_event_types": ["candidate_created", "candidate_compared"],
+      "required_capture_fields": ["candidate_path_id", "payload.data.candidate_binding", "payload.data.criteria_binding", "payload.data.selection"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0009",
+      "version": "1.0.0",
+      "name_en": "Iteration Progress",
+      "name_zh": "迭代进展",
+      "owner": "reasoning_iteration",
+      "trigger_event_types": ["iteration_closed", "no_progress_limit_reached"],
+      "required_capture_fields": ["payload.data.iteration", "payload.data.information_gain", "payload.data.hypothesis_delta", "resources"],
+      "output_event_type": "feedback_updated",
+      "disposition": "escalate_on_critical"
+    },
+    {
+      "probe_id": "PROBE_0010",
+      "version": "1.0.0",
+      "name_en": "Goal And Constraint Drift",
+      "name_zh": "目标与约束漂移",
+      "owner": "reasoning_governance",
+      "trigger_event_types": ["contract_established", "step_closed", "mode_switched", "run_ended"],
+      "required_capture_fields": ["contract_binding", "snapshot_versions", "payload.data.revision_binding"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0011",
+      "version": "1.0.0",
+      "name_en": "Validation",
+      "name_zh": "验证",
+      "owner": "validation_governance",
+      "trigger_event_types": ["candidate_created", "validation_started", "validation_completed", "state_transitioned"],
+      "required_capture_fields": ["payload.data.validator_binding", "payload.data.candidate_binding", "payload.data.criteria_binding", "payload.data.result"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0012",
+      "version": "1.0.0",
+      "name_en": "Stop And Escalation",
+      "name_zh": "停止与升级",
+      "owner": "reasoning_orchestration",
+      "trigger_event_types": ["budget_exhausted", "no_progress_limit_reached", "human_work_updated", "state_transitioned", "run_ended"],
+      "required_capture_fields": ["stop_reason", "escalation_reason", "transition_id", "payload.data.reason_code"],
+      "output_event_type": "feedback_updated",
+      "disposition": "escalate_on_critical"
+    },
+    {
+      "probe_id": "PROBE_0013",
+      "version": "1.0.0",
+      "name_en": "Outcome Return",
+      "name_zh": "结果回接",
+      "owner": "outcome_measurement",
+      "trigger_event_types": ["outcome_recorded"],
+      "required_capture_fields": ["task_id", "run_id", "payload.data.outcome", "payload.data.source_binding", "payload.data.observed_at"],
+      "output_event_type": "feedback_updated",
+      "disposition": "record_and_recompute"
+    },
+    {
+      "probe_id": "PROBE_0014",
+      "version": "1.0.0",
+      "name_en": "Privacy And Governance",
+      "name_zh": "隐私与治理",
+      "owner": "privacy_governance",
+      "trigger_event_types": ["governance_decided", "feedback_updated", "human_work_updated", "run_ended"],
+      "required_capture_fields": ["privacy_class", "redaction_state", "field_provenance", "payload.data.policy_binding"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0015",
+      "version": "1.0.0",
+      "name_en": "Probe Self-Health",
+      "name_zh": "探针自健康",
+      "owner": "probe_health",
+      "trigger_event_types": ["probe_health_reported"],
+      "required_capture_fields": ["payload.data.health", "payload.data.received_events", "payload.data.missing_events", "payload.data.parse_failures", "payload.data.alert_delivery_failures"],
+      "output_event_type": "probe_health_reported",
+      "disposition": "fail_closed_on_protected_transition"
+    }
+  ]
+}

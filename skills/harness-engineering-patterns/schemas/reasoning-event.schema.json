@@ -1,0 +1,1809 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/reasoning-event.schema.json",
+  "x-contract-version": "1.0.0",
+  "x-canonical-enums": {
+    "workflow_state": ["received", "normalized", "governance_precheck", "routed", "contract_established", "executing", "waiting_for_evidence", "mode_switched", "candidate_ready", "validating", "repairable_failure", "completed", "rejected", "failed", "escalated", "cancelled", "timed_out"],
+    "event_processing_status": ["accepted", "duplicate", "rejected"],
+    "validation_result": ["not_run", "passed", "conditionally_passed", "repairable_failure", "nonrepairable_failure", "human_required", "timed_out"],
+    "execution_mode": ["direct", "chain", "parallel", "iterative"],
+    "primary_topology": ["chain", "parallel", "loop"],
+    "value_state": ["observed", "observed_zero", "missing", "unknown", "not_applicable"]
+  },
+  "title": "推理工作流事件 / Reasoning Workflow Event",
+  "description": "可重放的推理事件联合类型，包含因果、幂等、尝试次数和字段级来源。/ A replayable discriminated union of reasoning events with causation, idempotency, attempts, and field-level provenance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_version",
+    "event_id",
+    "event_type",
+    "event_processing_status",
+    "workflow_state",
+    "workflow_id",
+    "task_id",
+    "run_id",
+    "step_id",
+    "attempt_id",
+    "sequence",
+    "causation_id",
+    "parent_event_id",
+    "candidate_path_id",
+    "tool_call_id",
+    "human_work_id",
+    "occurred_at",
+    "emitted_at",
+    "received_at",
+    "idempotency_key",
+    "scene_id",
+    "risk_level",
+    "reasoning_depth",
+    "execution_mode",
+    "primary_topology",
+    "supporting_topologies",
+    "snapshot_versions",
+    "payload",
+    "resources",
+    "field_provenance",
+    "privacy_class",
+    "redaction_state"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0",
+      "title": "模式版本 / Schema version",
+      "description": "本事件契约的语义版本。/ Semantic version of this event contract."
+    },
+    "event_version": {
+      "$ref": "#/$defs/SemanticVersion",
+      "title": "事件版本 / Event version",
+      "description": "事件实例结构的版本。/ Version of the event instance structure."
+    },
+    "event_id": { "$ref": "#/$defs/Identifier", "title": "事件标识 / Event identifier" },
+    "workflow_id": { "$ref": "#/$defs/Identifier", "title": "兼容工作流标识 / Compatibility workflow identifier" },
+    "contract_binding": { "$ref": "#/$defs/VersionedBinding", "title": "契约绑定 / Contract binding" },
+    "event_type": {
+      "title": "事件类型 / Event type",
+      "description": "用于判别 payload 的不可变事件类型。/ Immutable event type that discriminates the payload.",
+      "enum": [
+        "run_created",
+        "task_received",
+        "task_normalized",
+        "route_selected",
+        "contract_established",
+        "state_transitioned",
+        "step_started",
+        "action_dispatched",
+        "action_observed",
+        "step_closed",
+        "evidence_recorded",
+        "candidate_created",
+        "candidate_compared",
+        "iteration_closed",
+        "mode_switched",
+        "validation_started",
+        "validation_completed",
+        "budget_reserved",
+        "budget_consumed",
+        "budget_released",
+        "budget_exhausted",
+        "no_progress_limit_reached",
+        "human_work_updated",
+        "outcome_recorded",
+        "governance_decided",
+        "feedback_updated",
+        "probe_health_reported",
+        "run_ended"
+      ]
+    },
+    "event_processing_status": { "$ref": "#/$defs/EventProcessingStatus", "title": "事件处理状态 / Event processing status" },
+    "workflow_state": { "$ref": "#/$defs/WorkflowState", "title": "权威工作流状态 / Authoritative workflow state" },
+    "previous_state": { "oneOf": [{ "$ref": "#/$defs/WorkflowState" }, { "type": "null" }], "title": "前置状态 / Previous state" },
+    "next_state": { "oneOf": [{ "$ref": "#/$defs/WorkflowState" }, { "type": "null" }], "title": "后置状态 / Next state" },
+    "transition_id": { "$ref": "#/$defs/NullableIdentifier", "title": "转换标识 / Transition identifier" },
+    "task_id": { "$ref": "#/$defs/Identifier", "title": "任务标识 / Task identifier" },
+    "run_id": { "$ref": "#/$defs/Identifier", "title": "运行标识 / Run identifier" },
+    "step_id": { "$ref": "#/$defs/NullableIdentifier", "title": "步骤标识 / Step identifier" },
+    "attempt_id": { "$ref": "#/$defs/Identifier", "title": "尝试标识 / Attempt identifier" },
+    "sequence": { "type": "integer", "minimum": 1, "title": "序列号 / Sequence" },
+    "causation_id": { "$ref": "#/$defs/NullableIdentifier", "title": "因果标识 / Causation identifier" },
+    "parent_event_id": { "$ref": "#/$defs/NullableIdentifier", "title": "父事件标识 / Parent event identifier" },
+    "candidate_path_id": { "$ref": "#/$defs/NullableIdentifier", "title": "候选路径标识 / Candidate-path identifier" },
+    "occurred_at": { "type": "string", "format": "date-time", "title": "发生时间 / Occurrence time" },
+    "recorded_at": { "type": "string", "format": "date-time", "title": "记录时间 / Recording time" },
+    "emitted_at": { "type": ["string", "null"], "format": "date-time", "title": "发出时间 / Emission time" },
+    "received_at": { "type": ["string", "null"], "format": "date-time", "title": "接入时间 / Ingestion time" },
+    "sequence_number": {
+      "type": "integer",
+      "minimum": 1,
+      "title": "序列号 / Sequence number",
+      "description": "工作流内单调递增的事件序列号。/ Monotonically increasing event sequence within a workflow."
+    },
+    "attempt_number": {
+      "type": "integer",
+      "minimum": 1,
+      "title": "尝试次数 / Attempt number",
+      "description": "同一逻辑操作的尝试编号。/ Attempt number for the same logical operation."
+    },
+    "idempotency_key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "title": "幂等键 / Idempotency key"
+    },
+    "scene_id": { "$ref": "#/$defs/Identifier", "title": "场景标识 / Scene identifier" },
+    "risk_level": { "enum": ["low", "medium", "high", "critical"], "title": "风险级别 / Risk level" },
+    "reasoning_depth": { "enum": ["direct", "deliberative"], "title": "推理深度 / Reasoning depth" },
+    "execution_mode": { "enum": ["direct", "chain", "parallel", "iterative"], "title": "执行模式 / Execution mode" },
+    "primary_topology": {
+      "oneOf": [{ "type": "null" }, { "enum": ["chain", "parallel", "loop"] }],
+      "title": "主拓扑 / Primary topology"
+    },
+    "supporting_topologies": {
+      "type": "array",
+      "items": { "enum": ["orchestration", "hierarchy"] },
+      "uniqueItems": true,
+      "title": "支撑拓扑 / Supporting topologies"
+    },
+    "snapshot_versions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goal", "constraints", "verified_facts"],
+      "properties": {
+        "goal": { "type": "integer", "minimum": 1 },
+        "constraints": { "type": "integer", "minimum": 1 },
+        "verified_facts": { "type": "integer", "minimum": 1 }
+      },
+      "title": "快照版本 / Snapshot versions"
+    },
+    "causation": { "$ref": "#/$defs/Causation", "title": "因果上下文 / Causation context" },
+    "actor": { "$ref": "#/$defs/Actor", "title": "事件主体 / Event actor" },
+    "tool_call_id": {
+      "$ref": "#/$defs/NullableIdentifier",
+      "title": "工具调用标识 / Tool-call identifier",
+      "description": "工具调用事件必须提供。/ Required for tool-call events."
+    },
+    "human_work_id": {
+      "$ref": "#/$defs/NullableIdentifier",
+      "title": "人工工作标识 / Human-work identifier",
+      "description": "人工工作事件必须提供。/ Required for human-work events."
+    },
+    "field_provenance": {
+      "type": "object",
+      "title": "字段来源 / Field provenance",
+      "description": "逐字段记录来源、完整性和值状态。/ Records source, integrity, and value state for individual fields.",
+      "additionalProperties": { "$ref": "#/$defs/FieldProvenance" },
+      "minProperties": 1
+    },
+    "payload": {
+      "$ref": "#/$defs/UnifiedPayload",
+      "title": "事件载荷 / Event payload",
+      "description": "统一使用 kind 与 data，并由 event_type 同时约束二者。/ Always uses kind and data, both constrained by event_type."
+    },
+    "resources": { "$ref": "#/$defs/Resources", "title": "资源观测 / Resource observations" },
+    "stop_reason": { "type": ["string", "null"], "title": "停止原因 / Stop reason" },
+    "escalation_reason": { "type": ["string", "null"], "title": "升级原因 / Escalation reason" },
+    "privacy_class": { "enum": ["public", "internal", "sensitive", "restricted"], "title": "隐私分类 / Privacy class" },
+    "redaction_state": { "enum": ["untreated", "redacted", "not_required"], "title": "脱敏状态 / Redaction state" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "event_type": { "enum": ["action_dispatched", "action_observed"] } },
+        "required": ["event_type"]
+      },
+      "then": { "properties": { "tool_call_id": { "$ref": "#/$defs/Identifier" } } }
+    },
+    {
+      "if": {
+        "properties": { "event_type": { "enum": ["step_started", "step_closed", "action_dispatched", "action_observed"] } },
+        "required": ["event_type"]
+      },
+      "then": { "properties": { "step_id": { "$ref": "#/$defs/Identifier" } } }
+    },
+    {
+      "if": {
+        "properties": { "event_type": { "const": "human_work_updated" } },
+        "required": ["event_type"]
+      },
+      "then": {
+        "required": ["contract_binding"],
+        "properties": { "human_work_id": { "$ref": "#/$defs/Identifier" } }
+      }
+    },
+    {
+      "if": { "properties": { "execution_mode": { "const": "direct" } }, "required": ["execution_mode"] },
+      "then": { "properties": { "reasoning_depth": { "const": "direct" }, "primary_topology": { "type": "null" } } }
+    },
+    {
+      "if": { "properties": { "execution_mode": { "const": "chain" } }, "required": ["execution_mode"] },
+      "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "chain" } } }
+    },
+    {
+      "if": { "properties": { "execution_mode": { "const": "parallel" } }, "required": ["execution_mode"] },
+      "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "parallel" } } }
+    },
+    {
+      "if": { "properties": { "execution_mode": { "const": "iterative" } }, "required": ["execution_mode"] },
+      "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "loop" } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "run_created" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "lifecycle" }, "data": { "$ref": "#/$defs/WorkflowStartedPayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "task_received" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "lifecycle" }, "data": { "allOf": [{ "$ref": "#/$defs/TaskPayload" }, { "properties": { "stage": { "const": "received" } } }] } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "task_normalized" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "lifecycle" }, "data": { "allOf": [{ "$ref": "#/$defs/TaskPayload" }, { "properties": { "stage": { "const": "normalized" } } }] } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "route_selected" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "route" }, "data": { "$ref": "#/$defs/RouteSelectedPayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "contract_established" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "lifecycle" }, "data": { "$ref": "#/$defs/ContractEstablishedPayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "state_transitioned" } }, "required": ["event_type"] },
+      "then": {
+        "required": ["previous_state", "next_state", "transition_id"],
+        "properties": {
+          "previous_state": { "$ref": "#/$defs/WorkflowState" },
+          "next_state": { "$ref": "#/$defs/WorkflowState" },
+          "transition_id": { "$ref": "#/$defs/Identifier" },
+          "payload": { "properties": { "kind": { "const": "state_transition" }, "data": { "$ref": "#/$defs/StateChangedPayload" } } }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "step_started" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "step" }, "data": { "allOf": [{ "$ref": "#/$defs/StepRecord" }, { "properties": { "status": { "const": "running" } } }] } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "action_dispatched" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "tool" }, "data": { "allOf": [{ "$ref": "#/$defs/ToolCallPayload" }, { "properties": { "phase": { "const": "started" } } }] } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "action_observed" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "tool" }, "data": { "allOf": [{ "$ref": "#/$defs/ToolCallPayload" }, { "properties": { "phase": { "const": "completed" } } }] } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "step_closed" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "step" }, "data": { "allOf": [{ "$ref": "#/$defs/StepRecord" }, { "properties": { "status": { "enum": ["completed", "failed", "cancelled", "timed_out"] } } }] } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "evidence_recorded" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "evidence" }, "data": { "$ref": "#/$defs/Evidence" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "candidate_created" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "candidate" }, "data": { "$ref": "#/$defs/CandidatePayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "candidate_compared" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "candidate" }, "data": { "$ref": "#/$defs/CandidateComparedPayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "iteration_closed" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "iteration" }, "data": { "$ref": "#/$defs/IterationClosedPayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "mode_switched" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "mode" }, "data": { "$ref": "#/$defs/ModeSwitchedPayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "validation_started" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "validation" }, "data": { "$ref": "#/$defs/ValidationStartedPayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "validation_completed" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "validation" }, "data": { "$ref": "#/$defs/ValidationResult" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "budget_reserved" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "budget" }, "data": { "oneOf": [{ "allOf": [{ "$ref": "#/$defs/BudgetUpdatedPayload" }, { "properties": { "operation": { "const": "reserve" } } }] }, { "allOf": [{ "$ref": "#/$defs/BudgetVectorUpdatedPayload" }, { "properties": { "operation": { "const": "reserve" } } }] }] } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "budget_consumed" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "budget" }, "data": { "oneOf": [{ "allOf": [{ "$ref": "#/$defs/BudgetUpdatedPayload" }, { "properties": { "operation": { "const": "consume" } } }] }, { "allOf": [{ "$ref": "#/$defs/BudgetVectorUpdatedPayload" }, { "properties": { "operation": { "const": "consume" } } }] }] } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "budget_released" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "budget" }, "data": { "oneOf": [{ "allOf": [{ "$ref": "#/$defs/BudgetUpdatedPayload" }, { "properties": { "operation": { "enum": ["release", "refund"] } } }] }, { "allOf": [{ "$ref": "#/$defs/BudgetVectorUpdatedPayload" }, { "properties": { "operation": { "enum": ["release", "refund"] } } }] }] } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "budget_exhausted" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "budget" }, "data": { "oneOf": [{ "$ref": "#/$defs/BudgetExhaustedPayload" }, { "$ref": "#/$defs/BudgetRuntimeExhaustedPayload" }] } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "no_progress_limit_reached" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "iteration" }, "data": { "$ref": "#/$defs/NoProgressPayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "human_work_updated" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "human_work" }, "data": { "$ref": "#/$defs/HumanWorkPayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "outcome_recorded" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "outcome" }, "data": { "$ref": "#/$defs/OutcomePayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "governance_decided" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "governance" }, "data": { "$ref": "#/$defs/GovernancePayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "feedback_updated" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "feedback" }, "data": { "$ref": "#/$defs/FeedbackPayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "probe_health_reported" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "probe_health" }, "data": { "$ref": "#/$defs/ProbeHealthPayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "run_ended" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "lifecycle" }, "data": { "$ref": "#/$defs/TerminalPayload" } } } } }
+    }
+  ],
+  "$defs": {
+    "Identifier": {
+      "title": "稳定标识 / Stable identifier",
+      "description": "工作流内稳定且可引用的标识。/ A stable, referenceable identifier within a workflow.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "NullableIdentifier": {
+      "title": "可空标识 / Nullable identifier",
+      "description": "不适用时为 null，否则为稳定标识。/ Null when not applicable; otherwise a stable identifier.",
+      "oneOf": [
+        { "$ref": "#/$defs/Identifier" },
+        { "type": "null" }
+      ]
+    },
+    "SemanticVersion": {
+      "title": "语义版本 / Semantic version",
+      "description": "契约或记录的语义版本。/ Semantic version of a contract or record.",
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": {
+      "title": "SHA-256 哈希 / SHA-256 hash",
+      "description": "带算法前缀的十六进制完整性哈希。/ A hexadecimal integrity hash with an algorithm prefix.",
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "SafeExternalValue": {
+      "title": "安全外部值 / Safe external value",
+      "description": "递归拒绝私密推理字段名，仅允许可外部审计的数据。/ Recursively rejects private-reasoning field names and permits only externally auditable data.",
+      "oneOf": [
+        { "type": ["string", "number", "boolean", "null"] },
+        { "type": "array", "items": { "$ref": "#/$defs/SafeExternalValue" } },
+        {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/SafeExternalPropertyName" },
+          "additionalProperties": { "$ref": "#/$defs/SafeExternalValue" }
+        }
+      ]
+    },
+    "SafeExternalPropertyName": {
+      "title": "安全外部字段名 / Safe external property name",
+      "description": "大小写不敏感地拒绝私密推理字段名。/ Rejects private-reasoning property names case-insensitively.",
+      "type": "string",
+      "not": {
+        "pattern": "^(?:[cC][hH][aA][iI][nN]_[oO][fF]_[tT][hH][oO][uU][gG][hH][tT]|[pP][rR][iI][vV][aA][tT][eE]_[cC][oO][tT]|[hH][iI][dD][dD][eE][nN]_[rR][eE][aA][sS][oO][nN][iI][nN][gG]|[iI][nN][tT][eE][rR][nN][aA][lL]_[mM][oO][nN][oO][lL][oO][gG][uU][eE]|[rR][eE][aA][sS][oO][nN][iI][nN][gG]_[sS][cC][rR][aA][tT][cC][hH][pP][aA][dD]|[sS][cC][rR][aA][tT][cC][hH][pP][aA][dD])$"
+      }
+    },
+    "WorkflowState": {
+      "title": "权威工作流状态 / Authoritative workflow state",
+      "description": "执行状态机使用的唯一状态枚举。/ The sole state enumeration used by the execution state machine.",
+      "enum": ["received", "normalized", "governance_precheck", "routed", "contract_established", "executing", "waiting_for_evidence", "mode_switched", "candidate_ready", "validating", "repairable_failure", "completed", "rejected", "failed", "escalated", "cancelled", "timed_out"]
+    },
+    "EventProcessingStatus": {
+      "title": "事件处理状态 / Event processing status",
+      "description": "事件所描述操作的处理状态，不替代工作流状态。/ Processing status of the operation described by an event; it does not replace workflow state.",
+      "enum": ["accepted", "duplicate", "rejected"]
+    },
+    "ValidationOutcome": {
+      "title": "验证结果 / Validation result",
+      "description": "验证器的权威结果枚举。/ Authoritative outcome enumeration for validators.",
+      "enum": ["not_run", "passed", "conditionally_passed", "repairable_failure", "nonrepairable_failure", "human_required", "timed_out"]
+    },
+    "VersionedBinding": {
+      "type": "object",
+      "title": "版本化绑定 / Versioned binding",
+      "description": "将引用绑定到标识、版本和内容哈希。/ Binds a reference to identifier, version, and content hash.",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "BindingState": {
+      "title": "绑定状态 / Binding state",
+      "description": "显式区分已观测绑定与候选形成前缺失、未知或不适用的绑定。/ Explicitly distinguishes an observed binding from a binding missing, unknown, or not applicable before candidate creation.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed" },
+            "value": { "$ref": "#/$defs/VersionedBinding" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+        }
+      ]
+    },
+    "Causation": {
+      "type": "object",
+      "title": "因果上下文 / Causation context",
+      "description": "支持分布式追踪、事件因果和父子跨度。/ Supports distributed tracing, event causation, and parent-child spans.",
+      "additionalProperties": false,
+      "required": ["trace_id", "span_id", "correlation_id", "causation_event_id"],
+      "properties": {
+        "trace_id": { "$ref": "#/$defs/Identifier" },
+        "span_id": { "$ref": "#/$defs/Identifier" },
+        "parent_span_id": { "type": ["string", "null"], "minLength": 1 },
+        "correlation_id": { "$ref": "#/$defs/Identifier" },
+        "causation_event_id": {
+          "oneOf": [
+            { "$ref": "#/$defs/Identifier" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "Actor": {
+      "type": "object",
+      "title": "事件主体 / Event actor",
+      "description": "发出或负责该事件的版本化主体。/ Versioned actor that emitted or owns the event.",
+      "additionalProperties": false,
+      "required": ["actor_type", "actor_id", "actor_version"],
+      "properties": {
+        "actor_type": { "enum": ["system", "model", "tool", "validator", "human", "orchestrator"] },
+        "actor_id": { "$ref": "#/$defs/Identifier" },
+        "actor_version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "ObservedValue": {
+      "title": "显式值状态 / Explicit value state",
+      "description": "分别表示有值、零、缺失、未知和不适用，避免用 null 混淆语义。/ Separately represents present, zero, missing, unknown, and not-applicable values instead of overloading null.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed" },
+            "value": {
+              "allOf": [
+                { "$ref": "#/$defs/SafeExternalValue" },
+                { "not": { "enum": [0, null] } }
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed_zero" },
+            "value": { "type": "number", "const": 0 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": {
+            "state": { "enum": ["missing", "unknown", "not_applicable"] }
+          }
+        }
+      ]
+    },
+    "ObservedNumber": {
+      "title": "显式数值状态 / Explicit numeric state",
+      "description": "数值专用的显式状态包装。/ Explicit state wrapper specialized for numeric values.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed" },
+            "value": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed_zero" },
+            "value": { "type": "number", "const": 0 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": {
+            "state": { "enum": ["missing", "unknown", "not_applicable"] }
+          }
+        }
+      ]
+    },
+    "KnownCount": {
+      "title": "已知计数 / Known count",
+      "description": "严格区分正整数计数与观测零值。/ Strictly distinguishes a positive integer count from an observed zero.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed" },
+            "value": { "type": "integer", "minimum": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed_zero" },
+            "value": { "type": "integer", "const": 0 }
+          }
+        }
+      ]
+    },
+    "ObservedCount": {
+      "title": "显式计数状态 / Explicit count state",
+      "description": "计数专用状态包装，保留零、缺失、未知和不适用的差异。/ Count-specific state wrapper preserving the difference between zero, missing, unknown, and not applicable.",
+      "oneOf": [
+        { "$ref": "#/$defs/KnownCount" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+        }
+      ]
+    },
+    "KnownRate": {
+      "title": "已知比率 / Known rate",
+      "description": "零到一之间的已知比率，并显式表示零值。/ A known ratio between zero and one with an explicit zero representation.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed" },
+            "value": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed_zero" },
+            "value": { "type": "number", "const": 0 }
+          }
+        }
+      ]
+    },
+    "ObservedRate": {
+      "title": "显式比率状态 / Explicit rate state",
+      "description": "比率专用状态包装，保留零、缺失、未知和不适用的差异。/ Rate-specific state wrapper preserving the difference between zero, missing, unknown, and not applicable.",
+      "oneOf": [
+        { "$ref": "#/$defs/KnownRate" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+        }
+      ]
+    },
+    "PositiveLimitValue": {
+      "title": "正数限制值 / Positive limit value",
+      "description": "预算限制只能为正数；未配置或未知时使用显式状态，禁止观测零值。/ A budget limit must be positive; unconfigured or unknown limits use explicit states and observed zero is forbidden.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed" },
+            "value": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+        }
+      ]
+    },
+    "FieldProvenance": {
+      "type": "object",
+      "title": "字段来源记录 / Field provenance record",
+      "description": "字段来源、版本、完整性以及不可混淆的值状态。/ Field source, version, integrity, and unambiguous value state.",
+      "additionalProperties": false,
+      "required": ["value_state", "source_type"],
+      "properties": {
+        "value_state": { "enum": ["observed", "observed_zero", "missing", "unknown", "not_applicable"] },
+        "source_type": { "enum": ["raw_observation", "system_report", "deterministic_calculation", "rule_derivation", "human_confirmation", "model_estimate", "missing"] },
+        "source_id": { "type": ["string", "null"] },
+        "source_version": { "type": ["string", "null"] },
+        "valid_at": { "type": ["string", "null"], "format": "date-time" },
+        "captured_at": { "type": ["string", "null"], "format": "date-time" },
+        "method": { "type": ["string", "null"] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "ResourceValue": {
+      "title": "资源值 / Resource value",
+      "description": "用显式状态区分观测数值、观测零值、缺失、未知和不适用。/ Uses explicit state to distinguish observed numbers, observed zero, missing, unknown, and not applicable.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value_state", "value"],
+          "properties": {
+            "value_state": { "const": "observed" },
+            "value": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value_state", "value"],
+          "properties": {
+            "value_state": { "const": "observed_zero" },
+            "value": { "type": "number", "const": 0 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value_state", "value"],
+          "properties": {
+            "value_state": { "enum": ["missing", "unknown", "not_applicable"] },
+            "value": { "type": "null" }
+          }
+        }
+      ]
+    },
+    "Resources": {
+      "type": "object",
+      "title": "资源观测 / Resource observations",
+      "description": "工作流事件的各维度资源观测，禁止将异构单位相加。/ Per-dimension resource observations; heterogeneous units must not be summed.",
+      "additionalProperties": false,
+      "required": ["model_calls", "tool_calls", "reasoning_tokens", "input_tokens", "output_tokens", "cost_units", "latency_ms"],
+      "properties": {
+        "model_calls": { "$ref": "#/$defs/ResourceValue" },
+        "tool_calls": { "$ref": "#/$defs/ResourceValue" },
+        "reasoning_tokens": { "$ref": "#/$defs/ResourceValue" },
+        "input_tokens": { "$ref": "#/$defs/ResourceValue" },
+        "output_tokens": { "$ref": "#/$defs/ResourceValue" },
+        "cost_units": { "$ref": "#/$defs/ResourceValue" },
+        "latency_ms": { "$ref": "#/$defs/ResourceValue" }
+      }
+    },
+    "UnifiedPayload": {
+      "type": "object",
+      "title": "统一事件载荷 / Unified event payload",
+      "description": "由事件类型判别的载荷类别和结构化数据；运行时不得写入私密思维过程。/ Payload kind and structured data discriminated by event type; runtimes must not write private chain-of-thought.",
+      "additionalProperties": false,
+      "required": ["kind", "data"],
+      "properties": {
+        "kind": { "enum": ["lifecycle", "state_transition", "route", "step", "evidence", "tool", "candidate", "iteration", "mode", "validation", "budget", "human_work", "outcome", "governance", "feedback", "probe_health"] },
+        "data": {
+          "allOf": [
+            { "type": "object" },
+            { "$ref": "#/$defs/SafeExternalValue" }
+          ]
+        }
+      }
+    },
+    "ReasoningConfiguration": {
+      "type": "object",
+      "title": "推理配置 / Reasoning configuration",
+      "description": "独立描述执行调度、推理深度和拓扑。/ Independently describes scheduling, reasoning depth, and topology.",
+      "additionalProperties": false,
+      "required": ["execution_mode", "reasoning_depth", "primary_topology", "supporting_topologies"],
+      "properties": {
+        "execution_mode": { "enum": ["direct", "chain", "parallel", "iterative"] },
+        "reasoning_depth": { "enum": ["direct", "deliberative"] },
+        "primary_topology": { "oneOf": [{ "type": "null" }, { "enum": ["chain", "parallel", "loop"] }] },
+        "supporting_topologies": {
+          "type": "array",
+          "items": { "enum": ["orchestration", "hierarchy"] },
+          "uniqueItems": true,
+          "maxItems": 2
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "execution_mode": { "const": "direct" } }, "required": ["execution_mode"] },
+          "then": { "properties": { "reasoning_depth": { "const": "direct" }, "primary_topology": { "type": "null" } } }
+        },
+        {
+          "if": { "properties": { "execution_mode": { "const": "chain" } }, "required": ["execution_mode"] },
+          "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "chain" } } }
+        },
+        {
+          "if": { "properties": { "execution_mode": { "const": "parallel" } }, "required": ["execution_mode"] },
+          "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "parallel" } } }
+        },
+        {
+          "if": { "properties": { "execution_mode": { "const": "iterative" } }, "required": ["execution_mode"] },
+          "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "loop" } } }
+        }
+      ]
+    },
+    "EvidenceBinding": {
+      "allOf": [{ "$ref": "#/$defs/VersionedBinding" }],
+      "title": "证据绑定 / Evidence binding",
+      "description": "绑定到证据版本和哈希。/ Binding to evidence version and hash."
+    },
+    "ClaimBinding": {
+      "type": "object",
+      "title": "声明绑定 / Claim binding",
+      "description": "描述证据与声明之间的关系。/ Describes the relationship between evidence and a claim.",
+      "additionalProperties": false,
+      "required": ["claim_id", "relation", "criticality"],
+      "properties": {
+        "claim_id": { "$ref": "#/$defs/Identifier" },
+        "relation": { "enum": ["supports", "refutes", "neutral"] },
+        "criticality": { "enum": ["noncritical", "critical"] }
+      }
+    },
+    "Evidence": {
+      "type": "object",
+      "title": "证据 / Evidence",
+      "description": "绑定到候选结果和执行契约的版本化证据。/ Versioned evidence bound to a candidate and execution contract.",
+      "additionalProperties": false,
+      "required": ["evidence_id", "evidence_version", "evidence_hash", "candidate_binding", "contract_binding", "evidence_type", "claim_bindings", "source", "valid_at", "retrieved_at", "captured_at", "scope", "freshness", "integrity_score", "sensitivity", "redaction_state", "transformation_history"],
+      "properties": {
+        "evidence_id": { "$ref": "#/$defs/Identifier" },
+        "evidence_version": { "$ref": "#/$defs/SemanticVersion" },
+        "evidence_hash": { "$ref": "#/$defs/Sha256" },
+        "record_hash": {
+          "$ref": "#/$defs/Sha256",
+          "description": "完整证据事件记录的可重算摘要。/ Reproducible digest of the complete evidence event record."
+        },
+        "predecessor_evidence_binding": {
+          "$ref": "#/$defs/VersionedBinding",
+          "description": "候选绑定证据修订所来源的步骤证据记录绑定。/ Step-evidence record binding from which a candidate-bound evidence revision derives."
+        },
+        "candidate_binding": { "$ref": "#/$defs/BindingState" },
+        "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "evidence_type": { "enum": ["input", "document", "tool_result", "measurement", "test", "human_attestation", "policy"] },
+        "claim_bindings": { "type": "array", "items": { "$ref": "#/$defs/ClaimBinding" }, "minItems": 1 },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source_type", "source_ref", "source_version"],
+          "properties": {
+            "source_type": { "enum": ["user", "system", "tool", "document", "test", "human", "policy"] },
+            "source_ref": { "type": "string", "minLength": 1 },
+            "source_version": { "type": "string", "minLength": 1 }
+          }
+        },
+        "valid_at": { "type": "string", "format": "date-time" },
+        "retrieved_at": { "type": "string", "format": "date-time" },
+        "captured_at": { "type": "string", "format": "date-time" },
+        "scope": { "$ref": "#/$defs/SafeExternalValue" },
+        "freshness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "assessed_at"],
+          "properties": {
+            "status": { "enum": ["fresh", "stale", "unknown"] },
+            "assessed_at": { "type": "string", "format": "date-time" },
+            "age_seconds": { "type": "number", "minimum": 0 }
+          }
+        },
+        "integrity_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "sensitivity": { "enum": ["public", "internal", "confidential", "restricted"] },
+        "redaction_state": { "enum": ["untreated", "redacted", "not_required"] },
+        "transformation_history": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SafeExternalValue" }
+        }
+      }
+    },
+    "StepRecord": {
+      "type": "object",
+      "title": "可闭合步骤记录 / Closable step record",
+      "description": "仅记录外部可核验的步骤摘要、证据和验证绑定，不记录私密思维过程。/ Records only externally verifiable step summaries, evidence, and validation bindings, never private chain-of-thought.",
+      "additionalProperties": false,
+      "required": ["step_id", "step_version", "step_hash", "contract_binding", "sequence_number", "attempt_number", "status", "summary", "input_evidence_bindings", "output_evidence_bindings", "validation_bindings", "started_at"],
+      "properties": {
+        "step_id": { "$ref": "#/$defs/Identifier" },
+        "step_version": { "$ref": "#/$defs/SemanticVersion" },
+        "step_hash": { "$ref": "#/$defs/Sha256" },
+        "record_hash": {
+          "$ref": "#/$defs/Sha256",
+          "description": "当前步骤事件记录的可重算摘要。/ Reproducible digest of the current step event record."
+        },
+        "candidate_binding": { "$ref": "#/$defs/BindingState" },
+        "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "sequence_number": { "type": "integer", "minimum": 1 },
+        "attempt_number": { "type": "integer", "minimum": 1 },
+        "status": { "enum": ["pending", "running", "waiting_for_evidence", "validating", "completed", "failed", "cancelled", "timed_out"] },
+        "summary": { "type": "string", "minLength": 1 },
+        "input_evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" } },
+        "output_evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" } },
+        "validation_bindings": { "type": "array", "items": { "$ref": "#/$defs/VersionedBinding" } },
+        "claim": { "$ref": "#/$defs/SafeExternalValue" },
+        "evidence_refs": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "action": { "$ref": "#/$defs/SafeExternalValue" },
+        "observation": { "$ref": "#/$defs/SafeExternalValue" },
+        "local_decision": { "$ref": "#/$defs/SafeExternalValue" },
+        "resource_use": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["reasoning_tokens", "latency_ms", "model_calls", "tool_calls", "parallel_paths", "iterations", "retries", "total_cost_units"],
+          "properties": {
+            "reasoning_tokens": { "$ref": "#/$defs/ObservedNumber" },
+            "latency_ms": { "$ref": "#/$defs/ObservedNumber" },
+            "model_calls": { "$ref": "#/$defs/ObservedNumber" },
+            "tool_calls": { "$ref": "#/$defs/ObservedNumber" },
+            "parallel_paths": { "$ref": "#/$defs/ObservedNumber" },
+            "iterations": { "$ref": "#/$defs/ObservedNumber" },
+            "retries": { "$ref": "#/$defs/ObservedNumber" },
+            "total_cost_units": { "$ref": "#/$defs/ObservedNumber" }
+          }
+        },
+        "progress": { "type": "boolean" },
+        "no_progress_streak": { "type": "integer", "minimum": 0 },
+        "started_at": { "type": "string", "format": "date-time" },
+        "ended_at": { "type": "string", "format": "date-time" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "status": { "enum": ["completed", "failed", "cancelled", "timed_out"] } },
+            "required": ["status"]
+          },
+          "then": {
+            "required": ["claim", "action", "observation", "local_decision", "resource_use", "progress", "ended_at"],
+            "properties": {
+              "claim": { "not": { "enum": [null, ""] } },
+              "action": { "not": { "enum": [null, ""] } },
+              "observation": { "not": { "enum": [null, ""] } },
+              "local_decision": { "not": { "enum": [null, ""] } }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "running" } }, "required": ["status"] },
+          "then": { "not": { "required": ["ended_at"] } }
+        }
+      ]
+    },
+    "ValidationFinding": {
+      "type": "object",
+      "title": "验证发现 / Validation finding",
+      "description": "验证器产生的结构化发现。/ Structured finding emitted by a validator.",
+      "additionalProperties": false,
+      "required": ["finding_id", "severity", "code", "field_path"],
+      "properties": {
+        "finding_id": { "$ref": "#/$defs/Identifier" },
+        "severity": { "enum": ["info", "warning", "error", "fatal"] },
+        "code": { "type": "string", "minLength": 1 },
+        "field_path": { "type": "string", "pattern": "^/" },
+        "remediation_code": { "type": "string", "minLength": 1 }
+      }
+    },
+    "ValidationResult": {
+      "type": "object",
+      "title": "验证结果 / Validation result",
+      "description": "绑定到特定候选、证据集合、验证器和契约的不可混用验证结果。/ A non-transferable validation result bound to a specific candidate, evidence set, validator, and contract.",
+      "additionalProperties": false,
+      "required": ["validation_id", "validation_version", "validation_hash", "details_hash", "validator_binding", "criteria_binding", "candidate_binding", "contract_binding", "evidence_bindings", "independence_class", "started_at", "ended_at", "timeout_ms", "attempt", "actor_binding", "authority_binding", "result", "checked_at", "findings"],
+      "properties": {
+        "validation_id": { "$ref": "#/$defs/Identifier" },
+        "validation_version": { "$ref": "#/$defs/SemanticVersion" },
+        "validation_hash": { "$ref": "#/$defs/Sha256" },
+        "details_hash": {
+          "$ref": "#/$defs/Sha256",
+          "description": "外部可公开验证详情的内容哈希，不包含私密推理。/ Content hash of externally disclosable validation details; it excludes private reasoning."
+        },
+        "validator_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "criteria_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "candidate_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" } },
+        "independence_class": { "enum": ["deterministic", "independent", "same_executor", "human"] },
+        "started_at": { "type": "string", "format": "date-time" },
+        "ended_at": { "type": "string", "format": "date-time" },
+        "timeout_ms": { "type": "integer", "minimum": 1 },
+        "attempt": { "type": "integer", "minimum": 1 },
+        "actor_binding": { "$ref": "#/$defs/BindingState" },
+        "authority_binding": { "$ref": "#/$defs/BindingState" },
+        "result": { "$ref": "#/$defs/ValidationOutcome" },
+        "checked_at": { "type": "string", "format": "date-time" },
+        "findings": { "type": "array", "items": { "$ref": "#/$defs/ValidationFinding" } },
+        "conditional_obligations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["obligation_id", "due_state"],
+            "properties": {
+              "obligation_id": { "$ref": "#/$defs/Identifier" },
+              "due_state": { "$ref": "#/$defs/WorkflowState" }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "result": { "const": "conditionally_passed" } }, "required": ["result"] },
+          "then": { "required": ["conditional_obligations"], "properties": { "conditional_obligations": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "WorkflowStartedPayload": {
+      "type": "object",
+      "title": "工作流启动载荷 / Workflow-started payload",
+      "description": "绑定启动时采用的规范化输入。/ Binds the normalized input used to start the workflow.",
+      "additionalProperties": false,
+      "required": ["normalized_input_binding"],
+      "properties": { "normalized_input_binding": { "$ref": "#/$defs/VersionedBinding" } }
+    },
+    "StateChangedPayload": {
+      "type": "object",
+      "title": "状态变更载荷 / State-changed payload",
+      "description": "记录权威状态转换及原因码；消费方必须校验 from_state/to_state 与信封 previous_state/next_state 一致，且 workflow_state 等于 to_state。/ Records an authoritative state transition and reason code; consumers must verify from_state/to_state match envelope previous_state/next_state and workflow_state equals to_state.",
+      "additionalProperties": false,
+      "required": ["from_state", "to_state", "reason_code"],
+      "properties": {
+        "from_state": { "$ref": "#/$defs/WorkflowState" },
+        "to_state": { "$ref": "#/$defs/WorkflowState" },
+        "reason_code": { "type": "string", "minLength": 1 }
+      }
+    },
+    "RouteSignalValue": {
+      "title": "路由信号值 / Route signal value",
+      "description": "与推理契约相同的显式状态路由值。/ Explicit-state routing value shared with the reasoning contract.",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed" },
+            "value": { "enum": ["low", "medium", "high", "critical", "none", "partial", "full", "available", "degraded", "unavailable", "complete_consistent", "mostly_complete", "conflicting", "insufficient", "untrusted", "required", "not_required", "reversible", "partially_reversible", "irreversible", true, false] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+        }
+      ]
+    },
+    "RoutingSignal": {
+      "type": "object",
+      "title": "类型化路由信号 / Typed routing signal",
+      "additionalProperties": false,
+      "required": ["signal", "value"],
+      "properties": {
+        "signal": { "enum": ["complexity", "uncertainty", "risk", "parallelizability", "external_verifiability", "evidence_availability", "interaction_need", "reversibility", "dominant_dependency_path", "permission_granted", "prohibited_action"] },
+        "value": { "$ref": "#/$defs/RouteSignalValue" }
+      }
+    },
+    "RoutingReason": {
+      "type": "object",
+      "title": "类型化路由原因 / Typed routing reason",
+      "additionalProperties": false,
+      "required": ["reason_code", "source_binding"],
+      "properties": {
+        "reason_code": { "enum": ["direct_low_risk_release", "multi_step_dependency", "independent_hypotheses", "feedback_required", "high_risk", "insufficient_evidence", "external_validation_required", "missing_route_signal", "policy_constraint", "irreversible_action", "tool_unavailable", "human_judgment_required"] },
+        "source_binding": {
+          "oneOf": [
+            { "$ref": "#/$defs/VersionedBinding" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["state"],
+              "properties": { "state": { "enum": ["missing", "unknown", "not_applicable"] } }
+            }
+          ]
+        }
+      }
+    },
+    "RouteSelectedPayload": {
+      "type": "object",
+      "title": "路由结果载荷 / Route-selected payload",
+      "description": "记录策略版本、选择的推理配置和结构化路由信号。/ Records policy version, selected reasoning configuration, and structured routing signals.",
+      "additionalProperties": false,
+      "required": ["routing_policy_binding", "disposition", "configuration", "signals", "reasons", "signal_fingerprint", "missing_signals", "abstained"],
+      "properties": {
+        "routing_policy_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "disposition": { "enum": ["execute", "reject", "escalate"] },
+        "configuration": { "oneOf": [{ "$ref": "#/$defs/ReasoningConfiguration" }, { "type": "null" }] },
+        "signals": { "type": "array", "items": { "$ref": "#/$defs/RoutingSignal" }, "minItems": 1 },
+        "reasons": { "type": "array", "items": { "$ref": "#/$defs/RoutingReason" }, "minItems": 1 },
+        "signal_fingerprint": { "$ref": "#/$defs/Sha256" },
+        "missing_signals": {
+          "type": "array",
+          "items": { "enum": ["complexity", "uncertainty", "risk", "parallelizability", "external_verifiability", "evidence_availability", "interaction_need", "reversibility", "dominant_dependency_path", "permission_granted", "prohibited_action"] },
+          "uniqueItems": true
+        },
+        "abstained": { "type": "boolean" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "disposition": { "const": "execute" } }, "required": ["disposition"] },
+          "then": { "properties": { "configuration": { "$ref": "#/$defs/ReasoningConfiguration" }, "abstained": { "const": false }, "missing_signals": { "maxItems": 0 } } },
+          "else": { "properties": { "configuration": { "type": "null" } } }
+        }
+      ]
+    },
+    "ModeSwitchedPayload": {
+      "type": "object",
+      "title": "模式切换载荷 / Mode-switched payload",
+      "description": "记录允许列表内的推理配置切换。/ Records a reasoning-configuration switch allowed by the contract.",
+      "additionalProperties": false,
+      "required": ["switch_id", "from", "to", "trigger", "switch_count", "switch_rule_binding", "trigger_evidence_bindings", "budget_impact", "unfinished_step_ids", "requires_validation", "switched_at"],
+      "properties": {
+        "switch_id": { "$ref": "#/$defs/Identifier" },
+        "from": { "$ref": "#/$defs/ReasoningConfiguration" },
+        "to": { "$ref": "#/$defs/ReasoningConfiguration" },
+        "trigger": { "enum": ["insufficient_evidence", "conflicting_evidence", "validator_failure", "budget_pressure", "risk_increase", "human_request", "tool_unavailable"] },
+        "switch_count": { "type": "integer", "minimum": 1 },
+        "switch_rule_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "trigger_evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/VersionedBinding" } },
+        "budget_impact": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["reasoning_tokens", "latency_ms", "model_calls", "tool_calls", "parallel_paths", "iterations", "retries", "total_cost_units"],
+          "properties": {
+            "reasoning_tokens": { "type": "integer", "minimum": 0 },
+            "latency_ms": { "type": "integer", "minimum": 0 },
+            "model_calls": { "type": "integer", "minimum": 0 },
+            "tool_calls": { "type": "integer", "minimum": 0 },
+            "parallel_paths": { "type": "integer", "minimum": 0 },
+            "iterations": { "type": "integer", "minimum": 0 },
+            "retries": { "type": "integer", "minimum": 0 },
+            "total_cost_units": { "type": "number", "minimum": 0 }
+          }
+        },
+        "unfinished_step_ids": { "type": "array", "items": { "$ref": "#/$defs/Identifier" }, "uniqueItems": true },
+        "requires_validation": { "type": "boolean" },
+        "switched_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "BudgetUpdatedPayload": {
+      "type": "object",
+      "title": "预算更新载荷 / Budget-updated payload",
+      "description": "使用显式数值状态记录预算预留、消耗、退款或释放。/ Records budget reservation, consumption, refund, or release with explicit numeric states.",
+      "additionalProperties": false,
+      "required": ["dimension", "operation", "limit", "consumed", "remaining"],
+      "properties": {
+        "dimension": { "enum": ["reasoning_tokens", "latency_ms", "model_calls", "tool_calls", "parallel_paths", "iterations", "retries", "total_cost_units"] },
+        "operation": { "enum": ["reserve", "consume", "refund", "release", "reconcile"] },
+        "limit": { "$ref": "#/$defs/PositiveLimitValue" },
+        "consumed": { "$ref": "#/$defs/ObservedNumber" },
+        "remaining": { "$ref": "#/$defs/ObservedNumber" },
+        "branch_id": { "$ref": "#/$defs/Identifier" }
+      }
+    },
+    "BudgetDimensionSnapshot": {
+      "type": "object",
+      "title": "预算维度快照 / Budget-dimension snapshot",
+      "description": "一个预算维度的限制、累计消耗和剩余额度。/ Limit, cumulative consumption, and remaining capacity for one budget dimension.",
+      "additionalProperties": false,
+      "required": ["limit", "consumed", "remaining"],
+      "properties": {
+        "limit": { "$ref": "#/$defs/PositiveLimitValue" },
+        "consumed": { "$ref": "#/$defs/ObservedNumber" },
+        "remaining": { "$ref": "#/$defs/ObservedNumber" }
+      }
+    },
+    "BudgetVectorUpdatedPayload": {
+      "type": "object",
+      "title": "原子预算向量更新 / Atomic budget-vector update",
+      "description": "在一条事件中记录原子多维预留、消费或释放，避免部分维度事件丢失。/ Records an atomic multi-dimensional reservation, consumption, or release in one event so dimensions cannot be partially lost.",
+      "additionalProperties": false,
+      "required": ["operation", "reservation_id", "delta", "dimensions"],
+      "properties": {
+        "operation": { "enum": ["reserve", "consume", "refund", "release", "reconcile"] },
+        "reservation_id": { "oneOf": [{ "$ref": "#/$defs/Identifier" }, { "type": "null" }] },
+        "delta": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["reasoning_tokens", "latency_ms", "model_calls", "tool_calls", "parallel_paths", "iterations", "retries", "total_cost_units"],
+          "properties": {
+            "reasoning_tokens": { "type": "integer", "minimum": 0 },
+            "latency_ms": { "type": "integer", "minimum": 0 },
+            "model_calls": { "type": "integer", "minimum": 0 },
+            "tool_calls": { "type": "integer", "minimum": 0 },
+            "parallel_paths": { "type": "integer", "minimum": 0 },
+            "iterations": { "type": "integer", "minimum": 0 },
+            "retries": { "type": "integer", "minimum": 0 },
+            "total_cost_units": { "type": "number", "minimum": 0 }
+          }
+        },
+        "dimensions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["reasoning_tokens", "latency_ms", "model_calls", "tool_calls", "parallel_paths", "iterations", "retries", "total_cost_units"],
+          "properties": {
+            "reasoning_tokens": { "$ref": "#/$defs/BudgetDimensionSnapshot" },
+            "latency_ms": { "$ref": "#/$defs/BudgetDimensionSnapshot" },
+            "model_calls": { "$ref": "#/$defs/BudgetDimensionSnapshot" },
+            "tool_calls": { "$ref": "#/$defs/BudgetDimensionSnapshot" },
+            "parallel_paths": { "$ref": "#/$defs/BudgetDimensionSnapshot" },
+            "iterations": { "$ref": "#/$defs/BudgetDimensionSnapshot" },
+            "retries": { "$ref": "#/$defs/BudgetDimensionSnapshot" },
+            "total_cost_units": { "$ref": "#/$defs/BudgetDimensionSnapshot" }
+          }
+        }
+      }
+    },
+    "ToolCallPayload": {
+      "type": "object",
+      "title": "动作载荷 / Action payload",
+      "description": "动作阶段、种类、执行器版本、实时验证授权绑定和输入输出指纹。/ Action phase, kind, executor version, live-verified authorization bindings, and input/output fingerprints.",
+      "additionalProperties": false,
+      "required": ["phase", "action_kind", "tool_binding", "authorization_policy_binding", "authorization_binding", "authorization_verified", "input_hash", "side_effect"],
+      "properties": {
+        "phase": { "enum": ["started", "completed"] },
+        "action_kind": { "const": "tool" },
+        "tool_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "authorization_policy_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "authorization_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "authorization_verified": { "const": true },
+        "plan_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "input_hash": { "$ref": "#/$defs/Sha256" },
+        "output_hash": { "$ref": "#/$defs/Sha256" },
+        "outcome": { "enum": ["succeeded", "failed", "cancelled", "timed_out"] },
+        "side_effect": { "const": false }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "phase": { "const": "started" } }, "required": ["phase"] },
+          "then": {
+            "not": { "anyOf": [{ "required": ["output_hash"] }, { "required": ["outcome"] }] }
+          }
+        },
+        {
+          "if": { "properties": { "phase": { "const": "completed" } }, "required": ["phase"] },
+          "then": { "required": ["outcome"] }
+        },
+        {
+          "if": { "properties": { "outcome": { "const": "succeeded" } }, "required": ["outcome"] },
+          "then": { "required": ["output_hash"] }
+        }
+      ]
+    },
+    "HumanWorkPayload": {
+      "type": "object",
+      "title": "人工工作载荷 / Human-work payload",
+      "description": "人工升级请求、完成、过期与新运行恢复记录；human_work_id、task_id、run_id 和 contract_binding 位于事件信封。/ Human-escalation request, completion, expiry, and new-run resumption records; human_work_id, task_id, run_id, and contract_binding live in the event envelope.",
+      "additionalProperties": false,
+      "required": ["phase", "work_type", "authority_scope"],
+      "properties": {
+        "phase": { "enum": ["requested", "completed", "expired", "resumed"] },
+        "work_type": { "enum": ["review", "approval", "evidence_request", "policy_decision", "override"] },
+        "authority_scope": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1 },
+        "recipient": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["queue", "required_capability"],
+          "properties": {
+            "queue": { "$ref": "#/$defs/Identifier" },
+            "required_capability": { "$ref": "#/$defs/Identifier" }
+          }
+        },
+        "service_objective": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["service_level_id", "respond_by"],
+          "properties": {
+            "service_level_id": { "$ref": "#/$defs/Identifier" },
+            "respond_by": { "type": "string", "format": "date-time" }
+          }
+        },
+        "expires_at": { "type": "string", "format": "date-time" },
+        "resume_token_hash": { "$ref": "#/$defs/Sha256" },
+        "normalized_input_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "candidate_binding": { "$ref": "#/$defs/BindingState" },
+        "evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" } },
+        "unfinished_step_ids": { "type": "array", "items": { "$ref": "#/$defs/Identifier" }, "uniqueItems": true },
+        "allowed_decisions": {
+          "type": "array",
+          "items": { "enum": ["approved", "rejected", "changes_requested", "unable_to_decide"] },
+          "minItems": 2,
+          "uniqueItems": true
+        },
+        "decision": { "enum": ["approved", "rejected", "changes_requested", "unable_to_decide"] },
+        "decision_hash": { "$ref": "#/$defs/Sha256" },
+        "decided_at": { "type": "string", "format": "date-time" },
+        "decision_maker_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "authority_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "expired_at": { "type": "string", "format": "date-time" },
+        "expiration_reason_code": { "type": "string", "minLength": 1 },
+        "fallback_action": { "enum": ["fail_closed", "escalate", "reassign", "cancel"] },
+        "approval_event_id": { "$ref": "#/$defs/Identifier" },
+        "resumed_from_run_id": { "$ref": "#/$defs/Identifier" },
+        "resumed_at": { "type": "string", "format": "date-time" },
+        "refreshed_contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "refreshed_permission_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "refreshed_budget_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "refreshed_validator_bindings": { "type": "array", "items": { "$ref": "#/$defs/VersionedBinding" }, "minItems": 1 },
+        "refreshed_snapshot_versions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["goal", "constraints", "verified_facts"],
+          "properties": {
+            "goal": { "type": "integer", "minimum": 1 },
+            "constraints": { "type": "integer", "minimum": 1 },
+            "verified_facts": { "type": "integer", "minimum": 1 }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "phase": { "const": "requested" } }, "required": ["phase"] },
+          "then": {
+            "required": ["recipient", "service_objective", "expires_at", "resume_token_hash", "normalized_input_binding", "candidate_binding", "evidence_bindings", "unfinished_step_ids", "allowed_decisions"],
+            "not": {
+              "anyOf": [
+                { "required": ["decision"] },
+                { "required": ["decision_hash"] },
+                { "required": ["decided_at"] },
+                { "required": ["decision_maker_binding"] },
+                { "required": ["authority_binding"] },
+                { "required": ["expired_at"] },
+                { "required": ["expiration_reason_code"] },
+                { "required": ["fallback_action"] },
+                { "required": ["approval_event_id"] },
+                { "required": ["resumed_from_run_id"] },
+                { "required": ["resumed_at"] },
+                { "required": ["refreshed_contract_binding"] },
+                { "required": ["refreshed_permission_binding"] },
+                { "required": ["refreshed_budget_binding"] },
+                { "required": ["refreshed_validator_bindings"] },
+                { "required": ["refreshed_snapshot_versions"] }
+              ]
+            }
+          }
+        },
+        {
+          "if": { "properties": { "phase": { "const": "completed" } }, "required": ["phase"] },
+          "then": {
+            "required": ["decision", "decision_hash", "decided_at", "decision_maker_binding", "authority_binding"],
+            "not": {
+              "anyOf": [
+                { "required": ["recipient"] },
+                { "required": ["service_objective"] },
+                { "required": ["expires_at"] },
+                { "required": ["resume_token_hash"] },
+                { "required": ["normalized_input_binding"] },
+                { "required": ["candidate_binding"] },
+                { "required": ["evidence_bindings"] },
+                { "required": ["unfinished_step_ids"] },
+                { "required": ["allowed_decisions"] },
+                { "required": ["expired_at"] },
+                { "required": ["expiration_reason_code"] },
+                { "required": ["fallback_action"] },
+                { "required": ["approval_event_id"] },
+                { "required": ["resumed_from_run_id"] },
+                { "required": ["resumed_at"] },
+                { "required": ["refreshed_contract_binding"] },
+                { "required": ["refreshed_permission_binding"] },
+                { "required": ["refreshed_budget_binding"] },
+                { "required": ["refreshed_validator_bindings"] },
+                { "required": ["refreshed_snapshot_versions"] }
+              ]
+            }
+          }
+        },
+        {
+          "if": { "properties": { "phase": { "const": "expired" } }, "required": ["phase"] },
+          "then": {
+            "required": ["expired_at", "expiration_reason_code", "fallback_action"],
+            "not": {
+              "anyOf": [
+                { "required": ["recipient"] },
+                { "required": ["service_objective"] },
+                { "required": ["expires_at"] },
+                { "required": ["resume_token_hash"] },
+                { "required": ["normalized_input_binding"] },
+                { "required": ["candidate_binding"] },
+                { "required": ["evidence_bindings"] },
+                { "required": ["unfinished_step_ids"] },
+                { "required": ["allowed_decisions"] },
+                { "required": ["decision"] },
+                { "required": ["decision_hash"] },
+                { "required": ["decided_at"] },
+                { "required": ["decision_maker_binding"] },
+                { "required": ["authority_binding"] },
+                { "required": ["approval_event_id"] },
+                { "required": ["resumed_from_run_id"] },
+                { "required": ["resumed_at"] },
+                { "required": ["refreshed_contract_binding"] },
+                { "required": ["refreshed_permission_binding"] },
+                { "required": ["refreshed_budget_binding"] },
+                { "required": ["refreshed_validator_bindings"] },
+                { "required": ["refreshed_snapshot_versions"] }
+              ]
+            }
+          }
+        },
+        {
+          "if": { "properties": { "phase": { "const": "resumed" } }, "required": ["phase"] },
+          "then": {
+            "required": ["resume_token_hash", "normalized_input_binding", "candidate_binding", "approval_event_id", "resumed_from_run_id", "resumed_at", "refreshed_contract_binding", "refreshed_permission_binding", "refreshed_budget_binding", "refreshed_validator_bindings", "refreshed_snapshot_versions"],
+            "not": {
+              "anyOf": [
+                { "required": ["recipient"] },
+                { "required": ["service_objective"] },
+                { "required": ["expires_at"] },
+                { "required": ["evidence_bindings"] },
+                { "required": ["unfinished_step_ids"] },
+                { "required": ["allowed_decisions"] },
+                { "required": ["decision"] },
+                { "required": ["decision_hash"] },
+                { "required": ["decided_at"] },
+                { "required": ["decision_maker_binding"] },
+                { "required": ["authority_binding"] },
+                { "required": ["expired_at"] },
+                { "required": ["expiration_reason_code"] },
+                { "required": ["fallback_action"] }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "TerminalPayload": {
+      "type": "object",
+      "title": "终态载荷 / Terminal payload",
+      "description": "工作流终态、原因码以及可选结果绑定。/ Workflow terminal state, reason code, and optional result binding.",
+      "additionalProperties": false,
+      "required": ["terminal_state", "reason_code"],
+      "properties": {
+        "terminal_state": { "enum": ["completed", "escalated", "rejected", "failed", "cancelled", "timed_out"] },
+        "reason_code": { "type": "string", "minLength": 1 },
+        "result_binding": { "$ref": "#/$defs/VersionedBinding" }
+      }
+    },
+    "TaskPayload": {
+      "type": "object",
+      "title": "任务事件载荷 / Task event payload",
+      "description": "绑定任务和其接收或规范化阶段。/ Binds a task and its received or normalized stage.",
+      "additionalProperties": false,
+      "required": ["stage", "task_binding"],
+      "properties": {
+        "stage": { "enum": ["received", "normalized"] },
+        "task_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "normalized_input_binding": { "$ref": "#/$defs/VersionedBinding" }
+      }
+    },
+    "ContractEstablishedPayload": {
+      "type": "object",
+      "title": "契约建立载荷 / Contract-established payload",
+      "description": "绑定已建立的执行契约及其输入。/ Binds the established execution contract and its input.",
+      "additionalProperties": false,
+      "required": ["contract_binding", "normalized_input_binding"],
+      "properties": {
+        "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "normalized_input_binding": { "$ref": "#/$defs/VersionedBinding" }
+      }
+    },
+    "CandidatePayload": {
+      "type": "object",
+      "title": "候选结果载荷 / Candidate payload",
+      "description": "绑定新候选、契约、证据集合聚合哈希和生成该候选的逐项证据。/ Binds a new candidate, its contract, the aggregate evidence-set hash, and the individual evidence used to produce it.",
+      "additionalProperties": false,
+      "required": ["candidate_binding", "contract_binding", "evidence_bindings"],
+      "dependentRequired": {
+        "plan_binding": ["final_claim_ids"],
+        "final_claim_ids": ["plan_binding"]
+      },
+      "properties": {
+        "candidate_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "plan_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "final_claim_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "evidence_set_hash": { "$ref": "#/$defs/Sha256" },
+        "evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" } },
+        "evidence_record_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "description": "候选所使用完整证据记录的版本与记录哈希绑定。/ Version and record-hash bindings of the complete evidence records used by the candidate."
+        }
+      }
+    },
+    "CandidateComparedPayload": {
+      "type": "object",
+      "title": "候选比较载荷 / Candidate-comparison payload",
+      "description": "记录被比较候选、选择规则和可选胜出候选。/ Records compared candidates, selection rule, and optional selected candidate.",
+      "additionalProperties": false,
+      "required": ["candidate_bindings", "comparison_rule_binding", "decision"],
+      "properties": {
+        "candidate_bindings": { "type": "array", "items": { "$ref": "#/$defs/VersionedBinding" }, "minItems": 2 },
+        "comparison_rule_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "decision": { "enum": ["selected", "tie", "incomparable", "more_evidence_required"] },
+        "selected_candidate_binding": { "$ref": "#/$defs/VersionedBinding" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "decision": { "const": "selected" } }, "required": ["decision"] },
+          "then": { "required": ["selected_candidate_binding"] },
+          "else": { "not": { "required": ["selected_candidate_binding"] } }
+        }
+      ]
+    },
+    "IterationClosedPayload": {
+      "type": "object",
+      "title": "迭代关闭载荷 / Iteration-closed payload",
+      "description": "记录迭代编号、候选绑定和可度量信息增益。/ Records iteration number, candidate binding, and measurable information gain.",
+      "additionalProperties": false,
+      "required": ["iteration_number", "candidate_binding", "information_gain", "decision"],
+      "properties": {
+        "iteration_number": { "type": "integer", "minimum": 1 },
+        "candidate_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "information_gain": { "$ref": "#/$defs/ObservedNumber" },
+        "decision": { "enum": ["continue", "candidate_ready", "stop_no_progress", "stop_budget", "escalate"] }
+      }
+    },
+    "ValidationStartedPayload": {
+      "type": "object",
+      "title": "验证启动载荷 / Validation-started payload",
+      "description": "在执行验证前绑定验证器、候选、证据和契约。/ Binds validator, candidate, evidence, and contract before validation executes.",
+      "additionalProperties": false,
+      "required": ["validation_id", "validator_binding", "candidate_binding", "contract_binding", "evidence_bindings"],
+      "properties": {
+        "validation_id": { "$ref": "#/$defs/Identifier" },
+        "validator_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "candidate_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" } }
+      }
+    },
+    "BudgetExhaustedPayload": {
+      "type": "object",
+      "title": "预算耗尽载荷 / Budget-exhausted payload",
+      "description": "记录耗尽维度、限制、消耗和契约规定动作。/ Records exhausted dimension, limit, consumption, and contract-prescribed action.",
+      "additionalProperties": false,
+      "required": ["dimension", "limit", "consumed", "on_exhaustion"],
+      "properties": {
+        "dimension": { "enum": ["reasoning_tokens", "latency_ms", "model_calls", "tool_calls", "parallel_paths", "iterations", "retries", "total_cost_units"] },
+        "limit": { "$ref": "#/$defs/PositiveLimitValue" },
+        "consumed": { "$ref": "#/$defs/ObservedNumber" },
+        "overage": { "$ref": "#/$defs/ObservedNumber" },
+        "on_exhaustion": { "enum": ["stop", "escalate", "reject", "degrade"] },
+        "branch_id": { "$ref": "#/$defs/Identifier" }
+      }
+    },
+    "BudgetRuntimeExhaustedPayload": {
+      "type": "object",
+      "title": "原子预算拒绝载荷 / Atomic budget-rejection payload",
+      "description": "当一次原子多维操作被拒绝时，记录尝试向量、拒绝前快照和契约动作。/ Records the attempted vector, pre-rejection snapshot, and contractual action when an atomic multi-dimensional operation is rejected.",
+      "additionalProperties": false,
+      "required": ["reason_code", "attempted_delta", "budget_snapshot", "on_exhaustion"],
+      "properties": {
+        "reason_code": { "type": "string", "minLength": 1 },
+        "attempted_delta": { "$ref": "#/$defs/SafeExternalValue" },
+        "budget_snapshot": { "$ref": "#/$defs/SafeExternalValue" },
+        "on_exhaustion": { "enum": ["stop", "escalate", "reject", "degrade"] }
+      }
+    },
+    "NoProgressPayload": {
+      "type": "object",
+      "title": "无进展限制载荷 / No-progress-limit payload",
+      "description": "记录连续无进展步数、阈值和观测信息增益。/ Records consecutive no-progress steps, threshold, and observed information gain.",
+      "additionalProperties": false,
+      "required": ["consecutive_steps", "configured_limit", "minimum_information_gain", "observed_information_gain", "on_trigger"],
+      "properties": {
+        "consecutive_steps": { "type": "integer", "minimum": 1 },
+        "configured_limit": { "type": "integer", "minimum": 1 },
+        "minimum_information_gain": { "type": "number", "minimum": 0, "maximum": 1 },
+        "observed_information_gain": { "$ref": "#/$defs/ObservedNumber" },
+        "on_trigger": { "enum": ["stop", "escalate", "switch_mode", "request_evidence"] }
+      }
+    },
+    "OutcomePayload": {
+      "type": "object",
+      "title": "结果回接载荷 / Outcome payload",
+      "description": "记录推理结果与独立结果来源的绑定。/ Binds a reasoning result to an independently sourced outcome.",
+      "additionalProperties": false,
+      "required": ["result_binding", "outcome_state", "source_binding"],
+      "properties": {
+        "result_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "outcome_state": { "enum": ["correct", "incorrect", "partially_correct", "adopted", "rejected", "unknown"] },
+        "source_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "observed_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "GovernancePayload": {
+      "type": "object",
+      "title": "治理决策载荷 / Governance-decision payload",
+      "description": "记录风险、决策和版本化治理策略。/ Records risk, decision, and versioned governance policy.",
+      "additionalProperties": false,
+      "required": ["risk_level", "decision", "policy_binding", "reason_code"],
+      "properties": {
+        "risk_level": { "enum": ["low", "medium", "high", "critical"] },
+        "decision": { "enum": ["allow", "allow_with_conditions", "block", "human_review"] },
+        "policy_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "reason_code": { "type": "string", "minLength": 1 }
+      }
+    },
+    "ProtectedTransition": {
+      "type": "object",
+      "title": "受保护转换 / Protected transition",
+      "description": "反馈规则所保护的确定状态转换和负责人。/ Deterministic state transition and owner protected by a feedback rule.",
+      "additionalProperties": false,
+      "required": ["transition_id", "from_state", "to_state", "owner_binding"],
+      "properties": {
+        "transition_id": { "$ref": "#/$defs/NullableIdentifier" },
+        "from_state": { "$ref": "#/$defs/WorkflowState" },
+        "to_state": { "$ref": "#/$defs/WorkflowState" },
+        "owner_binding": { "$ref": "#/$defs/VersionedBinding" }
+      }
+    },
+    "FeedbackExemption": {
+      "type": "object",
+      "title": "反馈豁免 / Feedback exemption",
+      "description": "绑定批准人、授权、范围、期限、补偿控制以及使豁免失效的输入、契约、候选和规则版本。/ Binds approver, authority, scope, expiry, compensating controls, and the input, contract, candidate, and rule versions whose change invalidates the exemption.",
+      "additionalProperties": false,
+      "required": ["exemption_id", "approver_binding", "authority_binding", "scope", "approved_at", "expires_at", "compensating_controls", "normalized_input_binding", "contract_binding", "candidate_binding", "rule_binding"],
+      "properties": {
+        "exemption_id": { "$ref": "#/$defs/Identifier" },
+        "approver_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "authority_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "scope": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1, "uniqueItems": true },
+        "approved_at": { "type": "string", "format": "date-time" },
+        "expires_at": { "type": "string", "format": "date-time" },
+        "compensating_controls": { "type": "array", "items": { "$ref": "#/$defs/VersionedBinding" }, "minItems": 1 },
+        "normalized_input_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "candidate_binding": { "$ref": "#/$defs/BindingState" },
+        "rule_binding": { "$ref": "#/$defs/VersionedBinding" }
+      }
+    },
+    "FeedbackPayload": {
+      "type": "object",
+      "title": "探针反馈载荷 / Probe-feedback payload",
+      "description": "统一记录反馈提出、确认、解决和豁免；事件信封 idempotency_key 必须由 feedback_id 与 revision 稳定派生。/ Uniformly records feedback raised, acknowledged, resolved, and exempted; the envelope idempotency_key must be stably derived from feedback_id and revision.",
+      "additionalProperties": false,
+      "required": ["phase", "feedback_id", "revision", "probe_binding", "severity", "feedback_type", "finding_code", "related_event_id", "rule_binding", "protected_transition", "blocking", "validity", "lifecycle_status"],
+      "properties": {
+        "phase": { "enum": ["raised", "acknowledged", "resolved", "exempted"] },
+        "feedback_id": { "$ref": "#/$defs/Identifier" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "probe_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "severity": { "enum": ["info", "warning", "critical"] },
+        "feedback_type": { "enum": ["data_gap", "route_risk", "budget_risk", "drift", "evidence_gap", "validation_gap", "no_progress", "governance_block"] },
+        "finding_code": { "type": "string", "minLength": 1 },
+        "related_event_id": { "$ref": "#/$defs/NullableIdentifier" },
+        "rule_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "protected_transition": { "$ref": "#/$defs/ProtectedTransition" },
+        "blocking": { "type": "boolean" },
+        "validity": { "enum": ["current_step", "current_run", "persistent_config"] },
+        "lifecycle_status": { "enum": ["open", "accepted", "ignored", "alternative_applied", "resolved", "exempted"] },
+        "finding": { "type": "string", "minLength": 1 },
+        "evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" }, "minItems": 1 },
+        "suggested_actions": { "type": "array", "items": { "enum": ["complete_data", "continue", "switch", "stop", "escalate", "block"] }, "minItems": 1, "uniqueItems": true },
+        "raised_at": { "type": "string", "format": "date-time" },
+        "response": { "enum": ["accept", "ignore", "alternative_action"] },
+        "response_code": { "type": "string", "minLength": 1 },
+        "responded_at": { "type": "string", "format": "date-time" },
+        "actor_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "resolution_code": { "type": "string", "minLength": 1 },
+        "resolved_at": { "type": "string", "format": "date-time" },
+        "resolution_evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" }, "minItems": 1 },
+        "resolution_authority_binding": {
+          "$ref": "#/$defs/VersionedBinding",
+          "description": "授权该阻断反馈解除的当前权限授予。/ Current authority grant authorizing removal of the blocking feedback."
+        },
+        "exempted_at": { "type": "string", "format": "date-time" },
+        "exemption": { "$ref": "#/$defs/FeedbackExemption" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "phase": { "const": "raised" } }, "required": ["phase"] },
+          "then": {
+            "required": ["finding", "evidence_bindings", "suggested_actions", "raised_at"],
+            "properties": { "lifecycle_status": { "const": "open" } },
+            "not": {
+              "anyOf": [
+                { "required": ["response"] },
+                { "required": ["response_code"] },
+                { "required": ["responded_at"] },
+                { "required": ["actor_binding"] },
+                { "required": ["resolution_code"] },
+                { "required": ["resolved_at"] },
+                { "required": ["resolution_evidence_bindings"] },
+                { "required": ["resolution_authority_binding"] },
+                { "required": ["exempted_at"] },
+                { "required": ["exemption"] }
+              ]
+            }
+          }
+        },
+        {
+          "if": { "properties": { "phase": { "const": "acknowledged" } }, "required": ["phase"] },
+          "then": {
+            "required": ["response", "response_code", "responded_at", "actor_binding"],
+            "properties": { "lifecycle_status": { "enum": ["accepted", "ignored", "alternative_applied"] } },
+            "not": {
+              "anyOf": [
+                { "required": ["finding"] },
+                { "required": ["evidence_bindings"] },
+                { "required": ["suggested_actions"] },
+                { "required": ["raised_at"] },
+                { "required": ["resolution_code"] },
+                { "required": ["resolved_at"] },
+                { "required": ["resolution_evidence_bindings"] },
+                { "required": ["resolution_authority_binding"] },
+                { "required": ["exempted_at"] },
+                { "required": ["exemption"] }
+              ]
+            }
+          }
+        },
+        {
+          "if": { "properties": { "phase": { "const": "resolved" } }, "required": ["phase"] },
+          "then": {
+            "required": ["resolution_code", "resolved_at", "actor_binding", "resolution_evidence_bindings", "resolution_authority_binding"],
+            "properties": { "lifecycle_status": { "const": "resolved" } },
+            "not": {
+              "anyOf": [
+                { "required": ["finding"] },
+                { "required": ["evidence_bindings"] },
+                { "required": ["suggested_actions"] },
+                { "required": ["raised_at"] },
+                { "required": ["response"] },
+                { "required": ["response_code"] },
+                { "required": ["responded_at"] },
+                { "required": ["exempted_at"] },
+                { "required": ["exemption"] }
+              ]
+            }
+          }
+        },
+        {
+          "if": { "properties": { "phase": { "const": "exempted" } }, "required": ["phase"] },
+          "then": {
+            "required": ["exempted_at", "exemption"],
+            "properties": { "lifecycle_status": { "const": "exempted" }, "blocking": { "const": true } },
+            "not": {
+              "anyOf": [
+                { "required": ["finding"] },
+                { "required": ["evidence_bindings"] },
+                { "required": ["suggested_actions"] },
+                { "required": ["raised_at"] },
+                { "required": ["response"] },
+                { "required": ["response_code"] },
+                { "required": ["responded_at"] },
+                { "required": ["actor_binding"] },
+                { "required": ["resolution_code"] },
+                { "required": ["resolved_at"] },
+                { "required": ["resolution_evidence_bindings"] },
+                { "required": ["resolution_authority_binding"] }
+              ]
+            }
+          }
+        },
+        {
+          "if": { "properties": { "severity": { "const": "info" } }, "required": ["severity"] },
+          "then": { "properties": { "blocking": { "const": false } } }
+        },
+        {
+          "if": { "properties": { "blocking": { "const": true } }, "required": ["blocking"] },
+          "then": { "properties": { "severity": { "const": "critical" } } }
+        },
+        {
+          "if": { "properties": { "response": { "const": "accept" } }, "required": ["response"] },
+          "then": { "properties": { "lifecycle_status": { "const": "accepted" } } }
+        },
+        {
+          "if": { "properties": { "response": { "const": "ignore" } }, "required": ["response"] },
+          "then": { "properties": { "lifecycle_status": { "const": "ignored" } } }
+        },
+        {
+          "if": { "properties": { "response": { "const": "alternative_action" } }, "required": ["response"] },
+          "then": { "properties": { "lifecycle_status": { "const": "alternative_applied" } } }
+        }
+      ]
+    },
+    "ProbeHealthPayload": {
+      "type": "object",
+      "title": "探针健康载荷 / Probe-health payload",
+      "description": "记录可重建事件丢失、重复、乱序、解析、计算和告警送达的探针健康窗口；计数恒等式由消费方校验。/ Records a probe-health window that reconstructs event loss, duplication, disorder, parsing, calculation, and alert delivery; consumers validate count identities.",
+      "additionalProperties": false,
+      "required": ["probe_binding", "health", "window", "reconstruction_status", "unreconstructable_reasons", "received_events", "expected_events", "missing_events", "duplicate_events", "out_of_order_events", "parse_failures", "calculation_failures", "alerts_due", "alerts_delivered", "alert_delivery_failures", "event_loss_rate", "policy_action"],
+      "properties": {
+        "probe_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "health": { "enum": ["healthy", "degraded", "failed", "unknown"] },
+        "window": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["started_at", "ended_at"],
+          "properties": {
+            "started_at": { "type": "string", "format": "date-time" },
+            "ended_at": { "type": "string", "format": "date-time" }
+          }
+        },
+        "reconstruction_status": { "enum": ["complete", "partial", "unavailable"] },
+        "unreconstructable_reasons": {
+          "type": "array",
+          "items": { "enum": ["event_manifest_missing", "duplicate_state_missing", "ordering_state_missing", "parse_state_missing", "calculation_state_missing", "alert_delivery_state_missing"] },
+          "uniqueItems": true
+        },
+        "received_events": { "$ref": "#/$defs/ObservedCount" },
+        "expected_events": { "$ref": "#/$defs/ObservedCount" },
+        "missing_events": { "$ref": "#/$defs/ObservedCount" },
+        "duplicate_events": { "$ref": "#/$defs/ObservedCount" },
+        "out_of_order_events": { "$ref": "#/$defs/ObservedCount" },
+        "parse_failures": { "$ref": "#/$defs/ObservedCount" },
+        "calculation_failures": { "$ref": "#/$defs/ObservedCount" },
+        "alerts_due": { "$ref": "#/$defs/ObservedCount" },
+        "alerts_delivered": { "$ref": "#/$defs/ObservedCount" },
+        "alert_delivery_failures": { "$ref": "#/$defs/ObservedCount" },
+        "event_loss_rate": { "$ref": "#/$defs/ObservedRate" },
+        "policy_action": { "enum": ["continue", "degrade_and_alert", "fail_closed"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "reconstruction_status": { "const": "complete" } }, "required": ["reconstruction_status"] },
+          "then": {
+            "properties": {
+              "unreconstructable_reasons": { "maxItems": 0 },
+              "received_events": { "$ref": "#/$defs/KnownCount" },
+              "expected_events": { "$ref": "#/$defs/KnownCount" },
+              "missing_events": { "$ref": "#/$defs/KnownCount" },
+              "duplicate_events": { "$ref": "#/$defs/KnownCount" },
+              "out_of_order_events": { "$ref": "#/$defs/KnownCount" },
+              "parse_failures": { "$ref": "#/$defs/KnownCount" },
+              "calculation_failures": { "$ref": "#/$defs/KnownCount" },
+              "alerts_due": { "$ref": "#/$defs/KnownCount" },
+              "alerts_delivered": { "$ref": "#/$defs/KnownCount" },
+              "alert_delivery_failures": { "$ref": "#/$defs/KnownCount" },
+              "event_loss_rate": { "$ref": "#/$defs/KnownRate" }
+            }
+          },
+          "else": { "properties": { "unreconstructable_reasons": { "minItems": 1 } } }
+        },
+        {
+          "if": { "properties": { "health": { "const": "healthy" } }, "required": ["health"] },
+          "then": { "properties": { "reconstruction_status": { "const": "complete" } } }
+        }
+      ]
+    }
+  }
+}

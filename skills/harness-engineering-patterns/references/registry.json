@@ -797,6 +797,89 @@
       "aliases_en": [],
       "aliases_zh": [],
       "status": "active"
+    },
+    {
+      "id": "PATTERN_0051",
+      "name_en": "Reasoning Execution Flow",
+      "name_zh": "推理执行流程",
+      "source_kind": "local_seed",
+      "aliases_en": [
+        "Reasoning Execution Protocol"
+      ],
+      "aliases_zh": [
+        "推理执行协议"
+      ],
+      "status": "draft",
+      "reference": "references/reasoning-execution-flow.md",
+      "source_version": "0.2.0",
+      "source_draft_id": "PATTERN_0001",
+      "cognition_refs": [
+        "COG_PERCEPTION",
+        "COG_MEMORY",
+        "COG_REASONING",
+        "COG_ACTION",
+        "COG_REFLECTION",
+        "COG_GOVERNANCE"
+      ],
+      "topology_refs": [
+        "TOP_ROUTING",
+        "TOP_CHAIN",
+        "TOP_PARALLEL",
+        "TOP_ORCHESTRATION",
+        "TOP_LOOP",
+        "TOP_HIERARCHY"
+      ],
+      "matrix_coordinates": [
+        "COG_REASONING__TOP_ROUTING",
+        "COG_REASONING__TOP_CHAIN",
+        "COG_REASONING__TOP_PARALLEL",
+        "COG_REASONING__TOP_ORCHESTRATION",
+        "COG_REASONING__TOP_LOOP",
+        "COG_GOVERNANCE__TOP_HIERARCHY"
+      ],
+      "related_pattern_refs": [
+        "PATTERN_0052"
+      ]
+    },
+    {
+      "id": "PATTERN_0052",
+      "name_en": "Workflow Observability Probes",
+      "name_zh": "工作流可观测性探针",
+      "source_kind": "local_seed",
+      "aliases_en": [
+        "Workflow Observability Probe Suite"
+      ],
+      "aliases_zh": [
+        "工作流可观测性探针套件"
+      ],
+      "status": "draft",
+      "reference": "references/workflow-observability-probes.md",
+      "source_version": "0.2.0",
+      "source_draft_id": "PATTERN_0002",
+      "cognition_refs": [
+        "COG_PERCEPTION",
+        "COG_MEMORY",
+        "COG_REFLECTION",
+        "COG_GOVERNANCE",
+        "COG_REASONING"
+      ],
+      "topology_refs": [
+        "TOP_CHAIN",
+        "TOP_ORCHESTRATION",
+        "TOP_LOOP",
+        "TOP_PARALLEL",
+        "TOP_HIERARCHY"
+      ],
+      "matrix_coordinates": [
+        "COG_PERCEPTION__TOP_ORCHESTRATION",
+        "COG_MEMORY__TOP_CHAIN",
+        "COG_REFLECTION__TOP_LOOP",
+        "COG_GOVERNANCE__TOP_ORCHESTRATION",
+        "COG_GOVERNANCE__TOP_HIERARCHY"
+      ],
+      "related_pattern_refs": [
+        "PATTERN_0051"
+      ]
     }
   ],
   "cells": [

@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hanerss.local/schemas/reasoning-chain-blueprint.schema.json",
+  "x-contract-version": "1.0.0",
+  "title": "Reasoning Chain Blueprint / 推理链蓝图",
+  "description": "Author-owned, versioned input compiled by the reasoning-chain factory into a strict externally verifiable chain plan. / 由负责人维护并版本化的输入，经推理链工厂编译为严格的外部可核验链计划。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "blueprint_id",
+    "blueprint_version",
+    "name_en",
+    "name_zh",
+    "description_en",
+    "description_zh",
+    "max_steps",
+    "requires_outcome",
+    "steps",
+    "final_claim_ids"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "blueprint_id": { "$ref": "#/$defs/Identifier" },
+    "blueprint_version": { "$ref": "#/$defs/SemanticVersion" },
+    "name_en": { "type": "string", "minLength": 1 },
+    "name_zh": { "type": "string", "minLength": 1 },
+    "description_en": { "type": "string", "minLength": 1 },
+    "description_zh": { "type": "string", "minLength": 1 },
+    "max_steps": { "type": "integer", "minimum": 1, "maximum": 64 },
+    "requires_outcome": { "type": "boolean" },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": { "$ref": "#/$defs/BlueprintStep" }
+    },
+    "final_claim_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/Identifier" }
+    }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "Binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "BudgetAllocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reasoning_tokens",
+        "latency_ms",
+        "model_calls",
+        "tool_calls",
+        "parallel_paths",
+        "iterations",
+        "retries",
+        "total_cost_units"
+      ],
+      "properties": {
+        "reasoning_tokens": { "type": "integer", "minimum": 0 },
+        "latency_ms": { "type": "integer", "minimum": 0 },
+        "model_calls": { "type": "integer", "minimum": 0 },
+        "tool_calls": { "type": "integer", "minimum": 0 },
+        "parallel_paths": { "type": "integer", "minimum": 0 },
+        "iterations": { "type": "integer", "minimum": 0 },
+        "retries": { "type": "integer", "minimum": 0 },
+        "total_cost_units": { "type": "number", "minimum": 0 }
+      }
+    },
+    "Action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "instruction", "uses_tool", "side_effect"],
+      "properties": {
+        "kind": {
+          "enum": ["inspect", "query", "calculate", "compare", "validate", "synthesize"]
+        },
+        "instruction": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "uses_tool": { "type": "boolean" },
+        "tool_binding": { "$ref": "#/$defs/Binding" },
+        "authorization_policy_binding": { "$ref": "#/$defs/Binding" },
+        "side_effect": { "const": false }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "uses_tool": { "const": true } },
+            "required": ["uses_tool"]
+          },
+          "then": { "required": ["tool_binding", "authorization_policy_binding"] },
+          "else": {
+            "not": {
+              "anyOf": [
+                { "required": ["tool_binding"] },
+                { "required": ["authorization_policy_binding"] }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "Checkpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checkpoint_id",
+        "checkpoint_version",
+        "validator_type",
+        "pass_criteria",
+        "on_failure"
+      ],
+      "properties": {
+        "checkpoint_id": { "$ref": "#/$defs/Identifier" },
+        "checkpoint_version": { "$ref": "#/$defs/SemanticVersion" },
+        "validator_type": {
+          "enum": ["deterministic", "rule", "schema", "test", "external", "human"]
+        },
+        "pass_criteria": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": true
+        },
+        "on_failure": {
+          "enum": ["switch_parallel", "switch_iterative", "escalate", "terminate"]
+        }
+      }
+    },
+    "BlueprintStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_key",
+        "name_en",
+        "name_zh",
+        "sequence_number",
+        "depends_on",
+        "input_claim_ids",
+        "output_claim_id",
+        "criticality",
+        "claim_to_verify",
+        "action",
+        "required_evidence_types",
+        "checkpoint",
+        "data_gap_policy",
+        "budget_allocation"
+      ],
+      "properties": {
+        "step_key": { "$ref": "#/$defs/Identifier" },
+        "name_en": { "type": "string", "minLength": 1 },
+        "name_zh": { "type": "string", "minLength": 1 },
+        "sequence_number": { "type": "integer", "minimum": 1 },
+        "depends_on": {
+          "type": "array",
+          "maxItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/Identifier" }
+        },
+        "input_claim_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/Identifier" }
+        },
+        "output_claim_id": { "$ref": "#/$defs/Identifier" },
+        "criticality": { "enum": ["supporting", "critical"] },
+        "claim_to_verify": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "action": { "$ref": "#/$defs/Action" },
+        "required_evidence_types": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/Identifier" }
+        },
+        "checkpoint": { "$ref": "#/$defs/Checkpoint" },
+        "data_gap_policy": {
+          "enum": ["wait", "request_probe", "switch_source", "escalate", "terminate"]
+        },
+        "budget_allocation": { "$ref": "#/$defs/BudgetAllocation" }
+      }
+    }
+  }
+}
