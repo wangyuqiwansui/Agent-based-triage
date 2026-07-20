@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hanerss.local/schemas/workflow-route-revision.schema.json",
+  "x-contract-version": "1.0.0",
+  "title": "Workflow Route Revision Event / 工作流路由修订事件",
+  "description": "Append-only parent workflow event that binds route revisions to evidence, authority, budget, unfinished work, and an optional reasoning mode-switch event. / 追加式父工作流事件，将路由修订绑定到证据、权限、预算、未完成工作及可选推理换路事件。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "revision_event_id",
+    "revision_event_hash",
+    "idempotency_key",
+    "workflow_id",
+    "task_id",
+    "run_id",
+    "scene_id",
+    "task_atom_id",
+    "from_decision_id",
+    "to_decision_id",
+    "from_revision",
+    "to_revision",
+    "previous_envelope_binding",
+    "current_envelope_binding",
+    "trigger_class",
+    "direction",
+    "trigger_reason_code",
+    "trigger_evidence_bindings",
+    "hysteresis_evidence_bindings",
+    "actor_binding",
+    "authority_binding",
+    "budget_impact",
+    "unfinished_step_ids",
+    "from_route",
+    "to_route",
+    "switch_event_binding",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "revision_event_id": { "$ref": "#/$defs/Identifier" },
+    "revision_event_hash": { "$ref": "#/$defs/Sha256" },
+    "idempotency_key": { "$ref": "#/$defs/Identifier" },
+    "workflow_id": { "$ref": "#/$defs/Identifier" },
+    "task_id": { "$ref": "#/$defs/Identifier" },
+    "run_id": { "$ref": "#/$defs/Identifier" },
+    "scene_id": { "$ref": "#/$defs/Identifier" },
+    "task_atom_id": { "$ref": "#/$defs/Identifier" },
+    "from_decision_id": { "$ref": "#/$defs/Identifier" },
+    "to_decision_id": { "$ref": "#/$defs/Identifier" },
+    "from_revision": { "type": "integer", "minimum": 1 },
+    "to_revision": { "type": "integer", "minimum": 2 },
+    "previous_envelope_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "current_envelope_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "trigger_class": {
+      "enum": [
+        "route_insufficiency",
+        "external_state_change",
+        "policy_revision",
+        "authorized_human_request",
+        "validator_failure",
+        "budget_pressure",
+        "tool_availability_change"
+      ]
+    },
+    "direction": { "enum": ["upgrade", "deescalation", "lateral", "gate_only"] },
+    "trigger_reason_code": { "$ref": "#/$defs/Identifier" },
+    "trigger_evidence_bindings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/VersionedBinding" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "hysteresis_evidence_bindings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/VersionedBinding" },
+      "uniqueItems": true
+    },
+    "actor_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "authority_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "budget_impact": { "$ref": "#/$defs/BudgetImpact" },
+    "unfinished_step_ids": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Identifier" },
+      "uniqueItems": true
+    },
+    "from_route": { "$ref": "#/$defs/RouteState" },
+    "to_route": { "$ref": "#/$defs/RouteState" },
+    "switch_event_binding": { "$ref": "#/$defs/BindingState" },
+    "created_at": { "type": "string", "format": "date-time" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "direction": { "const": "deescalation" } },
+        "required": ["direction"]
+      },
+      "then": {
+        "properties": {
+          "hysteresis_evidence_bindings": { "minItems": 1 },
+          "trigger_class": {
+            "enum": [
+              "external_state_change",
+              "policy_revision",
+              "authorized_human_request",
+              "tool_availability_change"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "BindingState": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed" },
+            "value": { "$ref": "#/$defs/VersionedBinding" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": {
+            "state": { "enum": ["missing", "unknown", "not_applicable"] }
+          }
+        }
+      ]
+    },
+    "ReasoningConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["execution_mode", "reasoning_depth", "primary_topology", "supporting_topologies"],
+      "properties": {
+        "execution_mode": { "enum": ["direct", "chain", "parallel", "iterative"] },
+        "reasoning_depth": { "enum": ["direct", "deliberative"] },
+        "primary_topology": {
+          "oneOf": [
+            { "enum": ["chain", "parallel", "loop"] },
+            { "type": "null" }
+          ]
+        },
+        "supporting_topologies": {
+          "type": "array",
+          "items": { "enum": ["orchestration", "hierarchy"] },
+          "uniqueItems": true
+        }
+      }
+    },
+    "RouteState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workflow_signal_fingerprint", "reasoning_signal_fingerprint", "execution_lane", "action_allowed", "reasoning_disposition", "configuration"],
+      "properties": {
+        "workflow_signal_fingerprint": { "$ref": "#/$defs/Sha256" },
+        "reasoning_signal_fingerprint": { "$ref": "#/$defs/Sha256" },
+        "execution_lane": {
+          "enum": ["direct_answer", "read_only_analysis", "structured_judgment", "planned_execution", "clarification_human_review"]
+        },
+        "action_allowed": { "type": "boolean" },
+        "reasoning_disposition": { "enum": ["execute", "reject", "escalate"] },
+        "configuration": {
+          "oneOf": [
+            { "$ref": "#/$defs/ReasoningConfiguration" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "BudgetImpact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reasoning_tokens", "latency_ms", "model_calls", "tool_calls", "parallel_paths", "iterations", "retries", "total_cost_units"],
+      "properties": {
+        "reasoning_tokens": { "type": "integer", "minimum": 0 },
+        "latency_ms": { "type": "integer", "minimum": 0 },
+        "model_calls": { "type": "integer", "minimum": 0 },
+        "tool_calls": { "type": "integer", "minimum": 0 },
+        "parallel_paths": { "type": "integer", "minimum": 0 },
+        "iterations": { "type": "integer", "minimum": 0 },
+        "retries": { "type": "integer", "minimum": 0 },
+        "total_cost_units": { "type": "number", "minimum": 0 }
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 Pattern ID / 模式 ID: `PATTERN_0052`
 
-Version / 版本: `0.2.0`
+Version / 版本: `0.4.0`
 
 Status / 状态: Draft / 草案
 Related pattern / 关联模式: `PATTERN_0051` Reasoning Execution Flow / 推理执行流程
@@ -55,6 +55,8 @@ Parallel and iterative probes observe their matching runtime topology, but the s
 ## Deployment And Probe Contract / 部署与探针契约
 
 ### Deployment modes / 部署模式
+
+When route history uses [`workflow_route_sqlite_ledger.py`](../runtime/workflow_route_sqlite_ledger.py), treat its stream identity, immutable switch cap, Schema version, WAL mode, commit/replay failures, migration results, `quick_check`, foreign-key violations, and record backlog as `PROBE_0001`, `PROBE_0003`, `PROBE_0014`, and `PROBE_0015` inputs. A healthy SQLite file proves storage mechanics only; it does not prove route correctness, action authorization, distributed failover, backup recovery, or trustworthy outcome linkage. / 路由历史使用 SQLite 路由账本时，将流身份、不可变换路上限、Schema 版本、WAL 模式、提交/重放失败、迁移结果、`quick_check`、外键违规和记录积压作为任务身份、路由决策、隐私治理与探针自健康探针的输入。SQLite 文件健康只证明存储机制，不证明路由正确、行动授权、分布式故障切换、备份恢复或可信后验关联。
 
 | Mode / 模式 | Behavior / 行为 | Use / 用途 |
 | --- | --- | --- |
@@ -272,7 +274,7 @@ The reference runtime implements this boundary with `MetricEnvelope`, `metric_pu
 
 The 39 registered formulas are the implemented MVP core, not the complete long-term metric catalog. The authoritative `coverage` declaration in `metric_registry.json` separates `implemented`, `planned`, and `gate_eligible` identifiers. Implemented metrics that are not `gate_eligible` remain publication-grade diagnostics only; planned metrics may be used as design candidates only. Neither class may drive an alert, block, release, or protected transition until promoted to `gate_eligible` with source-backed threshold evidence. / 已注册的 39 项公式是已实现的 MVP 核心，而不是长期指标目录的全集。`metric_registry.json` 中权威的 `coverage` 声明将指标区分为 `implemented`、`planned` 与 `gate_eligible`。已实现但不在 `gate_eligible` 中的指标仍只可作为可发布诊断；规划中指标只能作为设计候选。两者在基于数据来源与阈值证据晋升为 `gate_eligible` 前，均不得驱动告警、阻断、放行或受保护转换。
 
-The planned set retains important follow-up work such as outcome linkage coverage, candidate completion, validation disagreement and rework, result correctness, route over/under classification, end-to-end latency, stop and escalation quality, governance blocking, probe availability, and observation latency. / 规划集合保留结果关联覆盖、候选完成、验证器分歧与返工、结果正确性、过路由/欠路由分类、端到端时延、停止与升级质量、治理阻断、探针可用率和观测延迟等重要后续能力。
+The planned set retains important follow-up work such as candidate completion, validation disagreement and rework, result correctness, end-to-end latency, stop and escalation quality, governance blocking, probe availability, and observation latency. / 规划集合保留候选完成、验证器分歧与返工、结果正确性、端到端时延、停止与升级质量、治理阻断、探针可用率和观测延迟等重要后续能力。
 
 ### Core formulas / 核心公式
 
@@ -280,6 +282,12 @@ The planned set retains important follow-up work such as outcome linkage coverag
 validation_pass_rate = runs_passing_all_mandatory_validators / runs_with_valid_validation_results
 route_stability_rate = runs_without_route_insufficiency_switch / runs_with_valid_initial_route
 outcome_route_accuracy = correct_routes_with_outcome / routed_runs_with_outcome
+outcome_linkage_coverage = trustworthy_linked_route_outcomes / completed_route_atoms_eligible_for_outcome_linkage
+underroute_rate = atoms_succeeding_only_after_route_insufficiency_upgrade / completed_atoms_with_auditable_route_outcome
+overroute_rate = audited_atoms_where_lighter_route_meets_same_validators / atoms_in_valid_counterfactual_audit_sample
+route_abstention_rate = abstained_route_decisions / route_decisions_with_complete_identity
+route_oscillation_rate = atoms_exceeding_scene_switch_or_reversal_threshold / atoms_with_complete_switch_chain
+forced_route_with_missing_signal_rate = executable_routes_with_required_signal_missing_or_unknown / executable_routes
 cost_per_validated_success = total_cost_units / validated_completed_runs
 reasoning_drift_rate = long_runs_with_unapproved_goal_constraint_or_fact_drift / long_runs_with_comparable_snapshots
 ```
@@ -328,7 +336,7 @@ candidate_evidence_lineage_integrity_rate = candidates_with_complete_revision_li
 readonly_tool_lifecycle_completion_rate = readonly_tool_dispatches_with_one_matching_observation / readonly_tool_dispatches_due_for_observation
 ```
 
-`route_stability_rate` is not route accuracy; only outcome-backed or independently audited labels may populate `outcome_route_accuracy`. Until `outcome_linkage_coverage` is implemented and meets an owned threshold, `outcome_route_accuracy` is diagnostic rather than gate eligible. Likewise, `path_convergence_rate` remains diagnostic until `candidate_completion_rate` is implemented and enforced. The seven factory metrics measure compiler, plan drift, checkpoint binding, budget reservation, evidence resolution, candidate-lineage integrity, and read-only tool lifecycle completion, but remain non-gating until owned thresholds and promotion evidence are approved. Budget utilization is a vector over tokens, latency, model calls, tool calls, paths, iterations, retries, and cost; never sum heterogeneous units, and retain actual-use and configured-limit inputs for recomputation. Identity, privacy/governance, and probe self-health are universal dependencies. Enable outcome capture whenever a metric claims correctness, recurrence, downstream adoption, false release, or route accuracy. / `route_stability_rate` 不是路由准确率；只有真实结果回接或独立审计标签才能进入 `outcome_route_accuracy`。在 `outcome_linkage_coverage` 实现并达到负责人阈值前，`outcome_route_accuracy` 只能诊断、不可门控；同理，在 `candidate_completion_rate` 实现并强制执行前，`path_convergence_rate` 只能诊断。七项工厂指标衡量编译、计划漂移、检查点绑定、预算预留、证据解析、候选血缘完整性与只读工具生命周期完成度，但在负责人阈值与晋升证据获批前仍不可门控。预算利用率是令牌、延迟、模型调用、工具调用、路径、迭代、重试和成本的向量，禁止累加异构单位，并必须保留实际使用量和配置上限输入以供重算。身份、隐私治理和探针自健康是通用依赖。凡指标声称正确性、复发、下游采纳、误放行或路由准确率，都必须启用结果回接。
+`route_stability_rate` is not route accuracy and remains diagnostic without an owned threshold and promotion evidence. Only outcome-backed or independently audited labels may populate `outcome_route_accuracy`, `underroute_rate`, or `overroute_rate`. `outcome_linkage_coverage` is implemented as diagnostic completeness, but outcome-backed correctness metrics remain non-gating until that coverage meets an owned threshold. Likewise, `path_convergence_rate` remains diagnostic until `candidate_completion_rate` is implemented and enforced. The seven factory metrics remain non-gating until owned thresholds and promotion evidence are approved. Budget utilization is a vector over tokens, latency, model calls, tool calls, paths, iterations, retries, and cost; never sum heterogeneous units. Identity, privacy/governance, and probe self-health are universal dependencies. / `route_stability_rate` 不是路由准确率；在缺少负责人阈值与晋升证据时仅作诊断。只有真实后验或独立审计标签才能进入 `outcome_route_accuracy`、`underroute_rate` 或 `overroute_rate`。`outcome_linkage_coverage` 已作为诊断完整度实现，但在其达到负责人阈值前，后验正确性指标仍不可门控；同理，在 `candidate_completion_rate` 实现并强制执行前，`path_convergence_rate` 只能诊断。七项工厂指标在负责人阈值与晋升证据获批前仍不可门控。预算利用率是令牌、延迟、模型调用、工具调用、路径、迭代、重试和成本的向量，禁止累加异构单位。身份、隐私治理和探针自健康是通用依赖。
 
 ### Hard alerts / 硬告警
 

@@ -17,6 +17,8 @@ from .reasoning_artifacts import (
     validate_reasoning_event,
     validate_reasoning_result,
     validate_schema,
+    validate_workflow_route_envelope,
+    validate_workflow_route_revision,
 )
 
 from .reasoning_runtime import (
@@ -68,9 +70,38 @@ from .reasoning_chain_factory import (
     validate_chain_blueprint,
     validate_chain_plan,
 )
+from .workflow_router import (
+    ActionRisk,
+    ApprovalState,
+    ExecutionLane,
+    MechanicalState,
+    SignalObservation,
+    SignalState,
+    TaskAtom,
+    TaskIntent,
+    WorkflowRouteCoordinator,
+    WorkflowRouteError,
+    WorkflowRouteRequest,
+    WorkflowRoutingPolicy,
+    WorkflowSignalAdapter,
+)
+
+from .workflow_route_ledger import (
+    WorkflowRouteLedger,
+    WorkflowRouteLedgerError,
+)
+
+from .workflow_route_sqlite_ledger import (
+    SQLITE_ROUTE_SCHEMA_VERSION,
+    SqliteWorkflowRouteLedger,
+    workflow_route_stream_key,
+)
+
 
 __all__ = [
     "ALLOWED_TRANSITIONS",
+    "ActionRisk",
+    "ApprovalState",
     "ArtifactValidationError",
     "BudgetExceededError",
     "BudgetLedger",
@@ -90,7 +121,9 @@ __all__ = [
     "FeedbackAuthorizationError",
     "FeedbackBlockError",
     "IllegalTransitionError",
+    "ExecutionLane",
     "JsonlEventStore",
+    "MechanicalState",
     "NoProgressLimitError",
     "PrivateReasoningCaptureError",
     "RUNTIME_SUPPORTED_STOP_TYPES",
@@ -99,16 +132,29 @@ __all__ = [
     "ReasoningEvent",
     "ReasoningRuntimeError",
     "ReplaySnapshot",
+    "SignalObservation",
+    "SignalState",
     "RiskLevel",
+    "SQLITE_ROUTE_SCHEMA_VERSION",
+    "SqliteWorkflowRouteLedger",
     "RunSnapshot",
     "StepStartRecord",
     "StepRecord",
+    "TaskAtom",
+    "TaskIntent",
     "ToolAuthorizationError",
     "ValidationGateError",
     "ValidationRecord",
     "ValidationStatus",
     "ValidatorSpec",
     "WorkflowState",
+    "WorkflowRouteCoordinator",
+    "WorkflowRouteError",
+    "WorkflowRouteLedger",
+    "WorkflowRouteLedgerError",
+    "WorkflowRouteRequest",
+    "WorkflowRoutingPolicy",
+    "WorkflowSignalAdapter",
     "artifact_fingerprint",
     "build_artifact",
     "candidate_binding_for",
@@ -123,4 +169,7 @@ __all__ = [
     "validate_reasoning_result",
     "validate_runtime_contract_capabilities",
     "validate_schema",
+    "validate_workflow_route_envelope",
+    "validate_workflow_route_revision",
+    "workflow_route_stream_key",
 ]

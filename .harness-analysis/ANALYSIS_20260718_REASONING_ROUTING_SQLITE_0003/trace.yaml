@@ -1,0 +1,54 @@
+trace_id: TRACE_20260718_REASONING_ROUTING_SQLITE_0003
+analysis_id: ANALYSIS_20260718_REASONING_ROUTING_SQLITE_0003
+event_time: "2026-07-18T02:11:12+08:00"
+status: verified
+
+scope:
+  project_scope: "D:/Agent-based-triage"
+  tenant_scope: "none"
+  environment_scope: "local"
+  task_scope: "PATTERN_0032 transactional multi-writer route persistence / PATTERN_0032 事务型多写者路由持久化"
+
+sensitivity: internal
+source_revision: "3f3cee4+working-tree"
+
+subject:
+  subject_type: pattern
+  subject_ref: PATTERN_0032
+  cell_refs:
+    - CELL_REASONING_ROUTING
+  pattern_refs:
+    - PATTERN_0032
+    - PATTERN_0051
+    - PATTERN_0052
+
+observation:
+  trigger: "Continue productionizing the approved complexity-routing design after the deterministic router and single-writer ledger passed. / 在确定性路由器和单写者账本通过后，继续生产化已批准的复杂度路由设计。"
+  before: "Design revision 0.3.0 had a crash-safe single-writer JSONL ledger, but multi-writer transaction serialization, atomic legacy migration, storage self-health, and deployment-specific database boundaries remained open. / 0.3.0 设计已有崩溃安全单写者 JSONL 账本，但多写者事务串行化、旧账本原子迁移、存储自健康和部署数据库边界仍未闭环。"
+  adjustment: "Added a schema-versioned SQLite WAL adapter that manages multiple identity-derived streams, reloads and validates the authoritative route chain inside BEGIN IMMEDIATE transactions, atomically appends records and advances the stream head with compare-and-set protection, preserves stream-scoped idempotency, fails closed on conflicting keys, corruption, unknown versions, and configuration drift, imports validated JSONL streams atomically and idempotently, and exposes bounded health status without route content. Published the API, added it to Skill validation, updated bilingual design/observability guidance to revision 0.4.0, synchronized PATTERN_0052 version 0.4.0, and regenerated HTML. / 新增带 Schema 版本的 SQLite WAL 适配器：管理由身份派生的多条流，在 BEGIN IMMEDIATE 事务内重新加载并校验权威路由链，原子追加记录并以比较交换保护推进流头，保持流级幂等，对同键冲突、损坏、未知版本和配置漂移默认阻断，原子且幂等导入已校验 JSONL，并在不暴露路由内容的情况下提供有限健康状态。公开 API、纳入 Skill 校验、将双语设计与可观测性指导升级至 0.4.0、同步 PATTERN_0052 0.4.0，并重生成 HTML。"
+  outcome: "Concurrency, idempotency, rollback, tamper detection, recovery, migration, stream isolation, version and malformed-Schema rejection, public API, registry, and visualization checks passed. Skill validation completed with 0 errors and 18 pre-existing navigation warnings; git diff hygiene passed; the full suite passed 478 tests plus 144 subtests. / 并发、幂等、回滚、篡改检测、恢复、迁移、流隔离、版本与错误 Schema 拒绝、公共 API、注册表和可视化检查均通过。Skill 校验为 0 错误和 18 条既有导航警告；Git 差异卫生检查通过；全量测试通过 478 项及 144 个子测试。"
+  validity: verified
+
+evidence_refs:
+  - "repository:skills/harness-engineering-patterns/runtime/workflow_route_sqlite_ledger.py"
+  - "repository:skills/harness-engineering-patterns/runtime/workflow_route_ledger.py"
+  - "repository:skills/harness-engineering-patterns/runtime/__init__.py"
+  - "repository:tests/test_workflow_route_sqlite_ledger.py"
+  - "repository:skills/harness-engineering-patterns/references/patterns/reasoning/reasoning-routing.md"
+  - "repository:skills/harness-engineering-patterns/references/patterns/reasoning/reasoning-routing-observability.md"
+  - "repository:skills/harness-engineering-patterns/references/workflow-observability-probes.md"
+  - "verification:python -m pytest tests/test_workflow_route_sqlite_ledger.py tests/test_workflow_route_ledger.py tests/test_harness_skill_registry.py tests/test_generate_skill_visualization.py -q => 92 passed, 9 subtests passed"
+  - "verification:python -m pytest -q => 478 passed, 144 subtests passed"
+  - "verification:validate_harness_skill.py => 0 errors, 18 warnings"
+  - "verification:git diff --check => no whitespace errors"
+verification_tasks: []
+follow_up:
+  - "Provide and qualify a deployment-owned network database adapter when horizontal scale, remote writers, failover, backup, or service-level objectives exceed the single-node SQLite boundary. / 当水平扩展、远程写者、故障切换、备份或服务目标超出单节点 SQLite 边界时，提供并验证部署方网络数据库适配器。"
+  - "Integrate downstream run-graph compilers and side-effect reconcilers with sealed run_graph_binding records; completed side effects must be reconciled rather than replayed. / 将下游运行图编译器和副作用核对器接入封存的 run_graph_binding；已完成副作用必须核对而非重放。"
+  - "Deploy a trustworthy outcome linker and independently governed counterfactual-audit label producer before promoting correctness metrics or policy auto-tuning. / 在晋升正确性指标或策略自动调优前，部署可信后验关联器与独立治理的反事实审计标签生产器。"
+owner: "Codex"
+
+retention:
+  policy: project
+  expires_at: null
+  deletion_or_archive_rule: "archive when superseded / 被后续分析取代时归档"

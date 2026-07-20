@@ -40,7 +40,7 @@ _ROUTING_POLICY_RULE_MANIFEST = (
     "permission_denied:reject:policy_constraint",
     "required_signal_missing:escalate:missing_route_signal",
     "strong_validation_missing:escalate:external_validation_required",
-    "evidence_unavailable_or_untrusted:escalate:insufficient_evidence",
+    "evidence_insufficient_unavailable_or_untrusted:escalate:insufficient_evidence",
     "environment_interaction:iterative:feedback_required",
     "material_rivals_or_conflict:parallel:independent_hypotheses",
     "complete_stable_low_risk:direct:direct_low_risk_release",
@@ -346,7 +346,7 @@ class RoutingPolicy:
     """Deterministic precedence and abstention policy. / 确定性优先级与弃权策略。"""
 
     route_policy_id: str = "REASONING_ROUTE_DEFAULT"
-    route_policy_version: str = "1.0.0"
+    route_policy_version: str = "1.1.0"
 
     def __post_init__(self) -> None:
         if not isinstance(self.route_policy_id, str):
@@ -454,6 +454,7 @@ class RoutingPolicy:
             )
 
         if signals.evidence_state in {
+            EvidenceState.INSUFFICIENT,
             EvidenceState.UNAVAILABLE,
             EvidenceState.UNTRUSTED,
         }:

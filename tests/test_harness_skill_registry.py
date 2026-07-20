@@ -206,7 +206,7 @@ class HarnessSkillRegistryTest(unittest.TestCase):
         self.assertGreaterEqual(len(registry["governance_rules"]), 3)
         self.assertEqual(
             {item["id"] for item in registry["failure_mode_refs"]},
-            {f"FAIL_{number:04d}" for number in range(1, 14)},
+            {f"FAIL_{number:04d}" for number in range(1, 17)},
         )
 
     def test_runtime_protocols_preserve_existing_ids_and_use_new_ids(self):
@@ -230,7 +230,7 @@ class HarnessSkillRegistryTest(unittest.TestCase):
             "references/workflow-observability-probes.md",
         )
         self.assertEqual(patterns["PATTERN_0052"]["source_draft_id"], "PATTERN_0002")
-        self.assertEqual(patterns["PATTERN_0052"]["source_version"], "0.2.0")
+        self.assertEqual(patterns["PATTERN_0052"]["source_version"], "0.4.0")
         self.assertIn(
             "COG_GOVERNANCE__TOP_ORCHESTRATION",
             patterns["PATTERN_0052"]["matrix_coordinates"],

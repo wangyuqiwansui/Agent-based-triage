@@ -150,6 +150,15 @@ class ReasoningRoutingPolicyTest(unittest.TestCase):
         self.assertEqual(decision.disposition, router.RouteDisposition.ESCALATE)
         self.assertTrue(decision.abstained)
 
+    def test_insufficient_evidence_escalates_instead_of_spending_more_reasoning(self):
+        decision = self.policy.route(
+            signals(evidence_state=router.EvidenceState.INSUFFICIENT)
+        )
+
+        self.assertEqual(decision.disposition, router.RouteDisposition.ESCALATE)
+        self.assertEqual(decision.reason_codes, ("insufficient_evidence",))
+        self.assertTrue(decision.abstained)
+
     def test_signal_fingerprint_is_stable_and_sensitive(self):
         first = self.policy.route(signals()).signal_fingerprint
         second = self.policy.route(signals()).signal_fingerprint
@@ -162,7 +171,7 @@ class ReasoningRoutingPolicyTest(unittest.TestCase):
         self.assertRegex(first, r"^sha256:[a-f0-9]{64}$")
 
     def test_route_policy_version_is_semantic(self):
-        self.assertEqual(self.policy.route_policy_version, "1.0.0")
+        self.assertEqual(self.policy.route_policy_version, "1.1.0")
         with self.assertRaises(ValueError):
             router.RoutingPolicy(route_policy_version="1")
 
@@ -189,7 +198,7 @@ class ReasoningRoutingPolicyTest(unittest.TestCase):
         encoded = json.dumps(decision.as_dict(), sort_keys=True)
 
         self.assertIn('"execution_mode": "direct"', encoded)
-        self.assertIn('"route_policy_version": "1.0.0"', encoded)
+        self.assertIn('"route_policy_version": "1.1.0"', encoded)
 
     def test_execute_route_serializes_to_contract_and_event_schemas(self):
         route_signals = signals()

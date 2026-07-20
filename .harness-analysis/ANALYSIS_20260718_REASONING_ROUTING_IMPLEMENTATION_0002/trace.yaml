@@ -1,0 +1,55 @@
+trace_id: TRACE_20260718_REASONING_ROUTING_IMPLEMENTATION_0002
+analysis_id: ANALYSIS_20260718_REASONING_ROUTING_IMPLEMENTATION_0002
+event_time: "2026-07-18T00:19:54+08:00"
+status: verified
+
+scope:
+  project_scope: "D:/Agent-based-triage"
+  tenant_scope: "none"
+  environment_scope: "local"
+  task_scope: "PATTERN_0032 complexity-routing reference implementation / PATTERN_0032 复杂度路由参考实现"
+
+sensitivity: internal
+source_revision: "3f3cee4+working-tree"
+
+subject:
+  subject_type: pattern
+  subject_ref: PATTERN_0032
+  cell_refs:
+    - CELL_REASONING_ROUTING
+  pattern_refs:
+    - PATTERN_0032
+    - PATTERN_0051
+    - PATTERN_0052
+
+observation:
+  trigger: "User approved execution of the reviewed complexity-routing improvements. / 用户批准执行已评审的复杂度路由完善方案。"
+  before: "Revision 0.2.0 documented the two-level architecture but still classified the composite envelope, provenance adapter, route-revision persistence, crash replay, and route diagnostic coverage as design targets. / 0.2.0 版已描述两级架构，但仍将复合信封、来源适配器、路由修订持久化、崩溃重放和路由诊断覆盖列为设计目标。"
+  adjustment: "Implemented strict workflow route envelope and revision Schemas; a provenance-preserving coordinator and fail-closed action gate; an append-only single-writer JSONL ledger with hashes, monotonic revisions, idempotency, positive total switch cap, evidence-backed de-escalation, oscillation hysteresis, mode-switch binding, run-graph gate revisions, and deterministic replay; six registered non-gating route diagnostics; public runtime exports; bilingual Skill and design revision 0.3.0; and regenerated derived HTML. / 实现严格工作流路由信封与修订 Schema、保留来源的协调器与默认阻断行动门、带哈希/单调修订/幂等/正整数总换路上限/有证据降级/振荡迟滞/换路事件绑定/运行图门禁修订/确定性重放的追加式单写者 JSONL 账本、六项已注册非门控路由诊断指标、公开运行时入口、中英双语 Skill 与 0.3.0 设计，并重生成派生 HTML。"
+  outcome: "Skill validation completed with 0 errors and 18 pre-existing navigation warnings; git diff hygiene passed; the full suite passed 469 tests plus 144 subtests. / Skill 校验为 0 错误和 18 条既有导航警告；Git 差异卫生检查通过；全量测试通过 469 项及 144 个子测试。"
+  validity: verified
+
+evidence_refs:
+  - "repository:skills/harness-engineering-patterns/schemas/workflow-route-envelope.schema.json"
+  - "repository:skills/harness-engineering-patterns/schemas/workflow-route-revision.schema.json"
+  - "repository:skills/harness-engineering-patterns/runtime/workflow_router.py"
+  - "repository:skills/harness-engineering-patterns/runtime/workflow_route_ledger.py"
+  - "repository:skills/harness-engineering-patterns/runtime/reasoning_artifacts.py"
+  - "repository:skills/harness-engineering-patterns/runtime/reasoning_metrics.py"
+  - "repository:skills/harness-engineering-patterns/runtime/metric_registry.json"
+  - "repository:tests/test_workflow_router.py"
+  - "repository:tests/test_workflow_route_ledger.py"
+  - "repository:tests/test_reasoning_metrics.py"
+  - "verification:python -m pytest -q => 469 passed, 144 subtests passed"
+  - "verification:validate_harness_skill.py => 0 errors, 18 warnings"
+verification_tasks: []
+follow_up:
+  - "Use a transactional multi-writer ledger adapter when production concurrency requires it. / 生产并发需要时使用事务型多写者账本适配器。"
+  - "Integrate downstream run-graph compilers and side-effect reconcilers with sealed run_graph_binding records. / 将下游运行图编译器和副作用核对器接入封存的 run_graph_binding 记录。"
+  - "Deploy a trustworthy outcome linker and independently governed counterfactual-audit label producer before promoting correctness metrics or policy auto-tuning. / 在晋升正确性指标或策略自动调优前，部署可信后验关联器与独立治理的反事实审计标签生产器。"
+owner: "Codex"
+
+retention:
+  policy: project
+  expires_at: null
+  deletion_or_archive_rule: "archive when superseded / 被后续分析取代时归档"

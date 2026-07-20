@@ -167,6 +167,21 @@
       "id": "FAIL_0013",
       "coordinate": "COG_COLLABORATION__TOP_PARALLEL",
       "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0014",
+      "coordinate": "COG_REASONING__TOP_ROUTING",
+      "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0015",
+      "coordinate": "COG_REASONING__TOP_ROUTING",
+      "reference": "references/failure-modes.md"
+    },
+    {
+      "id": "FAIL_0016",
+      "coordinate": "COG_REASONING__TOP_ROUTING",
+      "reference": "references/failure-modes.md"
     }
   ],
   "capabilities": [
@@ -854,7 +869,7 @@
       ],
       "status": "draft",
       "reference": "references/workflow-observability-probes.md",
-      "source_version": "0.2.0",
+      "source_version": "0.4.0",
       "source_draft_id": "PATTERN_0002",
       "cognition_refs": [
         "COG_PERCEPTION",

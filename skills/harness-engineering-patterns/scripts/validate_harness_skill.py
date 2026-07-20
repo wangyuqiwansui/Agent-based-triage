@@ -63,6 +63,7 @@ RUNTIME_PROTOCOLS = {
     "PATTERN_0051": {
         "reference": "references/reasoning-execution-flow.md",
         "source_draft_id": "PATTERN_0001",
+        "source_version": "0.2.0",
         "name_en": "Reasoning Execution Flow",
         "name_zh": "推理执行流程",
         "matrix_coordinates": {
@@ -77,6 +78,7 @@ RUNTIME_PROTOCOLS = {
     "PATTERN_0052": {
         "reference": "references/workflow-observability-probes.md",
         "source_draft_id": "PATTERN_0002",
+        "source_version": "0.4.0",
         "name_en": "Workflow Observability Probes",
         "name_zh": "工作流可观测性探针",
         "matrix_coordinates": {
@@ -99,6 +101,8 @@ RUNTIME_SCHEMA_FILES = (
     "schemas/reasoning-contract.schema.json",
     "schemas/reasoning-event.schema.json",
     "schemas/reasoning-result.schema.json",
+    "schemas/workflow-route-envelope.schema.json",
+    "schemas/workflow-route-revision.schema.json",
 )
 
 RUNTIME_IMPLEMENTATION_FILES = (
@@ -108,6 +112,9 @@ RUNTIME_IMPLEMENTATION_FILES = (
     "runtime/reasoning_chain_session.py",
     "runtime/reasoning_runtime.py",
     "runtime/reasoning_router.py",
+    "runtime/workflow_router.py",
+    "runtime/workflow_route_ledger.py",
+    "runtime/workflow_route_sqlite_ledger.py",
     "runtime/reasoning_artifacts.py",
     "runtime/reasoning_metrics.py",
     "runtime/metric_registry.json",
@@ -359,6 +366,8 @@ RUNTIME_REQUIRED_EXPORTS = {
         "ReasoningEvent",
         "RUNTIME_SUPPORTED_STOP_TYPES",
         "RiskLevel",
+        "SqliteWorkflowRouteLedger",
+        "workflow_route_stream_key",
         "ValidationStatus",
         "WorkflowState",
         "validate_runtime_contract_capabilities",
@@ -423,6 +432,12 @@ OBSERVABILITY_CONTRACT_MARKERS = (
     "field_provenance",
     "event_processing_status",
     "workflow_state",
+    "outcome_linkage_coverage",
+    "underroute_rate",
+    "overroute_rate",
+    "route_abstention_rate",
+    "route_oscillation_rate",
+    "forced_route_with_missing_signal_rate",
     "missing",
     "private chain-of-thought",
     "私密思维过程",
@@ -2052,7 +2067,7 @@ def validate_runtime_protocols(
             or pattern.get("source_kind") != "local_seed"
             or pattern.get("status") != "draft"
             or pattern.get("reference") != expected["reference"]
-            or pattern.get("source_version") != "0.2.0"
+            or pattern.get("source_version") != expected["source_version"]
             or pattern.get("source_draft_id") != expected["source_draft_id"]
             or set(pattern.get("matrix_coordinates", []))
             != expected["matrix_coordinates"]
@@ -2074,11 +2089,12 @@ def validate_runtime_protocols(
                 f"推理执行协议缺少 {marker}",
             )
 
-    if "Version / 版本: `0.2.0`" not in execution:
+    execution_version = RUNTIME_PROTOCOLS["PATTERN_0051"]["source_version"]
+    if f"Version / 版本: `{execution_version}`" not in execution:
         report.error(
             "reasoning_execution_contract",
-            "reasoning execution protocol must declare version 0.2.0",
-            "推理执行协议必须声明版本 0.2.0",
+            f"reasoning execution protocol must declare version {execution_version}",
+            f"推理执行协议必须声明版本 {execution_version}",
         )
     validate_budget_profile_table(execution, report)
     forbidden_execution_phrases = {
@@ -2106,11 +2122,12 @@ def validate_runtime_protocols(
                 f"可观测性探针协议缺少 {marker}",
             )
 
-    if "Version / 版本: `0.2.0`" not in probes:
+    probes_version = RUNTIME_PROTOCOLS["PATTERN_0052"]["source_version"]
+    if f"Version / 版本: `{probes_version}`" not in probes:
         report.error(
             "observability_probe_contract",
-            "observability probe protocol must declare version 0.2.0",
-            "可观测性探针协议必须声明版本 0.2.0",
+            f"observability probe protocol must declare version {probes_version}",
+            f"可观测性探针协议必须声明版本 {probes_version}",
         )
 
     catalog_rows = markdown_table_rows(probes, "| ID and name / ID 与名称")

@@ -207,6 +207,39 @@ class CorrectedReasoningMetricTest(unittest.TestCase):
         self.assertEqual(result.state, metrics.MetricState.MISSING)
         self.assertIsNone(result.value)
 
+    def test_registered_route_diagnostics_preserve_distinct_denominators(self):
+        linkage = metrics.outcome_linkage_coverage(8, 10)
+        underroute = metrics.underroute_rate(2, 10)
+        overroute = metrics.overroute_rate(1, 5)
+        abstention = metrics.route_abstention_rate(3, 20)
+        oscillation = metrics.route_oscillation_rate(1, 10)
+        forced = metrics.forced_route_with_missing_signal_rate(0, 20)
+
+        self.assertEqual(linkage.value, 0.8)
+        self.assertEqual(underroute.value, 0.2)
+        self.assertEqual(overroute.value, 0.2)
+        self.assertEqual(abstention.value, 0.15)
+        self.assertEqual(oscillation.value, 0.1)
+        self.assertEqual(forced.state, metrics.MetricState.OBSERVED_ZERO)
+        self.assertEqual(forced.value, 0.0)
+        self.assertEqual(overroute.denominator, 5.0)
+        self.assertEqual(underroute.denominator, 10.0)
+
+    def test_outcome_diagnostics_do_not_invent_zero_when_linkage_is_missing(self):
+        linkage = metrics.outcome_linkage_coverage(None, None)
+        underroute = metrics.underroute_rate(None, None)
+        overroute = metrics.overroute_rate(None, None)
+
+        self.assertEqual(linkage.state, metrics.MetricState.MISSING)
+        self.assertEqual(underroute.state, metrics.MetricState.MISSING)
+        self.assertEqual(overroute.state, metrics.MetricState.MISSING)
+
+    def test_route_diagnostic_numerator_cannot_exceed_its_population(self):
+        with self.assertRaises(ValueError):
+            metrics.forced_route_with_missing_signal_rate(2, 1)
+        with self.assertRaises(ValueError):
+            metrics.route_oscillation_rate(11, 10)
+
     def test_hypothesis_efficiency_keeps_denominator_units_separate(self):
         per_iteration = metrics.hypothesis_elimination_per_iteration(6, 3)
         per_cost = metrics.hypothesis_elimination_per_cost_unit(6, 12)
@@ -864,6 +897,22 @@ class MetricRegistryTest(unittest.TestCase):
         )
         self.assertNotIn("outcome_route_accuracy", coverage["gate_eligible"])
         self.assertNotIn("path_convergence_rate", coverage["gate_eligible"])
+        self.assertNotIn("route_stability_rate", coverage["gate_eligible"])
+        route_diagnostics = {
+            "outcome_linkage_coverage",
+            "underroute_rate",
+            "overroute_rate",
+            "route_abstention_rate",
+            "route_oscillation_rate",
+            "forced_route_with_missing_signal_rate",
+        }
+        self.assertTrue(route_diagnostics <= set(coverage["implemented"]))
+        self.assertFalse(route_diagnostics & set(coverage["planned"]))
+        self.assertFalse(route_diagnostics & set(coverage["gate_eligible"]))
+        self.assertIn(
+            "PROBE_0013",
+            metrics.METRIC_DEFINITIONS["outcome_linkage_coverage"]["required_probes"],
+        )
         self.assertTrue(
             {
                 "plan_compile_success_rate",

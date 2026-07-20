@@ -1,0 +1,46 @@
+trace_id: TRACE_20260717_REASONING_ROUTING_DESIGN_0001
+analysis_id: ANALYSIS_20260717_REASONING_ROUTING_DESIGN_0001
+event_time: "2026-07-17T00:00:00+08:00"
+status: verified
+
+scope:
+  project_scope: "D:/Agent-based-triage"
+  tenant_scope: "none"
+  environment_scope: "local"
+  task_scope: "PATTERN_0032 Complexity-Based Routing engineering design / PATTERN_0032 复杂度路由工程设计"
+
+sensitivity: internal
+source_revision: "3f3cee4+working-tree"
+
+subject:
+  subject_type: pattern
+  subject_ref: PATTERN_0032
+  cell_refs:
+    - CELL_REASONING_ROUTING
+  pattern_refs:
+    - PATTERN_0032
+    - PATTERN_0051
+    - PATTERN_0052
+
+observation:
+  trigger: "User requested improvement of the reasoning complexity-routing engineering design using two supplied Hanerss v0.1 specifications. / 用户要求依据两份 Hanerss v0.1 规范完善推理下的复杂度路由工程设计。"
+  before: "The cell documented tier selection and the deterministic reasoning subrouter, but did not close task-atom, execution-lane, mechanical-state, human-gate, route-revision, anti-oscillation, and outcome-audit boundaries; insufficient evidence fell through to chain execution. / 原设计覆盖档位选择与确定性推理子路由，但未闭合任务原子、执行车道、机械状态、人工闸门、路由修订、防振荡和后验审计边界；证据不足会落入链式执行。"
+  adjustment: "Added a two-level workflow/reasoning route architecture, typed signal and confidence boundaries, deterministic precedence, composite-envelope target, lifecycle and switching rules, run-graph compilation, failure modes, observability formulas and hard alerts; changed policy 1.1.0 to escalate insufficient evidence. / 新增流程/推理两级路由架构、类型化信号与置信度边界、确定性优先级、复合信封目标、生命周期与换路规则、运行图编译、失败模式、可观测公式和硬告警；策略 1.1.0 将证据不足改为升级。"
+  outcome: "Implementation, registry, observability, and derived HTML are synchronized; skill validation passed with zero errors and the full test suite passed 443 tests plus 132 subtests. / 实现、注册表、可观测性和派生 HTML 已同步；Skill 校验为零错误，全量测试通过 443 项与 132 个子测试。"
+  validity: verified
+
+evidence_refs:
+  - "external:C:/Users/wangs/Downloads/Hanerss_通用执行流程规范_v0.1.md"
+  - "external:C:/Users/wangs/Downloads/Hanerss_工作流可观测性探针规范_v0.1.md"
+  - "repository:skills/harness-engineering-patterns/references/patterns/reasoning/reasoning-routing.md"
+  - "repository:skills/harness-engineering-patterns/references/patterns/reasoning/reasoning-routing-observability.md"
+  - "repository:skills/harness-engineering-patterns/runtime/reasoning_router.py"
+verification_tasks: []
+follow_up:
+  - "Implement and register the strict workflow_route_envelope only after its producer, consumer, replay, migration, and behavior contracts are approved. / 复合流程路由信封的生产者、消费者、回放、迁移和行为契约获批后，再实现并注册严格 Schema。"
+owner: "Codex"
+
+retention:
+  policy: project
+  expires_at: null
+  deletion_or_archive_rule: "archive when superseded / 被后续分析取代时归档"

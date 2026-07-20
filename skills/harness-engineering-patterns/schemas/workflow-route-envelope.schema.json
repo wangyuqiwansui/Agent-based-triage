@@ -1,0 +1,573 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hanerss.local/schemas/workflow-route-envelope.schema.json",
+  "x-contract-version": "1.0.0",
+  "title": "Workflow Route Envelope / 工作流路由信封",
+  "description": "Strict Harness-level route decision that binds one task atom, workflow gates, and one reasoning subroute without granting side effects from reasoning alone. / 严格的 Harness 层路由决定：绑定一个任务原子、工作流门禁和一个推理子路由，且推理本身不得授权副作用。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "decision_id",
+    "decision_revision",
+    "route_envelope_hash",
+    "workflow_id",
+    "task_id",
+    "run_id",
+    "scene_id",
+    "task_atom",
+    "workflow_policy_binding",
+    "adapter_binding",
+    "reasoning_policy_binding",
+    "workflow_signals",
+    "workflow_signal_fingerprint",
+    "execution_lane",
+    "action_allowed",
+    "human_gate",
+    "blockers",
+    "reasoning_decision",
+    "budget_profile_binding",
+    "validator_profile_binding",
+    "run_graph_binding",
+    "abstained",
+    "route_confidence_telemetry",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "decision_id": { "$ref": "#/$defs/Identifier" },
+    "decision_revision": { "type": "integer", "minimum": 1 },
+    "route_envelope_hash": { "$ref": "#/$defs/Sha256" },
+    "workflow_id": { "$ref": "#/$defs/Identifier" },
+    "task_id": { "$ref": "#/$defs/Identifier" },
+    "run_id": { "$ref": "#/$defs/Identifier" },
+    "scene_id": { "$ref": "#/$defs/Identifier" },
+    "task_atom": { "$ref": "#/$defs/TaskAtom" },
+    "workflow_policy_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "adapter_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "reasoning_policy_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "workflow_signals": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "items": { "$ref": "#/$defs/WorkflowSignal" }
+    },
+    "workflow_signal_fingerprint": { "$ref": "#/$defs/Sha256" },
+    "execution_lane": {
+      "enum": [
+        "direct_answer",
+        "read_only_analysis",
+        "structured_judgment",
+        "planned_execution",
+        "clarification_human_review"
+      ]
+    },
+    "action_allowed": { "type": "boolean" },
+    "human_gate": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/HumanGate" }
+      ]
+    },
+    "blockers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/RouteBlocker" },
+      "uniqueItems": true
+    },
+    "reasoning_decision": { "$ref": "#/$defs/ReasoningDecisionSummary" },
+    "budget_profile_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "validator_profile_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "run_graph_binding": { "$ref": "#/$defs/BindingState" },
+    "abstained": { "type": "boolean" },
+    "route_confidence_telemetry": { "$ref": "#/$defs/ConfidenceTelemetry" },
+    "created_at": { "type": "string", "format": "date-time" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "action_allowed": { "const": true } },
+        "required": ["action_allowed"]
+      },
+      "then": {
+        "properties": {
+          "execution_lane": { "const": "planned_execution" },
+          "blockers": { "maxItems": 0 },
+          "reasoning_decision": {
+            "properties": { "disposition": { "const": "execute" } }
+          }
+        },
+        "allOf": [
+          { "$ref": "#/$defs/ContainsMechanicalReady" },
+          { "$ref": "#/$defs/ContainsPermissionGranted" },
+          { "$ref": "#/$defs/ContainsOwnerPresent" },
+          { "$ref": "#/$defs/ContainsApprovalSatisfied" }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "execution_lane": {
+            "enum": [
+              "direct_answer",
+              "read_only_analysis",
+              "structured_judgment",
+              "clarification_human_review"
+            ]
+          }
+        },
+        "required": ["execution_lane"]
+      },
+      "then": { "properties": { "action_allowed": { "const": false } } }
+    },
+    {
+      "if": {
+        "properties": { "blockers": { "minItems": 1 } },
+        "required": ["blockers"]
+      },
+      "then": { "properties": { "action_allowed": { "const": false } } }
+    },
+    {
+      "if": {
+        "properties": {
+          "reasoning_decision": {
+            "properties": { "disposition": { "const": "execute" } },
+            "required": ["disposition"]
+          }
+        },
+        "required": ["reasoning_decision"]
+      },
+      "then": {
+        "properties": { "abstained": { "const": false } }
+      },
+      "else": {
+        "properties": { "action_allowed": { "const": false } }
+      }
+    }
+  ],
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "BindingState": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value"],
+          "properties": {
+            "state": { "const": "observed" },
+            "value": { "$ref": "#/$defs/VersionedBinding" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": {
+            "state": { "enum": ["missing", "unknown", "not_applicable"] }
+          }
+        }
+      ]
+    },
+    "TaskAtom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_atom_id",
+        "task_atom_version",
+        "primary_intent",
+        "input_binding",
+        "output_contract_binding",
+        "dependency_atom_ids",
+        "risk_owner_binding",
+        "includes_read_only_judgment",
+        "includes_write_action"
+      ],
+      "properties": {
+        "task_atom_id": { "$ref": "#/$defs/Identifier" },
+        "task_atom_version": { "$ref": "#/$defs/SemanticVersion" },
+        "primary_intent": { "$ref": "#/$defs/TaskIntent" },
+        "input_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "output_contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "dependency_atom_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "uniqueItems": true
+        },
+        "risk_owner_binding": { "$ref": "#/$defs/BindingState" },
+        "includes_read_only_judgment": { "type": "boolean" },
+        "includes_write_action": { "type": "boolean" }
+      },
+      "not": {
+        "properties": {
+          "includes_read_only_judgment": { "const": true },
+          "includes_write_action": { "const": true }
+        },
+        "required": ["includes_read_only_judgment", "includes_write_action"]
+      }
+    },
+    "TaskIntent": {
+      "enum": ["query", "read_only_analysis", "structured_judgment", "draft", "business_action"]
+    },
+    "SignalState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state"],
+      "properties": {
+        "state": { "enum": ["missing", "unknown", "not_applicable"] }
+      }
+    },
+    "ObservedSignalValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "value"],
+      "properties": {
+        "state": { "const": "observed" },
+        "value": {
+          "enum": [
+            "query",
+            "read_only_analysis",
+            "structured_judgment",
+            "draft",
+            "business_action",
+            "complete_consistent",
+            "mostly_complete",
+            "conflicting",
+            "insufficient",
+            "unavailable",
+            "untrusted",
+            "ready",
+            "blocked",
+            "read_only",
+            "reversible_write",
+            "sensitive_write",
+            "irreversible_external_action",
+            "low",
+            "medium",
+            "high",
+            "critical",
+            "not_required",
+            "pending",
+            "approved",
+            "denied",
+            true,
+            false
+          ]
+        }
+      }
+    },
+    "SignalValue": {
+      "oneOf": [
+        { "$ref": "#/$defs/ObservedSignalValue" },
+        { "$ref": "#/$defs/SignalState" }
+      ]
+    },
+    "SignalProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_binding",
+        "source_field",
+        "valid_at",
+        "captured_at",
+        "method",
+        "integrity_hash"
+      ],
+      "properties": {
+        "source_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "source_field": { "type": "string", "minLength": 1 },
+        "valid_at": {
+          "oneOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "null" }
+          ]
+        },
+        "captured_at": { "type": "string", "format": "date-time" },
+        "method": { "$ref": "#/$defs/Identifier" },
+        "integrity_hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "WorkflowSignal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signal", "value", "provenance"],
+      "properties": {
+        "signal": {
+          "enum": [
+            "task_intent",
+            "evidence_state",
+            "mechanical_state",
+            "action_risk",
+            "intent_complexity",
+            "mechanism_uncertainty",
+            "environment_interaction_required",
+            "material_rivals_present",
+            "dominant_dependency_path",
+            "permission_granted",
+            "prohibited_action",
+            "irreversible_action",
+            "strong_validation_available",
+            "accountable_owner_present",
+            "approval_state"
+          ]
+        },
+        "value": { "$ref": "#/$defs/SignalValue" },
+        "provenance": { "$ref": "#/$defs/SignalProvenance" }
+      }
+    },
+    "HumanGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["placement", "status", "gate_binding", "authority_binding"],
+      "properties": {
+        "placement": { "enum": ["before_contract", "before_action", "before_release"] },
+        "status": { "enum": ["pending", "approved", "denied", "expired"] },
+        "gate_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "authority_binding": { "$ref": "#/$defs/BindingState" }
+      }
+    },
+    "RouteBlocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "category", "severity", "source_signal", "evidence_bindings"],
+      "properties": {
+        "code": { "$ref": "#/$defs/Identifier" },
+        "category": { "enum": ["identity", "signal", "evidence", "mechanical", "permission", "approval", "policy", "owner", "reasoning"] },
+        "severity": { "enum": ["warning", "error", "critical"] },
+        "source_signal": {
+          "oneOf": [
+            { "$ref": "#/$defs/Identifier" },
+            { "type": "null" }
+          ]
+        },
+        "evidence_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "ReasoningConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["execution_mode", "reasoning_depth", "primary_topology", "supporting_topologies"],
+      "properties": {
+        "execution_mode": { "enum": ["direct", "chain", "parallel", "iterative"] },
+        "reasoning_depth": { "enum": ["direct", "deliberative"] },
+        "primary_topology": {
+          "oneOf": [
+            { "enum": ["chain", "parallel", "loop"] },
+            { "type": "null" }
+          ]
+        },
+        "supporting_topologies": {
+          "type": "array",
+          "items": { "enum": ["orchestration", "hierarchy"] },
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "execution_mode": { "const": "direct" } } },
+          "then": { "properties": { "reasoning_depth": { "const": "direct" }, "primary_topology": { "type": "null" } } }
+        },
+        {
+          "if": { "properties": { "execution_mode": { "const": "chain" } } },
+          "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "chain" } } }
+        },
+        {
+          "if": { "properties": { "execution_mode": { "const": "parallel" } } },
+          "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "parallel" } } }
+        },
+        {
+          "if": { "properties": { "execution_mode": { "const": "iterative" } } },
+          "then": { "properties": { "reasoning_depth": { "const": "deliberative" }, "primary_topology": { "const": "loop" } } }
+        }
+      ]
+    },
+    "EscalationHandoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "reason_codes", "authority_binding"],
+      "properties": {
+        "target": { "enum": ["orchestration", "hierarchy", "human_review", "evidence_completion", "policy_owner"] },
+        "reason_codes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "authority_binding": { "$ref": "#/$defs/BindingState" }
+      }
+    },
+    "ReasoningDecisionSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_binding",
+        "disposition",
+        "configuration",
+        "reason_codes",
+        "missing_signals",
+        "signal_fingerprint",
+        "escalation_handoff"
+      ],
+      "properties": {
+        "decision_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "disposition": { "enum": ["execute", "reject", "escalate"] },
+        "configuration": {
+          "oneOf": [
+            { "$ref": "#/$defs/ReasoningConfiguration" },
+            { "type": "null" }
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "missing_signals": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "uniqueItems": true
+        },
+        "signal_fingerprint": { "$ref": "#/$defs/Sha256" },
+        "escalation_handoff": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/EscalationHandoff" }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "disposition": { "const": "execute" } }, "required": ["disposition"] },
+          "then": {
+            "properties": {
+              "configuration": { "$ref": "#/$defs/ReasoningConfiguration" },
+              "escalation_handoff": { "type": "null" }
+            }
+          },
+          "else": {
+            "properties": {
+              "configuration": { "type": "null" },
+              "escalation_handoff": { "$ref": "#/$defs/EscalationHandoff" }
+            }
+          }
+        }
+      ]
+    },
+    "ConfidenceTelemetry": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "value", "source_binding"],
+          "properties": {
+            "state": { "const": "observed" },
+            "value": { "type": "number", "minimum": 0, "maximum": 1 },
+            "source_binding": { "$ref": "#/$defs/VersionedBinding" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state"],
+          "properties": {
+            "state": { "enum": ["missing", "unknown", "not_applicable"] }
+          }
+        }
+      ]
+    },
+    "ContainsMechanicalReady": {
+      "properties": {
+        "workflow_signals": {
+          "contains": {
+            "properties": {
+              "signal": { "const": "mechanical_state" },
+              "value": {
+                "properties": { "state": { "const": "observed" }, "value": { "const": "ready" } },
+                "required": ["state", "value"]
+              }
+            },
+            "required": ["signal", "value"]
+          }
+        }
+      }
+    },
+    "ContainsPermissionGranted": {
+      "properties": {
+        "workflow_signals": {
+          "contains": {
+            "properties": {
+              "signal": { "const": "permission_granted" },
+              "value": {
+                "properties": { "state": { "const": "observed" }, "value": { "const": true } },
+                "required": ["state", "value"]
+              }
+            },
+            "required": ["signal", "value"]
+          }
+        }
+      }
+    },
+    "ContainsOwnerPresent": {
+      "properties": {
+        "workflow_signals": {
+          "contains": {
+            "properties": {
+              "signal": { "const": "accountable_owner_present" },
+              "value": {
+                "properties": { "state": { "const": "observed" }, "value": { "const": true } },
+                "required": ["state", "value"]
+              }
+            },
+            "required": ["signal", "value"]
+          }
+        }
+      }
+    },
+    "ContainsApprovalSatisfied": {
+      "properties": {
+        "workflow_signals": {
+          "contains": {
+            "properties": {
+              "signal": { "const": "approval_state" },
+              "value": {
+                "properties": {
+                  "state": { "const": "observed" },
+                  "value": { "enum": ["not_required", "approved"] }
+                },
+                "required": ["state", "value"]
+              }
+            },
+            "required": ["signal", "value"]
+          }
+        }
+      }
+    }
+  }
+}

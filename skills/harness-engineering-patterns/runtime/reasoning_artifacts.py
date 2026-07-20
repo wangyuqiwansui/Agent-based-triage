@@ -26,13 +26,37 @@ _SCHEMA_FILES = {
     "reasoning_contract": "reasoning-contract.schema.json",
     "reasoning_event": "reasoning-event.schema.json",
     "reasoning_result": "reasoning-result.schema.json",
+    "workflow_route_envelope": "workflow-route-envelope.schema.json",
+    "workflow_route_revision": "workflow-route-revision.schema.json",
 }
 
 _HASH_FIELDS = {
     "normalized_input": "normalized_input_hash",
     "reasoning_contract": "contract_hash",
     "reasoning_result": "result_hash",
+    "workflow_route_envelope": "route_envelope_hash",
+    "workflow_route_revision": "revision_event_hash",
 }
+
+_WORKFLOW_ROUTE_SIGNAL_NAMES = frozenset(
+    {
+        "task_intent",
+        "evidence_state",
+        "mechanical_state",
+        "action_risk",
+        "intent_complexity",
+        "mechanism_uncertainty",
+        "environment_interaction_required",
+        "material_rivals_present",
+        "dominant_dependency_path",
+        "permission_granted",
+        "prohibited_action",
+        "irreversible_action",
+        "strong_validation_available",
+        "accountable_owner_present",
+        "approval_state",
+    }
+)
 
 _CONFIGURATION_FIELDS = (
     "execution_mode",
@@ -102,6 +126,34 @@ def artifact_fingerprint(value: Mapping[str, Any], hash_field: str | None = None
         content.pop(hash_field, None)
     canonical = _canonical_json(content)
     return "sha256:" + hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def workflow_signal_fingerprint(
+    *,
+    task_atom_id: str,
+    workflow_policy_binding: Mapping[str, Any],
+    adapter_binding: Mapping[str, Any],
+    workflow_signals: Sequence[Mapping[str, Any]],
+) -> str:
+    """Bind the frozen workflow signal set to its atom, policy, and adapter.
+
+    Signal order is normalized by name; every value-state and provenance field
+    remains hash-significant. / 将冻结的工作流信号集绑定到任务原子、策略与适配器；
+    信号按名称规范排序，值状态与来源字段全部参与哈希。
+    """
+
+    ordered_signals = sorted(
+        (deepcopy(dict(item)) for item in workflow_signals),
+        key=lambda item: str(item.get("signal", "")),
+    )
+    return artifact_fingerprint(
+        {
+            "task_atom_id": task_atom_id,
+            "workflow_policy_binding": dict(workflow_policy_binding),
+            "adapter_binding": dict(adapter_binding),
+            "workflow_signals": ordered_signals,
+        }
+    )
 
 
 @lru_cache(maxsize=None)
@@ -232,6 +284,10 @@ def build_artifact(kind: str, artifact: Mapping[str, Any]) -> dict[str, Any]:
         validate_reasoning_contract(result)
     elif kind == "reasoning_result":
         validate_reasoning_result(result)
+    elif kind == "workflow_route_envelope":
+        validate_workflow_route_envelope(result)
+    elif kind == "workflow_route_revision":
+        validate_workflow_route_revision(result)
     else:
         validate_schema(kind, result)
         validate_artifact_hash(kind, result)
@@ -291,6 +347,178 @@ def validate_reasoning_contract(contract: Mapping[str, Any]) -> None:
     reason_codes = [reason["reason_code"] for reason in reasons]
     if len(reason_codes) != len(set(reason_codes)):
         errors.append("routing reason codes must be unique / 路由原因码必须唯一")
+    if errors:
+        raise ArtifactValidationError(errors)
+
+
+def validate_workflow_route_envelope(envelope: Mapping[str, Any]) -> None:
+    """Validate one composite route envelope and its cross-field safety rules.
+
+    / 校验一个复合路由信封及其跨字段安全规则。
+    """
+
+    validate_schema("workflow_route_envelope", envelope)
+    validate_artifact_hash("workflow_route_envelope", envelope)
+    errors: list[str] = []
+
+    signals = envelope["workflow_signals"]
+    signal_names = [item["signal"] for item in signals]
+    if len(signal_names) != len(set(signal_names)):
+        errors.append(
+            "workflow route signal names must be unique / 工作流路由信号名称必须唯一"
+        )
+    if set(signal_names) != _WORKFLOW_ROUTE_SIGNAL_NAMES:
+        missing = sorted(_WORKFLOW_ROUTE_SIGNAL_NAMES - set(signal_names))
+        unexpected = sorted(set(signal_names) - _WORKFLOW_ROUTE_SIGNAL_NAMES)
+        errors.append(
+            "workflow route signals must equal the normative set "
+            f"(missing={missing}, unexpected={unexpected}) / "
+            "工作流路由信号必须与规范集合完全一致"
+        )
+
+    expected_fingerprint = workflow_signal_fingerprint(
+        task_atom_id=envelope["task_atom"]["task_atom_id"],
+        workflow_policy_binding=envelope["workflow_policy_binding"],
+        adapter_binding=envelope["adapter_binding"],
+        workflow_signals=signals,
+    )
+    if envelope["workflow_signal_fingerprint"] != expected_fingerprint:
+        errors.append(
+            "workflow_signal_fingerprint does not bind the frozen signal set / "
+            "workflow_signal_fingerprint 未绑定冻结信号集"
+        )
+
+    signal_by_name = {item["signal"]: item["value"] for item in signals}
+    task_intent = signal_by_name.get("task_intent", {})
+    if task_intent.get("state") == "observed" and task_intent.get("value") != envelope[
+        "task_atom"
+    ]["primary_intent"]:
+        errors.append(
+            "observed task intent differs from task atom primary intent / "
+            "已观测任务意图与任务原子主意图不一致"
+        )
+    if task_intent.get("state") != "observed" and envelope[
+        "execution_lane"
+    ] != "clarification_human_review":
+        errors.append(
+            "unknown task intent must use clarification_human_review / "
+            "任务意图未知时必须进入澄清或人工审核车道"
+        )
+
+    reasoning_decision = envelope["reasoning_decision"]
+    decision_content = dict(reasoning_decision)
+    decision_binding = decision_content.pop("decision_binding")
+    expected_decision_hash = artifact_fingerprint(decision_content)
+    if decision_binding["hash"] != expected_decision_hash:
+        errors.append(
+            "reasoning decision binding hash does not match its summary / "
+            "推理决定绑定哈希与决定摘要不一致"
+        )
+    if decision_binding["version"] != envelope["reasoning_policy_binding"]["version"]:
+        errors.append(
+            "reasoning decision binding version differs from reasoning policy / "
+            "推理决定绑定版本与推理策略版本不一致"
+        )
+    expected_workflow_decision_id = "WORKFLOW_ROUTE_" + artifact_fingerprint(
+        {
+            "workflow_policy_binding": envelope["workflow_policy_binding"],
+            "workflow_signal_fingerprint": envelope["workflow_signal_fingerprint"],
+            "reasoning_decision_binding": decision_binding,
+        }
+    ).removeprefix("sha256:")[:24]
+    if envelope["decision_id"] != expected_workflow_decision_id:
+        errors.append(
+            "workflow decision_id does not match its deterministic inputs / "
+            "工作流 decision_id 与确定性输入不一致"
+        )
+
+    action_risk = signal_by_name.get("action_risk", {})
+    if envelope["action_allowed"]:
+        if envelope["task_atom"]["risk_owner_binding"].get("state") != "observed":
+            errors.append(
+                "authorized action requires an observed risk owner / "
+                "授权行动必须具有已观测风险负责人"
+            )
+        if action_risk.get("state") != "observed" or action_risk.get("value") not in {
+            "reversible_write",
+            "sensitive_write",
+            "irreversible_external_action",
+        }:
+            errors.append(
+                "action_allowed is valid only for an explicit write-action risk / "
+                "action_allowed 仅适用于显式写行动风险"
+            )
+        human_gate = envelope["human_gate"]
+        if human_gate is not None and (
+            human_gate["status"] != "approved"
+            or human_gate["authority_binding"].get("state") != "observed"
+        ):
+            errors.append(
+                "authorized action requires an approved authoritative human gate / "
+                "授权行动要求人工闸门已批准且权限已观测"
+            )
+
+    if errors:
+        raise ArtifactValidationError(errors)
+
+
+def validate_workflow_route_revision(revision: Mapping[str, Any]) -> None:
+    """Validate one append-only workflow route revision event.
+
+    / 校验一个追加式工作流路由修订事件。
+    """
+
+    validate_schema("workflow_route_revision", revision)
+    validate_artifact_hash("workflow_route_revision", revision)
+    errors: list[str] = []
+    event_identity_content = dict(revision)
+    event_identity_content.pop("revision_event_hash")
+    event_identity_content.pop("revision_event_id")
+    expected_event_id = "WORKFLOW_ROUTE_REVISION_" + artifact_fingerprint(
+        event_identity_content
+    ).removeprefix("sha256:")[:24]
+    if revision["revision_event_id"] != expected_event_id:
+        errors.append(
+            "revision_event_id does not match event content / 修订事件标识与事件内容不一致"
+        )
+
+    if revision["to_revision"] != revision["from_revision"] + 1:
+        errors.append(
+            "route revisions must increase by exactly one / 路由修订号必须严格递增一"
+        )
+
+    if revision["previous_envelope_binding"]["id"] != revision["from_decision_id"]:
+        errors.append(
+            "previous envelope binding does not match from_decision_id / "
+            "前序路由信封绑定与 from_decision_id 不一致"
+        )
+    if revision["current_envelope_binding"]["id"] != revision["to_decision_id"]:
+        errors.append(
+            "current envelope binding does not match to_decision_id / "
+            "当前路由信封绑定与 to_decision_id 不一致"
+        )
+
+    for side in ("from_route", "to_route"):
+        route = revision[side]
+        should_have_configuration = route["reasoning_disposition"] == "execute"
+        if should_have_configuration != (route["configuration"] is not None):
+            errors.append(
+                f"{side} reasoning configuration disagrees with disposition / "
+                f"{side} 推理配置与处置结果不一致"
+            )
+
+    if revision["from_route"] == revision["to_route"] and revision["direction"] != "gate_only":
+        errors.append(
+            "route revision must change route or gate state / 路由修订必须改变路由或门禁状态"
+        )
+
+    if revision["direction"] == "deescalation" and not revision[
+        "hysteresis_evidence_bindings"
+    ]:
+        errors.append(
+            "deescalation requires hysteresis evidence / 降级必须具有迟滞证据"
+        )
+
     if errors:
         raise ArtifactValidationError(errors)
 
@@ -886,4 +1114,7 @@ __all__ = [
     "validate_reasoning_event",
     "validate_reasoning_result",
     "validate_schema",
+    "validate_workflow_route_envelope",
+    "validate_workflow_route_revision",
+    "workflow_signal_fingerprint",
 ]

@@ -611,6 +611,132 @@ def outcome_route_accuracy(
     )
 
 
+def outcome_linkage_coverage(
+    trustworthy_linked_route_outcomes: float | None,
+    completed_route_atoms_eligible_for_outcome_linkage: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Trustworthy route outcomes divided by eligible completed atoms.
+
+    / 可信路由后验数除以符合后验关联条件的已完成任务原子数。
+    """
+
+    return _bounded_rate(
+        "outcome_linkage_coverage",
+        trustworthy_linked_route_outcomes,
+        completed_route_atoms_eligible_for_outcome_linkage,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def underroute_rate(
+    atoms_succeeding_only_after_route_insufficiency_upgrade: float | None,
+    completed_atoms_with_auditable_route_outcome: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Outcome-audited atoms that required a route-insufficiency upgrade.
+
+    / 经后验审计且必须因路由不足升级后才成功的任务原子比例。
+    """
+
+    return _bounded_rate(
+        "underroute_rate",
+        atoms_succeeding_only_after_route_insufficiency_upgrade,
+        completed_atoms_with_auditable_route_outcome,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def overroute_rate(
+    audited_atoms_where_lighter_route_meets_same_validators: float | None,
+    atoms_in_valid_counterfactual_audit_sample: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Counterfactually audited atoms for which a lighter route is sufficient.
+
+    / 反事实审计中更轻路由仍满足同一验证器的任务原子比例。
+    """
+
+    return _bounded_rate(
+        "overroute_rate",
+        audited_atoms_where_lighter_route_meets_same_validators,
+        atoms_in_valid_counterfactual_audit_sample,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def route_abstention_rate(
+    abstained_route_decisions: float | None,
+    route_decisions_with_complete_identity: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Explicit abstentions among identity-complete route decisions.
+
+    / 身份完整路由决定中的显式弃权比例。
+    """
+
+    return _bounded_rate(
+        "route_abstention_rate",
+        abstained_route_decisions,
+        route_decisions_with_complete_identity,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def route_oscillation_rate(
+    atoms_exceeding_scene_switch_or_reversal_threshold: float | None,
+    atoms_with_complete_switch_chain: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Atoms whose complete route history crosses the owned oscillation threshold.
+
+    / 完整路由历史超过场景换路或往返阈值的任务原子比例。
+    """
+
+    return _bounded_rate(
+        "route_oscillation_rate",
+        atoms_exceeding_scene_switch_or_reversal_threshold,
+        atoms_with_complete_switch_chain,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def forced_route_with_missing_signal_rate(
+    executable_routes_with_required_signal_missing_or_unknown: float | None,
+    executable_routes: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Executable routes that violated the required-signal fail-closed rule.
+
+    / 违反必需信号缺失即阻断规则的可执行路由比例。
+    """
+
+    return _bounded_rate(
+        "forced_route_with_missing_signal_rate",
+        executable_routes_with_required_signal_missing_or_unknown,
+        executable_routes,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
 def hypothesis_elimination_per_iteration(
     hypotheses_eliminated_by_valid_evidence: float | None,
     completed_iterations: float | None,
@@ -1368,6 +1494,12 @@ _METRIC_FUNCTIONS = {
     "closed_step_record_completeness": closed_step_record_completeness,
     "route_stability_rate": route_stability_rate,
     "outcome_route_accuracy": outcome_route_accuracy,
+    "outcome_linkage_coverage": outcome_linkage_coverage,
+    "underroute_rate": underroute_rate,
+    "overroute_rate": overroute_rate,
+    "route_abstention_rate": route_abstention_rate,
+    "route_oscillation_rate": route_oscillation_rate,
+    "forced_route_with_missing_signal_rate": forced_route_with_missing_signal_rate,
     "hypothesis_elimination_per_iteration": hypothesis_elimination_per_iteration,
     "hypothesis_elimination_per_cost_unit": hypothesis_elimination_per_cost_unit,
     "budget_utilization_vector": budget_utilization_vector,
@@ -1839,6 +1971,12 @@ __all__ = [
     "max_budget_utilization",
     "no_progress_loop_rate",
     "outcome_route_accuracy",
+    "outcome_linkage_coverage",
+    "underroute_rate",
+    "overroute_rate",
+    "route_abstention_rate",
+    "route_oscillation_rate",
+    "forced_route_with_missing_signal_rate",
     "parse_failure_rate",
     "path_convergence_rate",
     "plan_compile_success_rate",
