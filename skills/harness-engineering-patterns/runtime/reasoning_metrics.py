@@ -1211,6 +1211,60 @@ def material_candidate_difference(
     )
 
 
+def candidate_completion_rate(
+    candidate_paths_with_terminal_record: float | None,
+    planned_candidate_paths: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return planned candidate paths with an auditable terminal. / 返回具有可审计终态的计划候选路径比例。"""
+
+    return bounded_ratio(
+        "candidate_completion_rate",
+        candidate_paths_with_terminal_record,
+        planned_candidate_paths,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def branch_diversity(
+    distinct_candidate_bindings: float | None,
+    completed_candidate_paths: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return distinct candidate bindings among completed paths. / 返回完成路径中不同候选绑定的比例。"""
+
+    return bounded_ratio(
+        "branch_diversity",
+        distinct_candidate_bindings,
+        completed_candidate_paths,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def branch_record_completeness(
+    complete_terminal_branch_records: float | None,
+    terminal_branch_records: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return complete branch records among explicit terminals. / 返回显式终态中完整分支记录的比例。"""
+
+    return bounded_ratio(
+        "branch_record_completeness",
+        complete_terminal_branch_records,
+        terminal_branch_records,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
 def path_convergence_rate(
     parallel_runs_selecting_a_validated_path: float | None,
     parallel_runs_completing_comparison: float | None,
@@ -1521,6 +1575,9 @@ _METRIC_FUNCTIONS = {
     "unsupported_conclusion_rate": unsupported_conclusion_rate,
     "unverified_premise_propagation": unverified_premise_propagation,
     "material_candidate_difference": material_candidate_difference,
+    "candidate_completion_rate": candidate_completion_rate,
+    "branch_diversity": branch_diversity,
+    "branch_record_completeness": branch_record_completeness,
     "path_convergence_rate": path_convergence_rate,
     "no_progress_loop_rate": no_progress_loop_rate,
     "budget_overrun_rate": budget_overrun_rate,
@@ -1952,6 +2009,9 @@ __all__ = [
     "budget_utilization_max",
     "budget_utilization_vector",
     "candidate_evidence_lineage_integrity_rate",
+    "candidate_completion_rate",
+    "branch_diversity",
+    "branch_record_completeness",
     "calculate_metric",
     "closed_step_record_completeness",
     "checkpoint_validation_binding_rate",

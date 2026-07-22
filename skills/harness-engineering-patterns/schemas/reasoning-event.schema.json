@@ -80,6 +80,7 @@
         "evidence_recorded",
         "candidate_created",
         "candidate_compared",
+        "parallel_path_updated",
         "iteration_closed",
         "mode_switched",
         "validation_started",
@@ -204,6 +205,18 @@
     },
     {
       "if": {
+        "properties": { "event_type": { "const": "parallel_path_updated" } },
+        "required": ["event_type"]
+      },
+      "then": {
+        "properties": {
+          "step_id": { "$ref": "#/$defs/Identifier" },
+          "candidate_path_id": { "$ref": "#/$defs/Identifier" }
+        }
+      }
+    },
+    {
+      "if": {
         "properties": { "event_type": { "const": "human_work_updated" } },
         "required": ["event_type"]
       },
@@ -287,6 +300,10 @@
     {
       "if": { "properties": { "event_type": { "const": "candidate_compared" } }, "required": ["event_type"] },
       "then": { "properties": { "payload": { "properties": { "kind": { "const": "candidate" }, "data": { "$ref": "#/$defs/CandidateComparedPayload" } } } } }
+    },
+    {
+      "if": { "properties": { "event_type": { "const": "parallel_path_updated" } }, "required": ["event_type"] },
+      "then": { "properties": { "payload": { "properties": { "kind": { "const": "parallel_path" }, "data": { "$ref": "#/$defs/ParallelPathLifecyclePayload" } } } } }
     },
     {
       "if": { "properties": { "event_type": { "const": "iteration_closed" } }, "required": ["event_type"] },
@@ -715,7 +732,7 @@
       "additionalProperties": false,
       "required": ["kind", "data"],
       "properties": {
-        "kind": { "enum": ["lifecycle", "state_transition", "route", "step", "evidence", "tool", "candidate", "iteration", "mode", "validation", "budget", "human_work", "outcome", "governance", "feedback", "probe_health"] },
+        "kind": { "enum": ["lifecycle", "state_transition", "route", "step", "evidence", "tool", "candidate", "parallel_path", "iteration", "mode", "validation", "budget", "human_work", "outcome", "governance", "feedback", "probe_health"] },
         "data": {
           "allOf": [
             { "type": "object" },
@@ -876,6 +893,12 @@
           }
         },
         "progress": { "type": "boolean" },
+        "information_gain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Externally measured information gain for this closed step. / 当前闭合步骤的外部可度量信息增益。"
+        },
         "no_progress_streak": { "type": "integer", "minimum": 0 },
         "started_at": { "type": "string", "format": "date-time" },
         "ended_at": { "type": "string", "format": "date-time" }
@@ -1464,6 +1487,48 @@
           "if": { "properties": { "decision": { "const": "selected" } }, "required": ["decision"] },
           "then": { "required": ["selected_candidate_binding"] },
           "else": { "not": { "required": ["selected_candidate_binding"] } }
+        }
+      ]
+    },
+    "ParallelPathLifecyclePayload": {
+      "type": "object",
+      "title": "并行路径生命周期载荷 / Parallel-path lifecycle payload",
+      "description": "记录分支租约、续约、释放、过期或计划截止时间。/ Records branch lease acquisition, renewal, release, expiry, or the plan deadline.",
+      "additionalProperties": false,
+      "required": ["plan_binding", "phase", "observed_at", "deadline_at"],
+      "properties": {
+        "plan_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "phase": { "enum": ["acquired", "renewed", "released", "expired", "deadline_reached"] },
+        "observed_at": { "type": "string", "format": "date-time" },
+        "deadline_at": { "type": ["string", "null"], "format": "date-time" },
+        "lease_id": { "$ref": "#/$defs/Identifier" },
+        "worker_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "lease_revision": { "type": "integer", "minimum": 1 },
+        "fencing_token": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "跨同一路径租约单调递增的栅栏令牌；旧事件可缺省并由重放器派生。/ Monotonically increasing fencing token across leases for one path; legacy events may omit it and replay derives it."
+        },
+        "acquired_at": { "type": "string", "format": "date-time" },
+        "expires_at": { "type": "string", "format": "date-time" },
+        "reason": { "type": "string", "minLength": 1 }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "phase": { "enum": ["acquired", "renewed", "released", "expired"] } },
+            "required": ["phase"]
+          },
+          "then": {
+            "required": ["lease_id", "worker_binding", "lease_revision", "acquired_at", "expires_at"]
+          }
+        },
+        {
+          "if": {
+            "properties": { "phase": { "const": "deadline_reached" } },
+            "required": ["phase"]
+          },
+          "then": { "required": ["reason"] }
         }
       ]
     },

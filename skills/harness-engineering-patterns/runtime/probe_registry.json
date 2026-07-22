@@ -84,11 +84,11 @@
     },
     {
       "probe_id": "PROBE_0008",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "name_en": "Parallel Path",
       "name_zh": "并行路径",
       "owner": "reasoning_parallel",
-      "trigger_event_types": ["candidate_created", "candidate_compared"],
+      "trigger_event_types": ["candidate_created", "candidate_compared", "parallel_path_updated"],
       "required_capture_fields": ["candidate_path_id", "payload.data.candidate_binding", "payload.data.criteria_binding", "payload.data.selection"],
       "output_event_type": "feedback_updated",
       "disposition": "block_named_transition"

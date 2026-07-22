@@ -98,6 +98,8 @@ RUNTIME_SCHEMA_FILES = (
     "schemas/reasoning-chain-blueprint.schema.json",
     "schemas/reasoning-chain-checkpoint-validation.schema.json",
     "schemas/reasoning-chain-plan.schema.json",
+    "schemas/reasoning-parallel-blueprint.schema.json",
+    "schemas/reasoning-parallel-plan.schema.json",
     "schemas/reasoning-contract.schema.json",
     "schemas/reasoning-event.schema.json",
     "schemas/reasoning-result.schema.json",
@@ -110,6 +112,13 @@ RUNTIME_IMPLEMENTATION_FILES = (
     "runtime/reasoning_chain_factory.py",
     "runtime/reasoning_chain_compiler.py",
     "runtime/reasoning_chain_session.py",
+    "runtime/reasoning_parallel_factory.py",
+    "runtime/reasoning_parallel_outbox.py",
+    "runtime/reasoning_parallel_postgres_outbox.py",
+    "runtime/reasoning_parallel_projection.py",
+    "runtime/reasoning_parallel_scheduler.py",
+    "runtime/reasoning_event_postgres_store.py",
+    "runtime/reasoning_event_sqlite_store.py",
     "runtime/reasoning_runtime.py",
     "runtime/reasoning_router.py",
     "runtime/workflow_router.py",
@@ -132,6 +141,34 @@ CHAIN_FACTORY_MARKERS = (
     "../schemas/reasoning-chain-plan.schema.json",
     "../runtime/reasoning_chain_factory.py",
     "preflight runtime capabilities / 预检运行时能力",
+    "private chain-of-thought",
+    "私密思维链",
+)
+
+PARALLEL_FACTORY_REFERENCE = (
+    "references/reasoning-parallel-factory.md"
+)
+
+PARALLEL_FACTORY_MARKERS = (
+    "../schemas/reasoning-parallel-blueprint.schema.json",
+    "../schemas/reasoning-parallel-plan.schema.json",
+    "../runtime/reasoning_parallel_factory.py",
+    "../runtime/reasoning_parallel_outbox.py",
+    "../runtime/reasoning_parallel_postgres_outbox.py",
+    "../runtime/reasoning_parallel_projection.py",
+    "../runtime/reasoning_parallel_scheduler.py",
+    "../runtime/reasoning_event_postgres_store.py",
+    "../runtime/reasoning_event_sqlite_store.py",
+    "HARNESS_POSTGRES_DSN",
+    "fencing token / 栅栏令牌",
+    "at-least-once / 至少一次",
+    "resume_session()",
+    "close_leased_branch()",
+    "finalize_selected_candidate()",
+    "terminal_results",
+    ".results.json",
+    "project_parallel_run(plan, events)",
+    "All branch budgets are reserved before any branch starts.",
     "private chain-of-thought",
     "私密思维链",
 )
@@ -361,11 +398,15 @@ RUNTIME_REQUIRED_EXPORTS = {
         "BudgetLimits",
         "ChainPlanSession",
         "EventStore",
+        "ParallelDispatchCoordinator",
+        "PostgresEventStore",
+        "PostgresParallelDispatchOutbox",
         "ReasoningEngine",
         "ReasoningChainFactory",
         "ReasoningEvent",
         "RUNTIME_SUPPORTED_STOP_TYPES",
         "RiskLevel",
+        "SqliteParallelDispatchOutbox",
         "SqliteWorkflowRouteLedger",
         "workflow_route_stream_key",
         "ValidationStatus",
@@ -2243,6 +2284,54 @@ def validate_runtime_protocols(
             "推理执行协议未链接推理链工厂",
         )
 
+    parallel_factory_path = skill_dir / PARALLEL_FACTORY_REFERENCE
+    parallel_factory_reference = (
+        parallel_factory_path.read_text(encoding="utf-8")
+        if parallel_factory_path.is_file()
+        else ""
+    )
+    if not parallel_factory_reference:
+        report.error(
+            "reasoning_parallel_factory_reference",
+            f"missing parallel factory reference {PARALLEL_FACTORY_REFERENCE}",
+            f"缺少推理并行工厂参考文档 {PARALLEL_FACTORY_REFERENCE}",
+        )
+    else:
+        for marker in PARALLEL_FACTORY_MARKERS:
+            if marker not in parallel_factory_reference:
+                report.error(
+                    "reasoning_parallel_factory_reference",
+                    f"parallel factory reference missing {marker}",
+                    f"推理并行工厂参考文档缺少 {marker}",
+                )
+
+    for marker in (
+        PARALLEL_FACTORY_REFERENCE,
+        "runtime/reasoning_parallel_factory.py",
+        "runtime/reasoning_parallel_projection.py",
+        "runtime/reasoning_parallel_scheduler.py",
+        "runtime/reasoning_event_sqlite_store.py",
+        "ParallelPlanSession",
+        "ParallelPathScheduler",
+        "resume_session()",
+        "close_leased_branch()",
+        "finalize_selected_candidate()",
+        "project_parallel_run(plan, events)",
+    ):
+        if marker not in skill_text:
+            report.error(
+                "reasoning_parallel_factory_entrypoint",
+                f"SKILL.md does not route parallel execution through {marker}",
+                f"SKILL.md 未将并行执行路由到 {marker}",
+            )
+
+    if "reasoning-parallel-factory.md" not in execution:
+        report.error(
+            "reasoning_parallel_factory_entrypoint",
+            "reasoning execution protocol does not link the parallel factory",
+            "推理执行协议未链接推理并行工厂",
+        )
+
     for cell in registry.get("cells", []):
         if cell.get("capability_ref") != "COG_REASONING":
             continue
@@ -2280,6 +2369,17 @@ def validate_runtime_protocols(
                         "reasoning_chain_factory_entrypoint",
                         f"reasoning-chain {document_name} does not link the chain factory",
                         f"reasoning-chain {document_name} 未链接推理链工厂",
+                    )
+        if cell_key == "reasoning-parallel":
+            for document_name, document in (
+                ("design", design),
+                ("observability", observability),
+            ):
+                if "reasoning-parallel-factory.md" not in document:
+                    report.error(
+                        "reasoning_parallel_factory_entrypoint",
+                        f"reasoning-parallel {document_name} does not link the parallel factory",
+                        f"reasoning-parallel {document_name} 未链接推理并行工厂",
                     )
 
 def validate_navigation(skill_dir: pathlib.Path, report: ValidationReport) -> None:

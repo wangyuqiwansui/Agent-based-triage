@@ -1,0 +1,327 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hanerss.local/schemas/reasoning-parallel-plan.schema.json",
+  "x-contract-version": "1.0.0",
+  "title": "Reasoning Parallel Plan / 推理并行计划",
+  "description": "Immutable factory output binding an isolated branch wave and explicit synthesis to one governed reasoning contract. / 工厂生成的不可变制品，将隔离分支波次和显式综合绑定到一个受治理推理契约。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "plan_id",
+    "plan_version",
+    "plan_hash",
+    "factory_binding",
+    "blueprint_binding",
+    "contract_binding",
+    "workflow_id",
+    "task_id",
+    "run_id",
+    "scene_id",
+    "execution_mode",
+    "primary_topology",
+    "supporting_topologies",
+    "isolation_policy",
+    "comparison_contract",
+    "comparison_rule_binding",
+    "join_policy",
+    "branches",
+    "synthesis",
+    "wave_budget_allocation",
+    "budget_allocation",
+    "final_claim_ids",
+    "probe_plan",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "plan_id": { "$ref": "#/$defs/Identifier" },
+    "plan_version": { "$ref": "#/$defs/SemanticVersion" },
+    "plan_hash": { "$ref": "#/$defs/Sha256" },
+    "factory_binding": { "$ref": "#/$defs/Binding" },
+    "blueprint_binding": { "$ref": "#/$defs/Binding" },
+    "contract_binding": { "$ref": "#/$defs/Binding" },
+    "workflow_id": { "$ref": "#/$defs/Identifier" },
+    "task_id": { "$ref": "#/$defs/Identifier" },
+    "run_id": { "$ref": "#/$defs/Identifier" },
+    "scene_id": { "$ref": "#/$defs/Identifier" },
+    "execution_mode": { "const": "parallel" },
+    "primary_topology": { "const": "parallel" },
+    "supporting_topologies": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "enum": ["orchestration", "hierarchy"] }
+    },
+    "isolation_policy": { "$ref": "#/$defs/IsolationPolicy" },
+    "comparison_contract": { "$ref": "#/$defs/ComparisonContract" },
+    "comparison_rule_binding": { "$ref": "#/$defs/Binding" },
+    "join_policy": { "$ref": "#/$defs/JoinPolicy" },
+    "branches": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 8,
+      "items": { "$ref": "#/$defs/PlanBranch" }
+    },
+    "synthesis": { "$ref": "#/$defs/PlanSynthesis" },
+    "wave_budget_allocation": { "$ref": "#/$defs/BudgetAllocation" },
+    "budget_allocation": { "$ref": "#/$defs/BudgetAllocation" },
+    "final_claim_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/Identifier" }
+    },
+    "probe_plan": { "$ref": "#/$defs/ProbePlan" },
+    "created_at": { "type": "string", "format": "date-time" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "Binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "BudgetAllocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reasoning_tokens",
+        "latency_ms",
+        "model_calls",
+        "tool_calls",
+        "parallel_paths",
+        "iterations",
+        "retries",
+        "total_cost_units"
+      ],
+      "properties": {
+        "reasoning_tokens": { "type": "integer", "minimum": 0 },
+        "latency_ms": { "type": "integer", "minimum": 0 },
+        "model_calls": { "type": "integer", "minimum": 0 },
+        "tool_calls": { "type": "integer", "minimum": 0 },
+        "parallel_paths": { "type": "integer", "minimum": 0 },
+        "iterations": { "type": "integer", "minimum": 0 },
+        "retries": { "type": "integer", "minimum": 0 },
+        "total_cost_units": { "type": "number", "minimum": 0 }
+      }
+    },
+    "IsolationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_id",
+        "policy_version",
+        "strategy",
+        "shared_input_binding",
+        "intermediate_visibility",
+        "namespace_per_branch"
+      ],
+      "properties": {
+        "policy_id": { "$ref": "#/$defs/Identifier" },
+        "policy_version": { "$ref": "#/$defs/SemanticVersion" },
+        "strategy": { "enum": ["shared_input_only", "sandboxed_child_contexts"] },
+        "shared_input_binding": { "$ref": "#/$defs/Binding" },
+        "intermediate_visibility": { "const": "branch_private_until_closed" },
+        "namespace_per_branch": { "const": true }
+      }
+    },
+    "Criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "criterion_id",
+        "name_en",
+        "name_zh",
+        "description_en",
+        "description_zh",
+        "evaluation_type",
+        "direction",
+        "required",
+        "weight"
+      ],
+      "properties": {
+        "criterion_id": { "$ref": "#/$defs/Identifier" },
+        "name_en": { "type": "string", "minLength": 1 },
+        "name_zh": { "type": "string", "minLength": 1 },
+        "description_en": { "type": "string", "minLength": 1 },
+        "description_zh": { "type": "string", "minLength": 1 },
+        "evaluation_type": { "enum": ["boolean", "ordinal", "numeric"] },
+        "direction": { "enum": ["pass", "maximize", "minimize"] },
+        "required": { "type": "boolean" },
+        "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "Veto": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["veto_id", "description_en", "description_zh", "predicate"],
+      "properties": {
+        "veto_id": { "$ref": "#/$defs/Identifier" },
+        "description_en": { "type": "string", "minLength": 1 },
+        "description_zh": { "type": "string", "minLength": 1 },
+        "predicate": { "type": "object", "minProperties": 1, "additionalProperties": true }
+      }
+    },
+    "ComparisonContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "comparison_id",
+        "comparison_version",
+        "material_difference_dimensions",
+        "minimum_material_dimensions",
+        "criteria",
+        "vetoes",
+        "tie_policy"
+      ],
+      "properties": {
+        "comparison_id": { "$ref": "#/$defs/Identifier" },
+        "comparison_version": { "$ref": "#/$defs/SemanticVersion" },
+        "material_difference_dimensions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["hypothesis", "evidence_source", "rule_version", "model_version", "plan"] }
+        },
+        "minimum_material_dimensions": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "criteria": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/Criterion" } },
+        "vetoes": { "type": "array", "items": { "$ref": "#/$defs/Veto" } },
+        "tie_policy": { "enum": ["escalate", "conditional_alternatives", "request_more_evidence"] }
+      }
+    },
+    "JoinPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["completion_mode", "minimum_completed_branches", "on_deadline"],
+      "properties": {
+        "completion_mode": { "enum": ["all_completed", "quorum"] },
+        "minimum_completed_branches": { "type": "integer", "minimum": 2, "maximum": 8 },
+        "on_deadline": { "enum": ["proceed_with_quorum", "escalate", "fail"] }
+      }
+    },
+    "MaterialDifference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dimension", "statement"],
+      "properties": {
+        "dimension": { "enum": ["hypothesis", "evidence_source", "rule_version", "model_version", "plan"] },
+        "statement": { "type": "string", "minLength": 1, "maxLength": 2000 }
+      }
+    },
+    "PlanBranch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "branch_step_id",
+        "candidate_path_id",
+        "name_en",
+        "name_zh",
+        "hypothesis",
+        "material_difference",
+        "claim_ids",
+        "required_evidence_types",
+        "data_gap_policy",
+        "budget_allocation"
+      ],
+      "properties": {
+        "branch_step_id": { "$ref": "#/$defs/Identifier" },
+        "candidate_path_id": { "$ref": "#/$defs/Identifier" },
+        "name_en": { "type": "string", "minLength": 1 },
+        "name_zh": { "type": "string", "minLength": 1 },
+        "hypothesis": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "material_difference": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/MaterialDifference" } },
+        "claim_ids": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/Identifier" } },
+        "required_evidence_types": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/Identifier" } },
+        "data_gap_policy": { "enum": ["prune", "request_probe", "wait", "escalate"] },
+        "budget_allocation": { "$ref": "#/$defs/BudgetAllocation" }
+      }
+    },
+    "PlanSynthesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_id",
+        "step_key",
+        "name_en",
+        "name_zh",
+        "claim_to_verify",
+        "action_instruction",
+        "required_evidence_types",
+        "budget_allocation"
+      ],
+      "properties": {
+        "step_id": { "$ref": "#/$defs/Identifier" },
+        "step_key": { "$ref": "#/$defs/Identifier" },
+        "name_en": { "type": "string", "minLength": 1 },
+        "name_zh": { "type": "string", "minLength": 1 },
+        "claim_to_verify": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "action_instruction": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "required_evidence_types": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/Identifier" } },
+        "budget_allocation": { "$ref": "#/$defs/BudgetAllocation" }
+      }
+    },
+    "ProbePlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "execution_mode",
+        "supporting_topologies",
+        "active_conditions",
+        "condition_states",
+        "required_probes",
+        "required_probe_bindings",
+        "activated_conditionals"
+      ],
+      "properties": {
+        "execution_mode": { "const": "parallel" },
+        "supporting_topologies": { "type": "array", "uniqueItems": true, "items": { "enum": ["orchestration", "hierarchy"] } },
+        "active_conditions": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/Identifier" } },
+        "condition_states": { "type": "object", "minProperties": 1, "additionalProperties": { "enum": ["true", "false"] } },
+        "required_probes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^PROBE_[0-9]{4}$" } },
+        "required_probe_bindings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["probe_id", "version"],
+            "properties": {
+              "probe_id": { "type": "string", "pattern": "^PROBE_[0-9]{4}$" },
+              "version": { "$ref": "#/$defs/SemanticVersion" }
+            }
+          }
+        },
+        "activated_conditionals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["probe_id", "condition_id"],
+            "properties": {
+              "probe_id": { "type": "string", "pattern": "^PROBE_[0-9]{4}$" },
+              "condition_id": { "$ref": "#/$defs/Identifier" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

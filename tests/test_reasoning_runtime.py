@@ -462,6 +462,97 @@ class EventStoreTest(unittest.TestCase):
 
 
 class BudgetLedgerTest(unittest.TestCase):
+    def test_reserve_many_is_all_or_none_and_exactly_idempotent(self):
+        ledger = BudgetLedger({"tokens": 10, "paths": 2})
+
+        identifiers = ledger.reserve_many(
+            {
+                "batch-a": {"tokens": 4, "paths": 1},
+                "batch-b": {"tokens": 4, "paths": 1},
+            }
+        )
+        duplicate = ledger.reserve_many(
+            {
+                "batch-a": {"tokens": 4, "paths": 1},
+                "batch-b": {"tokens": 4, "paths": 1},
+            }
+        )
+
+        self.assertEqual(identifiers, ("batch-a", "batch-b"))
+        self.assertEqual(duplicate, identifiers)
+        self.assertEqual(ledger.snapshot().reservation_count, 2)
+        with self.assertRaises(BudgetExceededError):
+            ledger.reserve_many(
+                {
+                    "batch-c": {"tokens": 1},
+                    "batch-d": {"tokens": 2},
+                }
+            )
+        self.assertEqual(ledger.snapshot().reservation_count, 2)
+
+    def test_engine_budget_batch_rolls_back_ledger_and_events_together(self):
+        class FailingBatchStore(EventStore):
+            budget_events = 0
+
+            def append(self, **kwargs):
+                if kwargs.get("event_type") == "budget_reserved":
+                    self.budget_events += 1
+                    if self.budget_events == 2:
+                        raise RuntimeError("injected second reservation event failure")
+                return super().append(**kwargs)
+
+        store = FailingBatchStore()
+        engine = ReasoningEngine(store)
+        run_id = engine.create_run(
+            task_id="task-budget-batch-rollback",
+            budget_limits={"tokens": 10, "paths": 2},
+        )
+
+        with self.assertRaises(RuntimeError):
+            engine.reserve_budget_batch(
+                run_id,
+                {
+                    "batch-reservation-a": {"tokens": 4, "paths": 1},
+                    "batch-reservation-b": {"tokens": 4, "paths": 1},
+                },
+                idempotency_key="budget-batch-rollback",
+            )
+
+        self.assertEqual(engine.snapshot(run_id).budget.reservation_count, 0)
+        self.assertFalse(
+            any(event.event_type == "budget_reserved" for event in store.events(run_id))
+        )
+
+    def test_engine_budget_batch_retry_does_not_recreate_consumed_member(self):
+        engine = ReasoningEngine()
+        run_id = engine.create_run(
+            task_id="task-budget-batch-retry",
+            budget_limits={"tokens": 10, "paths": 2},
+        )
+        reservations = {
+            "batch-retry-a": {"tokens": 4, "paths": 1},
+            "batch-retry-b": {"tokens": 4, "paths": 1},
+        }
+        first = engine.reserve_budget_batch(
+            run_id,
+            reservations,
+            idempotency_key="budget-batch-retry",
+        )
+        engine.consume_budget(
+            run_id,
+            {"tokens": 1, "paths": 1},
+            reservation_id="batch-retry-a",
+            idempotency_key="budget-batch-consume-a",
+        )
+        second = engine.reserve_budget_batch(
+            run_id,
+            reservations,
+            idempotency_key="budget-batch-retry",
+        )
+
+        self.assertEqual(second, first)
+        self.assertEqual(engine.snapshot(run_id).budget.reservation_count, 1)
+
     def test_budget_and_event_write_roll_back_together(self):
         class FailingEventStore(EventStore):
             fail_type = None

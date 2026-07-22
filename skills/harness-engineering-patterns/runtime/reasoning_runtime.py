@@ -641,6 +641,43 @@ class BudgetLedger:
             self._reservations[identifier] = usage
             return identifier
 
+    def reserve_many(
+        self,
+        reservations: Mapping[str, BudgetUsage | Mapping[str, Any]],
+    ) -> tuple[str, ...]:
+        """Atomically reserve a named batch or change nothing / 原子预留具名批次，否则全部不变。"""
+
+        if not isinstance(reservations, Mapping) or not reservations:
+            raise ValueError(
+                "reservations must be a non-empty mapping / 预留批次必须是非空映射"
+            )
+        normalized: list[tuple[str, BudgetUsage]] = []
+        for identifier, amounts in reservations.items():
+            if not isinstance(identifier, str) or not identifier:
+                raise ValueError(
+                    "reservation IDs must be non-empty strings / 预留标识必须为非空字符串"
+                )
+            normalized.append((identifier, BudgetUsage.from_value(amounts)))
+
+        with self._lock:
+            new_total = BudgetUsage()
+            pending: list[tuple[str, BudgetUsage]] = []
+            for identifier, usage in normalized:
+                existing = self._reservations.get(identifier)
+                if existing is not None:
+                    if existing != usage:
+                        raise DuplicateEventConflictError(
+                            "reservation id reused with different amounts / "
+                            f"预留标识内容冲突: {identifier}"
+                        )
+                    continue
+                pending.append((identifier, usage))
+                new_total = new_total.plus(usage)
+            self._assert_fits(new_total)
+            for identifier, usage in pending:
+                self._reservations[identifier] = usage
+            return tuple(identifier for identifier, _ in normalized)
+
     def consume(
         self,
         amounts: BudgetUsage | Mapping[str, Any] | None = None,
@@ -751,6 +788,7 @@ _EVENT_PAYLOAD_KINDS = {
     "action_observed": "tool",
     "candidate_created": "candidate",
     "candidate_compared": "candidate",
+    "parallel_path_updated": "parallel_path",
     "iteration_closed": "iteration",
     "no_progress_limit_reached": "iteration",
     "validation_started": "validation",
@@ -1207,6 +1245,8 @@ class EventStore:
         self._by_run: dict[str, list[ReasoningEvent]] = {}
         self._by_event_id: dict[str, ReasoningEvent] = {}
         self._by_idempotency: dict[tuple[str, str], ReasoningEvent] = {}
+        self._terminal_results: dict[str, str] = {}
+        self._terminal_result_ids: dict[str, str] = {}
         self._lock = threading.RLock()
         self._schema_validator: Draft202012Validator | None = None
         if validate_schema:
@@ -1474,6 +1514,44 @@ class EventStore:
             self._by_idempotency[(run_id, dedup_key)] = event
             return event
 
+    def _index_restored_event(self, event: ReasoningEvent) -> None:
+        """Validate and index one authoritative persisted event / 校验并索引一条权威持久化事件。"""
+
+        if event.event_id in self._by_event_id:
+            raise EventStorePersistenceError(
+                f"duplicate persisted event_id / 持久化事件标识重复: {event.event_id}"
+            )
+        key = (event.run_id, event.idempotency_key)
+        if key in self._by_idempotency:
+            raise EventStorePersistenceError(
+                "duplicate persisted idempotency key / 持久化幂等键重复: "
+                + event.idempotency_key
+            )
+        expected_sequence = len(self._by_run.get(event.run_id, ())) + 1
+        if event.sequence != expected_sequence:
+            raise EventStorePersistenceError(
+                "persisted run sequence is not contiguous / 持久化运行序列不连续: "
+                f"expected {expected_sequence}, got {event.sequence}"
+            )
+        prior_events = self._by_run.get(event.run_id, ())
+        if prior_events and prior_events[-1].state in _TERMINAL_STATES:
+            prior = prior_events[-1]
+            envelope = event.as_dict()
+            if not (
+                event.event_type == "run_ended"
+                and prior.event_type == "state_transitioned"
+                and event.state is prior.state
+                and envelope.get("parent_event_id") == prior.event_id
+            ):
+                raise EventStorePersistenceError(
+                    "persisted terminal stream contains trailing events / "
+                    "持久化终态事件流包含尾随事件"
+                )
+        self._events.append(event)
+        self._by_run.setdefault(event.run_id, []).append(event)
+        self._by_event_id[event.event_id] = event
+        self._by_idempotency[key] = event
+
     def _remove_events(self, appended: Sequence[ReasoningEvent]) -> None:
         """Remove an uncommitted suffix from every index / 从所有索引移除未提交后缀。"""
 
@@ -1549,6 +1627,116 @@ class EventStore:
             state = reducer(state, event)
         return state
 
+    @staticmethod
+    def _terminal_result_json(
+        run_id: str,
+        result: Mapping[str, Any],
+    ) -> str:
+        """Validate and canonicalize one immutable terminal result.
+
+        / 校验并规范化一份不可变终态结果。
+        """
+
+        if not isinstance(run_id, str) or not run_id:
+            raise ValueError("run_id is required / 运行标识不能为空")
+        if not isinstance(result, Mapping):
+            raise TypeError("terminal result must be a mapping / 终态结果必须为映射")
+        artifact = json.loads(_canonical_json(dict(result)))
+        validate_reasoning_result(artifact)
+        if artifact["run_id"] != run_id:
+            raise EventStorePersistenceError(
+                "terminal result run binding mismatch / 终态结果运行绑定不匹配"
+            )
+        return _canonical_json(artifact)
+
+    def _assert_terminal_result_stream(self, run_id: str, result_json: str) -> None:
+        events = self._by_run.get(run_id, ())
+        if not events or events[-1].state not in _TERMINAL_STATES:
+            raise EventStorePersistenceError(
+                "terminal result requires a terminal event stream / "
+                "终态结果要求事件流已进入终态"
+            )
+        result = json.loads(result_json)
+        if result["terminal_state"] != events[-1].state.value:
+            raise EventStorePersistenceError(
+                "terminal result state differs from the event stream / "
+                "终态结果状态与事件流不一致"
+            )
+
+    def _index_restored_terminal_result(
+        self,
+        run_id: str,
+        result: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        result_json = self._terminal_result_json(run_id, result)
+        self._assert_terminal_result_stream(run_id, result_json)
+        artifact = json.loads(result_json)
+        result_id = artifact["result_id"]
+        existing_run = self._terminal_result_ids.get(result_id)
+        if existing_run is not None and existing_run != run_id:
+            raise EventStorePersistenceError(
+                "terminal result_id is bound to another run / "
+                "终态结果标识已绑定到其他运行"
+            )
+        existing = self._terminal_results.get(run_id)
+        if existing is not None and existing != result_json:
+            raise EventStorePersistenceError(
+                "multiple terminal results exist for one run / 单个运行存在多个终态结果"
+            )
+        self._terminal_results[run_id] = result_json
+        self._terminal_result_ids[result_id] = run_id
+        return artifact
+
+    def _remove_terminal_result(self, run_id: str) -> None:
+        result_json = self._terminal_results.pop(run_id, None)
+        if result_json is None:
+            return
+        result_id = json.loads(result_json)["result_id"]
+        if self._terminal_result_ids.get(result_id) == run_id:
+            self._terminal_result_ids.pop(result_id, None)
+
+    def save_terminal_result(
+        self,
+        run_id: str,
+        result: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        """Immutably save one result after its event stream reaches terminal.
+
+        Exact retries return the stored result; divergent content fails closed.
+        / 在事件流进入终态后不可变地保存结果。完全重试返回原结果，内容分歧则
+        默认阻断。
+        """
+
+        result_json = self._terminal_result_json(run_id, result)
+        with self._lock:
+            existing = self._terminal_results.get(run_id)
+            if existing is not None:
+                if existing != result_json:
+                    raise DuplicateEventConflictError(
+                        "terminal run already has a different persisted result / "
+                        "终态运行已有不同的持久化结果"
+                    )
+                return json.loads(existing)
+            self._assert_terminal_result_stream(run_id, result_json)
+            artifact = json.loads(result_json)
+            result_id = artifact["result_id"]
+            existing_run = self._terminal_result_ids.get(result_id)
+            if existing_run is not None and existing_run != run_id:
+                raise DuplicateEventConflictError(
+                    "terminal result_id is already used by another run / "
+                    "终态结果标识已被其他运行使用"
+                )
+            self._terminal_results[run_id] = result_json
+            self._terminal_result_ids[result_id] = run_id
+            return artifact
+
+    def load_terminal_result(self, run_id: str) -> dict[str, Any] | None:
+        """Load a detached immutable terminal result / 加载独立副本形式的不可变终态结果。"""
+
+        with self._lock:
+            result_json = self._terminal_results.get(run_id)
+            return None if result_json is None else json.loads(result_json)
+
 
 class JsonlEventStore(EventStore):
     """Crash-consistent JSONL reference store with atomic transactions.
@@ -1571,15 +1759,23 @@ class JsonlEventStore(EventStore):
         validate_schema: bool = True,
     ) -> None:
         self._path = Path(path).resolve()
+        self._results_path = self._path.with_name(self._path.name + ".results.json")
         self._transaction_depth = 0
         super().__init__(validate_schema=validate_schema)
         self._load_snapshot()
+        self._load_terminal_results()
 
     @property
     def path(self) -> Path:
         """Return the resolved durable snapshot path / 返回已解析的持久化快照路径。"""
 
         return self._path
+
+    @property
+    def results_path(self) -> Path:
+        """Return the terminal-result sidecar path / 返回终态结果伴随文件路径。"""
+
+        return self._results_path
 
     @staticmethod
     def _record_hash(record: Mapping[str, Any]) -> str:
@@ -1594,42 +1790,6 @@ class JsonlEventStore(EventStore):
         }
         record["record_hash"] = self._record_hash(record)
         return record
-
-    def _index_restored_event(self, event: ReasoningEvent) -> None:
-        if event.event_id in self._by_event_id:
-            raise EventStorePersistenceError(
-                f"duplicate persisted event_id / 持久化事件标识重复: {event.event_id}"
-            )
-        key = (event.run_id, event.idempotency_key)
-        if key in self._by_idempotency:
-            raise EventStorePersistenceError(
-                "duplicate persisted idempotency key / 持久化幂等键重复: "
-                + event.idempotency_key
-            )
-        expected_sequence = len(self._by_run.get(event.run_id, ())) + 1
-        if event.sequence != expected_sequence:
-            raise EventStorePersistenceError(
-                "persisted run sequence is not contiguous / 持久化运行序列不连续: "
-                f"expected {expected_sequence}, got {event.sequence}"
-            )
-        prior_events = self._by_run.get(event.run_id, ())
-        if prior_events and prior_events[-1].state in _TERMINAL_STATES:
-            prior = prior_events[-1]
-            envelope = event.as_dict()
-            if not (
-                event.event_type == "run_ended"
-                and prior.event_type == "state_transitioned"
-                and event.state is prior.state
-                and envelope.get("parent_event_id") == prior.event_id
-            ):
-                raise EventStorePersistenceError(
-                    "persisted terminal stream contains trailing events / "
-                    "持久化终态事件流包含尾随事件"
-                )
-        self._events.append(event)
-        self._by_run.setdefault(event.run_id, []).append(event)
-        self._by_event_id[event.event_id] = event
-        self._by_idempotency[key] = event
 
     def _load_snapshot(self) -> None:
         if not self._path.exists():
@@ -1722,6 +1882,93 @@ class JsonlEventStore(EventStore):
             raise EventStorePersistenceError(
                 f"durable event commit failed / 持久化事件提交失败: {self._path}"
             ) from exc
+
+    def _terminal_results_record(self) -> dict[str, Any]:
+        record: dict[str, Any] = {
+            "storage_schema_version": self.STORAGE_SCHEMA_VERSION,
+            "results": {
+                run_id: json.loads(result_json)
+                for run_id, result_json in self._terminal_results.items()
+            },
+        }
+        record["record_hash"] = self._record_hash(record)
+        return record
+
+    def _load_terminal_results(self) -> None:
+        if not self._results_path.exists():
+            return
+        try:
+            text = self._results_path.read_text(encoding="utf-8")
+            record = json.loads(text)
+            if _canonical_json(record) != text:
+                raise ValueError("terminal result sidecar is not canonical")
+            if not isinstance(record, dict) or set(record) != {
+                "storage_schema_version",
+                "results",
+                "record_hash",
+            }:
+                raise ValueError("terminal result sidecar fields differ from the contract")
+            declared_hash = record["record_hash"]
+            body = {key: value for key, value in record.items() if key != "record_hash"}
+            if declared_hash != self._record_hash(body):
+                raise ValueError("terminal result sidecar hash mismatch")
+            if record["storage_schema_version"] != self.STORAGE_SCHEMA_VERSION:
+                raise ValueError("terminal result storage schema version mismatch")
+            results = record["results"]
+            if not isinstance(results, dict):
+                raise TypeError("terminal result index is not an object")
+            for run_id, result in results.items():
+                self._index_restored_terminal_result(run_id, result)
+        except EventStorePersistenceError:
+            raise
+        except (OSError, TypeError, ValueError, json.JSONDecodeError) as exc:
+            raise EventStorePersistenceError(
+                "invalid durable terminal result sidecar / "
+                f"持久化终态结果伴随文件无效: {self._results_path}: {exc}"
+            ) from exc
+
+    def _persist_terminal_results(self) -> None:
+        temporary = self._results_path.with_name(
+            f".{self._results_path.name}.{uuid.uuid4().hex}.tmp"
+        )
+        try:
+            self._results_path.parent.mkdir(parents=True, exist_ok=True)
+            with temporary.open("w", encoding="utf-8", newline="\n") as handle:
+                handle.write(_canonical_json(self._terminal_results_record()))
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, self._results_path)
+        except (OSError, TypeError, ValueError) as exc:
+            try:
+                temporary.unlink(missing_ok=True)
+            except OSError:
+                pass
+            raise EventStorePersistenceError(
+                "durable terminal result commit failed / "
+                f"持久化终态结果提交失败: {self._results_path}"
+            ) from exc
+
+    def save_terminal_result(
+        self,
+        run_id: str,
+        result: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        """Atomically persist the immutable terminal-result sidecar.
+
+        / 原子持久化不可变终态结果伴随文件。
+        """
+
+        with self._lock:
+            existed = run_id in self._terminal_results
+            saved = super().save_terminal_result(run_id, result)
+            if existed:
+                return saved
+            try:
+                self._persist_terminal_results()
+            except Exception:
+                self._remove_terminal_result(run_id)
+                raise
+            return saved
 
     def append(self, **kwargs: Any) -> ReasoningEvent:
         """Append and durably commit unless inside a wider transaction / 追加事件；若不在外层事务中则持久提交。"""
@@ -2197,6 +2444,7 @@ class ReasoningEngine:
         local_decision: Any | None = None,
         resource_use: BudgetUsage | None = None,
         progress: bool | None = None,
+        information_gain: float | None = None,
         no_progress_streak: int | None = None,
         ended_at: float | None = None,
     ) -> dict[str, Any]:
@@ -2228,6 +2476,8 @@ class ReasoningEngine:
             payload["resource_use"] = ReasoningEngine._schema_step_resource_use(resource_use)
         if progress is not None:
             payload["progress"] = progress
+        if information_gain is not None:
+            payload["information_gain"] = information_gain
         if no_progress_streak is not None:
             payload["no_progress_streak"] = no_progress_streak
         if ended_at is not None:
@@ -2243,6 +2493,7 @@ class ReasoningEngine:
         idempotency_key: str | None = None,
         state: WorkflowState | None = None,
         step_id: str | None = None,
+        candidate_path_id: str | None = None,
         tool_call_id: str | None = None,
         human_work_id: str | None = None,
         previous_state: WorkflowState | None = None,
@@ -2266,6 +2517,7 @@ class ReasoningEngine:
             payload=payload,
             idempotency_key=idempotency_key,
             step_id=step_id,
+            candidate_path_id=candidate_path_id,
             tool_call_id=tool_call_id,
             human_work_id=human_work_id,
             attempt_id=run.attempt_id,
@@ -2288,11 +2540,254 @@ class ReasoningEngine:
             escalation_reason=escalation_reason,
         )
 
+    @staticmethod
+    def _usage_from_step_resources(resources: Mapping[str, Any]) -> BudgetUsage:
+        """Reconstruct a runtime usage vector from StepRecord resources / 从步骤资源重建运行时用量向量。"""
+
+        values: dict[str, int | float] = {}
+        for runtime_name, schema_name in _EVENT_BUDGET_NAMES.items():
+            state = resources.get(schema_name)
+            value_state = (
+                None
+                if not isinstance(state, Mapping)
+                else state.get("value_state", state.get("state"))
+            )
+            if value_state not in {"observed", "observed_zero", "computed"}:
+                raise ReasoningRuntimeError(
+                    "step resource use is not reconstructable / 步骤资源用量不可重建"
+                )
+            value = state.get("value")
+            if value is None:
+                raise ReasoningRuntimeError(
+                    "step resource value is missing / 步骤资源值缺失"
+                )
+            values[runtime_name] = (
+                float(value) if runtime_name == "cost_units" else value
+            )
+        return BudgetUsage(**values)
+
+    def _rehydrate_run_from_events(
+        self,
+        run: _Run,
+        events: Sequence[ReasoningEvent],
+        *,
+        candidate_artifact: Any | None,
+    ) -> None:
+        """Rebuild one mutable aggregate from its authoritative events.
+
+        The event stream restores control state, budgets, public step records,
+        evidence, candidates, and validator outcomes. Raw candidate content is
+        restored only when the caller resupplies content matching the recorded
+        candidate binding. / 从权威事件重建一个可变聚合，包括控制状态、预算、公开
+        步骤记录、证据、候选绑定和验证结果；候选原文只有在调用方重新提供且哈希
+        与记录绑定一致时才恢复。
+        """
+
+        if not events:
+            raise ReasoningRuntimeError(
+                "resume requires an existing event stream / 恢复要求已有事件流"
+            )
+        replayed = self.replay(run.run_id)
+        budget_by_step: dict[str, str | None] = {}
+        candidate_evidence_hashes: dict[str, str] = {}
+        final_evidence_record_bindings: list[dict[str, str]] = []
+
+        first_envelope = events[0].as_dict()
+        run.attempt_id = first_envelope["attempt_id"]
+        for event in events:
+            envelope = event.as_dict()
+            expected_context = {
+                "task_id": run.task_id,
+                "workflow_id": run.workflow_id,
+                "run_id": run.run_id,
+                "scene_id": run.scene_id,
+                "risk_level": run.risk_level.value,
+                "reasoning_depth": run.reasoning_depth,
+                "execution_mode": run.execution_mode,
+                "primary_topology": run.primary_topology,
+                "supporting_topologies": list(run.supporting_topologies),
+                "contract_binding": run.contract_binding,
+            }
+            if any(envelope.get(key) != value for key, value in expected_context.items()):
+                raise ReasoningRuntimeError(
+                    "event context differs from the sealed contract / 事件上下文与封存契约不一致"
+                )
+            if envelope.get("attempt_id") != run.attempt_id:
+                raise ReasoningRuntimeError(
+                    "event attempt identity drift / 事件尝试标识漂移"
+                )
+
+            payload = event.payload
+            if event.event_type == "budget_reserved":
+                run.budget.reserve(
+                    BudgetUsage.from_value(payload["delta"]),
+                    payload["reservation_id"],
+                )
+            elif event.event_type == "budget_consumed":
+                reservation_id = payload.get("reservation_id")
+                run.budget.consume(
+                    BudgetUsage.from_value(payload["delta"]),
+                    reservation_id=reservation_id,
+                )
+                step_id = envelope.get("step_id")
+                if step_id is not None:
+                    budget_by_step[step_id] = reservation_id
+            elif event.event_type == "budget_released":
+                run.budget.release(payload["reservation_id"])
+            elif event.event_type == "step_started":
+                step_id = payload["step_id"]
+                if step_id in run.step_starts:
+                    raise ReasoningRuntimeError(
+                        f"duplicate step start during resume / 恢复时步骤启动重复: {step_id}"
+                    )
+                run.step_starts[step_id] = StepStartRecord(
+                    step_id=step_id,
+                    claim=json.loads(_canonical_json(payload["claim"])),
+                    evidence_refs=tuple(payload.get("evidence_refs", ())),
+                    evidence_bindings=tuple(
+                        json.loads(_canonical_json(item))
+                        for item in payload["input_evidence_bindings"]
+                    ),
+                    action=json.loads(_canonical_json(payload["action"])),
+                    step_hash=payload["step_hash"],
+                    sequence_number=payload["sequence_number"],
+                    timestamp=event.timestamp,
+                )
+            elif event.event_type == "step_closed":
+                step_id = payload["step_id"]
+                start = run.step_starts.get(step_id)
+                if start is None or step_id in run.steps:
+                    raise ReasoningRuntimeError(
+                        f"invalid step closure during resume / 恢复时步骤关闭非法: {step_id}"
+                    )
+                resource_use = self._usage_from_step_resources(payload["resource_use"])
+                record = StepRecord(
+                    step_id=step_id,
+                    claim=json.loads(_canonical_json(payload["claim"])),
+                    evidence_refs=tuple(payload.get("evidence_refs", ())),
+                    evidence_bindings=tuple(
+                        json.loads(_canonical_json(item))
+                        for item in payload["input_evidence_bindings"]
+                    ),
+                    budget_reservation_id=budget_by_step.get(step_id),
+                    action=json.loads(_canonical_json(payload["action"])),
+                    observation=json.loads(_canonical_json(payload["observation"])),
+                    local_decision=json.loads(_canonical_json(payload["local_decision"])),
+                    resource_use=resource_use,
+                    progress=payload["progress"],
+                    information_gain=payload.get("information_gain"),
+                    no_progress_streak=payload["no_progress_streak"],
+                    timestamp=event.timestamp,
+                )
+                run.steps[step_id] = record
+                run.last_information_gain = record.information_gain
+            elif event.event_type == "evidence_recorded":
+                identity = (payload["evidence_id"], payload["evidence_version"])
+                existing = run.evidence_records.get(identity)
+                if existing is not None and existing != payload:
+                    raise ReasoningRuntimeError(
+                        "evidence identity conflict during resume / 恢复时证据标识冲突"
+                    )
+                run.evidence_records[identity] = json.loads(_canonical_json(payload))
+            elif (
+                event.event_type == "candidate_created"
+                and envelope.get("candidate_path_id") is None
+            ):
+                run.candidate_hash = payload["candidate_binding"]["hash"]
+                run.evidence_hash = payload.get("evidence_set_hash")
+                if run.evidence_hash is not None:
+                    candidate_evidence_hashes[run.candidate_hash] = run.evidence_hash
+                run.evidence_bindings = json.loads(
+                    _canonical_json(payload.get("evidence_bindings", []))
+                )
+                final_evidence_record_bindings = json.loads(
+                    _canonical_json(payload.get("evidence_record_bindings", []))
+                )
+            elif event.event_type == "validation_completed":
+                candidate_binding = payload["candidate_binding"]
+                evidence_bindings = payload["evidence_bindings"]
+                run.validations.append(
+                    ValidationRecord(
+                        verification_id=payload["validation_id"],
+                        validator_id=payload["validator_binding"]["id"],
+                        validator_version=payload["validator_binding"]["version"],
+                        status=ValidationStatus(payload["result"]),
+                        candidate_hash=candidate_binding["hash"],
+                        contract_hash=run.contract_hash,
+                        evidence_hash=candidate_evidence_hashes.get(
+                            candidate_binding["hash"],
+                            content_fingerprint(evidence_bindings),
+                        ),
+                        timestamp=event.timestamp,
+                        details_json=_canonical_json(
+                            {"reconstructed_details_hash": payload["details_hash"]}
+                        ),
+                    )
+                )
+
+        if final_evidence_record_bindings:
+            indexed = {
+                (record["evidence_id"], record["evidence_version"], record["record_hash"]): record
+                for record in run.evidence_records.values()
+            }
+            try:
+                run.evidence = [
+                    indexed[(item["id"], item["version"], item["hash"])]
+                    for item in final_evidence_record_bindings
+                ]
+            except KeyError as exc:
+                raise ReasoningRuntimeError(
+                    "final candidate evidence is missing during resume / 恢复时最终候选证据缺失"
+                ) from exc
+        if candidate_artifact is not None:
+            if run.candidate_hash is None or candidate_fingerprint(candidate_artifact) != run.candidate_hash:
+                raise ReasoningRuntimeError(
+                    "resupplied candidate does not match the event binding / 重供候选与事件绑定不一致"
+                )
+            run.candidate = json.loads(_canonical_json(candidate_artifact))
+
+        run.state = replayed.state
+        run.terminal_reason = replayed.terminal_reason
+        run.no_progress_streak = replayed.no_progress_streak
+        run.release_gate_evaluated_at = replayed.release_gate_evaluated_at
+        persisted_result = self.events.load_terminal_result(run.run_id)
+        if persisted_result is not None:
+            validate_reasoning_result(persisted_result, contract=run.contract)
+            if persisted_result["terminal_state"] != run.state.value:
+                raise ReasoningRuntimeError(
+                    "persisted terminal result differs from replayed state / "
+                    "持久化终态结果与重放状态不一致"
+                )
+            run.sealed_result_json = _canonical_json(persisted_result)
+
+    def resume_run_from_contract(
+        self,
+        contract: Mapping[str, Any],
+        *,
+        candidate_artifact: Any | None = None,
+    ) -> str:
+        """Resume an event-backed run without re-emitting establishment events.
+
+        The caller must supply the same sealed contract. Candidate content is
+        optional because events intentionally retain only its immutable binding.
+        / 使用相同封存契约恢复事件支持的运行，不重复发出建链事件。事件有意只
+        保留候选不可变绑定，因此候选内容可选重供。
+        """
+
+        return self.create_run_from_contract(
+            contract,
+            auto_start=False,
+            _restore_existing=True,
+            _candidate_artifact=candidate_artifact,
+        )
+
     def create_run_from_contract(
         self,
         contract: Mapping[str, Any],
         *,
         auto_start: bool = True,
+        _restore_existing: bool = False,
+        _candidate_artifact: Any | None = None,
     ) -> str:
         """Create a run from the normative reasoning-contract artifact.
 
@@ -2366,6 +2861,8 @@ class ReasoningEngine:
             scene_id=artifact["scene_id"],
             execution_mode=artifact["execution_mode"],
             supporting_topologies=artifact["supporting_topologies"],
+            _restore_existing=_restore_existing,
+            _candidate_artifact=_candidate_artifact,
         )
 
     def create_run(
@@ -2387,8 +2884,15 @@ class ReasoningEngine:
         scene_id: str = "default",
         execution_mode: str = "direct",
         supporting_topologies: Iterable[str] | None = None,
+        _restore_existing: bool = False,
+        _candidate_artifact: Any | None = None,
     ) -> str:
         """Create a run and optionally establish it through ``executing`` / 创建运行并可自动建立到执行态。"""
+
+        if _restore_existing and auto_start:
+            raise ValueError(
+                "restored runs cannot auto-start / 恢复运行不得自动建链"
+            )
 
         if not task_id:
             raise ValueError("task_id is required / 任务标识不能为空")
@@ -2719,6 +3223,15 @@ class ReasoningEngine:
                 normalized_input_binding=normalized_input_binding,
                 contract_binding=contract_binding,
             )
+            if _restore_existing:
+                existing_events = self.events.replay(identifier)
+                self._rehydrate_run_from_events(
+                    run,
+                    existing_events,
+                    candidate_artifact=_candidate_artifact,
+                )
+                self._runs[identifier] = run
+                return identifier
             self._runs[identifier] = run
             self._append_event(
                 run,
@@ -3652,8 +4165,6 @@ class ReasoningEngine:
         usage = BudgetUsage.from_value(amounts)
         with self._lock:
             run = self._get(run_id)
-            if run.state is not WorkflowState.EXECUTING:
-                raise ReasoningRuntimeError("budget reservation requires executing state / 预算预留要求执行态")
             identifier = reservation_id or f"reservation-{uuid.uuid4().hex}"
             event_key = idempotency_key or f"budget-reserve:{identifier}"
             previous = self.events.find_idempotency(run_id, event_key)
@@ -3668,6 +4179,8 @@ class ReasoningEngine:
                 raise DuplicateEventConflictError(
                     f"budget reservation idempotency conflict / 预算预留幂等冲突: {event_key}"
                 )
+            if run.state is not WorkflowState.EXECUTING:
+                raise ReasoningRuntimeError("budget reservation requires executing state / 预算预留要求执行态")
             checkpoint = run.budget._checkpoint()
             try:
                 run.budget.reserve(usage, identifier)
@@ -3696,6 +4209,102 @@ class ReasoningEngine:
                 run.budget._restore(checkpoint)
                 raise
             return identifier
+
+    def reserve_budget_batch(
+        self,
+        run_id: str,
+        reservations: Mapping[str, BudgetUsage | Mapping[str, Any]],
+        *,
+        idempotency_key: str,
+    ) -> tuple[str, ...]:
+        """Atomically reserve one named wave and emit one event per member.
+
+        Either every new reservation and audit event commits, or the ledger and
+        event stream both return to their prior state. Exact retries return the
+        original identifiers even after individual reservations are consumed.
+        / 原子预留一个具名波次并为每个成员发出事件。全部新预留与审计事件共同
+        提交，否则账本和事件流均恢复原状；即使部分预留随后已消费，完全相同的
+        重试仍返回原标识。
+        """
+
+        if not isinstance(idempotency_key, str) or not idempotency_key:
+            raise ValueError("idempotency_key is required / 幂等键不能为空")
+        if not isinstance(reservations, Mapping) or not reservations:
+            raise ValueError(
+                "reservations must be a non-empty mapping / 预留批次必须是非空映射"
+            )
+        normalized = [
+            (str(identifier), BudgetUsage.from_value(amounts))
+            for identifier, amounts in reservations.items()
+        ]
+        if any(not identifier for identifier, _ in normalized):
+            raise ValueError(
+                "reservation IDs must be non-empty strings / 预留标识必须为非空字符串"
+            )
+        event_keys = [
+            f"{idempotency_key}:{index}:{identifier}"
+            for index, (identifier, _) in enumerate(normalized, start=1)
+        ]
+
+        with self._lock:
+            run = self._get(run_id)
+            existing = [self.events.find_idempotency(run_id, key) for key in event_keys]
+            if any(event is not None for event in existing):
+                if not all(event is not None for event in existing):
+                    raise DuplicateEventConflictError(
+                        "budget batch has a partial event history / 预算批次存在部分事件历史"
+                    )
+                for event, (identifier, usage) in zip(existing, normalized):
+                    assert event is not None
+                    if (
+                        event.event_type != "budget_reserved"
+                        or event.payload.get("reservation_id") != identifier
+                        or event.payload.get("delta") != self._schema_budget_delta(usage)
+                    ):
+                        raise DuplicateEventConflictError(
+                            "budget batch idempotency conflict / 预算批次幂等冲突"
+                        )
+                return tuple(identifier for identifier, _ in normalized)
+            if run.state is not WorkflowState.EXECUTING:
+                raise ReasoningRuntimeError(
+                    "budget reservation requires executing state / 预算预留要求执行态"
+                )
+
+            checkpoint = run.budget._checkpoint()
+            try:
+                with self.events.transaction(run_id):
+                    identifiers = run.budget.reserve_many(
+                        {identifier: usage for identifier, usage in normalized}
+                    )
+                    for event_key, (identifier, usage) in zip(event_keys, normalized):
+                        self._append_event(
+                            run,
+                            event_type="budget_reserved",
+                            state=run.state,
+                            payload=self._budget_event_payload(
+                                run,
+                                operation="reserve",
+                                delta=usage,
+                                reservation_id=identifier,
+                            ),
+                            idempotency_key=event_key,
+                        )
+            except BudgetExceededError:
+                run.budget._restore(checkpoint)
+                attempted = BudgetUsage()
+                for _, usage in normalized:
+                    attempted = attempted.plus(usage)
+                self._close_for_limit(
+                    run,
+                    "budget batch reservation limit exceeded / 预算批次预留上限已触发",
+                    "budget_exhausted",
+                    attempted_usage=attempted,
+                )
+                raise
+            except Exception:
+                run.budget._restore(checkpoint)
+                raise
+            return identifiers
 
     def release_budget(
         self,
@@ -3755,6 +4364,7 @@ class ReasoningEngine:
         reservation_id: str,
         reservation_idempotency_key: str | None = None,
         step_idempotency_key: str | None = None,
+        candidate_path_id: str | None = None,
     ) -> StepStartRecord:
         """Atomically reserve capacity and start one step / 原子预留容量并启动一个步骤。"""
 
@@ -3787,6 +4397,7 @@ class ReasoningEngine:
                             evidence_bindings=evidence_bindings,
                             action=action,
                             idempotency_key=step_idempotency_key,
+                            candidate_path_id=candidate_path_id,
                         )
             except Exception:
                 run.budget._restore(budget_checkpoint)
@@ -4204,6 +4815,7 @@ class ReasoningEngine:
         progress: bool,
         information_gain: float | None = None,
         idempotency_key: str | None = None,
+        candidate_path_id: str | None = None,
     ) -> StepRecord:
         """Record one closable external step and enforce progress stops / 记录一个外部闭环步骤并执行进展停止规则。"""
 
@@ -4310,6 +4922,7 @@ class ReasoningEngine:
                 evidence_refs=refs,
                 evidence_bindings=bindings,
                 action=action,
+                candidate_path_id=candidate_path_id,
             )
             dedup_key = idempotency_key or f"step:{step_id}"
             previous = self.events.find_idempotency(run_id, dedup_key)
@@ -4345,6 +4958,7 @@ class ReasoningEngine:
                 local_decision=record.local_decision,
                 resource_use=record.resource_use,
                 progress=record.progress,
+                information_gain=record.information_gain,
                 no_progress_streak=record.no_progress_streak,
                 ended_at=record.timestamp,
             )
@@ -4382,6 +4996,7 @@ class ReasoningEngine:
                         payload=event_payload,
                         idempotency_key=dedup_key,
                         step_id=step_id,
+                        candidate_path_id=candidate_path_id,
                         resources=self._event_resources(usage),
                     )
             except BudgetExceededError:
@@ -4421,6 +5036,7 @@ class ReasoningEngine:
         evidence_bindings: Iterable[Mapping[str, Any]] = (),
         action: Any,
         idempotency_key: str | None = None,
+        candidate_path_id: str | None = None,
     ) -> StepStartRecord:
         """Start a closable step so overdue open work remains observable / 启动可关闭步骤，使逾期未关闭工作保持可观测。"""
 
@@ -4435,6 +5051,9 @@ class ReasoningEngine:
             )
         bindings = _normalize_versioned_bindings(
             "evidence_bindings", evidence_bindings
+        )
+        _validate_identifier(
+            "candidate_path_id", candidate_path_id, nullable=True
         )
         if bindings and refs != tuple(binding["id"] for binding in bindings):
             raise ValueError(
@@ -4456,6 +5075,21 @@ class ReasoningEngine:
             run = self._get(run_id)
             existing = run.step_starts.get(step_id)
             if existing is not None:
+                existing_events = [
+                    event
+                    for event in self.events.events(run_id)
+                    if event.event_type == "step_started"
+                    and event.as_dict().get("step_id") == step_id
+                ]
+                if (
+                    not existing_events
+                    or existing_events[-1].as_dict().get("candidate_path_id")
+                    != candidate_path_id
+                ):
+                    raise DuplicateEventConflictError(
+                        "step start candidate path conflicts with the existing event / "
+                        "步骤开始的候选路径与既有事件冲突"
+                    )
                 existing_fingerprint = content_fingerprint(
                     {
                         "step_id": existing.step_id,
@@ -4501,6 +5135,7 @@ class ReasoningEngine:
                 payload=self._step_event_payload(run, record, status="running"),
                 idempotency_key=dedup_key,
                 step_id=step_id,
+                candidate_path_id=candidate_path_id,
             )
             run.step_starts[step_id] = record
             return record
@@ -4573,6 +5208,13 @@ class ReasoningEngine:
                         and previous_payload.get("final_claim_ids", [])
                         == list(claims)
                     ):
+                        run.candidate = json.loads(_canonical_json(candidate))
+                        run.evidence = json.loads(_canonical_json(evidence))
+                        run.candidate_hash = candidate_hash
+                        run.evidence_hash = evidence_hash
+                        run.evidence_bindings = json.loads(
+                            _canonical_json(evidence_bindings)
+                        )
                         return candidate_hash
                     raise DuplicateEventConflictError(
                         f"candidate idempotency conflict / 候选幂等键冲突: {idempotency_key}"
@@ -4665,6 +5307,366 @@ class ReasoningEngine:
                 run.state = prior["state"]
                 raise
             return candidate_hash
+
+    def record_parallel_candidate(
+        self,
+        run_id: str,
+        *,
+        candidate_path_id: str,
+        candidate: Any,
+        evidence_records: Iterable[Mapping[str, Any]],
+        plan_binding: Mapping[str, Any],
+        claim_ids: Iterable[str],
+        idempotency_key: str | None = None,
+    ) -> dict[str, str]:
+        """Record one branch candidate without replacing the run candidate.
+
+        Branch candidates remain immutable comparison inputs. Only the later
+        synthesis owner may promote one candidate through ``set_candidate``.
+        / 记录一个分支候选，但不替换运行级候选。分支候选保持为不可变比较输入；
+        只有后续综合责任方可以通过 ``set_candidate`` 晋升候选。
+        """
+
+        _validate_identifier("candidate_path_id", candidate_path_id)
+        _assert_no_private_reasoning(candidate, "$.candidate")
+        normalized_plan_binding = _normalize_versioned_bindings(
+            "plan_binding", (plan_binding,)
+        )[0]
+        claims = tuple(claim_ids)
+        if (
+            not claims
+            or any(not isinstance(claim, str) or not claim for claim in claims)
+            or len(claims) != len(set(claims))
+        ):
+            raise ValueError(
+                "branch claim IDs must be unique non-empty strings / "
+                "分支命题标识必须为唯一非空字符串"
+            )
+        if isinstance(evidence_records, (str, bytes, Mapping)):
+            raise TypeError(
+                "evidence_records must be an iterable of mappings / "
+                "evidence_records 必须是映射迭代器"
+            )
+        records: list[dict[str, Any]] = []
+        for index, record in enumerate(evidence_records):
+            if not isinstance(record, Mapping):
+                raise TypeError(
+                    f"evidence record {index} must be a mapping / "
+                    f"证据记录 {index} 必须是映射"
+                )
+            normalized = json.loads(_canonical_json(dict(record)))
+            candidate_state = normalized.get("candidate_binding", {})
+            if candidate_state.get("state") == "observed":
+                raise ValueError(
+                    "branch source evidence must precede candidate selection / "
+                    "分支来源证据必须先于候选选择"
+                )
+            records.append(normalized)
+
+        candidate_hash = candidate_fingerprint(candidate)
+        candidate_binding = self._candidate_binding(candidate_hash)
+        evidence_hash = content_fingerprint(records)
+        evidence_bindings = self._evidence_bindings_for(records, evidence_hash)
+        evidence_record_bindings = self._evidence_record_bindings_for(records)
+        payload = {
+            "candidate_binding": candidate_binding,
+            "contract_binding": None,
+            "plan_binding": normalized_plan_binding,
+            "final_claim_ids": list(claims),
+            "evidence_set_hash": evidence_hash,
+            "evidence_bindings": evidence_bindings,
+            "evidence_record_bindings": evidence_record_bindings,
+        }
+        event_key = idempotency_key or f"parallel-candidate:{candidate_path_id}"
+
+        with self._lock:
+            run = self._get(run_id)
+            if run.execution_mode != "parallel" or run.primary_topology != "parallel":
+                raise ReasoningRuntimeError(
+                    "parallel candidates require parallel execution mode / "
+                    "并行候选要求并行执行模式"
+                )
+            payload["contract_binding"] = dict(run.contract_binding)
+            previous = self.events.find_idempotency(run_id, event_key)
+            if previous is not None:
+                if (
+                    previous.event_type == "candidate_created"
+                    and previous.as_dict().get("candidate_path_id") == candidate_path_id
+                    and previous.payload == payload
+                ):
+                    return dict(candidate_binding)
+                raise DuplicateEventConflictError(
+                    f"parallel candidate idempotency conflict / "
+                    f"并行候选幂等冲突: {event_key}"
+                )
+            if run.state is not WorkflowState.EXECUTING:
+                raise ReasoningRuntimeError(
+                    "parallel candidates require executing state / "
+                    "并行候选要求执行态"
+                )
+            prior_records = dict(run.evidence_records)
+            try:
+                with self.events.transaction(run_id):
+                    for record in records:
+                        self.record_evidence(run_id, record)
+                    self._append_event(
+                        run,
+                        event_type="candidate_created",
+                        state=run.state,
+                        payload=payload,
+                        idempotency_key=event_key,
+                        candidate_path_id=candidate_path_id,
+                    )
+            except Exception:
+                run.evidence_records = prior_records
+                raise
+            return dict(candidate_binding)
+
+    def record_parallel_path_update(
+        self,
+        run_id: str,
+        *,
+        candidate_path_id: str,
+        step_id: str,
+        plan_binding: Mapping[str, Any],
+        phase: str,
+        observed_at: float | str,
+        deadline_at: float | str | None,
+        lease_id: str | None = None,
+        worker_binding: Mapping[str, Any] | None = None,
+        lease_revision: int | None = None,
+        fencing_token: int | None = None,
+        acquired_at: float | str | None = None,
+        expires_at: float | str | None = None,
+        reason: str | None = None,
+        idempotency_key: str | None = None,
+    ) -> ReasoningEvent:
+        """Record one public lease or deadline transition for a branch.
+
+        / 记录一条分支公开租约或截止时间转换。
+        """
+
+        _validate_identifier("candidate_path_id", candidate_path_id)
+        _validate_identifier("step_id", step_id)
+        if phase not in {
+            "acquired",
+            "renewed",
+            "released",
+            "expired",
+            "deadline_reached",
+        }:
+            raise ValueError(f"invalid parallel path phase / 并行路径阶段非法: {phase}")
+        normalized_plan = _normalize_versioned_bindings(
+            "plan_binding", (plan_binding,)
+        )[0]
+        observed_iso, _ = self._evaluation_time(observed_at)
+        deadline_iso = None if deadline_at is None else _iso_utc(deadline_at)[0]
+        payload: dict[str, Any] = {
+            "plan_binding": normalized_plan,
+            "phase": phase,
+            "observed_at": observed_iso,
+            "deadline_at": deadline_iso,
+        }
+        lease_phase = phase in {"acquired", "renewed", "released", "expired"}
+        lease_values = (
+            lease_id,
+            worker_binding,
+            lease_revision,
+            fencing_token,
+            acquired_at,
+            expires_at,
+        )
+        if lease_phase and any(value is None for value in lease_values):
+            raise ValueError(
+                "lease transitions require identity, worker, revision, acquisition, and expiry / "
+                "租约转换必须提供标识、工作者、修订、获取时间和过期时间"
+            )
+        if lease_id is not None:
+            _validate_identifier("lease_id", lease_id)
+            payload["lease_id"] = lease_id
+        if worker_binding is not None:
+            payload["worker_binding"] = _normalize_versioned_bindings(
+                "worker_binding", (worker_binding,)
+            )[0]
+        if lease_revision is not None:
+            if (
+                isinstance(lease_revision, bool)
+                or not isinstance(lease_revision, int)
+                or lease_revision < 1
+            ):
+                raise ValueError(
+                    "lease_revision must be positive / lease_revision 必须为正整数"
+                )
+            payload["lease_revision"] = lease_revision
+        if fencing_token is not None:
+            if (
+                isinstance(fencing_token, bool)
+                or not isinstance(fencing_token, int)
+                or fencing_token < 1
+            ):
+                raise ValueError(
+                    "fencing_token must be positive / fencing_token 必须为正整数"
+                )
+            payload["fencing_token"] = fencing_token
+        if acquired_at is not None:
+            payload["acquired_at"] = _iso_utc(acquired_at)[0]
+        if expires_at is not None:
+            payload["expires_at"] = _iso_utc(expires_at)[0]
+        if reason is not None:
+            if not isinstance(reason, str) or not reason.strip():
+                raise ValueError("reason must be non-empty / 原因不能为空")
+            _assert_no_private_reasoning(reason, "$.parallel_path_reason")
+            payload["reason"] = reason
+        if phase == "deadline_reached" and reason is None:
+            raise ValueError(
+                "deadline transition requires a reason / 截止时间转换必须提供原因"
+            )
+        event_key = idempotency_key or (
+            f"parallel-path:{candidate_path_id}:{phase}:"
+            f"{lease_revision or observed_iso}"
+        )
+        with self._lock:
+            run = self._get(run_id)
+            if run.execution_mode != "parallel" or run.primary_topology != "parallel":
+                raise ReasoningRuntimeError(
+                    "parallel path updates require parallel execution mode / "
+                    "并行路径更新要求并行执行模式"
+                )
+            existing = self.events.find_idempotency(run_id, event_key)
+            if existing is not None:
+                if (
+                    existing.event_type == "parallel_path_updated"
+                    and existing.as_dict().get("candidate_path_id") == candidate_path_id
+                    and existing.as_dict().get("step_id") == step_id
+                    and existing.payload == payload
+                ):
+                    return existing
+                raise DuplicateEventConflictError(
+                    f"parallel path idempotency conflict / 并行路径幂等冲突: {event_key}"
+                )
+            if run.state is not WorkflowState.EXECUTING:
+                raise ReasoningRuntimeError(
+                    "parallel path updates require executing state / "
+                    "并行路径更新要求执行态"
+                )
+            return self._append_event(
+                run,
+                event_type="parallel_path_updated",
+                state=run.state,
+                payload=payload,
+                idempotency_key=event_key,
+                step_id=step_id,
+                candidate_path_id=candidate_path_id,
+                timestamp=observed_iso,
+            )
+
+    def compare_parallel_candidates(
+        self,
+        run_id: str,
+        *,
+        candidate_bindings: Iterable[Mapping[str, Any]],
+        comparison_rule_binding: Mapping[str, Any],
+        decision: str,
+        selected_candidate_binding: Mapping[str, Any] | None = None,
+        idempotency_key: str | None = None,
+    ) -> ReasoningEvent:
+        """Emit an auditable comparison over registered branch candidates.
+
+        The richer elimination and minority-finding ledger belongs to the
+        synthesis step; this event is the compact, probe-facing decision edge.
+        / 对已登记分支候选发出可审计比较事件。更完整的淘汰与少数派台账保存在
+        综合步骤中；本事件是面向探针的紧凑决策边。
+        """
+
+        if isinstance(candidate_bindings, (str, bytes, Mapping)):
+            raise TypeError(
+                "candidate_bindings must be an iterable of bindings / "
+                "candidate_bindings 必须是绑定迭代器"
+            )
+        normalized_candidates = tuple(
+            _normalize_versioned_bindings(
+                f"candidate_bindings[{index}]", (binding,)
+            )[0]
+            for index, binding in enumerate(candidate_bindings)
+        )
+        if len(normalized_candidates) < 2:
+            raise ValueError(
+                "parallel comparison requires at least two candidates / "
+                "并行比较至少需要两个候选"
+            )
+        normalized_rule = _normalize_versioned_bindings(
+            "comparison_rule_binding", (comparison_rule_binding,)
+        )[0]
+        if decision not in {
+            "selected",
+            "tie",
+            "incomparable",
+            "more_evidence_required",
+        }:
+            raise ValueError(f"invalid comparison decision / 比较决定非法: {decision}")
+        normalized_selected = None
+        if selected_candidate_binding is not None:
+            normalized_selected = _normalize_versioned_bindings(
+                "selected_candidate_binding", (selected_candidate_binding,)
+            )[0]
+        if decision == "selected":
+            if normalized_selected is None or normalized_selected not in normalized_candidates:
+                raise ValueError(
+                    "selected decision requires one compared candidate / "
+                    "选中决定必须绑定一个已比较候选"
+                )
+        elif normalized_selected is not None:
+            raise ValueError(
+                "non-selected decisions cannot carry a selected candidate / "
+                "非选中决定不得携带胜出候选"
+            )
+
+        payload: dict[str, Any] = {
+            "candidate_bindings": list(normalized_candidates),
+            "comparison_rule_binding": normalized_rule,
+            "decision": decision,
+        }
+        if normalized_selected is not None:
+            payload["selected_candidate_binding"] = normalized_selected
+        event_key = idempotency_key or "parallel-candidates-compared"
+        with self._lock:
+            run = self._get(run_id)
+            if run.execution_mode != "parallel" or run.primary_topology != "parallel":
+                raise ReasoningRuntimeError(
+                    "candidate comparison requires parallel execution mode / "
+                    "候选比较要求并行执行模式"
+                )
+            registered = [
+                event.payload.get("candidate_binding")
+                for event in self.events.events(run_id)
+                if event.event_type == "candidate_created"
+                and event.as_dict().get("candidate_path_id") is not None
+            ]
+            if any(binding not in registered for binding in normalized_candidates):
+                raise CandidateRequiredError(
+                    "comparison references an unregistered branch candidate / "
+                    "比较引用了未登记的分支候选"
+                )
+            previous = self.events.find_idempotency(run_id, event_key)
+            if previous is not None:
+                if previous.event_type == "candidate_compared" and previous.payload == payload:
+                    return previous
+                raise DuplicateEventConflictError(
+                    f"candidate comparison idempotency conflict / "
+                    f"候选比较幂等冲突: {event_key}"
+                )
+            if run.state is not WorkflowState.EXECUTING:
+                raise ReasoningRuntimeError(
+                    "candidate comparison requires executing state / "
+                    "候选比较要求执行态"
+                )
+            return self._append_event(
+                run,
+                event_type="candidate_compared",
+                state=run.state,
+                payload=payload,
+                idempotency_key=event_key,
+            )
 
     def record_validation(
         self,
@@ -5304,6 +6306,15 @@ class ReasoningEngine:
                     )
             if _SEMANTIC_VERSION_PATTERN.fullmatch(result_version) is None:
                 raise ValueError("result_version must be semantic / 结果版本必须符合语义版本")
+            persisted_result = self.events.load_terminal_result(run_id)
+            if persisted_result is not None:
+                validate_reasoning_result(persisted_result, contract=run.contract)
+                if persisted_result["terminal_state"] != run.state.value:
+                    raise ReasoningRuntimeError(
+                        "persisted terminal result differs from runtime state / "
+                        "持久化终态结果与运行状态不一致"
+                    )
+                run.sealed_result_json = _canonical_json(persisted_result)
             if run.sealed_result_json is not None:
                 sealed_result = json.loads(run.sealed_result_json)
                 conflicts = [
@@ -5437,7 +6448,8 @@ class ReasoningEngine:
             )
             sealed = build_artifact("reasoning_result", artifact)
             validate_reasoning_result(sealed, contract=run.contract)
-            run.sealed_result_json = _canonical_json(sealed)
+            persisted = self.events.save_terminal_result(run_id, sealed)
+            run.sealed_result_json = _canonical_json(persisted)
             return json.loads(run.sealed_result_json)
 
     def _snapshot(self, run: _Run) -> RunSnapshot:
@@ -5520,7 +6532,10 @@ class ReasoningEngine:
                 raise ReasoningRuntimeError(
                     f"event state mismatch / 事件状态不一致 at sequence {event.sequence}"
                 )
-            if event.event_type == "candidate_created":
+            if (
+                event.event_type == "candidate_created"
+                and event.as_dict().get("candidate_path_id") is None
+            ):
                 candidate_hash = payload["candidate_binding"]["hash"]
                 evidence_bindings = payload["evidence_bindings"]
                 evidence_hash = (

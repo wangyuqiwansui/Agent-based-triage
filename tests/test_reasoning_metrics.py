@@ -357,6 +357,9 @@ class CorrectedReasoningMetricTest(unittest.TestCase):
             (metrics.unsupported_conclusion_rate, 2, 10, 0.2),
             (metrics.unverified_premise_propagation, 1, 10, 0.1),
             (metrics.material_candidate_difference, 3, 4, 0.75),
+            (metrics.candidate_completion_rate, 9, 10, 0.9),
+            (metrics.branch_diversity, 3, 4, 0.75),
+            (metrics.branch_record_completeness, 8, 10, 0.8),
             (metrics.path_convergence_rate, 7, 10, 0.7),
             (metrics.no_progress_loop_rate, 2, 10, 0.2),
             (metrics.budget_overrun_rate, 1, 10, 0.1),
@@ -898,6 +901,14 @@ class MetricRegistryTest(unittest.TestCase):
         self.assertNotIn("outcome_route_accuracy", coverage["gate_eligible"])
         self.assertNotIn("path_convergence_rate", coverage["gate_eligible"])
         self.assertNotIn("route_stability_rate", coverage["gate_eligible"])
+        parallel_diagnostics = {
+            "candidate_completion_rate",
+            "branch_diversity",
+            "branch_record_completeness",
+        }
+        self.assertTrue(parallel_diagnostics <= set(coverage["implemented"]))
+        self.assertFalse(parallel_diagnostics & set(coverage["planned"]))
+        self.assertFalse(parallel_diagnostics & set(coverage["gate_eligible"]))
         route_diagnostics = {
             "outcome_linkage_coverage",
             "underroute_rate",
@@ -937,6 +948,14 @@ class MetricRegistryTest(unittest.TestCase):
             }
             & set(coverage["gate_eligible"])
         )
+
+    def test_documented_registered_formula_count_matches_registry(self):
+        registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+        content = WORKFLOW_PROBES_PATH.read_text(encoding="utf-8")
+        match = re.search(r"The (\d+) registered formulas", content)
+
+        self.assertIsNotNone(match)
+        self.assertEqual(int(match.group(1)), len(registry["metrics"]))
 
     def test_default_alert_gates_use_only_gate_eligible_metrics(self):
         registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))

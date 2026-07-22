@@ -717,6 +717,12 @@
           }
         },
         "progress": { "type": "boolean" },
+        "information_gain": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Externally measured information gain for this closed step. / 当前闭合步骤的外部可度量信息增益。"
+        },
         "no_progress_streak": { "type": "integer", "minimum": 0 },
         "input_evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" } },
         "output_evidence_bindings": { "type": "array", "items": { "$ref": "#/$defs/EvidenceBinding" } },
