@@ -230,7 +230,7 @@ class HarnessSkillRegistryTest(unittest.TestCase):
             "references/workflow-observability-probes.md",
         )
         self.assertEqual(patterns["PATTERN_0052"]["source_draft_id"], "PATTERN_0002")
-        self.assertEqual(patterns["PATTERN_0052"]["source_version"], "0.4.0")
+        self.assertEqual(patterns["PATTERN_0052"]["source_version"], "0.5.0")
         self.assertIn(
             "COG_GOVERNANCE__TOP_ORCHESTRATION",
             patterns["PATTERN_0052"]["matrix_coordinates"],
@@ -257,6 +257,27 @@ class HarnessSkillRegistryTest(unittest.TestCase):
             self.assertTrue((SKILL_DIR / relative).is_file(), relative)
         for relative in validator.RUNTIME_IMPLEMENTATION_FILES:
             self.assertTrue((SKILL_DIR / relative).is_file(), relative)
+
+    def test_action_routing_links_executable_tool_dispatch_contract(self):
+        validator = load_validator()
+        reference = (SKILL_DIR / validator.TOOL_DISPATCH_REFERENCE).read_text(
+            encoding="utf-8"
+        )
+        registry = self.load_registry()
+        cell = next(
+            item
+            for item in registry["cells"]
+            if item["cell_key"] == "action-routing"
+        )
+        design = (SKILL_DIR / cell["design_path"]).read_text(encoding="utf-8")
+        observability = (SKILL_DIR / cell["observability_path"]).read_text(
+            encoding="utf-8"
+        )
+
+        for marker in validator.TOOL_DISPATCH_MARKERS:
+            self.assertIn(marker, reference)
+        self.assertIn("../../tool-dispatch-execution.md", design)
+        self.assertIn("../../tool-dispatch-execution.md", observability)
 
     def test_every_reasoning_cell_links_shared_runtime_protocols(self):
         registry = self.load_registry()

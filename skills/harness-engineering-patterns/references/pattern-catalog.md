@@ -36,7 +36,7 @@ These local draft patterns coordinate several matrix cells without changing cell
 | reasoning-parallel / 推理 x 并行 | Parallel Exploration / 并行探索 | Use when independent hypotheses or solution paths should be explored together. / 当多个独立假设或方案路径应同时探索时使用。 |
 | reasoning-loop / 推理 x 循环 | Iterative Hypothesis Testing / 迭代假设测试 | Use when reasoning must revise hypotheses after evidence or tests. / 当推理必须根据证据或测试修正假设时使用。 |
 | action-chain / 行动 x 链式 | Prompt Chaining / 提示链 | Use when action is represented as a deterministic sequence of prompts or tool steps. / 当行动由确定性的提示或工具步骤序列表示时使用。 |
-| action-routing / 行动 x 路由 | Tool Dispatch / 工具分派 | Use when the workflow chooses a tool based on request type or state. / 当工作流根据请求类型或状态选择工具时使用。 |
+| action-routing / 行动 x 路由 | Tool Dispatch / 工具分派 | Use when a workflow must select and safely execute a tool under capability, authorization, idempotency, side-effect, and observability constraints. / 当工作流必须在能力、授权、幂等、副作用与可观测性约束下选择并安全执行工具时使用。 |
 | action-orchestration / 行动 x 编排 | Plan-and-Execute / 计划并执行 | Use when actions need explicit planning, execution, and coordination. / 当行动需要明确计划、执行和协调时使用。 |
 | action-hierarchy / 行动 x 层级 | Guardrail Sandwich / 护栏夹层 | Use when action execution must be constrained by layered pre/post guardrails. / 当行动执行必须受分层前后置护栏约束时使用。 |
 | reflection-chain / 反思 x 链式 | Generator-Critic / 生成器-批评器 | Use when output should pass through a sequential critique step. / 当产出需要经过顺序批评步骤时使用。 |

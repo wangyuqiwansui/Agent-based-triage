@@ -869,7 +869,7 @@
       ],
       "status": "draft",
       "reference": "references/workflow-observability-probes.md",
-      "source_version": "0.4.0",
+      "source_version": "0.5.0",
       "source_draft_id": "PATTERN_0002",
       "cognition_refs": [
         "COG_PERCEPTION",
@@ -1357,10 +1357,10 @@
       "aliases_zh": [],
       "source_kind": "paper_v2",
       "maturity": "draft",
-      "local_evidence_count": 0,
-      "domain_count": 0,
-      "diagnostic_use_en": "Use when the workflow chooses a tool based on request type or state.",
-      "diagnostic_use_zh": "当工作流根据请求类型或状态选择工具时使用。"
+      "local_evidence_count": 1,
+      "domain_count": 1,
+      "diagnostic_use_en": "Use when a workflow must select and safely execute a tool under capability, authorization, idempotency, side-effect, and observability constraints.",
+      "diagnostic_use_zh": "当工作流必须在能力、授权、幂等、副作用与可观测性约束下选择并安全执行工具时使用。"
     },
     {
       "id": "CELL_ACTION_PARALLEL",

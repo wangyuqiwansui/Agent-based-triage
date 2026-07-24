@@ -1,0 +1,58 @@
+trace_id: TRACE_20260724_ACTION_ROUTING_EXECUTION_0001
+analysis_id: ANALYSIS_20260724_ACTION_ROUTING_EXECUTION_0001
+event_time: "2026-07-24T16:12:28+08:00"
+status: verified
+
+scope:
+  project_scope: "D:/Agent-based-triage"
+  tenant_scope: "none"
+  environment_scope: "local"
+  task_scope: "PATTERN_0036 Action → Tool Dispatch executable boundary / PATTERN_0036 行动 → 工具调度可执行边界"
+
+sensitivity: internal
+source_revision: "129aeb7+working-tree"
+
+subject:
+  subject_type: pattern
+  subject_ref: PATTERN_0036
+  cell_refs:
+    - CELL_ACTION_ROUTING
+  pattern_refs:
+    - PATTERN_0036
+    - PATTERN_0052
+
+observation:
+  trigger: "Optimize the existing Action → Tool Dispatch engineering mode using the supplied workflow execution and observability drafts. / 使用给定工作流执行与可观测性草案优化现有“行动 → 工具调度”工程模式。"
+  before: "The named action-routing cell documented a dispatch table, parameter validation, and approval hooks, but did not provide a sealed executable admission contract, durable write idempotency, result-certainty semantics, or a deterministic event projection. / 已命名的行动路由单元记录了分派表、参数校验和审批挂钩，但缺少封存的可执行准入契约、持久写幂等、结果确定性语义以及确定性事件投影。"
+  adjustment: "Added a least-privilege capability frontier, deterministic candidate selection separated from authorization, fourteen ordered admission checks, content-bound short-lived permits, live authority rechecks, durable SQLite execution leases, immutable success reuse, unknown-result reconciliation, strict dispatch/event/result Schemas, producer-side semantic guards, a complete-inventory projector, eight registered diagnostic metrics, bilingual Skill guidance, and failure-path tests. Goal completion, replanning, compensation orchestration, and workflow termination remain in the outer workflow. / 新增最小权限能力前沿、与授权分离的确定性候选选择、十四项有序准入检查、内容绑定短时许可、实时权限复核、持久 SQLite 执行租约、不可变成功复用、结果未知核验、严格调度/事件/结果 Schema、生产端语义闸门、完整清单投影器、八项已注册诊断指标、双语 Skill 指引和失败路径测试。目标完成、重新规划、补偿编排与工作流终止仍由外层工作流负责。"
+  outcome: "Nineteen focused dispatch tests cover least-privilege discovery, admission, current-state inventory, approval-bounded permit expiry, durable lease ownership, immutable success reuse, unknown-result safety, tamper rejection, expiry-to-unknown, and projection anomalies. Registry, metric, visualization, public export, and full repository checks passed. Skill validation completed with 0 errors and 18 pre-existing navigation warnings; the full suite passed 549 tests plus 169 subtests with 3 environment-dependent skips. A fresh-user forward test selected CELL_ACTION_ROUTING, preserved the execution boundary, and produced actionable implementation and observability guidance. / 十九项调度专项测试覆盖最小权限发现、准入、当前状态清单、审批约束的许可有效期、持久租约所有权、不可变成功复用、结果未知安全、篡改拒绝、过期转未知及投影异常。注册表、指标、可视化、公共导出与仓库全量检查均通过。Skill 校验为 0 错误和 18 条既有导航警告；全量测试通过 549 项及 169 个子测试，另有 3 项环境依赖跳过。新用户视角正向评测正确选择 CELL_ACTION_ROUTING，保持执行边界，并生成可操作的实现与可观测性指引。"
+  validity: verified
+
+evidence_refs:
+  - "external:C:/Users/wangs/Downloads/hanerss_workflow_execution_v0_1_zh.md"
+  - "external:C:/Users/wangs/Downloads/hanerss_workflow_observability_probe_v0_1_zh.md"
+  - "repository:skills/harness-engineering-patterns/references/tool-dispatch-execution.md"
+  - "repository:skills/harness-engineering-patterns/runtime/tool_dispatch.py"
+  - "repository:skills/harness-engineering-patterns/runtime/tool_dispatch_sqlite_store.py"
+  - "repository:skills/harness-engineering-patterns/runtime/tool_dispatch_projection.py"
+  - "repository:skills/harness-engineering-patterns/schemas/tool-dispatch-envelope.schema.json"
+  - "repository:skills/harness-engineering-patterns/schemas/tool-execution-event.schema.json"
+  - "repository:skills/harness-engineering-patterns/schemas/tool-execution-result.schema.json"
+  - "repository:tests/test_tool_dispatch.py"
+  - "repository:tests/test_tool_dispatch_sqlite_store.py"
+  - "repository:tests/test_tool_dispatch_projection.py"
+  - "verification:python -m pytest tests/test_tool_dispatch.py tests/test_tool_dispatch_sqlite_store.py tests/test_tool_dispatch_projection.py -q => 19 passed"
+  - "verification:python -m pytest tests/test_reasoning_metrics.py tests/test_harness_skill_registry.py tests/test_generate_skill_visualization.py -q => 121 passed, 162 subtests passed"
+  - "verification:python -m pytest -q => 549 passed, 3 skipped, 169 subtests passed"
+  - "verification:validate_harness_skill.py => 0 errors, 18 pre-existing warnings"
+  - "verification:fresh-user forward test => PASS with deployment evidence caveats"
+verification_tasks: []
+follow_up:
+  - "Provide an equivalently transactional network database adapter before using horizontal or remote writers. / 在使用水平或远程写者前提供具有等价事务语义的网络数据库适配器。"
+  - "Integrate a deployment-owned side-effect reconciler before automating recovery from unknown outcomes. / 自动恢复结果未知状态前，接入由部署方负责的副作用核验器。"
+owner: "Codex"
+
+retention:
+  policy: project
+  expires_at: null
+  deletion_or_archive_rule: "archive when superseded / 被后续分析取代时归档"

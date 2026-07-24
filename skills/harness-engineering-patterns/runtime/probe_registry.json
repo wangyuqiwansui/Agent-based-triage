@@ -73,12 +73,14 @@
     },
     {
       "probe_id": "PROBE_0007",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "name_en": "Tool And Action",
       "name_zh": "工具与动作",
       "owner": "tool_governance",
-      "trigger_event_types": ["action_dispatched", "action_observed"],
+      "trigger_event_types": ["action_dispatched", "action_observed", "capability_frontier_built", "execution_admission_completed", "execution_lease_acquired", "tool_execution_started", "tool_execution_succeeded", "tool_execution_failed", "tool_execution_unknown", "tool_execution_partial", "side_effect_confirmed"],
       "required_capture_fields": ["step_id", "tool_call_id", "payload.data.phase", "payload.data.tool_binding", "payload.data.plan_binding", "payload.data.authorization_policy_binding", "payload.data.authorization_binding", "payload.data.authorization_verified", "payload.data.input_hash", "payload.data.outcome", "idempotency_key"],
+      "accepted_event_schemas": ["reasoning-event.schema.json", "tool-execution-event.schema.json"],
+      "tool_dispatch_capture_fields": ["dispatch_binding", "frontier_binding", "tool_binding", "permit_binding", "idempotency_binding", "lease_binding", "admission_checks", "result_classification", "result_binding", "reason_codes"],
       "output_event_type": "feedback_updated",
       "disposition": "block_named_transition"
     },

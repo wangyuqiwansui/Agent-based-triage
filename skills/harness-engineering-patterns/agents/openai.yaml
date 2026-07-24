@@ -1,4 +1,4 @@
 interface:
   display_name: "Harness Engineering Patterns / Harness 工程模式"
-  short_description: "Map and govern Harness workflows / 映射并治理 Harness 工作流"
-  default_prompt: "Use $harness-engineering-patterns to analyze this workflow, engineering node, reasoning execution flow, observability probe design, or Agent Harness source with the smallest suitable output profile, cite evidence, and propose project-local Trace data. / 使用 $harness-engineering-patterns，以最小合适输出档位分析此工作流、工程节点、推理执行流程、可观测性探针设计或 Agent Harness 源码，引用证据，并提出项目本地 Trace 数据。"
+  short_description: "Map and govern Harness execution / 映射并治理 Harness 执行"
+  default_prompt: "Use $harness-engineering-patterns to analyze this workflow, engineering node, reasoning or governed tool-dispatch execution flow, observability probe design, or Agent Harness source with the smallest suitable output profile, cite evidence, and propose project-local Trace data. / 使用 $harness-engineering-patterns，以最小合适输出档位分析此工作流、工程节点、推理或受治理工具调度执行流程、可观测性探针设计或 Agent Harness 源码，引用证据，并提出项目本地 Trace 数据。"

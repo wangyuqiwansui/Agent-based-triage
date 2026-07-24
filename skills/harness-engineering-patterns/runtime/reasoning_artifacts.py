@@ -26,6 +26,9 @@ _SCHEMA_FILES = {
     "reasoning_contract": "reasoning-contract.schema.json",
     "reasoning_event": "reasoning-event.schema.json",
     "reasoning_result": "reasoning-result.schema.json",
+    "tool_dispatch_envelope": "tool-dispatch-envelope.schema.json",
+    "tool_execution_event": "tool-execution-event.schema.json",
+    "tool_execution_result": "tool-execution-result.schema.json",
     "workflow_route_envelope": "workflow-route-envelope.schema.json",
     "workflow_route_revision": "workflow-route-revision.schema.json",
 }
@@ -34,8 +37,50 @@ _HASH_FIELDS = {
     "normalized_input": "normalized_input_hash",
     "reasoning_contract": "contract_hash",
     "reasoning_result": "result_hash",
+    "tool_dispatch_envelope": "dispatch_hash",
+    "tool_execution_event": "event_hash",
+    "tool_execution_result": "result_hash",
     "workflow_route_envelope": "route_envelope_hash",
     "workflow_route_revision": "revision_event_hash",
+}
+
+_TOOL_ADMISSION_CHECK_ORDER = (
+    "registration",
+    "frontier",
+    "parameters",
+    "identity_scope",
+    "workflow_stage",
+    "dependencies",
+    "state_evidence",
+    "budget_quota",
+    "idempotency",
+    "concurrency",
+    "approval",
+    "risk_environment",
+    "compensation",
+    "observability",
+)
+
+_TOOL_WRITE_SIDE_EFFECTS = {
+    "reversible_write",
+    "sensitive_write",
+    "irreversible_external",
+}
+
+_TOOL_EVENT_STAGE = {
+    "capability_frontier_built": "capability_frontier",
+    "candidate_selection_completed": "candidate_selection",
+    "execution_admission_completed": "execution_admission",
+    "execution_lease_acquired": "idempotency_lease",
+    "tool_execution_started": "tool_execution",
+    "tool_execution_succeeded": "result_classification",
+    "tool_result_reused": "result_classification",
+    "tool_execution_rejected": "result_classification",
+    "tool_execution_failed": "result_classification",
+    "tool_execution_unknown": "result_classification",
+    "tool_execution_partial": "result_classification",
+    "tool_execution_waiting": "result_classification",
+    "side_effect_confirmed": "side_effect_verification",
 }
 
 _WORKFLOW_ROUTE_SIGNAL_NAMES = frozenset(
@@ -284,6 +329,12 @@ def build_artifact(kind: str, artifact: Mapping[str, Any]) -> dict[str, Any]:
         validate_reasoning_contract(result)
     elif kind == "reasoning_result":
         validate_reasoning_result(result)
+    elif kind == "tool_dispatch_envelope":
+        validate_tool_dispatch_envelope(result)
+    elif kind == "tool_execution_event":
+        validate_tool_execution_event(result)
+    elif kind == "tool_execution_result":
+        validate_tool_execution_result(result)
     elif kind == "workflow_route_envelope":
         validate_workflow_route_envelope(result)
     elif kind == "workflow_route_revision":
@@ -296,6 +347,20 @@ def build_artifact(kind: str, artifact: Mapping[str, Any]) -> dict[str, Any]:
 
 def _binding_key(binding: Mapping[str, Any]) -> tuple[Any, Any, Any]:
     return binding.get("id"), binding.get("version"), binding.get("hash")
+
+
+def _content_binding(
+    identifier: str,
+    version: str,
+    content: Mapping[str, Any],
+) -> dict[str, str]:
+    """Build a content-addressed binding / 构建内容寻址绑定。"""
+
+    return {
+        "id": identifier,
+        "version": version,
+        "hash": artifact_fingerprint(content),
+    }
 
 
 def _observed_binding(value: Mapping[str, Any]) -> Mapping[str, Any] | None:
@@ -519,6 +584,340 @@ def validate_workflow_route_revision(revision: Mapping[str, Any]) -> None:
             "deescalation requires hysteresis evidence / 降级必须具有迟滞证据"
         )
 
+    if errors:
+        raise ArtifactValidationError(errors)
+
+
+def validate_tool_dispatch_envelope(envelope: Mapping[str, Any]) -> None:
+    """Validate a tool frontier, selection, admission, and permit.
+
+    / 校验工具能力前沿、候选选择、执行准入与许可。
+    """
+
+    validate_schema("tool_dispatch_envelope", envelope)
+    validate_artifact_hash("tool_dispatch_envelope", envelope)
+    errors: list[str] = []
+
+    checks = envelope["admission_checks"]
+    check_names = tuple(item["name"] for item in checks)
+    if check_names != _TOOL_ADMISSION_CHECK_ORDER:
+        errors.append(
+            "admission checks must use the normative order / 准入检查必须使用规范顺序"
+        )
+
+    frontier = envelope["frontier"]
+    frontier_content = {
+        "policy_binding": frontier["policy_binding"],
+        "retained_tool_bindings": frontier["retained_tool_bindings"],
+        "exclusion_counts": frontier["exclusion_counts"],
+    }
+    expected_frontier_hash = artifact_fingerprint(frontier_content)
+    if frontier["frontier_hash"] != expected_frontier_hash:
+        errors.append(
+            "frontier hash does not bind its content / 能力前沿哈希未绑定其内容"
+        )
+    expected_frontier_id = (
+        "TOOL_FRONTIER_" + expected_frontier_hash.removeprefix("sha256:")[-24:]
+    )
+    if frontier["frontier_id"] != expected_frontier_id:
+        errors.append(
+            "frontier id does not match its content / 能力前沿标识与内容不一致"
+        )
+
+    retained_keys = [_binding_key(item) for item in frontier["retained_tool_bindings"]]
+    if len(retained_keys) != len(set(retained_keys)):
+        errors.append(
+            "frontier tool bindings must be unique / 能力前沿工具绑定必须唯一"
+        )
+    candidates = envelope["candidate_evaluations"]
+    candidate_keys = [_binding_key(item["tool_binding"]) for item in candidates]
+    if len(candidate_keys) != len(set(candidate_keys)):
+        errors.append("candidate tools must be unique / 候选工具必须唯一")
+    if not set(candidate_keys).issubset(set(retained_keys)):
+        errors.append(
+            "candidate tool is outside the capability frontier / 候选工具位于能力前沿之外"
+        )
+    selected_candidates = [item for item in candidates if item["selected"]]
+    selected_binding = _observed_binding(envelope["selected_tool_binding"])
+    if selected_binding is None:
+        if selected_candidates:
+            errors.append(
+                "candidate selected without selected_tool_binding / 候选已选中但缺少工具绑定"
+            )
+    elif len(selected_candidates) != 1 or _binding_key(
+        selected_candidates[0]["tool_binding"]
+    ) != _binding_key(selected_binding):
+        errors.append(
+            "selected tool does not match the unique selected candidate / "
+            "所选工具与唯一选中候选不一致"
+        )
+
+    failed = [item for item in checks if item["status"] == "failed"]
+    waiting = [item for item in checks if item["status"] == "waiting"]
+    decision = envelope["decision"]
+    expected_reasons = [
+        item["code"]
+        for item in checks
+        if item["status"] in {"failed", "waiting"}
+    ]
+    if envelope["reason_codes"] != expected_reasons:
+        errors.append(
+            "reason codes must preserve failed/waiting admission order / "
+            "原因代码必须保留失败与等待准入顺序"
+        )
+    if decision == "allow" and (failed or waiting):
+        errors.append("allowed dispatch has failed or waiting checks / 已放行调度仍有失败或等待项")
+    if decision == "reject" and not failed:
+        errors.append("rejected dispatch lacks a failed check / 已拒绝调度缺少失败项")
+    if decision == "wait" and (failed or not waiting):
+        errors.append("waiting dispatch must have waiting and no failed checks / 等待调度必须有等待项且无失败项")
+    permit = _observed_binding(envelope["permit_binding"])
+    if (decision == "allow") != (permit is not None):
+        errors.append("permit presence disagrees with admission decision / 许可存在性与准入决定不一致")
+    if envelope["execution_contract"]["execution_ready"] != (decision == "allow"):
+        errors.append("execution_ready disagrees with admission decision / execution_ready 与准入决定不一致")
+
+    dispatch_identity = {
+        "intent_binding": envelope["intent_binding"],
+        "actor_binding": envelope["actor_binding"],
+        "catalog_binding": envelope["catalog_binding"],
+        "frontier_hash": frontier["frontier_hash"],
+        "candidate_bindings": [item["tool_binding"] for item in candidates],
+        "admission_checks": checks,
+        "created_at": envelope["created_at"],
+    }
+    expected_dispatch_id = (
+        "TOOL_DISPATCH_"
+        + artifact_fingerprint(dispatch_identity).removeprefix("sha256:")[:24]
+    )
+    if envelope["dispatch_id"] != expected_dispatch_id:
+        errors.append(
+            "dispatch id does not match deterministic inputs / 调度标识与确定性输入不一致"
+        )
+
+    contract = envelope["execution_contract"]
+    is_write = contract["side_effect_class"] in _TOOL_WRITE_SIDE_EFFECTS
+    if is_write:
+        if not envelope["target_resources"]:
+            errors.append("write dispatch requires target resources / 写调度必须声明目标资源")
+        if not contract["lease_required"]:
+            errors.append("write dispatch requires an execution lease / 写调度必须取得执行租约")
+        if _observed_binding(contract["idempotency_binding"]) is None:
+            errors.append("write dispatch requires idempotency / 写调度必须具备幂等绑定")
+        if decision == "allow" and _observed_binding(
+            contract["state_evidence_binding"]
+        ) is None:
+            errors.append("allowed write lacks state evidence / 已放行写动作缺少状态证据")
+        if decision == "allow" and _observed_binding(
+            contract["sandbox_binding"]
+        ) is None:
+            errors.append("allowed write lacks sandbox binding / 已放行写动作缺少沙箱绑定")
+    elif contract["lease_required"]:
+        errors.append("read-only or draft dispatch cannot require a lease / 只读或草稿调度不得要求租约")
+    if decision == "allow":
+        if selected_binding is None:
+            errors.append("allowed dispatch lacks a selected tool / 已放行调度缺少所选工具")
+        if _observed_binding(contract["authorization_binding"]) is None:
+            errors.append("allowed dispatch lacks authorization binding / 已放行调度缺少授权绑定")
+        if _observed_binding(contract["executor_binding"]) is None:
+            errors.append("allowed dispatch lacks executor binding / 已放行调度缺少执行器绑定")
+        if contract["side_effect_class"] in {
+            "sensitive_write",
+            "irreversible_external",
+        } and _observed_binding(contract["approval_binding"]) is None:
+            errors.append("high-risk write lacks bound approval / 高风险写动作缺少绑定审批")
+        if permit is not None:
+            permit_content = {
+                "dispatch_id": envelope["dispatch_id"],
+                "intent_binding": envelope["intent_binding"],
+                "tool_binding": selected_binding,
+                "actor_binding": envelope["actor_binding"],
+                "authorization_binding": contract["authorization_binding"],
+                "approval_binding": contract["approval_binding"],
+                "state_evidence_binding": contract["state_evidence_binding"],
+                "idempotency_binding": contract["idempotency_binding"],
+                "permit_expires_at": contract["permit_expires_at"],
+            }
+            expected_permit = _content_binding(
+                envelope["dispatch_id"] + "_PERMIT",
+                "1.0.0",
+                permit_content,
+            )
+            if permit != expected_permit:
+                errors.append(
+                    "permit binding does not seal its execution context / "
+                    "许可绑定未封存其执行上下文"
+                )
+
+    try:
+        created = datetime.fromisoformat(
+            envelope["created_at"].replace("Z", "+00:00")
+        )
+        expires = datetime.fromisoformat(
+            contract["permit_expires_at"].replace("Z", "+00:00")
+        )
+        if expires <= created:
+            errors.append("permit expiry must follow creation / 许可过期必须晚于创建")
+    except ValueError:
+        pass
+
+    if errors:
+        raise ArtifactValidationError(errors)
+
+
+def validate_tool_execution_event(event: Mapping[str, Any]) -> None:
+    """Validate one standard tool lifecycle event / 校验一个标准工具生命周期事件。"""
+
+    validate_schema("tool_execution_event", event)
+    validate_artifact_hash("tool_execution_event", event)
+    errors: list[str] = []
+    expected_event_id = (
+        "TOOL_EVENT_"
+        + artifact_fingerprint(
+            {"run_id": event["run_id"], "event_key": event["event_key"]}
+        ).removeprefix("sha256:")[:24]
+    )
+    if event["event_id"] != expected_event_id:
+        errors.append("event id does not match run and event key / 事件标识与运行和事件键不一致")
+    if event["stage"] != _TOOL_EVENT_STAGE[event["event_type"]]:
+        errors.append("event type and stage disagree / 事件类型与阶段不一致")
+    names = tuple(item["name"] for item in event["admission_checks"])
+    if names != _TOOL_ADMISSION_CHECK_ORDER:
+        errors.append("event admission checks are not normative / 事件准入检查不符合规范")
+    if _observed_binding(event["dispatch_binding"]) is None:
+        errors.append("tool event lacks dispatch binding / 工具事件缺少调度绑定")
+    is_write = event["side_effect_class"] in _TOOL_WRITE_SIDE_EFFECTS
+    if event["event_type"] == "tool_execution_started":
+        if event["decision"] != "allow":
+            errors.append("execution start lacks allow decision / 执行开始缺少放行决定")
+        if _observed_binding(event["permit_binding"]) is None:
+            errors.append("execution start lacks permit / 执行开始缺少许可")
+        if is_write and _observed_binding(event["lease_binding"]) is None:
+            errors.append("write execution start lacks lease / 写执行开始缺少租约")
+    result_events = {
+        "tool_execution_succeeded": "success",
+        "tool_result_reused": "reused_success",
+        "tool_execution_rejected": "rejected",
+        "tool_execution_failed": "explicit_failure",
+        "tool_execution_unknown": "unknown",
+        "tool_execution_partial": "partial_success",
+        "tool_execution_waiting": "waiting",
+    }
+    if event["event_type"] in result_events:
+        if event["result_classification"] is None:
+            errors.append("result event lacks classification / 结果事件缺少分类")
+        elif event["result_classification"] != result_events[event["event_type"]]:
+            errors.append(
+                "result event type disagrees with classification / "
+                "结果事件类型与结果分类不一致"
+            )
+        if _observed_binding(event["result_binding"]) is None:
+            errors.append("result event lacks result binding / 结果事件缺少结果绑定")
+    elif event["event_type"] != "side_effect_confirmed" and event[
+        "result_classification"
+    ] is not None:
+        errors.append("non-result event carries result classification / 非结果事件携带结果分类")
+    if event["event_type"] == "side_effect_confirmed":
+        if event["result_classification"] not in {"success", "reused_success"}:
+            errors.append("confirmed side effect lacks successful result / 已确认副作用缺少成功结果")
+        if _observed_binding(event["result_binding"]) is None:
+            errors.append("confirmed side effect lacks result binding / 已确认副作用缺少结果绑定")
+    if errors:
+        raise ArtifactValidationError(errors)
+
+
+def validate_tool_execution_result(result: Mapping[str, Any]) -> None:
+    """Validate result certainty and retry safety / 校验结果确定性与重试安全。"""
+
+    validate_schema("tool_execution_result", result)
+    validate_artifact_hash("tool_execution_result", result)
+    errors: list[str] = []
+    identity = {
+        "dispatch_binding": result["dispatch_binding"],
+        "attempt_id": result["attempt_id"],
+        "classification": result["classification"],
+        "completed_at": result["execution_completed_at"],
+        "reused_result_binding": result["reused_result_binding"],
+    }
+    expected_result_id = (
+        "TOOL_RESULT_"
+        + artifact_fingerprint(identity).removeprefix("sha256:")[:24]
+    )
+    if result["result_id"] != expected_result_id:
+        errors.append("result id does not match deterministic inputs / 结果标识与确定性输入不一致")
+    if result["created_at"] != result["execution_completed_at"]:
+        errors.append("result creation must equal completion time / 结果创建时间必须等于完成时间")
+    classification = result["classification"]
+    started = result["execution_started_at"]
+    side_effect_class = result["side_effect_class"]
+    is_write = side_effect_class in _TOOL_WRITE_SIDE_EFFECTS
+    side_effect = result["side_effect_state"]
+    error = result["error"]
+    lease = _observed_binding(result["lease_binding"])
+    permit = _observed_binding(result["permit_binding"])
+    if classification in {"rejected", "reused_success"} and started is not None:
+        errors.append("non-executed result cannot have start time / 未执行结果不得包含开始时间")
+    if classification in {
+        "success",
+        "explicit_failure",
+        "partial_success",
+    } and started is None:
+        errors.append("executed result requires start time / 已执行结果必须包含开始时间")
+    if classification in {
+        "success",
+        "reused_success",
+        "explicit_failure",
+        "unknown",
+        "partial_success",
+    }:
+        if permit is None:
+            errors.append("executed result requires a permit / 已执行结果必须包含许可")
+        if is_write and lease is None:
+            errors.append("write result requires a durable lease / 写结果必须包含持久租约")
+    if classification == "rejected" and side_effect != "none":
+        errors.append("rejected result cannot claim side effect / 拒绝结果不得声称副作用")
+    if not is_write:
+        if side_effect != "none":
+            errors.append("read-only result cannot claim a side effect / 只读结果不得声称副作用")
+        if result["actual_side_effects"]:
+            errors.append("read-only result cannot record side effects / 只读结果不得记录副作用")
+    elif classification in {"success", "reused_success"} and side_effect != "confirmed":
+        errors.append("successful write requires confirmed side effect / 写成功必须确认副作用")
+    elif classification == "explicit_failure" and side_effect != "confirmed_absent":
+        errors.append("explicit write failure must confirm no side effect / 写明确失败必须确认无副作用")
+    elif classification == "unknown" and side_effect != "unknown":
+        errors.append("unknown write result requires unknown side-effect state / 写结果未知必须标记副作用未知")
+    elif classification == "partial_success" and side_effect != "partial":
+        errors.append("partial write result requires partial side-effect state / 写部分成功必须标记部分副作用")
+    elif classification == "waiting" and side_effect not in {"none", "unknown"}:
+        errors.append("waiting write has invalid side-effect state / 写等待结果的副作用状态无效")
+    if classification == "success" and error is not None:
+        errors.append("successful result cannot carry error / 成功结果不得携带错误")
+    if classification == "unknown":
+        if result["next_action"] != "reconcile":
+            errors.append("unknown result must reconcile before retry / 结果未知必须先核验再重试")
+        if error is not None and error["retryable"]:
+            errors.append("unknown result cannot be directly retryable / 结果未知不得直接重试")
+    if classification == "partial_success" and result["next_action"] not in {
+        "compensate",
+        "human_review",
+    }:
+        errors.append("partial success requires compensation or human review / 部分成功必须补偿或人工处理")
+    reused = _observed_binding(result["reused_result_binding"])
+    if (classification == "reused_success") != (reused is not None):
+        errors.append("reused-result binding disagrees with classification / 复用结果绑定与分类不一致")
+    if result["actual_side_effects"] and side_effect not in {"confirmed", "partial"}:
+        errors.append("side-effect records require confirmed or partial state / 副作用记录要求确认或部分确认状态")
+    try:
+        completed = datetime.fromisoformat(
+            result["execution_completed_at"].replace("Z", "+00:00")
+        )
+        if started is not None:
+            started_at = datetime.fromisoformat(started.replace("Z", "+00:00"))
+            if completed < started_at:
+                errors.append("execution completion predates start / 执行完成早于开始")
+    except ValueError:
+        pass
     if errors:
         raise ArtifactValidationError(errors)
 
@@ -1114,6 +1513,9 @@ __all__ = [
     "validate_reasoning_event",
     "validate_reasoning_result",
     "validate_schema",
+    "validate_tool_dispatch_envelope",
+    "validate_tool_execution_event",
+    "validate_tool_execution_result",
     "validate_workflow_route_envelope",
     "validate_workflow_route_revision",
     "workflow_signal_fingerprint",

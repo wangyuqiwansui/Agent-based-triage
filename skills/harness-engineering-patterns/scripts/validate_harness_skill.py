@@ -78,7 +78,7 @@ RUNTIME_PROTOCOLS = {
     "PATTERN_0052": {
         "reference": "references/workflow-observability-probes.md",
         "source_draft_id": "PATTERN_0002",
-        "source_version": "0.4.0",
+        "source_version": "0.5.0",
         "name_en": "Workflow Observability Probes",
         "name_zh": "工作流可观测性探针",
         "matrix_coordinates": {
@@ -103,6 +103,9 @@ RUNTIME_SCHEMA_FILES = (
     "schemas/reasoning-contract.schema.json",
     "schemas/reasoning-event.schema.json",
     "schemas/reasoning-result.schema.json",
+    "schemas/tool-dispatch-envelope.schema.json",
+    "schemas/tool-execution-event.schema.json",
+    "schemas/tool-execution-result.schema.json",
     "schemas/workflow-route-envelope.schema.json",
     "schemas/workflow-route-revision.schema.json",
 )
@@ -121,6 +124,9 @@ RUNTIME_IMPLEMENTATION_FILES = (
     "runtime/reasoning_event_sqlite_store.py",
     "runtime/reasoning_runtime.py",
     "runtime/reasoning_router.py",
+    "runtime/tool_dispatch.py",
+    "runtime/tool_dispatch_projection.py",
+    "runtime/tool_dispatch_sqlite_store.py",
     "runtime/workflow_router.py",
     "runtime/workflow_route_ledger.py",
     "runtime/workflow_route_sqlite_ledger.py",
@@ -171,6 +177,24 @@ PARALLEL_FACTORY_MARKERS = (
     "All branch budgets are reserved before any branch starts.",
     "private chain-of-thought",
     "私密思维链",
+)
+
+TOOL_DISPATCH_REFERENCE = "references/tool-dispatch-execution.md"
+
+TOOL_DISPATCH_MARKERS = (
+    "../schemas/tool-dispatch-envelope.schema.json",
+    "../schemas/tool-execution-event.schema.json",
+    "../schemas/tool-execution-result.schema.json",
+    "../runtime/tool_dispatch.py",
+    "../runtime/tool_dispatch_projection.py",
+    "../runtime/tool_dispatch_sqlite_store.py",
+    "## Capability Frontier / 能力前沿",
+    "## Admission / 执行准入",
+    "## Durable Idempotency / 持久幂等",
+    "Selection and admission remain separate",
+    "选择与准入仍保持分离",
+    "unknown",
+    "结果未知",
 )
 
 CANONICAL_RUNTIME_ENUMS = {
@@ -407,8 +431,12 @@ RUNTIME_REQUIRED_EXPORTS = {
         "RUNTIME_SUPPORTED_STOP_TYPES",
         "RiskLevel",
         "SqliteParallelDispatchOutbox",
+        "SqliteToolDispatchStore",
         "SqliteWorkflowRouteLedger",
+        "ToolDispatchCoordinator",
+        "ToolDispatchRuntime",
         "workflow_route_stream_key",
+        "project_tool_dispatch_run",
         "ValidationStatus",
         "WorkflowState",
         "validate_runtime_contract_capabilities",
@@ -2332,6 +2360,48 @@ def validate_runtime_protocols(
             "推理执行协议未链接推理并行工厂",
         )
 
+    tool_dispatch_path = skill_dir / TOOL_DISPATCH_REFERENCE
+    tool_dispatch_reference = (
+        tool_dispatch_path.read_text(encoding="utf-8")
+        if tool_dispatch_path.is_file()
+        else ""
+    )
+    if not tool_dispatch_reference:
+        report.error(
+            "tool_dispatch_reference",
+            f"missing tool dispatch reference {TOOL_DISPATCH_REFERENCE}",
+            f"缺少工具调度参考文档 {TOOL_DISPATCH_REFERENCE}",
+        )
+    else:
+        if "Version / 版本: `1.0.0`" not in tool_dispatch_reference:
+            report.error(
+                "tool_dispatch_reference",
+                "tool dispatch reference must declare version 1.0.0",
+                "工具调度参考文档必须声明版本 1.0.0",
+            )
+        for marker in TOOL_DISPATCH_MARKERS:
+            if marker not in tool_dispatch_reference:
+                report.error(
+                    "tool_dispatch_reference",
+                    f"tool dispatch reference missing {marker}",
+                    f"工具调度参考文档缺少 {marker}",
+                )
+
+    for marker in (
+        TOOL_DISPATCH_REFERENCE,
+        "runtime/tool_dispatch.py",
+        "runtime/tool_dispatch_projection.py",
+        "runtime/tool_dispatch_sqlite_store.py",
+        "Selection is not authorization",
+        "选中不等于授权",
+    ):
+        if marker not in skill_text:
+            report.error(
+                "tool_dispatch_entrypoint",
+                f"SKILL.md does not route action execution through {marker}",
+                f"SKILL.md 未将行动执行路由到 {marker}",
+            )
+
     for cell in registry.get("cells", []):
         if cell.get("capability_ref") != "COG_REASONING":
             continue
@@ -2381,6 +2451,32 @@ def validate_runtime_protocols(
                         f"reasoning-parallel {document_name} does not link the parallel factory",
                         f"reasoning-parallel {document_name} 未链接推理并行工厂",
                     )
+
+
+    for cell in registry.get("cells", []):
+        if cell.get("cell_key") != "action-routing":
+            continue
+        design_path = skill_dir / str(cell.get("design_path", ""))
+        observability_path = skill_dir / str(cell.get("observability_path", ""))
+        design = design_path.read_text(encoding="utf-8") if design_path.is_file() else ""
+        observability = (
+            observability_path.read_text(encoding="utf-8")
+            if observability_path.is_file()
+            else ""
+        )
+        if "../../tool-dispatch-execution.md" not in design:
+            report.error(
+                "tool_dispatch_link",
+                "action-routing design does not link the execution reference",
+                "action-routing 设计未链接工具调度执行参考",
+            )
+        if "../../tool-dispatch-execution.md" not in observability:
+            report.error(
+                "tool_dispatch_link",
+                "action-routing observability does not link the execution reference",
+                "action-routing 可观测性文件未链接工具调度执行参考",
+            )
+
 
 def validate_navigation(skill_dir: pathlib.Path, report: ValidationReport) -> None:
     references = skill_dir / "references"

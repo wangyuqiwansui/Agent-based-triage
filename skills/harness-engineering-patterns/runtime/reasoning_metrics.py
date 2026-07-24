@@ -1528,6 +1528,150 @@ def readonly_tool_lifecycle_completion_rate(
     )
 
 
+def dispatch_admission_coverage(
+    executions_with_valid_admission: float | None,
+    execution_starts: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return execution starts backed by sealed admission / 返回具有封存准入的执行开始比例。"""
+
+    return bounded_ratio(
+        "dispatch_admission_coverage",
+        executions_with_valid_admission,
+        execution_starts,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def side_effect_lease_coverage(
+    side_effecting_executions_with_valid_lease: float | None,
+    side_effecting_execution_starts: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return side-effect starts holding durable leases / 返回持有持久租约的副作用执行比例。"""
+
+    return bounded_ratio(
+        "side_effect_lease_coverage",
+        side_effecting_executions_with_valid_lease,
+        side_effecting_execution_starts,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def state_evidence_coverage(
+    write_executions_with_current_state_evidence: float | None,
+    write_executions_requiring_state_evidence: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return writes with current version evidence / 返回具备当前版本证据的写执行比例。"""
+
+    return bounded_ratio(
+        "state_evidence_coverage",
+        write_executions_with_current_state_evidence,
+        write_executions_requiring_state_evidence,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def approval_binding_coverage(
+    approval_bound_execution_starts: float | None,
+    approval_required_execution_starts: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return approval-required starts with exact bindings / 返回具备精确审批绑定的执行比例。"""
+
+    return bounded_ratio(
+        "approval_binding_coverage",
+        approval_bound_execution_starts,
+        approval_required_execution_starts,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def frontier_escape_rate(
+    frontier_escape_executions: float | None,
+    execution_starts: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return executions outside their sealed frontier / 返回封存能力前沿外执行比例。"""
+
+    return bounded_ratio(
+        "frontier_escape_rate",
+        frontier_escape_executions,
+        execution_starts,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def dispatch_record_completeness(
+    complete_dispatch_records: float | None,
+    dispatch_records: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return dispatch records with complete lifecycle linkage / 返回生命周期关联完整的调度记录比例。"""
+
+    return bounded_ratio(
+        "dispatch_record_completeness",
+        complete_dispatch_records,
+        dispatch_records,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def result_unknown_rate(
+    unknown_results: float | None,
+    executed_results: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return executed actions with unknown results / 返回已执行动作的结果未知比例。"""
+
+    return bounded_ratio(
+        "result_unknown_rate",
+        unknown_results,
+        executed_results,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def duplicate_side_effect_rate(
+    duplicate_side_effects: float | None,
+    confirmed_side_effect_results: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return duplicate confirmed side effects / 返回重复已确认副作用比例。"""
+
+    return bounded_ratio(
+        "duplicate_side_effect_rate",
+        duplicate_side_effects,
+        confirmed_side_effect_results,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
 def budget_utilization_max(
     actual_use: Mapping[str, float | None] | None,
     configured_limits: Mapping[str, float | None] | None,
@@ -1592,6 +1736,14 @@ _METRIC_FUNCTIONS = {
     "evidence_resolution_rate": evidence_resolution_rate,
     "candidate_evidence_lineage_integrity_rate": candidate_evidence_lineage_integrity_rate,
     "readonly_tool_lifecycle_completion_rate": readonly_tool_lifecycle_completion_rate,
+    "dispatch_admission_coverage": dispatch_admission_coverage,
+    "side_effect_lease_coverage": side_effect_lease_coverage,
+    "state_evidence_coverage": state_evidence_coverage,
+    "approval_binding_coverage": approval_binding_coverage,
+    "frontier_escape_rate": frontier_escape_rate,
+    "dispatch_record_completeness": dispatch_record_completeness,
+    "result_unknown_rate": result_unknown_rate,
+    "duplicate_side_effect_rate": duplicate_side_effect_rate,
 }
 
 
@@ -2017,7 +2169,10 @@ __all__ = [
     "checkpoint_validation_binding_rate",
     "contract_completeness",
     "cost_per_validated_success",
+    "dispatch_admission_coverage",
+    "dispatch_record_completeness",
     "duplicate_event_rate",
+    "duplicate_side_effect_rate",
     "eligible_step_closure_rate",
     "evidence_coverage",
     "evidence_resolution_rate",
@@ -2025,6 +2180,7 @@ __all__ = [
     "event_chain_completeness",
     "event_loss_rate",
     "false_release_rate",
+    "frontier_escape_rate",
     "hypothesis_elimination_per_cost_unit",
     "hypothesis_elimination_per_iteration",
     "material_candidate_difference",
@@ -2046,10 +2202,13 @@ __all__ = [
     "publish_metric",
     "reasoning_drift_rate",
     "readonly_tool_lifecycle_completion_rate",
+    "result_unknown_rate",
     "resolve_required_probes",
     "retry_amplification",
     "route_stability_rate",
     "safe_ratio",
+    "side_effect_lease_coverage",
+    "state_evidence_coverage",
     "stop_reason_completeness",
     "tool_success_rate",
     "unbounded_ratio",
@@ -2058,5 +2217,6 @@ __all__ = [
     "unverified_premise_propagation",
     "validation_coverage",
     "validation_pass_rate",
+    "approval_binding_coverage",
     "metric_publication_failures",
 ]

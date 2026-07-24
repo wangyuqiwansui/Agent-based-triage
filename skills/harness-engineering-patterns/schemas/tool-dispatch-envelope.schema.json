@@ -1,0 +1,460 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hanerss.local/schemas/tool-dispatch-envelope.schema.json",
+  "title": "Tool Dispatch Envelope / 工具调度信封",
+  "description": "A sealed capability-frontier, candidate-selection, and admission decision that never contains raw parameters. / 不含原始参数的封存能力前沿、候选选择与准入决定。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "dispatch_id",
+    "decision_revision",
+    "workflow_id",
+    "workflow_version",
+    "run_id",
+    "goal_id",
+    "node_id",
+    "attempt_id",
+    "action_id",
+    "parent_action_id",
+    "plan_version",
+    "correlation_id",
+    "intent_binding",
+    "actor_binding",
+    "parameter_hash",
+    "target_resources",
+    "catalog_binding",
+    "frontier",
+    "candidate_evaluations",
+    "selected_tool_binding",
+    "admission_checks",
+    "decision",
+    "reason_codes",
+    "execution_contract",
+    "permit_binding",
+    "created_at",
+    "dispatch_hash"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "dispatch_id": {
+      "type": "string",
+      "pattern": "^TOOL_DISPATCH_[0-9a-f]{24}$"
+    },
+    "decision_revision": {
+      "const": 1
+    },
+    "workflow_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "workflow_version": {
+      "$ref": "#/$defs/version"
+    },
+    "run_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "goal_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "node_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "attempt_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "action_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "parent_action_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "plan_version": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "correlation_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "intent_binding": {
+      "$ref": "#/$defs/binding"
+    },
+    "actor_binding": {
+      "$ref": "#/$defs/binding"
+    },
+    "parameter_hash": {
+      "$ref": "#/$defs/hash"
+    },
+    "target_resources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/nonempty"
+      },
+      "uniqueItems": true
+    },
+    "catalog_binding": {
+      "$ref": "#/$defs/binding"
+    },
+    "frontier": {
+      "$ref": "#/$defs/frontier"
+    },
+    "candidate_evaluations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/candidate"
+      }
+    },
+    "selected_tool_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "admission_checks": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "items": {
+        "$ref": "#/$defs/admissionCheck"
+      }
+    },
+    "decision": {
+      "enum": [
+        "allow",
+        "reject",
+        "wait"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/nonempty"
+      },
+      "uniqueItems": true
+    },
+    "execution_contract": {
+      "$ref": "#/$defs/executionContract"
+    },
+    "permit_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "dispatch_hash": {
+      "$ref": "#/$defs/hash"
+    }
+  },
+  "$defs": {
+    "nonempty": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "hash"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "hash": {
+          "$ref": "#/$defs/hash"
+        }
+      }
+    },
+    "bindingState": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "value"
+          ],
+          "properties": {
+            "state": {
+              "const": "observed"
+            },
+            "value": {
+              "$ref": "#/$defs/binding"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "missing",
+                "unknown",
+                "not_applicable"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "frontier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "frontier_id",
+        "frontier_version",
+        "policy_binding",
+        "retained_tool_bindings",
+        "exclusion_counts",
+        "frontier_hash"
+      ],
+      "properties": {
+        "frontier_id": {
+          "type": "string",
+          "pattern": "^TOOL_FRONTIER_[0-9a-f]{24}$"
+        },
+        "frontier_version": {
+          "$ref": "#/$defs/version"
+        },
+        "policy_binding": {
+          "$ref": "#/$defs/binding"
+        },
+        "retained_tool_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/binding"
+          }
+        },
+        "exclusion_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "disabled",
+            "tenant",
+            "permission",
+            "stage",
+            "side_effect",
+            "resource_scope",
+            "frontier_limit"
+          ],
+          "properties": {
+            "disabled": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "tenant": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "permission": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "stage": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "side_effect": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "resource_scope": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "frontier_limit": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "frontier_hash": {
+          "$ref": "#/$defs/hash"
+        }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tool_binding",
+        "priority",
+        "action_type_match",
+        "selected"
+      ],
+      "properties": {
+        "tool_binding": {
+          "$ref": "#/$defs/binding"
+        },
+        "priority": {
+          "type": "integer"
+        },
+        "action_type_match": {
+          "const": true
+        },
+        "selected": {
+          "type": "boolean"
+        }
+      }
+    },
+    "admissionCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "status",
+        "code",
+        "evidence_bindings"
+      ],
+      "properties": {
+        "name": {
+          "enum": [
+            "registration",
+            "frontier",
+            "parameters",
+            "identity_scope",
+            "workflow_stage",
+            "dependencies",
+            "state_evidence",
+            "budget_quota",
+            "idempotency",
+            "concurrency",
+            "approval",
+            "risk_environment",
+            "compensation",
+            "observability"
+          ]
+        },
+        "status": {
+          "enum": [
+            "passed",
+            "failed",
+            "waiting",
+            "not_applicable"
+          ]
+        },
+        "code": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "evidence_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/binding"
+          }
+        }
+      }
+    },
+    "executionContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "side_effect_class",
+        "risk_level",
+        "lease_required",
+        "idempotency_binding",
+        "state_evidence_binding",
+        "resource_versions_hash",
+        "approval_binding",
+        "authorization_binding",
+        "authorization_policy_binding",
+        "executor_binding",
+        "sandbox_binding",
+        "compensation_binding",
+        "manual_disposition_binding",
+        "observation_mode",
+        "permit_expires_at",
+        "execution_ready"
+      ],
+      "properties": {
+        "side_effect_class": {
+          "$ref": "#/$defs/sideEffectClass"
+        },
+        "risk_level": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "lease_required": {
+          "type": "boolean"
+        },
+        "idempotency_binding": {
+          "$ref": "#/$defs/bindingState"
+        },
+        "state_evidence_binding": {
+          "$ref": "#/$defs/bindingState"
+        },
+        "resource_versions_hash": {
+          "$ref": "#/$defs/hash"
+        },
+        "approval_binding": {
+          "$ref": "#/$defs/bindingState"
+        },
+        "authorization_binding": {
+          "$ref": "#/$defs/bindingState"
+        },
+        "authorization_policy_binding": {
+          "$ref": "#/$defs/bindingState"
+        },
+        "executor_binding": {
+          "$ref": "#/$defs/bindingState"
+        },
+        "sandbox_binding": {
+          "$ref": "#/$defs/bindingState"
+        },
+        "compensation_binding": {
+          "$ref": "#/$defs/bindingState"
+        },
+        "manual_disposition_binding": {
+          "$ref": "#/$defs/bindingState"
+        },
+        "observation_mode": {
+          "enum": [
+            "sidecar",
+            "advisory",
+            "soft_gate",
+            "hard_gate"
+          ]
+        },
+        "permit_expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "execution_ready": {
+          "type": "boolean"
+        }
+      }
+    },
+    "sideEffectClass": {
+      "enum": [
+        "read_only",
+        "draft",
+        "reversible_write",
+        "sensitive_write",
+        "irreversible_external"
+      ]
+    }
+  }
+}

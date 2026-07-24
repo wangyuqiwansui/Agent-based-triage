@@ -1,0 +1,273 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hanerss.local/schemas/tool-execution-result.schema.json",
+  "title": "Tool Execution Result / 工具执行结果",
+  "description": "A sealed result that distinguishes rejection, explicit failure, unknown outcome, partial success, success, and idempotent reuse. / 区分拒绝、明确失败、结果未知、部分成功、成功与幂等复用的封存结果。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "result_id",
+    "dispatch_binding",
+    "workflow_id",
+    "workflow_version",
+    "run_id",
+    "goal_id",
+    "node_id",
+    "attempt_id",
+    "action_id",
+    "plan_version",
+    "tool_binding",
+    "permit_binding",
+    "lease_binding",
+    "side_effect_class",
+    "classification",
+    "side_effect_state",
+    "execution_started_at",
+    "execution_completed_at",
+    "output_binding",
+    "external_receipt_binding",
+    "actual_side_effects",
+    "error",
+    "next_action",
+    "reused_result_binding",
+    "created_at",
+    "result_hash"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "result_id": {
+      "type": "string",
+      "pattern": "^TOOL_RESULT_[0-9a-f]{24}$"
+    },
+    "dispatch_binding": {
+      "$ref": "#/$defs/binding"
+    },
+    "workflow_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "workflow_version": {
+      "$ref": "#/$defs/version"
+    },
+    "run_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "goal_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "node_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "attempt_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "action_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "plan_version": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "tool_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "permit_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "lease_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "side_effect_class": {
+      "enum": [
+        "read_only",
+        "draft_only",
+        "reversible_write",
+        "sensitive_write",
+        "irreversible_external"
+      ]
+    },
+    "classification": {
+      "enum": [
+        "success",
+        "reused_success",
+        "rejected",
+        "explicit_failure",
+        "unknown",
+        "partial_success",
+        "waiting"
+      ]
+    },
+    "side_effect_state": {
+      "enum": [
+        "none",
+        "confirmed",
+        "confirmed_absent",
+        "unknown",
+        "partial"
+      ]
+    },
+    "execution_started_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "execution_completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "output_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "external_receipt_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "actual_side_effects": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/sideEffect"
+      }
+    },
+    "error": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "category",
+            "code",
+            "retryable"
+          ],
+          "properties": {
+            "category": {
+              "$ref": "#/$defs/nonempty"
+            },
+            "code": {
+              "$ref": "#/$defs/nonempty"
+            },
+            "retryable": {
+              "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "next_action": {
+      "enum": [
+        "none",
+        "wait",
+        "reconcile",
+        "retry",
+        "replan",
+        "human_review",
+        "compensate"
+      ]
+    },
+    "reused_result_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "result_hash": {
+      "$ref": "#/$defs/hash"
+    }
+  },
+  "$defs": {
+    "nonempty": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "hash"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "hash": {
+          "$ref": "#/$defs/hash"
+        }
+      }
+    },
+    "bindingState": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "value"
+          ],
+          "properties": {
+            "state": {
+              "const": "observed"
+            },
+            "value": {
+              "$ref": "#/$defs/binding"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "missing",
+                "unknown",
+                "not_applicable"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "sideEffect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource_id",
+        "effect_type",
+        "receipt_binding"
+      ],
+      "properties": {
+        "resource_id": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "effect_type": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "receipt_binding": {
+          "$ref": "#/$defs/binding"
+        }
+      }
+    }
+  }
+}

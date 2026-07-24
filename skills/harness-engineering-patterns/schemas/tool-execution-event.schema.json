@@ -1,0 +1,341 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hanerss.local/schemas/tool-execution-event.schema.json",
+  "title": "Tool Execution Event / 工具执行事件",
+  "description": "A strict externally verifiable event for the tool-dispatch lifecycle. / 工具调度生命周期的严格外部可核验事件。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_version",
+    "event_id",
+    "event_key",
+    "event_type",
+    "event_processing_status",
+    "workflow_id",
+    "workflow_version",
+    "run_id",
+    "goal_id",
+    "node_id",
+    "attempt_id",
+    "action_id",
+    "parent_action_id",
+    "plan_version",
+    "correlation_id",
+    "sequence",
+    "stage",
+    "status",
+    "decision",
+    "reason_codes",
+    "dispatch_binding",
+    "frontier_binding",
+    "tool_binding",
+    "permit_binding",
+    "idempotency_binding",
+    "lease_binding",
+    "result_binding",
+    "side_effect_class",
+    "result_classification",
+    "admission_checks",
+    "occurred_at",
+    "data_semantics",
+    "event_hash"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "event_version": {
+      "const": "1.0.0"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^TOOL_EVENT_[0-9a-f]{24}$"
+    },
+    "event_key": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "event_type": {
+      "enum": [
+        "capability_frontier_built",
+        "candidate_selection_completed",
+        "execution_admission_completed",
+        "execution_lease_acquired",
+        "tool_execution_started",
+        "tool_execution_succeeded",
+        "tool_result_reused",
+        "tool_execution_rejected",
+        "tool_execution_failed",
+        "tool_execution_unknown",
+        "tool_execution_partial",
+        "tool_execution_waiting",
+        "side_effect_confirmed"
+      ]
+    },
+    "event_processing_status": {
+      "const": "accepted"
+    },
+    "workflow_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "workflow_version": {
+      "$ref": "#/$defs/version"
+    },
+    "run_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "goal_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "node_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "attempt_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "action_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "parent_action_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "plan_version": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "correlation_id": {
+      "$ref": "#/$defs/nonempty"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "stage": {
+      "enum": [
+        "capability_frontier",
+        "candidate_selection",
+        "execution_admission",
+        "idempotency_lease",
+        "tool_execution",
+        "result_classification",
+        "side_effect_verification"
+      ]
+    },
+    "status": {
+      "enum": [
+        "started",
+        "completed"
+      ]
+    },
+    "decision": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "allow",
+        "reject",
+        "wait",
+        null
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/nonempty"
+      },
+      "uniqueItems": true
+    },
+    "dispatch_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "frontier_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "tool_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "permit_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "idempotency_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "lease_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "result_binding": {
+      "$ref": "#/$defs/bindingState"
+    },
+    "side_effect_class": {
+      "$ref": "#/$defs/sideEffectClass"
+    },
+    "result_classification": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "success",
+        "reused_success",
+        "rejected",
+        "explicit_failure",
+        "unknown",
+        "partial_success",
+        "waiting",
+        null
+      ]
+    },
+    "admission_checks": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "items": {
+        "$ref": "#/$defs/admissionCheck"
+      }
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "data_semantics": {
+      "enum": [
+        "original",
+        "derived"
+      ]
+    },
+    "event_hash": {
+      "$ref": "#/$defs/hash"
+    }
+  },
+  "$defs": {
+    "nonempty": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "version",
+        "hash"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "hash": {
+          "$ref": "#/$defs/hash"
+        }
+      }
+    },
+    "bindingState": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "value"
+          ],
+          "properties": {
+            "state": {
+              "const": "observed"
+            },
+            "value": {
+              "$ref": "#/$defs/binding"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "missing",
+                "unknown",
+                "not_applicable"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "admissionCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "status",
+        "code",
+        "evidence_bindings"
+      ],
+      "properties": {
+        "name": {
+          "enum": [
+            "registration",
+            "frontier",
+            "parameters",
+            "identity_scope",
+            "workflow_stage",
+            "dependencies",
+            "state_evidence",
+            "budget_quota",
+            "idempotency",
+            "concurrency",
+            "approval",
+            "risk_environment",
+            "compensation",
+            "observability"
+          ]
+        },
+        "status": {
+          "enum": [
+            "passed",
+            "failed",
+            "waiting",
+            "not_applicable"
+          ]
+        },
+        "code": {
+          "$ref": "#/$defs/nonempty"
+        },
+        "evidence_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/binding"
+          }
+        }
+      }
+    },
+    "sideEffectClass": {
+      "enum": [
+        "read_only",
+        "draft",
+        "reversible_write",
+        "sensitive_write",
+        "irreversible_external"
+      ]
+    }
+  }
+}
