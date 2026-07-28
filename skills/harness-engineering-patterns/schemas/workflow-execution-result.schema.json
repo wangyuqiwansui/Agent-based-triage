@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/harness/workflow-execution-result.schema.json",
+  "title": "Workflow Execution Result / 工作流执行结果",
+  "description": "Sealed terminal artifact produced only after the Plan-and-Execute completion gate passes / 仅在计划并执行完成闸门通过后生成的封存终态制品",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "result_id",
+    "run_id",
+    "terminal_state",
+    "goal_binding",
+    "plan_binding",
+    "step_results",
+    "criterion_results",
+    "completion_evidence",
+    "validator_results",
+    "probe_health",
+    "approval_checks",
+    "completed_at",
+    "result_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "result_id": { "$ref": "#/$defs/Identifier" },
+    "run_id": { "$ref": "#/$defs/Identifier" },
+    "terminal_state": { "const": "completed" },
+    "goal_binding": { "$ref": "#/$defs/GoalBinding" },
+    "plan_binding": { "$ref": "#/$defs/PlanBinding" },
+    "step_results": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/StepResult" },
+      "minItems": 1
+    },
+    "criterion_results": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/CriterionResult" },
+      "minItems": 1
+    },
+    "completion_evidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/TypedEvidence" },
+      "minItems": 1
+    },
+    "validator_results": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ValidatorResult" },
+      "minItems": 1
+    },
+    "probe_health": { "$ref": "#/$defs/ProbeHealth" },
+    "approval_checks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/ApprovalCheck" }
+    },
+    "completed_at": { "type": "string", "format": "date-time" },
+    "result_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "type": "string", "minLength": 1 },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "GoalBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goal_id", "version", "hash"],
+      "properties": {
+        "goal_id": { "$ref": "#/$defs/Identifier" },
+        "version": { "type": "integer", "minimum": 1 },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "PlanBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["plan_id", "revision", "hash"],
+      "properties": {
+        "plan_id": { "$ref": "#/$defs/Identifier" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "StepResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_id",
+        "state",
+        "attempt",
+        "output_digest",
+        "completion_evidence",
+        "external_receipts"
+      ],
+      "properties": {
+        "step_id": { "$ref": "#/$defs/Identifier" },
+        "state": { "const": "done" },
+        "attempt": { "type": "integer", "minimum": 1 },
+        "output_digest": { "$ref": "#/$defs/Sha256" },
+        "completion_evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "external_receipts": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "TypedEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_type", "evidence_ref"],
+      "properties": {
+        "evidence_type": { "type": "string", "minLength": 1 },
+        "evidence_ref": { "$ref": "#/$defs/Identifier" }
+      }
+    },
+    "CriterionResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["criterion_id", "satisfied", "evidence"],
+      "properties": {
+        "criterion_id": { "$ref": "#/$defs/Identifier" },
+        "satisfied": { "const": true },
+        "evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/TypedEvidence" },
+          "minItems": 1
+        }
+      }
+    },
+    "ValidatorResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "validator_binding",
+        "status",
+        "checked_at",
+        "evidence_refs"
+      ],
+      "properties": {
+        "validator_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "status": { "const": "passed" },
+        "checked_at": { "type": "string", "format": "date-time" },
+        "evidence_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "ProbeHealth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "probe_binding",
+        "health",
+        "blocking_findings",
+        "checked_at"
+      ],
+      "properties": {
+        "probe_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "health": { "const": "healthy" },
+        "blocking_findings": { "type": "integer", "const": 0 },
+        "checked_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ApprovalCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_id",
+        "approval_binding",
+        "status",
+        "checked_at"
+      ],
+      "properties": {
+        "step_id": { "$ref": "#/$defs/Identifier" },
+        "approval_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "status": { "const": "valid" },
+        "checked_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

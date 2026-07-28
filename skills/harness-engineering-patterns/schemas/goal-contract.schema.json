@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/harness/goal-contract.schema.json",
+  "title": "Goal Contract / 目标契约",
+  "description": "Externalized goal baseline for recoverable workflow execution / 可恢复工作流执行的外部化目标基线",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "goal_id",
+    "version",
+    "objective",
+    "scope",
+    "constraints",
+    "success_criteria",
+    "completion_evidence",
+    "recovery_policy",
+    "permission_boundary",
+    "created_at",
+    "goal_contract_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "goal_id": { "$ref": "#/$defs/Identifier" },
+    "version": { "type": "integer", "minimum": 1 },
+    "objective": { "type": "string", "minLength": 1 },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["in_scope", "out_of_scope"],
+      "properties": {
+        "in_scope": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "out_of_scope": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Constraint" },
+      "minItems": 1
+    },
+    "success_criteria": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/SuccessCriterion" },
+      "minItems": 1
+    },
+    "completion_evidence": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "recovery_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preserve_done",
+        "patch_scope",
+        "unknown_outcome_policy",
+        "checkpoint_required"
+      ],
+      "properties": {
+        "preserve_done": { "const": true },
+        "patch_scope": { "const": "failed_and_affected_subgraph" },
+        "unknown_outcome_policy": { "const": "verify_before_retry" },
+        "checkpoint_required": { "type": "boolean" }
+      }
+    },
+    "permission_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed_actions",
+        "prohibited_actions",
+        "approval_required_for"
+      ],
+      "properties": {
+        "allowed_actions": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "prohibited_actions": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "approval_required_for": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "goal_contract_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "Constraint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["constraint_id", "type", "statement", "hard"],
+      "properties": {
+        "constraint_id": { "$ref": "#/$defs/Identifier" },
+        "type": {
+          "enum": [
+            "business",
+            "technical",
+            "safety",
+            "compliance",
+            "budget",
+            "time",
+            "permission"
+          ]
+        },
+        "statement": { "type": "string", "minLength": 1 },
+        "hard": { "type": "boolean" }
+      }
+    },
+    "SuccessCriterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "criterion_id",
+        "statement",
+        "required_evidence"
+      ],
+      "properties": {
+        "criterion_id": { "$ref": "#/$defs/Identifier" },
+        "statement": { "type": "string", "minLength": 1 },
+        "required_evidence": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

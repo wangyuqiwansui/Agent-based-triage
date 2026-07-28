@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/harness/workflow-checkpoint.schema.json",
+  "title": "Workflow Checkpoint / 工作流检查点",
+  "description": "Portable execution and idempotency recovery snapshot / 可移植执行与幂等恢复快照",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "checkpoint_id",
+    "run_id",
+    "plan_binding",
+    "goal_binding",
+    "step_records",
+    "idempotency_records",
+    "replan_count",
+    "last_event_sequence",
+    "created_at",
+    "checkpoint_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "checkpoint_id": { "$ref": "#/$defs/Identifier" },
+    "run_id": { "$ref": "#/$defs/Identifier" },
+    "plan_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["plan_id", "revision", "hash"],
+      "properties": {
+        "plan_id": { "$ref": "#/$defs/Identifier" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "goal_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goal_id", "version", "hash"],
+      "properties": {
+        "goal_id": { "$ref": "#/$defs/Identifier" },
+        "version": { "type": "integer", "minimum": 1 },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "step_records": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/StepRecord" },
+      "minItems": 1
+    },
+    "idempotency_records": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/IdempotencyRecord" }
+    },
+    "replan_count": { "type": "integer", "minimum": 0 },
+    "last_event_sequence": { "type": "integer", "minimum": 0 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "checkpoint_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "StepRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_id",
+        "state",
+        "attempt",
+        "started_at",
+        "updated_at",
+        "output_digest",
+        "completion_evidence",
+        "error",
+        "external_receipts"
+      ],
+      "properties": {
+        "step_id": { "$ref": "#/$defs/Identifier" },
+        "state": {
+          "enum": [
+            "todo",
+            "doing",
+            "done",
+            "failed",
+            "blocked",
+            "unknown",
+            "verifying"
+          ]
+        },
+        "attempt": { "type": "integer", "minimum": 0 },
+        "started_at": {
+          "oneOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "null" }
+          ]
+        },
+        "updated_at": { "type": "string", "format": "date-time" },
+        "output_digest": {
+          "oneOf": [
+            { "$ref": "#/$defs/Sha256" },
+            { "type": "null" }
+          ]
+        },
+        "completion_evidence": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "uniqueItems": true
+        },
+        "error": {
+          "oneOf": [
+            { "type": "string", "minLength": 1 },
+            { "type": "null" }
+          ]
+        },
+        "external_receipts": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "IdempotencyRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "idempotency_key",
+        "step_id",
+        "request_digest",
+        "status",
+        "provider_ref",
+        "result_digest"
+      ],
+      "properties": {
+        "idempotency_key": { "type": "string", "minLength": 1 },
+        "step_id": { "$ref": "#/$defs/Identifier" },
+        "request_digest": { "$ref": "#/$defs/Sha256" },
+        "status": {
+          "enum": ["in_progress", "succeeded", "failed", "unknown"]
+        },
+        "provider_ref": {
+          "oneOf": [
+            { "type": "string", "minLength": 1 },
+            { "type": "null" }
+          ]
+        },
+        "result_digest": {
+          "oneOf": [
+            { "$ref": "#/$defs/Sha256" },
+            { "type": "null" }
+          ]
+        }
+      }
+    }
+  }
+}

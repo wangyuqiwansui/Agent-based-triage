@@ -778,12 +778,7 @@ class ToolDispatchCoordinator:
         """
 
         retained, exclusion_counts = self._frontier(request)
-        candidates = [
-            capability
-            for capability in retained
-            if request.intent.action_type in capability.action_types
-        ]
-        candidates.sort(key=lambda item: (-item.priority, item.tool_id, item.tool_version))
+        candidates = self._ordered_candidates(request, retained)
         selected = candidates[0] if candidates else None
         checks = self._admission_checks(request, selected, retained)
         decision = self._decision(checks)
@@ -883,6 +878,43 @@ class ToolDispatchCoordinator:
             "created_at": request.context.created_at,
         }
         return build_artifact("tool_dispatch_envelope", envelope)
+
+    def preview_selected_tool_binding(
+        self,
+        request: ToolDispatchRequest,
+    ) -> Mapping[str, Any]:
+        """Preview deterministic selection without admission or authorization.
+
+        This is only a binding-drift preflight. The returned selection is not
+        permission to execute; ``prepare`` and live authorization remain
+        mandatory.
+
+        / 在不执行准入或授权的情况下预览确定性选型。该方法只用于绑定漂移预检；
+        返回的选型不代表执行许可，仍必须执行 ``prepare`` 与实时授权。
+        """
+
+        retained, _ = self._frontier(request)
+        candidates = self._ordered_candidates(request, retained)
+        return (
+            _state("missing")
+            if not candidates
+            else _state("observed", candidates[0].binding)
+        )
+
+    @staticmethod
+    def _ordered_candidates(
+        request: ToolDispatchRequest,
+        retained: Sequence[ToolCapability],
+    ) -> list[ToolCapability]:
+        candidates = [
+            capability
+            for capability in retained
+            if request.intent.action_type in capability.action_types
+        ]
+        candidates.sort(
+            key=lambda item: (-item.priority, item.tool_id, item.tool_version)
+        )
+        return candidates
 
     def _frontier(
         self,

@@ -22,6 +22,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 
 _SCHEMA_FILES = {
+    "goal_contract": "goal-contract.schema.json",
     "normalized_input": "normalized-input.schema.json",
     "reasoning_contract": "reasoning-contract.schema.json",
     "reasoning_event": "reasoning-event.schema.json",
@@ -31,9 +32,14 @@ _SCHEMA_FILES = {
     "tool_execution_result": "tool-execution-result.schema.json",
     "workflow_route_envelope": "workflow-route-envelope.schema.json",
     "workflow_route_revision": "workflow-route-revision.schema.json",
+    "workflow_plan": "workflow-plan.schema.json",
+    "workflow_plan_patch": "workflow-plan-patch.schema.json",
+    "workflow_checkpoint": "workflow-checkpoint.schema.json",
+    "workflow_execution_result": "workflow-execution-result.schema.json",
 }
 
 _HASH_FIELDS = {
+    "goal_contract": "goal_contract_hash",
     "normalized_input": "normalized_input_hash",
     "reasoning_contract": "contract_hash",
     "reasoning_result": "result_hash",
@@ -42,6 +48,10 @@ _HASH_FIELDS = {
     "tool_execution_result": "result_hash",
     "workflow_route_envelope": "route_envelope_hash",
     "workflow_route_revision": "revision_event_hash",
+    "workflow_plan": "plan_hash",
+    "workflow_plan_patch": "patch_hash",
+    "workflow_checkpoint": "checkpoint_hash",
+    "workflow_execution_result": "result_hash",
 }
 
 _TOOL_ADMISSION_CHECK_ORDER = (

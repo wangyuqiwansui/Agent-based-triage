@@ -94,6 +94,7 @@ RUNTIME_PROTOCOLS = {
 REQUIRED_PROBES = tuple(f"PROBE_{number:04d}" for number in range(1, 16))
 
 RUNTIME_SCHEMA_FILES = (
+    "schemas/goal-contract.schema.json",
     "schemas/normalized-input.schema.json",
     "schemas/reasoning-chain-blueprint.schema.json",
     "schemas/reasoning-chain-checkpoint-validation.schema.json",
@@ -108,10 +109,19 @@ RUNTIME_SCHEMA_FILES = (
     "schemas/tool-execution-result.schema.json",
     "schemas/workflow-route-envelope.schema.json",
     "schemas/workflow-route-revision.schema.json",
+    "schemas/workflow-plan.schema.json",
+    "schemas/workflow-plan-patch.schema.json",
+    "schemas/workflow-checkpoint.schema.json",
+    "schemas/workflow-execution-result.schema.json",
 )
 
 RUNTIME_IMPLEMENTATION_FILES = (
     "runtime/__init__.py",
+    "runtime/plan_execution.py",
+    "runtime/plan_execution_completion.py",
+    "runtime/plan_execution_events.py",
+    "runtime/plan_execution_sqlite_store.py",
+    "runtime/plan_tool_dispatch.py",
     "runtime/reasoning_chain_factory.py",
     "runtime/reasoning_chain_compiler.py",
     "runtime/reasoning_chain_session.py",
@@ -195,6 +205,39 @@ TOOL_DISPATCH_MARKERS = (
     "选择与准入仍保持分离",
     "unknown",
     "结果未知",
+)
+
+PLAN_EXECUTION_REFERENCE = (
+    "references/patterns/action/action-orchestration.md"
+)
+
+PLAN_EXECUTION_OBSERVABILITY = (
+    "references/patterns/action/action-orchestration-observability.md"
+)
+
+PLAN_EXECUTION_MARKERS = (
+    "Version / 版本: `1.1.0`",
+    "../../../schemas/goal-contract.schema.json",
+    "../../../schemas/workflow-plan.schema.json",
+    "../../../schemas/workflow-plan-patch.schema.json",
+    "../../../schemas/workflow-checkpoint.schema.json",
+    "../../../schemas/workflow-execution-result.schema.json",
+    "../../../runtime/plan_execution.py",
+    "../../../runtime/plan_execution_completion.py",
+    "../../../runtime/plan_execution_events.py",
+    "../../../runtime/plan_execution_sqlite_store.py",
+    "../../../runtime/plan_tool_dispatch.py",
+    "## Hard Invariants / 硬不变量",
+    "## Mechanical State Machine / 机械状态机",
+    "## Checkpoint And Idempotency / 检查点与幂等",
+    "## Local Replanning / 局部重规划",
+    "UNKNOWN → VERIFYING",
+    "failed-and-affected subgraph",
+    "失败节点及受影响子图",
+    "persist-before-dispatch",
+    "分派前持久化",
+    "completion gate",
+    "完成闸门",
 )
 
 CANONICAL_RUNTIME_ENUMS = {
@@ -423,6 +466,7 @@ RUNTIME_REQUIRED_EXPORTS = {
         "ChainPlanSession",
         "EventStore",
         "ParallelDispatchCoordinator",
+        "PlanExecutionSession",
         "PostgresEventStore",
         "PostgresParallelDispatchOutbox",
         "ReasoningEngine",
@@ -440,6 +484,9 @@ RUNTIME_REQUIRED_EXPORTS = {
         "ValidationStatus",
         "WorkflowState",
         "validate_runtime_contract_capabilities",
+        "validate_workflow_checkpoint",
+        "validate_workflow_plan",
+        "validate_workflow_plan_patch",
     },
     "reasoning_router": {
         "ExecutionMode",
@@ -465,6 +512,22 @@ RUNTIME_REQUIRED_EXPORTS = {
         "ReasoningChainFactory",
         "validate_chain_blueprint",
         "validate_chain_plan",
+    },
+    "plan_execution": {
+        "ActionClaim",
+        "IdempotencyStatus",
+        "PlanExecutionSession",
+        "PlanPatchError",
+        "PlanStateError",
+        "PlanValidationError",
+        "StepState",
+        "compile_goal_contract",
+        "compile_workflow_plan",
+        "compile_workflow_plan_patch",
+        "validate_goal_contract",
+        "validate_workflow_checkpoint",
+        "validate_workflow_plan",
+        "validate_workflow_plan_patch",
     },
 }
 
@@ -1991,6 +2054,7 @@ def validate_runtime_imports(
             "reasoning_router",
             "reasoning_metrics",
             "reasoning_chain_factory",
+            "plan_execution",
         ):
             modules[module_name] = importlib.import_module(
                 f"{package_name}.{module_name}"
@@ -2248,6 +2312,49 @@ def validate_runtime_protocols(
             "可观测性协议仍包含有偏或混合单位的公式",
         )
 
+    plan_execution_path = skill_dir / PLAN_EXECUTION_REFERENCE
+    plan_execution = (
+        plan_execution_path.read_text(encoding="utf-8")
+        if plan_execution_path.is_file()
+        else ""
+    )
+    if not plan_execution:
+        report.error(
+            "plan_execution_reference",
+            f"missing Plan-and-Execute reference {PLAN_EXECUTION_REFERENCE}",
+            f"缺少计划并执行参考文档 {PLAN_EXECUTION_REFERENCE}",
+        )
+    else:
+        for marker in PLAN_EXECUTION_MARKERS:
+            if marker not in plan_execution:
+                report.error(
+                    "plan_execution_reference",
+                    f"Plan-and-Execute reference missing {marker}",
+                    f"计划并执行参考文档缺少 {marker}",
+                )
+
+    plan_observability_path = skill_dir / PLAN_EXECUTION_OBSERVABILITY
+    plan_observability = (
+        plan_observability_path.read_text(encoding="utf-8")
+        if plan_observability_path.is_file()
+        else ""
+    )
+    for marker in (
+        "Version / 版本: `1.1.0`",
+        "../../workflow-observability-probes.md",
+        "## Probe Mounts / 探针挂载",
+        "## Hard Integrity Alerts / 硬完整性告警",
+        "completed_action_replay_rate",
+        "checkpoint_recovery_success_rate",
+        "unknown_state_backlog_seconds",
+    ):
+        if marker not in plan_observability:
+            report.error(
+                "plan_execution_observability",
+                f"Plan-and-Execute observability missing {marker}",
+                f"计划并执行可观测性文档缺少 {marker}",
+            )
+
     for relative in RUNTIME_IMPLEMENTATION_FILES:
         path = skill_dir / relative
         if not path.is_file():
@@ -2293,6 +2400,22 @@ def validate_runtime_protocols(
                 )
 
     skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+    for marker in (
+        PLAN_EXECUTION_REFERENCE,
+        "schemas/goal-contract.schema.json",
+        "schemas/workflow-plan.schema.json",
+        "schemas/workflow-plan-patch.schema.json",
+        "schemas/workflow-checkpoint.schema.json",
+        "runtime/plan_execution.py",
+        "PlanExecutionSession",
+    ):
+        if marker not in skill_text:
+            report.error(
+                "plan_execution_entrypoint",
+                f"SKILL.md does not route Plan-and-Execute through {marker}",
+                f"SKILL.md 未将计划并执行路由到 {marker}",
+            )
+
     for marker in (
         CHAIN_FACTORY_REFERENCE,
         "runtime/reasoning_chain_factory.py",

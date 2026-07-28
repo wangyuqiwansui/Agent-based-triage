@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/harness/workflow-plan.schema.json",
+  "title": "Workflow Plan / 工作流计划",
+  "description": "Immutable dependency graph for governed Plan-and-Execute / 受治理计划并执行的不可变依赖图",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "plan_id",
+    "revision",
+    "goal_binding",
+    "steps",
+    "stop_conditions",
+    "created_at",
+    "plan_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "plan_id": { "$ref": "#/$defs/Identifier" },
+    "revision": { "type": "integer", "minimum": 1 },
+    "goal_binding": { "$ref": "#/$defs/GoalBinding" },
+    "steps": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/PlanStep" },
+      "minItems": 1
+    },
+    "stop_conditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_replans",
+        "max_retries_per_step",
+        "deadline_at"
+      ],
+      "properties": {
+        "max_replans": { "type": "integer", "minimum": 0 },
+        "max_retries_per_step": { "type": "integer", "minimum": 0 },
+        "deadline_at": {
+          "oneOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "plan_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "type": "string", "minLength": 1 },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "GoalBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goal_id", "version", "hash"],
+      "properties": {
+        "goal_id": { "$ref": "#/$defs/Identifier" },
+        "version": { "type": "integer", "minimum": 1 },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "Handler": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "ref", "version"],
+      "properties": {
+        "kind": { "enum": ["tool", "skill", "subagent", "human", "runtime"] },
+        "ref": { "$ref": "#/$defs/Identifier" },
+        "version": { "type": "string", "minLength": 1 }
+      }
+    },
+    "CompletionCriterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["criterion_id", "statement", "evidence_types"],
+      "properties": {
+        "criterion_id": { "$ref": "#/$defs/Identifier" },
+        "statement": { "type": "string", "minLength": 1 },
+        "evidence_types": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "Compensation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["handler", "safety_condition"],
+      "properties": {
+        "handler": { "$ref": "#/$defs/Handler" },
+        "safety_condition": { "type": "string", "minLength": 1 }
+      }
+    },
+    "Effect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "class",
+        "idempotency_key",
+        "compensation",
+        "approval_binding"
+      ],
+      "properties": {
+        "class": {
+          "enum": ["read_only", "reversible_write", "irreversible_external"]
+        },
+        "idempotency_key": {
+          "oneOf": [
+            { "type": "string", "minLength": 1 },
+            { "type": "null" }
+          ]
+        },
+        "compensation": {
+          "oneOf": [
+            { "$ref": "#/$defs/Compensation" },
+            { "type": "null" }
+          ]
+        },
+        "approval_binding": {
+          "oneOf": [
+            { "$ref": "#/$defs/VersionedBinding" },
+            { "type": "null" }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "class": {
+                "enum": ["reversible_write", "irreversible_external"]
+              }
+            },
+            "required": ["class"]
+          },
+          "then": {
+            "properties": {
+              "idempotency_key": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "class": { "const": "reversible_write" } },
+            "required": ["class"]
+          },
+          "then": {
+            "properties": {
+              "compensation": { "$ref": "#/$defs/Compensation" }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": { "class": { "const": "irreversible_external" } },
+            "required": ["class"]
+          },
+          "then": {
+            "properties": {
+              "approval_binding": { "$ref": "#/$defs/VersionedBinding" }
+            }
+          }
+        }
+      ]
+    },
+    "PlanStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_id",
+        "description",
+        "handler",
+        "dependencies",
+        "inputs",
+        "outputs",
+        "completion_criteria",
+        "checkpoint_required",
+        "effect"
+      ],
+      "properties": {
+        "step_id": { "$ref": "#/$defs/Identifier" },
+        "description": { "type": "string", "minLength": 1 },
+        "handler": { "$ref": "#/$defs/Handler" },
+        "dependencies": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "uniqueItems": true
+        },
+        "inputs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "outputs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "completion_criteria": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/CompletionCriterion" },
+          "minItems": 1
+        },
+        "checkpoint_required": { "type": "boolean" },
+        "effect": { "$ref": "#/$defs/Effect" }
+      }
+    }
+  }
+}
