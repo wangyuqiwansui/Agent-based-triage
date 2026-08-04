@@ -288,6 +288,44 @@ def test_read_only_dispatch_builds_minimal_frontier_and_sealed_permit() -> None:
     assert envelope["permit_binding"]["state"] == "observed"
 
 
+def test_draft_result_uses_canonical_side_effect_class() -> None:
+    request = read_request()
+    request = replace(
+        request,
+        intent=replace(
+            request.intent,
+            expected_side_effect=SideEffectClass.DRAFT,
+            maximum_side_effect=SideEffectClass.DRAFT,
+        ),
+    )
+    coordinator = ToolDispatchCoordinator(
+        [
+            read_capability(
+                tool_id="TOOL_DRAFT", side_effect_class=SideEffectClass.DRAFT
+            )
+        ],
+        authority_verifier=allow,
+    )
+
+    run = ToolDispatchRuntime(
+        coordinator,
+        clock=fixed_clock,
+    ).execute(
+        request,
+        lambda *_: ToolExecutionReceipt(
+            ExecutionClassification.SUCCESS,
+            SideEffectState.NONE,
+            output_binding=binding("DRAFT_OUTPUT"),
+        ),
+    )
+
+    assert run.result["classification"] == "success"
+    assert run.result["side_effect_class"] == "draft"
+    validate_tool_execution_result(run.result)
+    for event in run.events:
+        validate_tool_execution_event(event)
+
+
 def test_selection_never_overrides_parameter_or_live_authorization_failure() -> None:
     coordinator = ToolDispatchCoordinator(
         [read_capability()],

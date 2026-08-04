@@ -82,7 +82,7 @@
     "side_effect_class": {
       "enum": [
         "read_only",
-        "draft_only",
+        "draft",
         "reversible_write",
         "sensitive_write",
         "irreversible_external"

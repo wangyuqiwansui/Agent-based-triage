@@ -230,7 +230,7 @@ class HarnessSkillRegistryTest(unittest.TestCase):
             "references/workflow-observability-probes.md",
         )
         self.assertEqual(patterns["PATTERN_0052"]["source_draft_id"], "PATTERN_0002")
-        self.assertEqual(patterns["PATTERN_0052"]["source_version"], "0.5.0")
+        self.assertEqual(patterns["PATTERN_0052"]["source_version"], "0.6.0")
         self.assertIn(
             "COG_GOVERNANCE__TOP_ORCHESTRATION",
             patterns["PATTERN_0052"]["matrix_coordinates"],

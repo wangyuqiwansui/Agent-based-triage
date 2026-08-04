@@ -13,6 +13,13 @@ RUNTIME_DIR = ROOT / "skills" / "harness-engineering-patterns" / "runtime"
 MODULE_PATH = RUNTIME_DIR / "reasoning_metrics.py"
 REGISTRY_PATH = RUNTIME_DIR / "metric_registry.json"
 PROBE_REGISTRY_PATH = RUNTIME_DIR / "probe_registry.json"
+TOOL_EXECUTION_EVENT_SCHEMA_PATH = (
+    ROOT
+    / "skills"
+    / "harness-engineering-patterns"
+    / "schemas"
+    / "tool-execution-event.schema.json"
+)
 WORKFLOW_PROBES_PATH = (
     ROOT
     / "skills"
@@ -793,6 +800,25 @@ class MetricRegistryTest(unittest.TestCase):
             referenced.update(entry["required_probes"])
             referenced.update(entry["conditional_probes"])
         self.assertTrue(referenced <= set(records))
+
+    def test_tool_action_probe_covers_tool_execution_schema_lifecycle(self):
+        schema = json.loads(
+            TOOL_EXECUTION_EVENT_SCHEMA_PATH.read_text(encoding="utf-8")
+        )
+        lifecycle = set(schema["properties"]["event_type"]["enum"])
+        registry = json.loads(PROBE_REGISTRY_PATH.read_text(encoding="utf-8"))
+        tool_probe = next(
+            item for item in registry["probes"] if item["probe_id"] == "PROBE_0007"
+        )
+
+        self.assertIn(
+            "tool-execution-event.schema.json",
+            tool_probe["accepted_event_schemas"],
+        )
+        self.assertEqual(
+            lifecycle - set(tool_probe["trigger_event_types"]),
+            set(),
+        )
 
     def test_registry_is_bilingual_and_complete(self):
         registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))

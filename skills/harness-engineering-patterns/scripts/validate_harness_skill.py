@@ -78,7 +78,7 @@ RUNTIME_PROTOCOLS = {
     "PATTERN_0052": {
         "reference": "references/workflow-observability-probes.md",
         "source_draft_id": "PATTERN_0002",
-        "source_version": "0.5.0",
+        "source_version": "0.6.0",
         "name_en": "Workflow Observability Probes",
         "name_zh": "工作流可观测性探针",
         "matrix_coordinates": {

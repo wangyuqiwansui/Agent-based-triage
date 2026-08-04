@@ -1,0 +1,62 @@
+trace_id: TRACE_20260804_GUARDRAIL_SANDWICH_0001
+analysis_id: ANALYSIS_20260804_GUARDRAIL_SANDWICH_0001
+event_time: "2026-08-04T14:52:48+08:00"
+status: verified
+
+scope:
+  project_scope: "D:/Agent-based-triage"
+  tenant_scope: "none"
+  environment_scope: "local"
+  task_scope: "Guardrail Sandwich engineering analysis and repository integration / 护栏夹层工程分析与仓库整合"
+
+sensitivity: internal
+source_revision: "1feb084+working-tree"
+
+subject:
+  subject_type: pattern
+  subject_ref: PATTERN_0038
+  cell_refs:
+    - CELL_ACTION_HIERARCHY
+  pattern_refs:
+    - PATTERN_0038
+    - PATTERN_0036
+    - PATTERN_0037
+    - PATTERN_0052
+
+observation:
+  trigger: "The user supplied two draft documents describing tool guardrails and workflow observability and requested analysis and improvement. / 用户提供两份工具护栏与工作流可观测性草案，要求分析完善。"
+  before: "PATTERN_0038 described PRE, controlled execution, and POST at design level, but did not explicitly compose with the executable Tool Dispatch protocol, separate effect truth from output release, define unknown/partial recovery, or bind its design metrics to the dual event streams. The drafts also risked creating parallel specifications. Two concrete repository drifts existed: result Schema `draft_only` versus runtime `draft`, and incomplete PROBE_0007 lifecycle triggers. / PATTERN_0038 已在设计层描述 PRE、受控执行与 POST，但未显式组合可执行 Tool Dispatch 协议，也未分离效果事实与输出放行、定义未知/部分成功恢复，或把设计指标绑定到双事件流；两份草案还可能形成平行规范。仓库另有两处真实漂移：结果 Schema 的 `draft_only` 与运行时 `draft` 不一致，以及 PROBE_0007 生命周期触发不完整。"
+  adjustment: "Integrated the drafts into the existing PATTERN_0038 rather than creating new patterns; added boundaries, threat invariants, exact-action approval and permit binding, source-to-sink lineage, orthogonal state facts, reconciliation and compensation rules, audit/telemetry/evidence separation, MCP adapter limits, metric contracts, reliability and controlled-feedback guidance; added an action-hierarchy Skill route and PATTERN_0052 action profile; completed PROBE_0007 trigger coverage; normalized the result Schema to `draft`; and added regressions for draft execution and probe-to-schema lifecycle coverage. / 将草案整合进既有 PATTERN_0038 而非新建模式；补充职责边界、威胁不变量、精确行动审批与许可绑定、source-to-sink 血缘、正交状态事实、核验与补偿规则、审计/遥测/证据分离、MCP 适配边界、指标契约、可靠性和受控反馈；增加 action-hierarchy Skill 路由与 PATTERN_0052 行动档案；补全 PROBE_0007 触发覆盖；把结果 Schema 统一为 `draft`；并新增 draft 执行及探针—Schema 生命周期覆盖回归测试。"
+  outcome: "Repository integration is verified: targeted tests passed 63 tests plus 153 subtests; the full suite passed 564 tests plus 169 subtests with 3 environment-dependent skips; Skill validation passed with 0 errors and 18 pre-existing navigation warnings; git diff hygiene passed. PATTERN_0038 remains Draft because rehearsal/source-lineage contracts, result quarantine and output release, effect reconciliation, compensation orchestration, and MCP adaptation do not yet have dedicated versioned runtime contracts and failure-path tests. / 仓库整合已验证：定向测试通过 63 项及 153 个子测试；全量测试通过 564 项及 169 个子测试，3 项因环境跳过；Skill 验证 0 错误，保留 18 条既有导航警告；Git 差异卫生检查通过。PATTERN_0038 仍为草案，因为预演/来源血缘契约、结果隔离与输出放行、效果核验、补偿编排和 MCP 适配尚无专属的版本化运行契约与失败路径测试。"
+  validity: verified
+
+evidence_refs:
+  - "external-file:C:/Users/wangs/Downloads/workflow_observability_probe.md@3229-bytes@2026-08-04T14:00:50+08:00"
+  - "external-file:C:/Users/wangs/Downloads/agent_action_execution_flow.md@3203-bytes@2026-08-04T14:00:46+08:00"
+  - "repository:skills/harness-engineering-patterns/references/patterns/action/action-hierarchy.md"
+  - "repository:skills/harness-engineering-patterns/references/patterns/action/action-hierarchy-observability.md"
+  - "repository:skills/harness-engineering-patterns/references/tool-dispatch-execution.md"
+  - "repository:skills/harness-engineering-patterns/references/workflow-observability-probes.md"
+  - "repository:skills/harness-engineering-patterns/runtime/probe_registry.json"
+  - "repository:skills/harness-engineering-patterns/schemas/tool-execution-result.schema.json"
+  - "repository:tests/test_tool_dispatch.py"
+  - "repository:tests/test_reasoning_metrics.py"
+  - "external:https://arxiv.org/abs/2605.13850"
+  - "external:https://modelcontextprotocol.io/specification/2025-11-25/server/tools"
+  - "external:https://openai.com/index/designing-agents-to-resist-prompt-injection/"
+  - "verification:python -m pytest tests/test_tool_dispatch.py tests/test_reasoning_metrics.py -q => 63 passed, 153 subtests passed"
+  - "verification:python -m pytest -q => 564 passed, 3 skipped, 169 subtests passed"
+  - "verification:validate_harness_skill.py => 0 errors, 18 pre-existing warnings"
+  - "verification:git diff --check => passed"
+  - "verification:fresh-agent forward test => correct PATTERN_0038/0036/0052 routing and explicit conditional PATTERN_0037 route added / 独立代理盲测正确路由 PATTERN_0038/0036/0052，并补充条件式 PATTERN_0037 路由"
+verification_tasks: []
+follow_up:
+  - "Before promoting PATTERN_0038, implement versioned rehearsal/source-lineage, quarantine-release, reconciliation, and compensation contracts with emitters, projections, and failure-path tests. / 晋升 PATTERN_0038 前，实现版本化预演/来源血缘、隔离放行、核验和补偿契约，以及发送器、投影器和失败路径测试。"
+  - "Add an MCP adapter only when a deployment needs it; bind trusted server identity and contract digests, and never treat annotations as authority. / 仅在部署需要时增加 MCP 适配器；绑定可信服务器身份与契约摘要，且绝不把 annotations 当作权限。"
+  - "Promote Guardrail-specific metrics only after owner, data quality, denominator, watermark, threshold, staged rollout, and rollback evidence are approved. / 仅在负责人、数据质量、分母、watermark、阈值、分阶段发布与回滚证据获批后晋升护栏专属指标。"
+owner: "harness-engineering-patterns maintainers / Harness 工程模式维护者"
+
+retention:
+  policy: project
+  expires_at: null
+  deletion_or_archive_rule: "archive when superseded / 被后续分析取代时归档"

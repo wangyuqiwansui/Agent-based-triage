@@ -2,10 +2,10 @@
 
 Pattern ID / 模式 ID: `PATTERN_0052`
 
-Version / 版本: `0.5.0`
+Version / 版本: `0.6.0`
 
 Status / 状态: Draft / 草案
-Related patterns / 关联模式: `PATTERN_0051` Reasoning Execution Flow / 推理执行流程; `PATTERN_0036` Tool Dispatch / 工具分派
+Related patterns / 关联模式: `PATTERN_0051` Reasoning Execution Flow / 推理执行流程; `PATTERN_0036` Tool Dispatch / 工具分派; `PATTERN_0038` Guardrail Sandwich / 护栏夹层
 
 This reference turns workflow observability into a deployable probe suite that can reconstruct execution, detect gaps, preserve data provenance, compute reproducible metrics, and return authorized advice or blocks. It complements [Reasoning Execution Flow / 推理执行流程](reasoning-execution-flow.md) and can also inspect unrelated workflows in standalone mode. / 本参考将工作流可观测性实现为一套可部署探针，用于重建执行链、发现缺口、保留数据来源、计算可复现指标，并返回有权限的建议或阻断。它与[推理执行流程](reasoning-execution-flow.md)互补，也可独立检查其他工作流。
 
@@ -17,6 +17,7 @@ Compatibility note / 兼容说明: the source draft used `PATTERN_0002`, which i
 - [Cognition And Topology Mounts / 认知与拓扑挂载](#cognition-and-topology-mounts--认知与拓扑挂载)
 - [Deployment And Probe Contract / 部署与探针契约](#deployment-and-probe-contract--部署与探针契约)
 - [Identity, Event, And Provenance / 标识事件与来源](#identity-event-and-provenance--标识事件与来源)
+- [Guardrail Sandwich Action Profile / 护栏夹层行动档案](#guardrail-sandwich-action-profile--护栏夹层行动档案)
 - [Probe Catalog / 探针目录](#probe-catalog--探针目录)
 - [Standalone And Interactive Operation / 独立与交互运行](#standalone-and-interactive-operation--独立与交互运行)
 - [Metrics And Alerts / 指标与告警](#metrics-and-alerts--指标与告警)
@@ -167,6 +168,18 @@ The Schema fixes every `event_type` to exactly one payload kind: lifecycle, stat
 ### Provenance and completion precedence / 来源与补全优先级
 
 Use source-system capture, workflow report, stable-identity correlation, deterministic calculation, explicit rule derivation, human confirmation, clearly labeled model estimate, then `missing`. Attach provenance to each completed field, not only to the event envelope, and preserve method, input, source/version, valid time, capture time, and confidence. An audit-grade required field is not complete when supplied only by model estimate. Resource values default to `missing`, never numeric zero, until observed. / 依次使用源系统采集、主流程上报、稳定标识关联、确定性计算、明确规则推导、人工确认、显著标注的模型估计，最后保留为缺失。来源信息必须附着到每个已补全字段，而不能只附着在事件信封上，并保留方法、输入、来源/版本、有效时间、采集时间和可信度。审计级必填字段仅有模型估计时不算完整。资源值在观测前默认为 `missing`，绝不能默认为数值零。
+
+## Guardrail Sandwich Action Profile / 护栏夹层行动档案
+
+For `PATTERN_0038`, `PROBE_0007` accepts both the reasoning-event and tool-execution-event Schemas. This is a correlated dual stream, not one universal event envelope: reasoning events carry task, step, governance, human-work, and feedback facts; tool events carry frontier, selection, admission, lease, execution, result, and side-effect facts. Join them with stable run, node or step, action, attempt, parent, correlation, causation, and idempotency identities; mark inferred links and never overwrite explicit ones. / 对 `PATTERN_0038`，`PROBE_0007` 同时接受推理事件与工具执行事件 Schema。这是两条可关联事件流，而非一个万能信封：推理事件承载任务、步骤、治理、人工工作和反馈事实；工具事件承载能力前沿、选择、准入、租约、执行、结果与副作用事实。使用稳定的运行、节点或步骤、行动、尝试、父级、关联、因果和幂等标识连接两条流；推断关联必须标记，且不得覆盖显式关联。
+
+Observe PRE and POST with different semantics. PRE facts decide whether the side-effect boundary may be crossed and bind the exact action, approval, permit, policy, input hash, resource version, source lineage, and expiry. POST facts independently describe execution classification, external-effect certainty, output quarantine or release, verification, and recovery. `output_release=blocked` never implies that an already confirmed external effect was prevented. / PRE 与 POST 必须采用不同语义观测。PRE 事实决定能否跨越副作用边界，并绑定精确行动、审批、许可、策略、输入摘要、资源版本、来源血缘与有效期。POST 事实分别描述执行分类、外部效果确定性、输出隔离或放行、核验和恢复。`output_release=blocked` 绝不意味着已经确认的外部效果被阻止。
+
+Use three data classes: non-sampled append-only audit facts for authority and effects; policy-sampled telemetry for performance and diagnostics; controlled evidence references for exceptional raw artifacts. Do not collect private chain-of-thought, credentials, raw parameters, or raw tool output in normal events. A probe outage before a configured high-risk persistence gate fails closed; after the side-effect boundary it causes quarantine and reconciliation, not a false pre-execution block. / 使用三类数据：权限与效果采用不采样的追加写审计事实；性能与诊断采用按策略采样的遥测；例外原始制品采用受控证据引用。普通事件不得采集私密思维过程、凭据、原始参数或原始工具输出。已配置的高风险持久化门禁在副作用边界前遇到探针故障时默认阻断；越界后则进入隔离与核验，不得伪装成执行前阻断。
+
+Propagate source trust and data classification through transformations and evaluate the complete lineage at sensitive sinks. Missing lineage remains `missing` and cannot be silently treated as trusted. The repository has no MCP adapter today; a future adapter should bind trusted server identity, negotiated protocol, schemas, descriptions, annotations, execution metadata, and a normalized contract digest. Unknown security-relevant drift fails closed, and remote annotations never widen local authorization. / 来源可信度和数据等级随转换传播，并在敏感 sink 处检查完整血缘。血缘缺失保持为 `missing`，不得静默视为可信。仓库目前没有 MCP 适配器；未来适配器应绑定可信服务器身份、协商协议、Schema、描述、annotations、执行元数据与规范化契约摘要。未知的安全相关漂移默认阻断，远程 annotations 绝不扩大本地授权。
+
+Guardrail-specific rehearsal, quarantine-release, effect-reconciliation, and compensation events and metrics remain design-level until registered with versioned contracts and tested emitters. Observations may open a policy-change proposal only; require data-quality review, offline replay or adversarial evaluation, authorization, shadow mode, bounded canary, staged rollout, monitoring, and rollback before deployment. / 护栏专属的预演、隔离放行、效果核验、补偿事件与指标，在拥有版本化登记契约和经测试发送器前保持设计层状态。观测数据只能发起策略变更建议；部署前必须经过数据质量检查、离线回放或对抗评估、有权限审批、影子模式、有界金丝雀、分阶段发布、监控和回滚。
 
 ## Probe Catalog / 探针目录
 
