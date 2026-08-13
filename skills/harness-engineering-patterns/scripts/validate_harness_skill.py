@@ -78,7 +78,7 @@ RUNTIME_PROTOCOLS = {
     "PATTERN_0052": {
         "reference": "references/workflow-observability-probes.md",
         "source_draft_id": "PATTERN_0002",
-        "source_version": "0.6.0",
+        "source_version": "0.7.0",
         "name_en": "Workflow Observability Probes",
         "name_zh": "工作流可观测性探针",
         "matrix_coordinates": {
@@ -91,7 +91,7 @@ RUNTIME_PROTOCOLS = {
     },
 }
 
-REQUIRED_PROBES = tuple(f"PROBE_{number:04d}" for number in range(1, 16))
+REQUIRED_PROBES = tuple(f"PROBE_{number:04d}" for number in range(1, 24))
 
 RUNTIME_SCHEMA_FILES = (
     "schemas/goal-contract.schema.json",
@@ -104,6 +104,9 @@ RUNTIME_SCHEMA_FILES = (
     "schemas/reasoning-contract.schema.json",
     "schemas/reasoning-event.schema.json",
     "schemas/reasoning-result.schema.json",
+    "schemas/reflection-contract.schema.json",
+    "schemas/reflection-event.schema.json",
+    "schemas/reflection-round-observation.schema.json",
     "schemas/tool-dispatch-envelope.schema.json",
     "schemas/tool-execution-event.schema.json",
     "schemas/tool-execution-result.schema.json",
@@ -133,6 +136,7 @@ RUNTIME_IMPLEMENTATION_FILES = (
     "runtime/reasoning_event_postgres_store.py",
     "runtime/reasoning_event_sqlite_store.py",
     "runtime/reasoning_runtime.py",
+    "runtime/reflection_runtime.py",
     "runtime/reasoning_router.py",
     "runtime/tool_dispatch.py",
     "runtime/tool_dispatch_projection.py",
@@ -190,6 +194,23 @@ PARALLEL_FACTORY_MARKERS = (
 )
 
 TOOL_DISPATCH_REFERENCE = "references/tool-dispatch-execution.md"
+
+REFLECTION_EXECUTION_REFERENCE = "references/reflection-execution-flow.md"
+
+REFLECTION_EXECUTION_MARKERS = (
+    "Version / 版本: `1.0.0`",
+    "## Admission And Routing / 准入与路由",
+    "## State Machine / 状态机",
+    "## Baseline Change Result / 基线改变结果",
+    "## Independent Revalidation And Anti-Gaming / 独立复验与反投机",
+    "## Stopping Recovery And Learning / 停止恢复与学习",
+    "../schemas/reflection-contract.schema.json",
+    "../schemas/reflection-event.schema.json",
+    "../schemas/reflection-round-observation.schema.json",
+    "../runtime/reflection_runtime.py",
+    "private chain-of-thought",
+    "私密思维过程",
+)
 
 TOOL_DISPATCH_MARKERS = (
     "../schemas/tool-dispatch-envelope.schema.json",
@@ -472,6 +493,7 @@ RUNTIME_REQUIRED_EXPORTS = {
         "ReasoningEngine",
         "ReasoningChainFactory",
         "ReasoningEvent",
+        "ReflectionSession",
         "RUNTIME_SUPPORTED_STOP_TYPES",
         "RiskLevel",
         "SqliteParallelDispatchOutbox",
@@ -484,6 +506,10 @@ RUNTIME_REQUIRED_EXPORTS = {
         "ValidationStatus",
         "WorkflowState",
         "validate_runtime_contract_capabilities",
+        "validate_reflection_contract",
+        "validate_reflection_event",
+        "validate_reflection_event_stream",
+        "validate_reflection_round_observation",
         "validate_workflow_checkpoint",
         "validate_workflow_plan",
         "validate_workflow_plan_patch",
@@ -502,6 +528,20 @@ RUNTIME_REQUIRED_EXPORTS = {
         "MetricState",
         "ProbeDependencyResolution",
         "resolve_required_probes",
+    },
+    "reflection_runtime": {
+        "ReflectionEligibility",
+        "ReflectionImprovementState",
+        "ReflectionOutcome",
+        "ReflectionRoute",
+        "ReflectionSession",
+        "ReflectionState",
+        "build_reflection_contract",
+        "resolve_reflection_required_probes",
+        "validate_reflection_contract",
+        "validate_reflection_event",
+        "validate_reflection_event_stream",
+        "validate_reflection_round_observation",
     },
     "reasoning_chain_factory": {
         "ChainFactoryError",
@@ -2399,6 +2439,27 @@ def validate_runtime_protocols(
                     f"推理链工厂参考文档缺少 {marker}",
                 )
 
+    reflection_path = skill_dir / REFLECTION_EXECUTION_REFERENCE
+    reflection_reference = (
+        reflection_path.read_text(encoding="utf-8")
+        if reflection_path.is_file()
+        else ""
+    )
+    if not reflection_reference:
+        report.error(
+            "reflection_execution_reference",
+            f"missing reflection execution reference {REFLECTION_EXECUTION_REFERENCE}",
+            f"缺少反思执行参考文档 {REFLECTION_EXECUTION_REFERENCE}",
+        )
+    else:
+        for marker in REFLECTION_EXECUTION_MARKERS:
+            if marker not in reflection_reference:
+                report.error(
+                    "reflection_execution_reference",
+                    f"reflection execution reference missing {marker}",
+                    f"反思执行参考文档缺少 {marker}",
+                )
+
     skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
     for marker in (
         PLAN_EXECUTION_REFERENCE,
@@ -2426,6 +2487,21 @@ def validate_runtime_protocols(
                 "reasoning_chain_factory_entrypoint",
                 f"SKILL.md does not route chain execution through {marker}",
                 f"SKILL.md 未将链式执行路由到 {marker}",
+            )
+
+    for marker in (
+        REFLECTION_EXECUTION_REFERENCE,
+        "schemas/reflection-contract.schema.json",
+        "schemas/reflection-event.schema.json",
+        "schemas/reflection-round-observation.schema.json",
+        "runtime/reflection_runtime.py",
+        "ReflectionSession",
+    ):
+        if marker not in skill_text:
+            report.error(
+                "reflection_execution_entrypoint",
+                f"SKILL.md does not route reflection through {marker}",
+                f"SKILL.md 未将反思执行路由到 {marker}",
             )
 
     if "reasoning-chain-factory.md" not in execution:
@@ -2574,6 +2650,34 @@ def validate_runtime_protocols(
                         f"reasoning-parallel {document_name} does not link the parallel factory",
                         f"reasoning-parallel {document_name} 未链接推理并行工厂",
                     )
+
+    for cell in registry.get("cells", []):
+        if cell.get("capability_ref") != "COG_REFLECTION":
+            continue
+        cell_key = str(cell.get("cell_key", ""))
+        design_path = skill_dir / str(cell.get("design_path", ""))
+        observability_path = skill_dir / str(cell.get("observability_path", ""))
+        design = design_path.read_text(encoding="utf-8") if design_path.is_file() else ""
+        observability = (
+            observability_path.read_text(encoding="utf-8")
+            if observability_path.is_file()
+            else ""
+        )
+        if "../../reflection-execution-flow.md" not in design:
+            report.error(
+                "reflection_protocol_link",
+                f"{cell_key} design does not link governed reflection execution",
+                f"{cell_key} 设计未链接受治理反思执行协议",
+            )
+        if (
+            "../../reflection-execution-flow.md" not in observability
+            or "../../workflow-observability-probes.md" not in observability
+        ):
+            report.error(
+                "reflection_probe_link",
+                f"{cell_key} observability does not link reflection execution and probes",
+                f"{cell_key} 可观测性文件未链接反思执行与共享探针",
+            )
 
 
     for cell in registry.get("cells", []):

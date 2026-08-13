@@ -230,7 +230,7 @@ class HarnessSkillRegistryTest(unittest.TestCase):
             "references/workflow-observability-probes.md",
         )
         self.assertEqual(patterns["PATTERN_0052"]["source_draft_id"], "PATTERN_0002")
-        self.assertEqual(patterns["PATTERN_0052"]["source_version"], "0.6.0")
+        self.assertEqual(patterns["PATTERN_0052"]["source_version"], "0.7.0")
         self.assertIn(
             "COG_GOVERNANCE__TOP_ORCHESTRATION",
             patterns["PATTERN_0052"]["matrix_coordinates"],
@@ -291,6 +291,20 @@ class HarnessSkillRegistryTest(unittest.TestCase):
             )
             self.assertIn("../../reasoning-execution-flow.md", design)
             self.assertIn("../../workflow-observability-probes.md", design)
+            self.assertIn("../../workflow-observability-probes.md", observability)
+
+    def test_every_reflection_cell_links_shared_runtime_and_probe_contracts(self):
+        registry = self.load_registry()
+
+        for cell in registry["cells"]:
+            if cell["capability_ref"] != "COG_REFLECTION":
+                continue
+            design = (SKILL_DIR / cell["design_path"]).read_text(encoding="utf-8")
+            observability = (SKILL_DIR / cell["observability_path"]).read_text(
+                encoding="utf-8"
+            )
+            self.assertIn("../../reflection-execution-flow.md", design)
+            self.assertIn("../../reflection-execution-flow.md", observability)
             self.assertIn("../../workflow-observability-probes.md", observability)
 
     def test_missing_stable_probe_fails_runtime_validation(self):

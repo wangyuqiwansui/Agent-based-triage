@@ -1,0 +1,252 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/reflection-contract.schema.json",
+  "title": "Reflection Contract / 反思契约",
+  "description": "Governed admission, baseline, change, revalidation, and stopping contract for one reflection instance. / 单次反思实例的受治理准入、基线、改变、复验与停止契约。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "contract_version",
+    "reflection_id",
+    "run_binding",
+    "subject_binding",
+    "admission",
+    "trigger",
+    "baseline",
+    "signal_policy",
+    "change_policy",
+    "validation_policy",
+    "attribution_policy",
+    "learning_policy",
+    "stop_policy",
+    "governance_binding",
+    "created_at",
+    "contract_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "contract_id": { "$ref": "#/$defs/Identifier" },
+    "contract_version": { "$ref": "#/$defs/SemanticVersion" },
+    "reflection_id": { "$ref": "#/$defs/Identifier" },
+    "run_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "subject_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "admission": { "$ref": "#/$defs/Admission" },
+    "trigger": { "$ref": "#/$defs/Trigger" },
+    "baseline": { "$ref": "#/$defs/Baseline" },
+    "signal_policy": { "$ref": "#/$defs/SignalPolicy" },
+    "change_policy": { "$ref": "#/$defs/ChangePolicy" },
+    "validation_policy": { "$ref": "#/$defs/ValidationPolicy" },
+    "attribution_policy": { "$ref": "#/$defs/AttributionPolicy" },
+    "learning_policy": { "$ref": "#/$defs/LearningPolicy" },
+    "stop_policy": { "$ref": "#/$defs/StopPolicy" },
+    "governance_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "contract_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "NullableBinding": {
+      "oneOf": [
+        { "$ref": "#/$defs/VersionedBinding" },
+        { "type": "null" }
+      ]
+    },
+    "BindingArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/VersionedBinding" },
+      "uniqueItems": true
+    },
+    "Admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligibility", "route", "reason_codes"],
+      "properties": {
+        "eligibility": {
+          "enum": ["admitted", "needs_evidence", "not_applicable", "blocked", "human_required"]
+        },
+        "route": {
+          "enum": ["generator_critic", "self_heal", "evidence_collection", "experience_replay", "skill_lifecycle", "human_triage", "release"]
+        },
+        "reason_codes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "Trigger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["trigger_type", "evidence_bindings", "evidence_plan_binding"],
+      "properties": {
+        "trigger_type": {
+          "enum": ["validation_failure", "outcome_gap", "human_feedback", "regression", "incident", "reuse_review", "quality_gap"]
+        },
+        "evidence_bindings": { "$ref": "#/$defs/BindingArray" },
+        "evidence_plan_binding": { "$ref": "#/$defs/NullableBinding" }
+      }
+    },
+    "Baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subject_before_binding", "criteria_binding", "validator_bindings", "regression_scope_bindings", "environment_binding", "metric_id", "metric_value", "measurement_evidence_bindings", "frozen_at"],
+      "properties": {
+        "subject_before_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "criteria_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "validator_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "regression_scope_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "environment_binding": { "$ref": "#/$defs/NullableBinding" },
+        "metric_id": { "$ref": "#/$defs/Identifier" },
+        "metric_value": { "type": "number" },
+        "measurement_evidence_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "frozen_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "SignalPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["independence_requirement", "min_independent_signals", "max_information_only_rounds"],
+      "properties": {
+        "independence_requirement": {
+          "enum": ["cross_source", "external_validator", "human_review", "controlled_replay"]
+        },
+        "min_independent_signals": { "type": "integer", "minimum": 1 },
+        "max_information_only_rounds": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "ChangePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowed_targets", "forbidden_targets", "authorizer_binding", "verifier_change_policy", "max_changes_per_round"],
+      "properties": {
+        "allowed_targets": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ChangeTarget" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "forbidden_targets": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ChangeTarget" },
+          "uniqueItems": true
+        },
+        "authorizer_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "verifier_change_policy": { "enum": ["forbidden", "independent_approval_required"] },
+        "max_changes_per_round": { "const": 1 }
+      }
+    },
+    "ChangeTarget": {
+      "enum": ["response", "artifact", "plan", "prompt", "tool_configuration", "memory_entry", "skill", "policy", "validator"]
+    },
+    "ValidationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mandatory_validator_bindings", "regression_validator_bindings", "improvement_metric_id", "improvement_direction", "improvement_threshold", "comparison_policy", "validator_change_authorizer_binding"],
+      "properties": {
+        "mandatory_validator_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "regression_validator_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "improvement_metric_id": { "$ref": "#/$defs/Identifier" },
+        "improvement_direction": { "enum": ["higher_is_better", "lower_is_better"] },
+        "improvement_threshold": { "type": "number", "minimum": 0 },
+        "comparison_policy": { "enum": ["fixed_baseline", "controlled_replay", "counterfactual_audit"] },
+        "validator_change_authorizer_binding": { "$ref": "#/$defs/NullableBinding" }
+      }
+    },
+    "AttributionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observational_authority_bindings", "correlational_authority_bindings", "controlled_replay_authority_bindings", "intervention_authority_bindings"],
+      "properties": {
+        "observational_authority_bindings": { "$ref": "#/$defs/BindingArray" },
+        "correlational_authority_bindings": { "$ref": "#/$defs/BindingArray" },
+        "controlled_replay_authority_bindings": { "$ref": "#/$defs/BindingArray" },
+        "intervention_authority_bindings": { "$ref": "#/$defs/BindingArray" }
+      }
+    },
+    "StopPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_rounds", "max_no_result_progress_rounds", "terminal_outcomes", "rollback_binding", "handoff_binding"],
+      "properties": {
+        "max_rounds": { "type": "integer", "minimum": 1 },
+        "max_no_result_progress_rounds": { "type": "integer", "minimum": 0 },
+        "terminal_outcomes": {
+          "type": "array",
+          "items": { "enum": ["accepted", "rolled_back", "handed_off", "rejected", "aborted"] },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "rollback_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "handoff_binding": { "$ref": "#/$defs/VersionedBinding" }
+      }
+    },
+    "LearningPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["promotion_enabled", "allowed_targets", "minimum_evidence_bindings", "promotion_authorizer_binding", "owner_binding"],
+      "properties": {
+        "promotion_enabled": { "type": "boolean" },
+        "allowed_targets": {
+          "type": "array",
+          "items": { "enum": ["memory_entry", "checklist", "rule", "policy", "skill"] },
+          "uniqueItems": true
+        },
+        "minimum_evidence_bindings": { "type": "integer", "minimum": 1 },
+        "promotion_authorizer_binding": { "$ref": "#/$defs/NullableBinding" },
+        "owner_binding": { "$ref": "#/$defs/NullableBinding" }
+      }
+    }
+  }
+}

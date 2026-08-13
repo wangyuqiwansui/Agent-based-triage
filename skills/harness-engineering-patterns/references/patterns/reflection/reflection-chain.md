@@ -7,6 +7,8 @@ Source / 来源: arXiv:2605.13850 (https://arxiv.org/html/2605.13850)
 
 Use this file as the design pattern source for this 7x6 matrix intersection. / 将本文档作为该 7x6 交织点的设计模式来源。
 
+Runtime Contract / 运行时契约: apply this cell through [Governed Reflection Execution Flow / 受治理反思执行流程](../../reflection-execution-flow.md) and its normative Schemas and `ReflectionSession`; the cell defines the change strategy, while the shared protocol owns admission, authorization, comparable revalidation, regression protection, and stopping. / 通过共享反思执行流程及其规范 Schema 与 `ReflectionSession` 应用本单元；本单元定义改变策略，共享协议负责准入、授权、可比复验、回归保护与停止。
+
 ## Design Pattern / 设计模式
 
 Generator-Critic runs generate → critique → revise as a short chain: a generator produces output, a distinct critic evaluates it against explicit criteria, and one revision pass applies the critique. / 生成器-批评器以"生成 → 批评 → 修订"短链运行：生成器产出结果，独立批评器按显式判据评估，一次修订应用批评意见。

@@ -7,6 +7,8 @@ Source / 来源: arXiv:2605.13850 (https://arxiv.org/html/2605.13850)
 
 Use this file as the design pattern source for this 7x6 matrix intersection. / 将本文档作为该 7x6 交织点的设计模式来源。
 
+Runtime Contract / 运行时契约: extension work in this cell must still use [Governed Reflection Execution Flow / 受治理反思执行流程](../../reflection-execution-flow.md); orchestration does not weaken shared admission, authorization, comparison, regression, or stopping gates. / 本单元的扩展工作仍必须使用共享反思执行流程；编排不得削弱共享的准入、授权、比较、回归或停止闸门。
+
 ## Design Pattern / 设计模式
 
 Use this section to define the design pattern, its source grounding, and its workflow adjustment template. / 本节定义设计模式、来源依据和工作流调整模板。

@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/reflection-event.schema.json",
+  "title": "Reflection Event / 反思事件",
+  "description": "Replayable, public, externally auditable event for a governed reflection lifecycle. / 受治理反思生命周期中可重放、公开且可外部审计的事件。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_type",
+    "reflection_id",
+    "round_id",
+    "sequence",
+    "occurred_at",
+    "idempotency_key",
+    "contract_binding",
+    "subject_binding",
+    "state_before",
+    "state_after",
+    "route",
+    "payload",
+    "event_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "event_id": { "$ref": "#/$defs/Identifier" },
+    "event_type": {
+      "enum": [
+        "reflection_started",
+        "reflection_eligibility_evaluated",
+        "reflection_routed",
+        "reflection_baseline_frozen",
+        "reflection_round_started",
+        "reflection_signal_recorded",
+        "deviation_detected",
+        "attribution_evidence_recorded",
+        "change_proposed",
+        "change_authorized",
+        "change_rejected",
+        "change_applied",
+        "revalidation_started",
+        "revalidation_finished",
+        "rollback_started",
+        "rollback_applied",
+        "rollback_verified",
+        "reflection_round_finished",
+        "learning_promotion_evaluated",
+        "reflection_stopped"
+      ]
+    },
+    "reflection_id": { "$ref": "#/$defs/Identifier" },
+    "round_id": { "$ref": "#/$defs/NullableIdentifier" },
+    "sequence": { "type": "integer", "minimum": 1 },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "idempotency_key": { "type": "string", "minLength": 1, "maxLength": 240 },
+    "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "subject_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "state_before": { "$ref": "#/$defs/ReflectionState" },
+    "state_after": { "$ref": "#/$defs/ReflectionState" },
+    "route": {
+      "enum": ["generator_critic", "self_heal", "evidence_collection", "experience_replay", "skill_lifecycle", "human_triage", "release"]
+    },
+    "payload": { "$ref": "#/$defs/SafeExternalValue" },
+    "event_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "NullableIdentifier": {
+      "oneOf": [
+        { "$ref": "#/$defs/Identifier" },
+        { "type": "null" }
+      ]
+    },
+    "SemanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "ReflectionState": {
+      "enum": ["candidate", "admitted", "needs_evidence", "not_applicable", "blocked", "human_required", "baseline_frozen", "round_active", "change_proposed", "change_authorized", "change_applied", "revalidating", "rolling_back", "rollback_applied", "rollback_verified", "round_closed", "accepted", "rolled_back", "handed_off", "rejected", "aborted"]
+    },
+    "SafeExternalValue": {
+      "title": "Safe external value / 安全外部值",
+      "description": "Allows only externally auditable data and recursively rejects private-reasoning property names. / 仅允许外部可审计数据，并递归拒绝私密推理字段名。",
+      "oneOf": [
+        { "type": ["string", "number", "boolean", "null"] },
+        { "type": "array", "items": { "$ref": "#/$defs/SafeExternalValue" } },
+        {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/SafeExternalPropertyName" },
+          "additionalProperties": { "$ref": "#/$defs/SafeExternalValue" }
+        }
+      ]
+    },
+    "SafeExternalPropertyName": {
+      "type": "string",
+      "not": {
+        "pattern": "^(?:[cC][oO][tT]|[cC][hH][aA][iI][nN][_-]?[oO][fF][_-]?[tT][hH][oO][uU][gG][hH][tT]|[pP][rR][iI][vV][aA][tT][eE][_-]?(?:[cC][oO][tT]|[rR][eE][aA][sS][oO][nN][iI][nN][gG]|[cC][hH][aA][iI][nN][_-]?[oO][fF][_-]?[tT][hH][oO][uU][gG][hH][tT])|[hH][iI][dD][dD][eE][nN][_-]?(?:[rR][eE][aA][sS][oO][nN][iI][nN][gG]|[tT][hH][oO][uU][gG][hH][tT][sS]?)|[iI][nN][tT][eE][rR][nN][aA][lL][_-]?(?:[tT][hH][oO][uU][gG][hH][tT][sS]?|[mM][oO][nN][oO][lL][oO][gG][uU][eE])|[iI][nN][nN][eE][rR][_-]?[mM][oO][nN][oO][lL][oO][gG][uU][eE]|[tT][hH][oO][uU][gG][hH][tT][_-]?[pP][rR][oO][cC][eE][sS][sS]|[rR][eE][aA][sS][oO][nN][iI][nN][gG][_-]?(?:[sS][cC][rR][aA][tT][cC][hH][pP][aA][dD]|[tT][rR][aA][cC][eE])|[sS][cC][rR][aA][tT][cC][hH][pP][aA][dD]|[dD][eE][lL][iI][bB][eE][rR][aA][tT][iI][oO][nN]|思维链|内部推理)$"
+      }
+    }
+  }
+}

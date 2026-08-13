@@ -171,6 +171,102 @@
       "required_capture_fields": ["payload.data.health", "payload.data.received_events", "payload.data.missing_events", "payload.data.parse_failures", "payload.data.alert_delivery_failures"],
       "output_event_type": "probe_health_reported",
       "disposition": "fail_closed_on_protected_transition"
+    },
+    {
+      "probe_id": "PROBE_0016",
+      "version": "1.0.0",
+      "name_en": "Reflection Admission And Routing",
+      "name_zh": "反思准入与路由",
+      "owner": "reflection_governance",
+      "trigger_event_types": ["reflection_started", "reflection_eligibility_evaluated", "reflection_routed"],
+      "required_capture_fields": ["reflection_id", "contract_binding", "subject_binding", "payload.eligibility", "payload.route", "payload.reason_codes"],
+      "accepted_event_schemas": ["reflection-event.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0017",
+      "version": "1.0.0",
+      "name_en": "Reflection Baseline Comparability",
+      "name_zh": "反思基线可比性",
+      "owner": "reflection_measurement",
+      "trigger_event_types": ["reflection_baseline_frozen", "revalidation_finished", "reflection_round_finished"],
+      "required_capture_fields": ["contract_binding", "subject_binding", "baseline_binding", "validation.candidate_binding", "validation.criteria_binding", "validation.environment_binding", "validation.metric_id", "validation.baseline_value", "validation.result_value", "validation.improvement_delta", "validation.threshold_met", "validation.comparison_state", "validation.rebased_baseline", "validation.evidence_bindings"],
+      "accepted_event_schemas": ["reflection-event.schema.json", "reflection-round-observation.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0018",
+      "version": "1.0.0",
+      "name_en": "Independent Reflection Revalidation",
+      "name_zh": "反思独立复验",
+      "owner": "validation_governance",
+      "trigger_event_types": ["change_applied", "revalidation_started", "revalidation_finished"],
+      "required_capture_fields": ["round_id", "subject_binding", "new_signal.independence", "new_signal.evidence_bindings", "validation.candidate_binding", "validation.validator_bindings", "validation.independent_signal_count", "validation.independent_signal_bindings", "validation.evidence_bindings", "validation.status"],
+      "accepted_event_schemas": ["reflection-event.schema.json", "reflection-round-observation.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0019",
+      "version": "1.0.0",
+      "name_en": "Validator Gaming",
+      "name_zh": "验证器投机",
+      "owner": "validation_governance",
+      "trigger_event_types": ["change_proposed", "change_authorized", "change_applied", "revalidation_finished"],
+      "required_capture_fields": ["round_id", "change.target", "change.authorization_binding", "change.validator_change_approved", "validation.validator_gaming", "validation.comparison_state"],
+      "accepted_event_schemas": ["reflection-event.schema.json", "reflection-round-observation.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "fail_closed_on_protected_transition"
+    },
+    {
+      "probe_id": "PROBE_0020",
+      "version": "1.0.0",
+      "name_en": "Reflection Regression Guard",
+      "name_zh": "反思回归保护",
+      "owner": "validation_governance",
+      "trigger_event_types": ["reflection_baseline_frozen", "revalidation_started", "revalidation_finished", "rollback_started", "rollback_applied", "rollback_verified", "reflection_round_finished"],
+      "required_capture_fields": ["contract_binding", "validation.validator_bindings", "validation.regression_pass", "rollback.rollback_binding", "rollback.failed_subject_binding", "rollback.restored_subject_binding", "rollback.verification_evidence_bindings", "rollback.verified", "outcome", "improvement_state"],
+      "accepted_event_schemas": ["reflection-event.schema.json", "reflection-round-observation.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "fail_closed_on_protected_transition"
+    },
+    {
+      "probe_id": "PROBE_0021",
+      "version": "1.0.0",
+      "name_en": "Reflection Closure",
+      "name_zh": "反思闭环",
+      "owner": "reflection_runtime",
+      "trigger_event_types": ["reflection_round_started", "rollback_started", "rollback_applied", "rollback_verified", "reflection_round_finished", "reflection_stopped"],
+      "required_capture_fields": ["reflection_id", "round_id", "sequence", "state_before", "state_after", "rollback.rollback_binding", "rollback.verified", "outcome", "terminal", "stop_reason"],
+      "accepted_event_schemas": ["reflection-event.schema.json", "reflection-round-observation.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0022",
+      "version": "1.0.0",
+      "name_en": "Reflection Confounder And Attribution",
+      "name_zh": "反思混杂因素与归因",
+      "owner": "reflection_governance",
+      "trigger_event_types": ["attribution_evidence_recorded", "revalidation_finished", "reflection_round_finished"],
+      "required_capture_fields": ["round_id", "attribution.state", "attribution.hypothesis", "attribution.falsifier", "attribution.confounders", "attribution.evidence_kind", "attribution.evidence_authority_binding", "attribution.evidence_bindings", "validation.status", "validation.comparison_state", "validation.evidence_bindings"],
+      "accepted_event_schemas": ["reflection-event.schema.json", "reflection-round-observation.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "warn_and_reassess"
+    },
+    {
+      "probe_id": "PROBE_0023",
+      "version": "1.0.0",
+      "name_en": "Reflection Learning Promotion",
+      "name_zh": "反思学习晋升",
+      "owner": "skill_governance",
+      "trigger_event_types": ["reflection_round_finished", "learning_promotion_evaluated"],
+      "required_capture_fields": ["reflection_id", "round_id", "outcome", "improvement_state", "learning_candidate.target", "learning_candidate.candidate_binding", "learning_candidate.source_round_id", "learning_candidate.source_subject_binding", "learning_candidate.round_evidence_bindings", "learning_candidate.decision", "learning_candidate.promotion_evidence_bindings", "learning_candidate.authorization_binding", "learning_candidate.owner_binding"],
+      "accepted_event_schemas": ["reflection-event.schema.json", "reflection-round-observation.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
     }
   ]
 }

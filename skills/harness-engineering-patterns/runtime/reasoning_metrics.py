@@ -1672,6 +1672,168 @@ def duplicate_side_effect_rate(
     )
 
 
+def reflection_admission_compliance(
+    compliant_admitted_reflections: float | None,
+    auto_reflection_instances: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return contract-complete automatic reflection admissions / 返回契约完整的自动反思准入率。"""
+
+    return bounded_ratio(
+        "reflection_admission_compliance",
+        compliant_admitted_reflections,
+        auto_reflection_instances,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def reflection_closure_rate(
+    closed_reflection_rounds: float | None,
+    started_reflection_rounds: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return rounds with complete event and terminal closure / 返回事件链与终态完整的反思轮次闭环率。"""
+
+    return bounded_ratio(
+        "reflection_closure_rate",
+        closed_reflection_rounds,
+        started_reflection_rounds,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def independent_revalidation_coverage(
+    independently_revalidated_rounds: float | None,
+    rounds_requiring_revalidation: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return version-bound independent revalidation coverage / 返回绑定版本的独立复验覆盖率。"""
+
+    return bounded_ratio(
+        "independent_revalidation_coverage",
+        independently_revalidated_rounds,
+        rounds_requiring_revalidation,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def improvement_comparability_coverage(
+    comparable_improvement_assessments: float | None,
+    improvement_assessments: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return baseline-comparable improvement assessments / 返回基线可比的改善评估覆盖率。"""
+
+    return bounded_ratio(
+        "improvement_comparability_coverage",
+        comparable_improvement_assessments,
+        improvement_assessments,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def regression_free_verified_improvement_rate(
+    regression_free_verified_improvements: float | None,
+    completed_revalidation_rounds: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return verified improvements that preserve regression guards / 返回保持回归护栏的已验证改善率。"""
+
+    return bounded_ratio(
+        "regression_free_verified_improvement_rate",
+        regression_free_verified_improvements,
+        completed_revalidation_rounds,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def validator_gaming_rate(
+    validator_gaming_rounds: float | None,
+    changed_rounds: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return rounds that game or weaken their verifier / 返回投机或削弱验证器的改变轮次比例。"""
+
+    return bounded_ratio(
+        "validator_gaming_rate",
+        validator_gaming_rounds,
+        changed_rounds,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def qualified_new_signal_rate(
+    rounds_with_qualified_new_signal: float | None,
+    admitted_reflection_rounds: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return admitted rounds with a qualified new result signal / 返回具备有效新结果信号的已准入轮次比例。"""
+
+    return bounded_ratio(
+        "qualified_new_signal_rate",
+        rounds_with_qualified_new_signal,
+        admitted_reflection_rounds,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def attribution_overclaim_rate(
+    overclaimed_attribution_records: float | None,
+    attribution_claim_records: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return attribution claims stronger than their evidence / 返回归因强度超过证据等级的记录比例。"""
+
+    return bounded_ratio(
+        "attribution_overclaim_rate",
+        overclaimed_attribution_records,
+        attribution_claim_records,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def learning_promotion_evidence_completeness(
+    complete_learning_promotion_records: float | None,
+    learning_promotion_records: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return evidence-complete memory or Skill promotions / 返回证据完整的记忆或 Skill 晋升记录比例。"""
+
+    return bounded_ratio(
+        "learning_promotion_evidence_completeness",
+        complete_learning_promotion_records,
+        learning_promotion_records,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
 def budget_utilization_max(
     actual_use: Mapping[str, float | None] | None,
     configured_limits: Mapping[str, float | None] | None,
@@ -1744,6 +1906,15 @@ _METRIC_FUNCTIONS = {
     "dispatch_record_completeness": dispatch_record_completeness,
     "result_unknown_rate": result_unknown_rate,
     "duplicate_side_effect_rate": duplicate_side_effect_rate,
+    "reflection_admission_compliance": reflection_admission_compliance,
+    "reflection_closure_rate": reflection_closure_rate,
+    "independent_revalidation_coverage": independent_revalidation_coverage,
+    "improvement_comparability_coverage": improvement_comparability_coverage,
+    "regression_free_verified_improvement_rate": regression_free_verified_improvement_rate,
+    "validator_gaming_rate": validator_gaming_rate,
+    "qualified_new_signal_rate": qualified_new_signal_rate,
+    "attribution_overclaim_rate": attribution_overclaim_rate,
+    "learning_promotion_evidence_completeness": learning_promotion_evidence_completeness,
 }
 
 
@@ -2162,6 +2333,7 @@ __all__ = [
     "budget_utilization_vector",
     "candidate_evidence_lineage_integrity_rate",
     "candidate_completion_rate",
+    "attribution_overclaim_rate",
     "branch_diversity",
     "branch_record_completeness",
     "calculate_metric",
@@ -2184,6 +2356,9 @@ __all__ = [
     "hypothesis_elimination_per_cost_unit",
     "hypothesis_elimination_per_iteration",
     "material_candidate_difference",
+    "improvement_comparability_coverage",
+    "independent_revalidation_coverage",
+    "learning_promotion_evidence_completeness",
     "max_budget_utilization",
     "no_progress_loop_rate",
     "outcome_route_accuracy",
@@ -2201,6 +2376,9 @@ __all__ = [
     "probe_coverage",
     "publish_metric",
     "reasoning_drift_rate",
+    "reflection_admission_compliance",
+    "reflection_closure_rate",
+    "regression_free_verified_improvement_rate",
     "readonly_tool_lifecycle_completion_rate",
     "result_unknown_rate",
     "resolve_required_probes",
@@ -2217,6 +2395,8 @@ __all__ = [
     "unverified_premise_propagation",
     "validation_coverage",
     "validation_pass_rate",
+    "validator_gaming_rate",
+    "qualified_new_signal_rate",
     "approval_binding_coverage",
     "metric_publication_failures",
 ]

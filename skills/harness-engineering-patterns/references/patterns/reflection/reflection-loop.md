@@ -7,6 +7,8 @@ Source / 来源: arXiv:2605.13850 (https://arxiv.org/html/2605.13850)
 
 Use this file as the design pattern source for this 7x6 matrix intersection. / 将本文档作为该 7x6 交织点的设计模式来源。
 
+Runtime Contract / 运行时契约: apply this cell through [Governed Reflection Execution Flow / 受治理反思执行流程](../../reflection-execution-flow.md) and its normative Schemas and `ReflectionSession`; the cell defines the change strategy, while the shared protocol owns admission, authorization, comparable revalidation, regression protection, and stopping. / 通过共享反思执行流程及其规范 Schema 与 `ReflectionSession` 应用本单元；本单元定义改变策略，共享协议负责准入、授权、可比复验、回归保护与停止。
+
 ## Design Pattern / 设计模式
 
 Self-Heal Loop auto-iterates repair for objectively verifiable failures: run the external verifier, parse the failure signature, apply a targeted fix, and re-run the verifier — exiting only when the verifier passes or the attempt budget forces escalation to a human. / 自愈循环对可客观验证的失败自动迭代修复：运行外部验证器、解析失败特征、实施定向修复、再次运行验证器——只有验证器通过才退出，或尝试预算耗尽而升级人工。

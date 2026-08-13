@@ -7,6 +7,8 @@ Source / 来源: arXiv:2605.13850 (https://arxiv.org/html/2605.13850)
 Use this file as the observability metrics source for this 7x6 matrix intersection. / 将本文档作为该 7x6 交织点的可观测性指标来源。
 Design Pattern File / 设计模式文件: [reflection-routing.md](reflection-routing.md)
 
+Shared Probe Contract / 共享探针契约: use [Workflow Observability Probes / 工作流可观测性探针](../../workflow-observability-probes.md), especially `PROBE_0016` through `PROBE_0023`, with the round observation pack defined by the governed [Reflection Execution Flow / 反思执行流程](../../reflection-execution-flow.md). / 使用共享工作流可观测性探针，重点使用 `PROBE_0016` 至 `PROBE_0023`，并采用受治理反思执行流程定义的轮次观察包。
+
 ## Observability Metrics / 可观测性指标
 
 Use these metrics to observe whether Skill Package / 技能包 improves the workflow after selection or application. / 使用以下指标观察 Skill Package / 技能包 在选型或应用后是否改善工作流。

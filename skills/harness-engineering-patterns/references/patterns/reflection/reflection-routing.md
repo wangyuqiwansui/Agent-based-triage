@@ -7,6 +7,8 @@ Source / 来源: arXiv:2605.13850 (https://arxiv.org/html/2605.13850)
 
 Use this file as the design pattern source for this 7x6 matrix intersection. / 将本文档作为该 7x6 交织点的设计模式来源。
 
+Runtime Contract / 运行时契约: apply this cell through [Governed Reflection Execution Flow / 受治理反思执行流程](../../reflection-execution-flow.md) and its normative Schemas and `ReflectionSession`; the cell defines the change strategy, while the shared protocol owns admission, authorization, comparable revalidation, regression protection, and stopping. / 通过共享反思执行流程及其规范 Schema 与 `ReflectionSession` 应用本单元；本单元定义改变策略，共享协议负责准入、授权、可比复验、回归保护与停止。
+
 ## Design Pattern / 设计模式
 
 Skill Package routes each evaluation conclusion to its handling path — rework, escalation, handoff, or release — through a verdict-keyed routing table, and packages solutions that repeatedly prove themselves into reusable Skills so the same class of finding lands on a verified routine instead of an improvised fix. / 技能包通过以裁定为键的路由表，把每个评估结论路由到对应处理路径——返工、升级、交接或发布——并将反复验证有效的解法封装为可复用技能，让同类发现落到已验证例程上而不是临场即兴修复。

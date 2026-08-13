@@ -190,6 +190,28 @@ class MetricStateTest(unittest.TestCase):
 
 
 class CorrectedReasoningMetricTest(unittest.TestCase):
+    def test_reflection_metrics_keep_compliance_progress_and_risk_separate(self):
+        admission = metrics.reflection_admission_compliance(9, 10)
+        closure = metrics.reflection_closure_rate(8, 10)
+        independent = metrics.independent_revalidation_coverage(7, 10)
+        comparable = metrics.improvement_comparability_coverage(6, 10)
+        improved = metrics.regression_free_verified_improvement_rate(5, 10)
+        gaming = metrics.validator_gaming_rate(1, 10)
+        new_signal = metrics.qualified_new_signal_rate(8, 10)
+        overclaim = metrics.attribution_overclaim_rate(2, 10)
+        promotion = metrics.learning_promotion_evidence_completeness(4, 5)
+
+        self.assertEqual(admission.value, 0.9)
+        self.assertEqual(closure.value, 0.8)
+        self.assertEqual(independent.value, 0.7)
+        self.assertEqual(comparable.value, 0.6)
+        self.assertEqual(improved.value, 0.5)
+        self.assertEqual(gaming.value, 0.1)
+        self.assertEqual(new_signal.value, 0.8)
+        self.assertEqual(overclaim.value, 0.2)
+        self.assertEqual(promotion.value, 0.8)
+        self.assertEqual(gaming.metric_id, "validator_gaming_rate")
+
     def test_step_closure_uses_due_started_steps_as_denominator(self):
         closure = metrics.eligible_step_closure_rate(7, 10)
         record_completeness = metrics.closed_step_record_completeness(7, 7)
@@ -775,7 +797,7 @@ class MetricRegistryTest(unittest.TestCase):
         registry = json.loads(PROBE_REGISTRY_PATH.read_text(encoding="utf-8"))
         records = {record["probe_id"]: record for record in registry["probes"]}
         self.assertEqual(registry["schema_version"], "1.0.0")
-        self.assertEqual(set(records), {f"PROBE_{index:04d}" for index in range(1, 16)})
+        self.assertEqual(set(records), {f"PROBE_{index:04d}" for index in range(1, 24)})
         required_fields = {
             "version",
             "name_en",
