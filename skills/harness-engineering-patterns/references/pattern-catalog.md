@@ -42,7 +42,7 @@ These local draft patterns coordinate several matrix cells without changing cell
 | reflection-chain / 反思 x 链式 | Generator-Critic / 生成器-批评器 | Use when output should pass through a sequential critique step. / 当产出需要经过顺序批评步骤时使用。 |
 | reflection-routing / 反思 x 路由 | Skill Package / 技能包 | Use when reflection routes work to packaged evaluators, repair skills, or review routines. / 当反思需要路由到封装评估器、修复技能或评审例程时使用。 |
 | reflection-loop / 反思 x 循环 | Self-Heal Loop / 自愈循环 | Use when verification failure should drive repair until an external check passes. / 当验证失败应驱动修复直到外部检查通过时使用。 |
-| reflection-hierarchy / 反思 x 层级 | Experience Replay / 经验回放 | Use when reflection needs replay across levels of past attempts or lessons. / 当反思需要跨多层历史尝试或经验回放时使用。 |
+| reflection-hierarchy / 反思 x 层级 | Experience Replay / 经验回放 | Use when cross-run lessons must be recalled, filtered, evidenced as adopted, linked to external outcomes, and lifecycle-managed without replacing current truth. / 当跨运行经验必须被召回、过滤、以证据证明已采用、绑定外部结果并管理生命周期，且不得替代当前真值时使用。 |
 | collaboration-chain / 协作 x 链式 | Handoff Chain / 交接链 | Use when work passes through ordered actors or roles. / 当工作按顺序经过多个参与者或角色时使用。 |
 | collaboration-parallel / 协作 x 并行 | Fan-Out/Gather / 扇出汇聚 | Use when several contributors can work independently before synthesis. / 当多个贡献者可独立工作后再综合时使用。 |
 | collaboration-loop / 协作 x 循环 | Adversarial Review / 对抗评审 | Use when collaborative critique repeats until conflict or risk is resolved. / 当协作式批评需要重复到冲突或风险解决时使用。 |

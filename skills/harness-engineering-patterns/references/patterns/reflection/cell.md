@@ -41,6 +41,7 @@ This row currently has 4 named pattern candidates and 2 extension candidates. / 
 - Choose Orchestration when a controller must manage state, tools, dependencies, or handoffs. / 当控制器必须管理状态、工具、依赖或交接时选择编排。
 - Choose Loop when feedback must change the next attempt. / 当反馈必须改变下一次尝试时选择循环。
 - Choose Hierarchy when work must be delegated or constrained across levels. / 当工作必须跨层级委派或约束时选择层级。
+- Within the Reflection row, choose Experience Replay / 经验回放 only when a prior run's lesson is filtered into a later run and adoption plus outcome evidence can be linked; use Self-Heal Loop / 自愈循环 for bounded repair inside the current run. / 在反思行内，只有当历史运行经验经过滤进入后续运行，且采用证据与结果证据可以关联时，才选择经验回放；当前运行内的有界修复使用自愈循环。
 
 ## Trace / 追踪
 

@@ -258,6 +258,56 @@ class HarnessSkillRegistryTest(unittest.TestCase):
         for relative in validator.RUNTIME_IMPLEMENTATION_FILES:
             self.assertTrue((SKILL_DIR / relative).is_file(), relative)
 
+    def test_experience_replay_is_formally_registered(self):
+        registry = self.load_registry()
+        patterns = {pattern["id"]: pattern for pattern in registry["patterns"]}
+        pattern = patterns["PATTERN_0042"]
+        cell = next(
+            item
+            for item in registry["cells"]
+            if item["cell_key"] == "reflection-hierarchy"
+        )
+
+        self.assertEqual(pattern["registration_version"], "1.0.0")
+        self.assertEqual(
+            pattern["reference"],
+            "references/patterns/reflection/reflection-hierarchy.md",
+        )
+        self.assertEqual(
+            pattern["matrix_coordinates"],
+            ["COG_REFLECTION__TOP_HIERARCHY"],
+        )
+        self.assertIn("COG_MEMORY", pattern["cognition_refs"])
+        self.assertIn("TOP_LOOP", pattern["topology_refs"])
+        self.assertIn("Reflection Experience Replay", pattern["aliases_en"])
+        self.assertIn("反思经验回放", pattern["aliases_zh"])
+        self.assertEqual(cell["pattern_ref"], "PATTERN_0042")
+        self.assertEqual(cell["maturity"], "draft")
+        self.assertEqual(cell["local_evidence_count"], 0)
+
+        for relative in pattern["engineering_spec_refs"]:
+            self.assertTrue((ROOT / relative).is_file(), relative)
+
+        design = (SKILL_DIR / pattern["reference"]).read_text(encoding="utf-8")
+        observability = (
+            SKILL_DIR / cell["observability_path"]
+        ).read_text(encoding="utf-8")
+        for marker in (
+            "Pattern ID / 模式 ID: `PATTERN_0042`",
+            "Registration Contract / 注册契约",
+            "Replay Receipt / 回放凭据",
+            "Adoption And Credit Evidence / 采用与信用证据",
+            "does not treat stored history as current mechanical truth",
+        ):
+            self.assertIn(marker, design)
+        for marker in (
+            "Observation Funnel / 观测漏斗",
+            "experience_adoption_rate",
+            "experience_credit_assignment_coverage",
+            "experience_replay_gain",
+        ):
+            self.assertIn(marker, observability)
+
     def test_action_routing_links_executable_tool_dispatch_contract(self):
         validator = load_validator()
         reference = (SKILL_DIR / validator.TOOL_DISPATCH_REFERENCE).read_text(

@@ -5,6 +5,13 @@
 状态: 草稿
 基座版本: Hanerss Skill Framework v0.1
 关联文档: HANERSS_EXECUTION_FLOW
+工程模式挂载:
+  模式标识: PATTERN_0042
+  模式名称: Experience Replay / 经验回放
+  模式别名: Reflection Experience Replay / 反思经验回放
+  主矩阵坐标: COG_REFLECTION__TOP_HIERARCHY
+  注册版本: 1.0.0
+本文件在模式中的角色: 观测与证据补全面
 编制依据:
   - Hanerss Skill Framework v0.1
   - 反思模块导论：让智能体站到自己的结果之外

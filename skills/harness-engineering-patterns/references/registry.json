@@ -737,9 +737,40 @@
       "name_en": "Experience Replay",
       "name_zh": "经验回放",
       "source_kind": "paper_v2",
-      "aliases_en": [],
-      "aliases_zh": [],
-      "status": "active"
+      "aliases_en": [
+        "Reflection Experience Replay"
+      ],
+      "aliases_zh": [
+        "反思经验回放"
+      ],
+      "status": "active",
+      "registration_version": "1.0.0",
+      "reference": "references/patterns/reflection/reflection-hierarchy.md",
+      "cognition_refs": [
+        "COG_REFLECTION",
+        "COG_MEMORY",
+        "COG_GOVERNANCE"
+      ],
+      "topology_refs": [
+        "TOP_HIERARCHY",
+        "TOP_LOOP",
+        "TOP_ORCHESTRATION"
+      ],
+      "matrix_coordinates": [
+        "COG_REFLECTION__TOP_HIERARCHY"
+      ],
+      "engineering_spec_refs": [
+        "docs/reflection/hanerss_通用执行流程_v0_2.md",
+        "docs/reflection/hanerss_工作流可观测性探针_v0_2.md"
+      ],
+      "related_pattern_refs": [
+        "PATTERN_0022",
+        "PATTERN_0030",
+        "PATTERN_0040",
+        "PATTERN_0041",
+        "PATTERN_0049",
+        "PATTERN_0052"
+      ]
     },
     {
       "id": "PATTERN_0043",
@@ -1583,14 +1614,18 @@
       "local_name_zh": "经验回放",
       "source_name_en": "Experience Replay",
       "source_name_zh": "经验回放",
-      "aliases_en": [],
-      "aliases_zh": [],
+      "aliases_en": [
+        "Reflection Experience Replay"
+      ],
+      "aliases_zh": [
+        "反思经验回放"
+      ],
       "source_kind": "paper_v2",
       "maturity": "draft",
       "local_evidence_count": 0,
       "domain_count": 0,
-      "diagnostic_use_en": "Use when reflection needs replay across levels of past attempts or lessons.",
-      "diagnostic_use_zh": "当反思需要跨多层历史尝试或经验回放时使用。"
+      "diagnostic_use_en": "Use when cross-run lessons must be recalled, filtered, evidenced as adopted, linked to external outcomes, and lifecycle-managed without replacing current truth.",
+      "diagnostic_use_zh": "当跨运行经验必须被召回、过滤、以证据证明已采用、绑定外部结果并管理生命周期，且不得替代当前真值时使用。"
     },
     {
       "id": "CELL_COLLABORATION_CHAIN",
