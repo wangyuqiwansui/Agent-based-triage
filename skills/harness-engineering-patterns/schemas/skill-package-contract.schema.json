@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/skill-package-contract.schema.json",
+  "title": "Skill Package Lifecycle Contract / 技能包生命周期契约",
+  "description": "Sealed policy for nomination, TRIAL registration, independent verification, credential issuance, staged release, real reuse, and pre-withdrawal re-verification. / 用于提名、TRIAL 注册、独立验证、凭证签发、分阶段发布、真实复用及先撤权复验的封存策略。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "contract_version",
+    "lifecycle_id",
+    "reflection_contract_binding",
+    "target",
+    "roles",
+    "recurrence_policy",
+    "package_policy",
+    "verification_policy",
+    "release_policy",
+    "reuse_policy",
+    "governance_policy_binding",
+    "created_at",
+    "contract_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "contract_id": { "$ref": "#/$defs/Identifier" },
+    "contract_version": { "$ref": "#/$defs/SemanticVersion" },
+    "lifecycle_id": { "$ref": "#/$defs/Identifier" },
+    "reflection_contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "target": { "$ref": "#/$defs/Target" },
+    "roles": { "$ref": "#/$defs/Roles" },
+    "recurrence_policy": { "$ref": "#/$defs/RecurrencePolicy" },
+    "package_policy": { "$ref": "#/$defs/PackagePolicy" },
+    "verification_policy": { "$ref": "#/$defs/VerificationPolicy" },
+    "release_policy": { "$ref": "#/$defs/ReleasePolicy" },
+    "reuse_policy": { "$ref": "#/$defs/ReusePolicy" },
+    "governance_policy_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "contract_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "Target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skill_id", "skill_version", "route_alias"],
+      "properties": {
+        "skill_id": { "$ref": "#/$defs/Identifier" },
+        "skill_version": { "$ref": "#/$defs/SemanticVersion" },
+        "route_alias": { "$ref": "#/$defs/Identifier" }
+      }
+    },
+    "Roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nominator_binding",
+        "packager_binding",
+        "verifier_binding",
+        "credential_issuer_binding",
+        "publisher_binding",
+        "lifecycle_owner_binding"
+      ],
+      "properties": {
+        "nominator_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "packager_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "verifier_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "credential_issuer_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "publisher_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "lifecycle_owner_binding": { "$ref": "#/$defs/VersionedBinding" }
+      }
+    },
+    "RecurrencePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimum_distinct_runs",
+        "minimum_verified_contributions",
+        "minimum_distinct_environments",
+        "require_external_success",
+        "require_same_problem_class",
+        "require_same_solution_signature"
+      ],
+      "properties": {
+        "minimum_distinct_runs": { "type": "integer", "minimum": 2 },
+        "minimum_verified_contributions": { "type": "integer", "minimum": 1 },
+        "minimum_distinct_environments": { "type": "integer", "minimum": 1 },
+        "require_external_success": { "const": true },
+        "require_same_problem_class": { "const": true },
+        "require_same_solution_signature": { "const": true }
+      }
+    },
+    "PackagePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "immutable_versions",
+        "require_bilingual_core",
+        "required_core_sections",
+        "require_parameter_origin_binding",
+        "require_supply_chain_inventory"
+      ],
+      "properties": {
+        "immutable_versions": { "const": true },
+        "require_bilingual_core": { "const": true },
+        "required_core_sections": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "metadata",
+              "use_cases",
+              "non_use_cases",
+              "inputs",
+              "outputs",
+              "workflow",
+              "tools_permissions",
+              "failure_recovery",
+              "verification",
+              "provenance"
+            ]
+          },
+          "minItems": 10,
+          "maxItems": 10,
+          "uniqueItems": true
+        },
+        "require_parameter_origin_binding": { "const": true },
+        "require_supply_chain_inventory": { "const": true }
+      }
+    },
+    "VerificationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_dimensions",
+        "minimum_cases_per_dimension",
+        "require_failure_path",
+        "require_counterexample",
+        "allow_partial_pass"
+      ],
+      "properties": {
+        "required_dimensions": {
+          "type": "array",
+          "items": {
+            "enum": ["result", "activation", "flow", "incremental_value", "freshness"]
+          },
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true
+        },
+        "minimum_cases_per_dimension": { "type": "integer", "minimum": 1 },
+        "require_failure_path": { "const": true },
+        "require_counterexample": { "const": true },
+        "allow_partial_pass": { "const": false }
+      }
+    },
+    "ReleasePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_stages",
+        "maximum_limited_traffic_fraction",
+        "require_valid_credential",
+        "require_exact_manifest_digest",
+        "require_atomic_alias_switch",
+        "require_prewithdrawal_on_reverification"
+      ],
+      "properties": {
+        "required_stages": {
+          "type": "array",
+          "prefixItems": [
+            { "const": "shadow" },
+            { "const": "limited" },
+            { "const": "production" }
+          ],
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "maximum_limited_traffic_fraction": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "exclusiveMaximum": 1
+        },
+        "require_valid_credential": { "const": true },
+        "require_exact_manifest_digest": { "const": true },
+        "require_atomic_alias_switch": { "const": true },
+        "require_prewithdrawal_on_reverification": { "const": true }
+      }
+    },
+    "ReusePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "require_real_router_selection",
+        "require_external_outcome",
+        "require_attribution_state",
+        "minimum_observations_before_rate_decision",
+        "maximum_outcome_lag_seconds"
+      ],
+      "properties": {
+        "require_real_router_selection": { "const": true },
+        "require_external_outcome": { "const": true },
+        "require_attribution_state": { "const": true },
+        "minimum_observations_before_rate_decision": { "type": "integer", "minimum": 1 },
+        "maximum_outcome_lag_seconds": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}

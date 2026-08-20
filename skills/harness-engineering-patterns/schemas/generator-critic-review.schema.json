@@ -1,0 +1,201 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/generator-critic-review.schema.json",
+  "title": "Generator-Critic Review Record / 生成评审记录",
+  "description": "Exact-version critic report that separates evidence-backed findings from retained non-gating opinions and does not decide release. / 绑定精确版本的评审报告，将有据问题与保留但不参与门控的意见分桶，且不直接决定放行。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "review_id",
+    "contract_binding",
+    "artifact_binding",
+    "critic_binding",
+    "critic_configuration_binding",
+    "feedback_variant",
+    "evidence_snapshots",
+    "criteria_results",
+    "supported_findings",
+    "unsupported_opinions",
+    "score",
+    "risk_refs_checked",
+    "reviewed_at",
+    "review_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "review_id": { "$ref": "#/$defs/Identifier" },
+    "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "artifact_binding": { "$ref": "#/$defs/ArtifactBinding" },
+    "critic_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "critic_configuration_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "feedback_variant": { "enum": ["self_critique", "cross_model", "tool_grounded", "human_review"] },
+    "evidence_snapshots": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/EvidenceSnapshot" },
+      "uniqueItems": true
+    },
+    "criteria_results": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/CriterionResult" },
+      "minItems": 1
+    },
+    "supported_findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/SupportedFinding" }
+    },
+    "unsupported_opinions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/UnsupportedOpinion" }
+    },
+    "score": { "$ref": "#/$defs/Score" },
+    "risk_refs_checked": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Identifier" },
+      "uniqueItems": true
+    },
+    "reviewed_at": { "type": "string", "format": "date-time" },
+    "review_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "ArtifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "revision", "artifact_digest", "artifact_record_hash"],
+      "properties": {
+        "artifact_id": { "$ref": "#/$defs/Identifier" },
+        "revision": { "type": "integer", "minimum": 0 },
+        "artifact_digest": { "$ref": "#/$defs/Sha256" },
+        "artifact_record_hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "EvidenceSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["binding", "source_kind", "authority_level", "content_summary", "acquired_at", "expires_at"],
+      "properties": {
+        "binding": { "$ref": "#/$defs/VersionedBinding" },
+        "source_kind": { "enum": ["direct_capture", "producer_resend", "system_query", "deterministic_derivation", "statistical_inference"] },
+        "authority_level": { "enum": ["primary", "secondary", "diagnostic_only"] },
+        "content_summary": { "type": "string", "minLength": 1 },
+        "acquired_at": { "type": "string", "format": "date-time" },
+        "expires_at": {
+          "oneOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "CriterionResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["criterion_id", "check_id", "status", "finding_refs", "evidence_bindings", "notes"],
+      "properties": {
+        "criterion_id": { "$ref": "#/$defs/Identifier" },
+        "check_id": { "$ref": "#/$defs/Identifier" },
+        "status": { "enum": ["pass", "fail", "unknown", "not_applicable"] },
+        "finding_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "uniqueItems": true
+        },
+        "evidence_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "uniqueItems": true
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "SupportedFinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issue_id", "severity", "description", "location", "criterion_id", "check_id", "evidence_bindings", "evidence_summary", "risk_refs"],
+      "properties": {
+        "issue_id": { "$ref": "#/$defs/Identifier" },
+        "severity": { "enum": ["blocking", "warning", "info"] },
+        "description": { "type": "string", "minLength": 1 },
+        "location": { "type": ["string", "null"] },
+        "criterion_id": { "$ref": "#/$defs/Identifier" },
+        "check_id": { "$ref": "#/$defs/Identifier" },
+        "evidence_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "evidence_summary": { "type": "string", "minLength": 1 },
+        "risk_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "UnsupportedOpinion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["opinion_id", "description", "proposed_severity", "criterion_id", "reason", "evidence_bindings", "preserved_non_gating"],
+      "properties": {
+        "opinion_id": { "$ref": "#/$defs/Identifier" },
+        "description": { "type": "string", "minLength": 1 },
+        "proposed_severity": { "enum": ["blocking", "warning", "info"] },
+        "criterion_id": {
+          "oneOf": [
+            { "$ref": "#/$defs/Identifier" },
+            { "type": "null" }
+          ]
+        },
+        "reason": { "enum": ["missing_evidence", "missing_check", "out_of_scope", "stale_evidence", "unverifiable"] },
+        "evidence_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "uniqueItems": true
+        },
+        "preserved_non_gating": { "const": true }
+      }
+    },
+    "Score": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "evidence_bindings", "rationale"],
+      "properties": {
+        "value": {
+          "oneOf": [
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "null" }
+          ]
+        },
+        "evidence_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "uniqueItems": true
+        },
+        "rationale": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

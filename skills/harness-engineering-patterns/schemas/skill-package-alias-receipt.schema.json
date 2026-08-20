@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/skill-package-alias-receipt.schema.json",
+  "title": "Skill Package Alias Switch Receipt / 技能包别名切换回执",
+  "description": "Evidence that a route alias changed through compare-and-swap to the exact verified manifest and credential. / 路由别名通过比较并交换切换到精确已验证清单与凭证的证据。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "alias_event_id",
+    "alias",
+    "previous_manifest_binding",
+    "next_manifest_binding",
+    "credential_binding",
+    "publisher_binding",
+    "expected_revision",
+    "new_revision",
+    "compare_and_swap_succeeded",
+    "traffic_fraction",
+    "evidence_bindings",
+    "switched_at",
+    "alias_receipt_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "alias_event_id": { "$ref": "#/$defs/Identifier" },
+    "alias": { "$ref": "#/$defs/Identifier" },
+    "previous_manifest_binding": { "$ref": "#/$defs/NullableBinding" },
+    "next_manifest_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "credential_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "publisher_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "expected_revision": { "type": "integer", "minimum": 0 },
+    "new_revision": { "type": "integer", "minimum": 1 },
+    "compare_and_swap_succeeded": { "const": true },
+    "traffic_fraction": { "const": 1 },
+    "evidence_bindings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/VersionedBinding" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "switched_at": { "type": "string", "format": "date-time" },
+    "alias_receipt_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$" },
+    "SemanticVersion": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$" },
+    "Sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "NullableBinding": { "oneOf": [{ "$ref": "#/$defs/VersionedBinding" }, { "type": "null" }] }
+  }
+}

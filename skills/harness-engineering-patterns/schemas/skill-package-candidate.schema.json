@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/skill-package-candidate.schema.json",
+  "title": "Skill Package Candidate / 技能包候选",
+  "description": "Immutable nomination of one recurrent problem-solution class, backed by distinct runs and external outcomes. / 对一个重复问题—解法类别的不可变提名，绑定不同运行与外部结果。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "candidate_id",
+    "candidate_version",
+    "reflection_candidate_binding",
+    "skill_id",
+    "proposed_skill_version",
+    "problem_class",
+    "solution_signature",
+    "occurrences",
+    "nomination_evidence_bindings",
+    "nominator_binding",
+    "created_at",
+    "candidate_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "candidate_id": { "$ref": "#/$defs/Identifier" },
+    "candidate_version": { "$ref": "#/$defs/SemanticVersion" },
+    "reflection_candidate_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "skill_id": { "$ref": "#/$defs/Identifier" },
+    "proposed_skill_version": { "$ref": "#/$defs/SemanticVersion" },
+    "problem_class": { "$ref": "#/$defs/Identifier" },
+    "solution_signature": { "$ref": "#/$defs/Sha256" },
+    "occurrences": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Occurrence" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "nomination_evidence_bindings": { "$ref": "#/$defs/BindingArray" },
+    "nominator_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "candidate_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "BindingArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/VersionedBinding" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "Occurrence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_binding",
+        "environment_binding",
+        "problem_class",
+        "solution_signature",
+        "external_outcome_binding",
+        "outcome_status",
+        "contribution_state",
+        "observed_at"
+      ],
+      "properties": {
+        "run_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "environment_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "problem_class": { "$ref": "#/$defs/Identifier" },
+        "solution_signature": { "$ref": "#/$defs/Sha256" },
+        "external_outcome_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "outcome_status": { "const": "success" },
+        "contribution_state": {
+          "enum": ["verified_contribution", "observed_unattributed"]
+        },
+        "observed_at": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}

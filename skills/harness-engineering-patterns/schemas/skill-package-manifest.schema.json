@@ -1,0 +1,255 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/skill-package-manifest.schema.json",
+  "title": "Skill Package Manifest / 技能包清单",
+  "description": "Immutable, bilingual, supply-chain-aware manifest for a Skill version entering TRIAL. / 一个 Skill 版本进入 TRIAL 时使用的不可变、双语、供应链感知清单。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "package_id",
+    "package_content_binding",
+    "skill_id",
+    "skill_version",
+    "qualification_state",
+    "candidate_binding",
+    "reflection_assurance_binding",
+    "distillation_binding",
+    "core_sections",
+    "discovery",
+    "contracts",
+    "parameterization",
+    "execution",
+    "resources",
+    "dependencies",
+    "source",
+    "governance_policy_binding",
+    "created_at",
+    "manifest_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "package_id": { "$ref": "#/$defs/Identifier" },
+    "package_content_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "skill_id": { "$ref": "#/$defs/Identifier" },
+    "skill_version": { "$ref": "#/$defs/SemanticVersion" },
+    "qualification_state": { "const": "TRIAL" },
+    "candidate_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "reflection_assurance_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "distillation_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "core_sections": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/CoreSection" },
+      "minItems": 10,
+      "maxItems": 10
+    },
+    "discovery": { "$ref": "#/$defs/Discovery" },
+    "contracts": { "$ref": "#/$defs/Contracts" },
+    "parameterization": { "$ref": "#/$defs/Parameterization" },
+    "execution": { "$ref": "#/$defs/Execution" },
+    "resources": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Resource" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "dependencies": { "$ref": "#/$defs/Dependencies" },
+    "source": { "$ref": "#/$defs/Source" },
+    "governance_policy_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "manifest_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "NullableBinding": {
+      "oneOf": [{ "$ref": "#/$defs/VersionedBinding" }, { "type": "null" }]
+    },
+    "BindingArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/VersionedBinding" },
+      "uniqueItems": true
+    },
+    "NonEmptyStringArray": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "CoreSection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["section", "content_binding", "bilingual_verification_binding"],
+      "properties": {
+        "section": {
+          "enum": [
+            "metadata",
+            "use_cases",
+            "non_use_cases",
+            "inputs",
+            "outputs",
+            "workflow",
+            "tools_permissions",
+            "failure_recovery",
+            "verification",
+            "provenance"
+          ]
+        },
+        "content_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "bilingual_verification_binding": { "$ref": "#/$defs/VersionedBinding" }
+      }
+    },
+    "Discovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name_en",
+        "name_zh",
+        "description_en",
+        "description_zh",
+        "use_cases_en",
+        "use_cases_zh",
+        "non_use_cases_en",
+        "non_use_cases_zh",
+        "trigger_examples"
+      ],
+      "properties": {
+        "name_en": { "type": "string", "minLength": 1 },
+        "name_zh": { "type": "string", "minLength": 1 },
+        "description_en": { "type": "string", "minLength": 1 },
+        "description_zh": { "type": "string", "minLength": 1 },
+        "use_cases_en": { "$ref": "#/$defs/NonEmptyStringArray" },
+        "use_cases_zh": { "$ref": "#/$defs/NonEmptyStringArray" },
+        "non_use_cases_en": { "$ref": "#/$defs/NonEmptyStringArray" },
+        "non_use_cases_zh": { "$ref": "#/$defs/NonEmptyStringArray" },
+        "trigger_examples": { "$ref": "#/$defs/NonEmptyStringArray" }
+      }
+    },
+    "Contracts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_schema_binding", "output_schema_binding", "failure_contract_binding", "verification_entrypoint_binding"],
+      "properties": {
+        "input_schema_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "output_schema_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "failure_contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "verification_entrypoint_binding": { "$ref": "#/$defs/VersionedBinding" }
+      }
+    },
+    "Parameterization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["parameter_names", "parameter_origin_bindings", "unresolved_assumptions", "boundary_evidence_bindings", "instance_constants_removed"],
+      "properties": {
+        "parameter_names": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "uniqueItems": true
+        },
+        "parameter_origin_bindings": { "$ref": "#/$defs/BindingArray" },
+        "unresolved_assumptions": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "boundary_evidence_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "instance_constants_removed": { "const": true }
+      }
+    },
+    "Execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["step_refs", "tool_contract_bindings", "permission_scopes", "side_effect_class", "rollback_binding"],
+      "properties": {
+        "step_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "tool_contract_bindings": { "$ref": "#/$defs/BindingArray" },
+        "permission_scopes": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "side_effect_class": {
+          "enum": ["none", "readonly", "reversible_write", "sensitive_write", "irreversible_external"]
+        },
+        "rollback_binding": { "$ref": "#/$defs/NullableBinding" }
+      }
+    },
+    "Resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "kind", "digest", "trust_state"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["script", "reference", "asset", "other"] },
+        "digest": { "$ref": "#/$defs/Sha256" },
+        "trust_state": { "enum": ["trusted", "reviewed", "untrusted"] }
+      }
+    },
+    "Dependencies": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runtime_bindings", "tool_contract_bindings", "policy_bindings", "environment_constraints"],
+      "properties": {
+        "runtime_bindings": { "$ref": "#/$defs/BindingArray" },
+        "tool_contract_bindings": { "$ref": "#/$defs/BindingArray" },
+        "policy_bindings": { "$ref": "#/$defs/BindingArray" },
+        "environment_constraints": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
+    },
+    "Source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_type", "source_run_bindings", "trust_state", "provenance_evidence_bindings"],
+      "properties": {
+        "source_type": { "enum": ["human_authored", "distilled_trace", "migration"] },
+        "source_run_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "trust_state": { "enum": ["trusted", "reviewed", "untrusted"] },
+        "provenance_evidence_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

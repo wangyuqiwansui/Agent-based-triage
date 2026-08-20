@@ -32,6 +32,11 @@ from reflection_runtime import (  # noqa: E402
     validate_reflection_event_stream,
     validate_reflection_round_observation,
 )
+from generator_critic import (  # noqa: E402
+    GeneratorCriticAuthorizationError,
+    build_shared_reflection_guard,
+    reflection_subject_binding_for_artifact,
+)
 
 
 NOW = "2026-08-12T08:00:00Z"
@@ -365,6 +370,102 @@ def test_happy_path_closes_with_comparable_regression_free_improvement() -> None
         )
 
 
+def test_shared_reflection_guard_replays_history_and_binds_exact_artifact() -> None:
+    contract = contract_example(route="generator_critic")
+    session = ReflectionSession(contract)
+    guard = build_shared_reflection_guard(
+        contract,
+        events_provider=lambda: session.events,
+        observations_provider=lambda: session.observations,
+    )
+    contract_binding = {
+        "id": contract["contract_id"],
+        "version": contract["contract_version"],
+        "hash": contract["contract_hash"],
+    }
+    initial_artifact = {
+        "artifact_id": "artifact-1",
+        "revision": 0,
+        "artifact_digest": HASH_A,
+        "artifact_record_hash": HASH_B,
+    }
+
+    session.start(occurred_at=NOW)
+    session.freeze_baseline(occurred_at=NOW)
+    request = {
+        "reflection_contract_binding": contract_binding,
+        "artifact_binding": initial_artifact,
+        "context": {},
+    }
+    initial_assurance = guard("initial_artifact", request)
+    assert initial_assurance["hash"].startswith("sha256:")
+
+    proposal_binding = binding("generator-critic-decision-1", HASH_C)
+    session.start_round(
+        round_id="round-generator-critic",
+        new_signal=qualified_signal(),
+        occurred_at=NOW,
+    )
+    session.record_deviation(
+        code="factual-error",
+        evidence_bindings=[binding("fresh-test-result", HASH_C)],
+        details={"failed_checks": 1},
+        occurred_at=NOW,
+    )
+    session.propose_change(
+        target="artifact",
+        proposal_binding=proposal_binding,
+        occurred_at=NOW,
+    )
+    session.authorize_change(
+        authorization_binding=binding("change-authorizer", HASH_D),
+        occurred_at=NOW,
+    )
+    revised_artifact = {
+        "artifact_id": "artifact-1",
+        "revision": 1,
+        "artifact_digest": HASH_C,
+        "artifact_record_hash": HASH_D,
+    }
+    request = {
+        "reflection_contract_binding": contract_binding,
+        "artifact_binding": revised_artifact,
+        "context": {"change_proposal_binding": proposal_binding},
+    }
+    revision_assurance = guard("revision", request)
+    assert revision_assurance["id"].endswith(":revision:1")
+
+    subject = reflection_subject_binding_for_artifact(revised_artifact)
+    session.record_change_applied(subject_after_binding=subject, occurred_at=NOW)
+    session.start_revalidation(
+        validator_bindings=[
+            binding("validator-main", HASH_B),
+            binding("validator-regression", HASH_C),
+        ],
+        occurred_at=NOW,
+    )
+    session.close_round(
+        outcome=ReflectionOutcome.ACCEPTED,
+        validation=passing_validation(subject),
+        improvement_state=ReflectionImprovementState.VERIFIED_IMPROVEMENT,
+        attribution=None,
+        occurred_at=NOW,
+        stop_reason="exact revision passed independent revalidation",
+    )
+    receipt_assurance = guard("receipt", request)
+    release_assurance = guard("release", request)
+    assert receipt_assurance["hash"] != revision_assurance["hash"]
+    assert release_assurance["id"].endswith(":release:1")
+
+    stale_request = deepcopy(request)
+    stale_request["artifact_binding"] = initial_artifact
+    with pytest.raises(
+        GeneratorCriticAuthorizationError,
+        match="exact artifact",
+    ):
+        guard("release", stale_request)
+
+
 def test_contract_rejects_route_inconsistent_with_eligibility() -> None:
     contract = contract_example()
     drifted = deepcopy(contract)
@@ -668,6 +769,11 @@ def test_reflection_probe_profile_is_explicit_and_conditional() -> None:
     assert resolve_reflection_required_probes(
         attribution_claimed=True, learning_promotion=True
     ) == tuple(f"PROBE_{number:04d}" for number in range(16, 24))
+    assert resolve_reflection_required_probes(skill_package=True) == (
+        *tuple(f"PROBE_{number:04d}" for number in range(16, 22)),
+        "PROBE_0023",
+        *tuple(f"PROBE_{number:04d}" for number in range(28, 34)),
+    )
 
 
 def test_independent_signal_count_is_recomputed_from_qualified_signal_evidence() -> None:

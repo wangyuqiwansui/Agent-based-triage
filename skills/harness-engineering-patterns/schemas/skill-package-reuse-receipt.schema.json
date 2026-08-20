@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/skill-package-reuse-receipt.schema.json",
+  "title": "Skill Package Reuse Receipt / 技能包复用回执",
+  "description": "One real router-selected Skill use bound to the exact manifest, credential, route decision, external outcome, and attribution state. / 一次真实路由选择的 Skill 使用，绑定精确清单、凭证、路由决定、外部结果与归因状态。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "reuse_id",
+    "run_binding",
+    "route_decision_binding",
+    "manifest_binding",
+    "credential_binding",
+    "release_stage",
+    "router_selected",
+    "test_run",
+    "shadow_run",
+    "external_outcome",
+    "attribution_status",
+    "evidence_bindings",
+    "route_selected_at",
+    "run_completed_at",
+    "observed_at",
+    "reuse_receipt_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "reuse_id": { "$ref": "#/$defs/Identifier" },
+    "run_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "route_decision_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "manifest_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "credential_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "release_stage": { "const": "production" },
+    "router_selected": { "const": true },
+    "test_run": { "const": false },
+    "shadow_run": { "const": false },
+    "external_outcome": { "$ref": "#/$defs/ExternalOutcome" },
+    "attribution_status": {
+      "enum": [
+        "unattributed",
+        "skill_logic",
+        "routing_error",
+        "input_error",
+        "dependency_error",
+        "policy_change",
+        "tool_error",
+        "environment_error",
+        "human_decision",
+        "mixed"
+      ]
+    },
+    "evidence_bindings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/VersionedBinding" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "route_selected_at": { "type": "string", "format": "date-time" },
+    "run_completed_at": { "type": "string", "format": "date-time" },
+    "observed_at": { "type": "string", "format": "date-time" },
+    "reuse_receipt_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$" },
+    "SemanticVersion": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$" },
+    "Sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "NullableBinding": { "oneOf": [{ "$ref": "#/$defs/VersionedBinding" }, { "type": "null" }] },
+    "ExternalOutcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "binding"],
+      "properties": {
+        "status": { "enum": ["success", "failure", "pending", "unknown"] },
+        "binding": { "$ref": "#/$defs/NullableBinding" }
+      }
+    }
+  }
+}

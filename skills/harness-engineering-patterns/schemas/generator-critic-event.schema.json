@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/generator-critic-event.schema.json",
+  "title": "Generator-Critic Lifecycle Event / 生成评审生命周期事件",
+  "description": "Immutable, sequence-bound public event for artifact, review, decision, revision, receipt, and release transitions. / 用于工件、评审、裁决、修订、回执和发布转换的不可变顺序绑定公开事件。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_type",
+    "session_id",
+    "sequence",
+    "occurred_at",
+    "idempotency_key",
+    "contract_binding",
+    "artifact_binding",
+    "state_before",
+    "state_after",
+    "payload",
+    "event_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "event_id": { "$ref": "#/$defs/Identifier" },
+    "event_type": {
+      "enum": [
+        "artifact_revision_created",
+        "artifact_review_started",
+        "artifact_review_recorded",
+        "review_decision_recorded",
+        "review_receipt_issued",
+        "artifact_release_verified",
+        "generator_critic_stopped"
+      ]
+    },
+    "session_id": { "$ref": "#/$defs/Identifier" },
+    "sequence": { "type": "integer", "minimum": 1 },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "idempotency_key": { "$ref": "#/$defs/Identifier" },
+    "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "artifact_binding": { "$ref": "#/$defs/ArtifactBinding" },
+    "state_before": { "$ref": "#/$defs/State" },
+    "state_after": { "$ref": "#/$defs/State" },
+    "payload": { "$ref": "#/$defs/SafeExternalValue" },
+    "event_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$" },
+    "SemanticVersion": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$" },
+    "Sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "ArtifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "revision", "artifact_digest", "artifact_record_hash"],
+      "properties": {
+        "artifact_id": { "$ref": "#/$defs/Identifier" },
+        "revision": { "type": "integer", "minimum": 0 },
+        "artifact_digest": { "$ref": "#/$defs/Sha256" },
+        "artifact_record_hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "State": {
+      "enum": ["initialized", "artifact_unreviewed", "reviewing", "reviewed", "needs_revision", "accepted", "waiting_evidence", "human_required", "rejected", "released", "stopped"]
+    },
+    "SafeExternalValue": {
+      "oneOf": [
+        { "type": ["string", "number", "boolean", "null"] },
+        { "type": "array", "items": { "$ref": "#/$defs/SafeExternalValue" } },
+        {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/SafeExternalPropertyName" },
+          "additionalProperties": { "$ref": "#/$defs/SafeExternalValue" }
+        }
+      ]
+    },
+    "SafeExternalPropertyName": {
+      "type": "string",
+      "not": {
+        "pattern": "^(?:[cC][oO][tT]|[cC][hH][aA][iI][nN][_-]?[oO][fF][_-]?[tT][hH][oO][uU][gG][hH][tT]|[pP][rR][iI][vV][aA][tT][eE][_-]?(?:[cC][oO][tT]|[rR][eE][aA][sS][oO][nN][iI][nN][gG])|[hH][iI][dD][dD][eE][nN][_-]?(?:[rR][eE][aA][sS][oO][nN][iI][nN][gG]|[tT][hH][oO][uU][gG][hH][tT][sS]?)|[iI][nN][tT][eE][rR][nN][aA][lL][_-]?(?:[tT][hH][oO][uU][gG][hH][tT][sS]?|[mM][oO][nN][oO][lL][oO][gG][uU][eE])|[iI][nN][nN][eE][rR][_-]?[mM][oO][nN][oO][lL][oO][gG][uU][eE]|[tT][hH][oO][uU][gG][hH][tT][_-]?[pP][rR][oO][cC][eE][sS][sS]|[sS][cC][rR][aA][tT][cC][hH][pP][aA][dD]|思维链|内部推理)$"
+      }
+    }
+  }
+}

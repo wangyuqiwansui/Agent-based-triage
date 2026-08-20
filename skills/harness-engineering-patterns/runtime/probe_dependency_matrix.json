@@ -66,5 +66,26 @@
         "PROBE_0013": "parent_or_child_outcome_metric / 父子结果指标"
       }
     }
+  ],
+  "reflection_profiles": [
+    {
+      "profile": "generator_critic",
+      "name_en": "Exact-version Generator-Critic",
+      "name_zh": "精确版本生成评审",
+      "required_probes": ["PROBE_0016", "PROBE_0017", "PROBE_0018", "PROBE_0019", "PROBE_0020", "PROBE_0021", "PROBE_0024", "PROBE_0025", "PROBE_0026", "PROBE_0027"],
+      "conditional_probes": {
+        "PROBE_0022": "causal_attribution_claim / 因果归因声明",
+        "PROBE_0023": "learning_promotion / 学习晋升"
+      }
+    },
+    {
+      "profile": "skill_package",
+      "name_en": "Governed Skill Package Lifecycle",
+      "name_zh": "受治理技能包生命周期",
+      "required_probes": ["PROBE_0016", "PROBE_0017", "PROBE_0018", "PROBE_0019", "PROBE_0020", "PROBE_0021", "PROBE_0023", "PROBE_0028", "PROBE_0029", "PROBE_0030", "PROBE_0031", "PROBE_0032", "PROBE_0033"],
+      "conditional_probes": {
+        "PROBE_0022": "causal_attribution_claim / 因果归因声明"
+      }
+    }
   ]
 }

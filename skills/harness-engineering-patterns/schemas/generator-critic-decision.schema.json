@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/generator-critic-decision.schema.json",
+  "title": "Generator-Critic Policy Decision / 生成评审策略裁决",
+  "description": "Deterministic policy decision derived from one exact review without modifying the reviewed artifact. / 从一份精确评审确定性派生且不修改被审工件的策略裁决。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "decision_id",
+    "contract_binding",
+    "review_binding",
+    "artifact_binding",
+    "policy_gate_binding",
+    "decision",
+    "triggered_rules",
+    "gating_issue_refs",
+    "retained_opinion_refs",
+    "decided_at",
+    "decision_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "decision_id": { "$ref": "#/$defs/Identifier" },
+    "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "review_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "artifact_binding": { "$ref": "#/$defs/ArtifactBinding" },
+    "policy_gate_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "decision": { "enum": ["accept", "needs_revision", "reject", "human_required", "wait_for_evidence"] },
+    "triggered_rules": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Identifier" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "gating_issue_refs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Identifier" },
+      "uniqueItems": true
+    },
+    "retained_opinion_refs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Identifier" },
+      "uniqueItems": true
+    },
+    "decided_at": { "type": "string", "format": "date-time" },
+    "decision_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": { "type": "string", "minLength": 1, "maxLength": 160, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$" },
+    "SemanticVersion": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$" },
+    "Sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "ArtifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "revision", "artifact_digest", "artifact_record_hash"],
+      "properties": {
+        "artifact_id": { "$ref": "#/$defs/Identifier" },
+        "revision": { "type": "integer", "minimum": 0 },
+        "artifact_digest": { "$ref": "#/$defs/Sha256" },
+        "artifact_record_hash": { "$ref": "#/$defs/Sha256" }
+      }
+    }
+  }
+}

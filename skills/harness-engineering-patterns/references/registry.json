@@ -900,7 +900,7 @@
       ],
       "status": "draft",
       "reference": "references/workflow-observability-probes.md",
-      "source_version": "0.7.0",
+      "source_version": "0.8.0",
       "source_draft_id": "PATTERN_0002",
       "cognition_refs": [
         "COG_PERCEPTION",

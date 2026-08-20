@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/generator-critic-contract.schema.json",
+  "title": "Generator-Critic Contract / 生成评审契约",
+  "description": "Sealed policy for exact-version generation review, evidence-gated critique, independent decision, bounded revision, and receipt-bound release. / 用于精确版本生成评审、证据闸批评、独立裁决、有界修订与回执绑定发布的封存策略。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract_id",
+    "contract_version",
+    "reflection_contract_binding",
+    "run_binding",
+    "artifact_policy",
+    "roles",
+    "criteria",
+    "review_policy",
+    "decision_policy",
+    "release_policy",
+    "governance_policy_binding",
+    "created_at",
+    "contract_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "contract_id": { "$ref": "#/$defs/Identifier" },
+    "contract_version": { "$ref": "#/$defs/SemanticVersion" },
+    "reflection_contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "run_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "artifact_policy": { "$ref": "#/$defs/ArtifactPolicy" },
+    "roles": { "$ref": "#/$defs/Roles" },
+    "criteria": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Criterion" },
+      "minItems": 1
+    },
+    "review_policy": { "$ref": "#/$defs/ReviewPolicy" },
+    "decision_policy": { "$ref": "#/$defs/DecisionPolicy" },
+    "release_policy": { "$ref": "#/$defs/ReleasePolicy" },
+    "governance_policy_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "contract_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "NullableBinding": {
+      "oneOf": [
+        { "$ref": "#/$defs/VersionedBinding" },
+        { "type": "null" }
+      ]
+    },
+    "ArtifactPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "artifact_type", "initial_revision", "max_revisions", "immutable_append_only"],
+      "properties": {
+        "artifact_id": { "$ref": "#/$defs/Identifier" },
+        "artifact_type": { "$ref": "#/$defs/Identifier" },
+        "initial_revision": { "type": "integer", "minimum": 0 },
+        "max_revisions": { "type": "integer", "minimum": 1 },
+        "immutable_append_only": { "const": true }
+      }
+    },
+    "Roles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generator_binding",
+        "critic_binding",
+        "critic_configuration_binding",
+        "reviser_binding",
+        "policy_gate_binding",
+        "release_gate_binding"
+      ],
+      "properties": {
+        "generator_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "critic_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "critic_configuration_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "reviser_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "policy_gate_binding": { "$ref": "#/$defs/VersionedBinding" },
+        "release_gate_binding": { "$ref": "#/$defs/VersionedBinding" }
+      }
+    },
+    "Criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["criterion_id", "description", "check_id", "default_severity", "evidence_required", "risk_refs", "validator_binding"],
+      "properties": {
+        "criterion_id": { "$ref": "#/$defs/Identifier" },
+        "description": { "type": "string", "minLength": 1 },
+        "check_id": { "$ref": "#/$defs/Identifier" },
+        "default_severity": { "enum": ["blocking", "warning", "info"] },
+        "evidence_required": { "type": "boolean" },
+        "risk_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Identifier" },
+          "uniqueItems": true
+        },
+        "validator_binding": { "$ref": "#/$defs/NullableBinding" }
+      }
+    },
+    "ReviewPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "feedback_variant",
+        "max_critique_passes",
+        "require_full_criteria_coverage",
+        "preserve_unsupported_opinions",
+        "require_clean_context"
+      ],
+      "properties": {
+        "feedback_variant": { "enum": ["self_critique", "cross_model", "tool_grounded", "human_review"] },
+        "max_critique_passes": { "type": "integer", "minimum": 1, "maximum": 2 },
+        "require_full_criteria_coverage": { "const": true },
+        "preserve_unsupported_opinions": { "const": true },
+        "require_clean_context": { "const": true }
+      }
+    },
+    "DecisionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "blocking_severities",
+        "warning_action",
+        "unknown_action",
+        "minimum_score",
+        "below_minimum_score_action",
+        "exhausted_action"
+      ],
+      "properties": {
+        "blocking_severities": {
+          "type": "array",
+          "items": { "enum": ["blocking", "warning", "info"] },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "warning_action": { "enum": ["accept", "needs_revision", "human_required"] },
+        "unknown_action": { "enum": ["wait_for_evidence", "human_required"] },
+        "minimum_score": {
+          "oneOf": [
+            { "type": "number", "minimum": 0, "maximum": 1 },
+            { "type": "null" }
+          ]
+        },
+        "below_minimum_score_action": { "enum": ["needs_revision", "human_required"] },
+        "exhausted_action": { "enum": ["human_required", "reject"] }
+      }
+    },
+    "ReleasePolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "require_receipt",
+        "require_exact_artifact_digest",
+        "require_current_policy",
+        "require_fresh_evidence",
+        "default_receipt_ttl_seconds"
+      ],
+      "properties": {
+        "require_receipt": { "const": true },
+        "require_exact_artifact_digest": { "const": true },
+        "require_current_policy": { "const": true },
+        "require_fresh_evidence": { "type": "boolean" },
+        "default_receipt_ttl_seconds": {
+          "oneOf": [
+            { "type": "integer", "minimum": 1 },
+            { "type": "null" }
+          ]
+        }
+      }
+    }
+  }
+}

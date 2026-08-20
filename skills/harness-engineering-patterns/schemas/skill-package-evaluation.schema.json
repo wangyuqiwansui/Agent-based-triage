@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/skill-package-evaluation.schema.json",
+  "title": "Skill Package Evaluation / 技能包评估",
+  "description": "Independent, exact-version evaluation across result, activation, flow, incremental value, and freshness. / 针对精确版本、覆盖结果、激活、流程、真实增益与新鲜度的独立评估。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "evaluation_id",
+    "evaluation_version",
+    "contract_binding",
+    "manifest_binding",
+    "evaluation_suite_binding",
+    "environment_binding",
+    "evaluator_binding",
+    "validator_configuration_binding",
+    "independent_from_candidate_producers",
+    "dimensions",
+    "regression_free",
+    "validator_gaming_detected",
+    "overall_status",
+    "started_at",
+    "completed_at",
+    "evaluation_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "evaluation_id": { "$ref": "#/$defs/Identifier" },
+    "evaluation_version": { "$ref": "#/$defs/SemanticVersion" },
+    "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "manifest_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "evaluation_suite_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "environment_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "evaluator_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "validator_configuration_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "independent_from_candidate_producers": { "const": true },
+    "dimensions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Dimension" },
+      "minItems": 1,
+      "maxItems": 5
+    },
+    "regression_free": { "type": "boolean" },
+    "validator_gaming_detected": { "type": "boolean" },
+    "overall_status": { "enum": ["passed", "failed", "incomplete"] },
+    "started_at": { "type": "string", "format": "date-time" },
+    "completed_at": { "type": "string", "format": "date-time" },
+    "evaluation_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": { "type": "string", "minLength": 1, "maxLength": 200, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$" },
+    "SemanticVersion": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$" },
+    "Sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "Dimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dimension", "total_cases", "passed_cases", "status", "counterexample_checked", "failure_path_checked", "evidence_bindings"],
+      "properties": {
+        "dimension": { "enum": ["result", "activation", "flow", "incremental_value", "freshness"] },
+        "total_cases": { "type": "integer", "minimum": 1 },
+        "passed_cases": { "type": "integer", "minimum": 0 },
+        "status": { "enum": ["passed", "failed", "incomplete"] },
+        "counterexample_checked": { "type": "boolean" },
+        "failure_path_checked": { "type": "boolean" },
+        "evidence_bindings": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/VersionedBinding" },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

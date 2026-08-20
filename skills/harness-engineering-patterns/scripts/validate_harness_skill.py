@@ -78,7 +78,7 @@ RUNTIME_PROTOCOLS = {
     "PATTERN_0052": {
         "reference": "references/workflow-observability-probes.md",
         "source_draft_id": "PATTERN_0002",
-        "source_version": "0.7.0",
+        "source_version": "0.8.0",
         "name_en": "Workflow Observability Probes",
         "name_zh": "工作流可观测性探针",
         "matrix_coordinates": {
@@ -91,9 +91,16 @@ RUNTIME_PROTOCOLS = {
     },
 }
 
-REQUIRED_PROBES = tuple(f"PROBE_{number:04d}" for number in range(1, 24))
+REQUIRED_PROBES = tuple(f"PROBE_{number:04d}" for number in range(1, 34))
 
 RUNTIME_SCHEMA_FILES = (
+    "schemas/capability-credential.schema.json",
+    "schemas/generator-critic-artifact.schema.json",
+    "schemas/generator-critic-contract.schema.json",
+    "schemas/generator-critic-decision.schema.json",
+    "schemas/generator-critic-event.schema.json",
+    "schemas/generator-critic-receipt.schema.json",
+    "schemas/generator-critic-review.schema.json",
     "schemas/goal-contract.schema.json",
     "schemas/normalized-input.schema.json",
     "schemas/reasoning-chain-blueprint.schema.json",
@@ -107,6 +114,13 @@ RUNTIME_SCHEMA_FILES = (
     "schemas/reflection-contract.schema.json",
     "schemas/reflection-event.schema.json",
     "schemas/reflection-round-observation.schema.json",
+    "schemas/skill-package-alias-receipt.schema.json",
+    "schemas/skill-package-candidate.schema.json",
+    "schemas/skill-package-contract.schema.json",
+    "schemas/skill-package-evaluation.schema.json",
+    "schemas/skill-package-event.schema.json",
+    "schemas/skill-package-manifest.schema.json",
+    "schemas/skill-package-reuse-receipt.schema.json",
     "schemas/tool-dispatch-envelope.schema.json",
     "schemas/tool-execution-event.schema.json",
     "schemas/tool-execution-result.schema.json",
@@ -120,6 +134,7 @@ RUNTIME_SCHEMA_FILES = (
 
 RUNTIME_IMPLEMENTATION_FILES = (
     "runtime/__init__.py",
+    "runtime/generator_critic.py",
     "runtime/plan_execution.py",
     "runtime/plan_execution_completion.py",
     "runtime/plan_execution_events.py",
@@ -137,6 +152,7 @@ RUNTIME_IMPLEMENTATION_FILES = (
     "runtime/reasoning_event_sqlite_store.py",
     "runtime/reasoning_runtime.py",
     "runtime/reflection_runtime.py",
+    "runtime/skill_package.py",
     "runtime/reasoning_router.py",
     "runtime/tool_dispatch.py",
     "runtime/tool_dispatch_projection.py",
@@ -210,6 +226,39 @@ REFLECTION_EXECUTION_MARKERS = (
     "../runtime/reflection_runtime.py",
     "private chain-of-thought",
     "私密思维过程",
+)
+
+SKILL_PACKAGE_REFERENCE = "references/patterns/reflection/reflection-routing.md"
+SKILL_PACKAGE_OBSERVABILITY = (
+    "references/patterns/reflection/reflection-routing-observability.md"
+)
+SKILL_PACKAGE_MARKERS = (
+    "Engineering contract / 工程契约: `1.0.0`",
+    "## Hard Invariants / 强制不变量",
+    "## Two Independent Pipelines / 两条独立管道",
+    "## Authority Model / 权限模型",
+    "## Normative Artifacts / 规范制品",
+    "## Workflow / 流程",
+    "## Failure And Recovery / 失败与恢复",
+    "## Verification / 验收",
+    "../../../schemas/skill-package-contract.schema.json",
+    "../../../schemas/capability-credential.schema.json",
+    "../../../runtime/skill_package.py",
+    "TRIAL",
+    "VERIFIED",
+    "shadow → limited → production",
+)
+SKILL_PACKAGE_OBSERVABILITY_MARKERS = (
+    "Contract / 契约: `1.0.0`",
+    "## Probe Profile / 探针档案",
+    "PROBE_0028",
+    "PROBE_0033",
+    "skill_reuse_success_rate",
+    "reverification_prewithdrawal_compliance_rate",
+    "stale_credential_use_rate",
+    "../../../runtime/skill_package.py",
+    "../../reflection-execution-flow.md",
+    "../../workflow-observability-probes.md",
 )
 
 TOOL_DISPATCH_MARKERS = (
@@ -494,6 +543,11 @@ RUNTIME_REQUIRED_EXPORTS = {
         "ReasoningChainFactory",
         "ReasoningEvent",
         "ReflectionSession",
+        "GeneratorCriticSession",
+        "SkillPackageSession",
+        "build_shared_reflection_guard",
+        "build_skill_lifecycle_reflection_guard",
+        "reflection_subject_binding_for_artifact",
         "RUNTIME_SUPPORTED_STOP_TYPES",
         "RiskLevel",
         "SqliteParallelDispatchOutbox",
@@ -510,6 +564,13 @@ RUNTIME_REQUIRED_EXPORTS = {
         "validate_reflection_event",
         "validate_reflection_event_stream",
         "validate_reflection_round_observation",
+        "validate_generator_critic_contract",
+        "validate_generator_critic_event_stream",
+        "validate_generator_critic_receipt",
+        "validate_generator_critic_review",
+        "validate_skill_package_contract",
+        "validate_skill_package_event_stream",
+        "validate_skill_package_manifest",
         "validate_workflow_checkpoint",
         "validate_workflow_plan",
         "validate_workflow_plan_patch",
@@ -542,6 +603,50 @@ RUNTIME_REQUIRED_EXPORTS = {
         "validate_reflection_event",
         "validate_reflection_event_stream",
         "validate_reflection_round_observation",
+    },
+    "generator_critic": {
+        "GENERATOR_CRITIC_PROBES",
+        "GENERATOR_CRITIC_SHARED_GUARD_REQUIREMENTS",
+        "GeneratorCriticDecision",
+        "GeneratorCriticSession",
+        "GeneratorCriticState",
+        "artifact_binding",
+        "build_shared_reflection_guard",
+        "build_generator_critic_contract",
+        "reflection_subject_binding_for_artifact",
+        "validate_generator_critic_artifact",
+        "validate_generator_critic_contract",
+        "validate_generator_critic_decision",
+        "validate_generator_critic_event",
+        "validate_generator_critic_event_stream",
+        "validate_generator_critic_receipt",
+        "validate_generator_critic_review",
+    },
+    "skill_package": {
+        "SKILL_PACKAGE_PROBES",
+        "SKILL_PACKAGE_REQUIRED_DIMENSIONS",
+        "SKILL_PACKAGE_REQUIRED_SECTIONS",
+        "SkillPackageSession",
+        "SkillPackageStage",
+        "SkillQualificationState",
+        "SkillReleaseState",
+        "build_capability_credential",
+        "build_skill_lifecycle_reflection_guard",
+        "build_skill_package_alias_receipt",
+        "build_skill_package_candidate",
+        "build_skill_package_contract",
+        "build_skill_package_evaluation",
+        "build_skill_package_manifest",
+        "build_skill_package_reuse_receipt",
+        "validate_capability_credential",
+        "validate_skill_package_alias_receipt",
+        "validate_skill_package_candidate",
+        "validate_skill_package_contract",
+        "validate_skill_package_evaluation",
+        "validate_skill_package_event",
+        "validate_skill_package_event_stream",
+        "validate_skill_package_manifest",
+        "validate_skill_package_reuse_receipt",
     },
     "reasoning_chain_factory": {
         "ChainFactoryError",
@@ -2095,6 +2200,8 @@ def validate_runtime_imports(
             "reasoning_metrics",
             "reasoning_chain_factory",
             "plan_execution",
+            "generator_critic",
+            "skill_package",
         ):
             modules[module_name] = importlib.import_module(
                 f"{package_name}.{module_name}"
@@ -2460,6 +2567,48 @@ def validate_runtime_protocols(
                     f"反思执行参考文档缺少 {marker}",
                 )
 
+    skill_package_path = skill_dir / SKILL_PACKAGE_REFERENCE
+    skill_package_reference = (
+        skill_package_path.read_text(encoding="utf-8")
+        if skill_package_path.is_file()
+        else ""
+    )
+    if not skill_package_reference:
+        report.error(
+            "skill_package_reference",
+            f"missing Skill Package reference {SKILL_PACKAGE_REFERENCE}",
+            f"缺少技能包参考文档 {SKILL_PACKAGE_REFERENCE}",
+        )
+    else:
+        for marker in SKILL_PACKAGE_MARKERS:
+            if marker not in skill_package_reference:
+                report.error(
+                    "skill_package_reference",
+                    f"Skill Package reference missing {marker}",
+                    f"技能包参考文档缺少 {marker}",
+                )
+
+    skill_package_observability_path = skill_dir / SKILL_PACKAGE_OBSERVABILITY
+    skill_package_observability = (
+        skill_package_observability_path.read_text(encoding="utf-8")
+        if skill_package_observability_path.is_file()
+        else ""
+    )
+    if not skill_package_observability:
+        report.error(
+            "skill_package_observability",
+            f"missing Skill Package observability {SKILL_PACKAGE_OBSERVABILITY}",
+            f"缺少技能包可观测文档 {SKILL_PACKAGE_OBSERVABILITY}",
+        )
+    else:
+        for marker in SKILL_PACKAGE_OBSERVABILITY_MARKERS:
+            if marker not in skill_package_observability:
+                report.error(
+                    "skill_package_observability",
+                    f"Skill Package observability missing {marker}",
+                    f"技能包可观测文档缺少 {marker}",
+                )
+
     skill_text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
     for marker in (
         PLAN_EXECUTION_REFERENCE,
@@ -2502,6 +2651,22 @@ def validate_runtime_protocols(
                 "reflection_execution_entrypoint",
                 f"SKILL.md does not route reflection through {marker}",
                 f"SKILL.md 未将反思执行路由到 {marker}",
+            )
+
+    for marker in (
+        SKILL_PACKAGE_REFERENCE,
+        "schemas/skill-package-contract.schema.json",
+        "schemas/capability-credential.schema.json",
+        "runtime/skill_package.py",
+        "SkillPackageSession",
+        "build_skill_lifecycle_reflection_guard",
+        "skill_package=True",
+    ):
+        if marker not in skill_text:
+            report.error(
+                "skill_package_entrypoint",
+                f"SKILL.md does not route Skill Package lifecycle through {marker}",
+                f"SKILL.md 未将技能包生命周期路由到 {marker}",
             )
 
     if "reasoning-chain-factory.md" not in execution:

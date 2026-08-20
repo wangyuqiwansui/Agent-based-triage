@@ -1834,6 +1834,348 @@ def learning_promotion_evidence_completeness(
     )
 
 
+def generator_critic_review_version_match_rate(
+    exact_version_review_records: float | None,
+    review_records: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return reviews bound to the exact artifact version / 返回绑定精确工件版本的评审比例。"""
+
+    return bounded_ratio(
+        "generator_critic_review_version_match_rate",
+        exact_version_review_records,
+        review_records,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def generator_critic_revision_rereview_compliance_rate(
+    rereviewed_revised_artifacts: float | None,
+    revised_artifacts_entering_release: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return revised artifacts explicitly re-reviewed before release / 返回发布前已显式复审修订工件比例。"""
+
+    return bounded_ratio(
+        "generator_critic_revision_rereview_compliance_rate",
+        rereviewed_revised_artifacts,
+        revised_artifacts_entering_release,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def generator_critic_receipt_coverage_rate(
+    accepted_versions_with_valid_receipt: float | None,
+    accepted_versions_entering_release: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return accepted versions carrying a valid release receipt / 返回具有有效发布回执的接受版本比例。"""
+
+    return bounded_ratio(
+        "generator_critic_receipt_coverage_rate",
+        accepted_versions_with_valid_receipt,
+        accepted_versions_entering_release,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def generator_critic_version_escape_rate(
+    released_version_escapes: float | None,
+    released_reviewed_artifacts: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return releases that escape their reviewed artifact binding / 返回逃逸已评审工件绑定的发布比例。"""
+
+    return bounded_ratio(
+        "generator_critic_version_escape_rate",
+        released_version_escapes,
+        released_reviewed_artifacts,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def generator_critic_evidenced_finding_rate(
+    evidenced_findings: float | None,
+    reported_findings_and_opinions: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return reported findings backed by auditable evidence / 返回具有可审计证据的已报告问题比例。"""
+
+    return bounded_ratio(
+        "generator_critic_evidenced_finding_rate",
+        evidenced_findings,
+        reported_findings_and_opinions,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def generator_critic_opinion_retention_rate(
+    retained_non_gating_opinions: float | None,
+    unsupported_opinions: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return unsupported opinions retained as non-gating records / 返回作为非门控记录留存的无据意见比例。"""
+
+    return bounded_ratio(
+        "generator_critic_opinion_retention_rate",
+        retained_non_gating_opinions,
+        unsupported_opinions,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def generator_critic_risk_evidence_coverage_rate(
+    risk_items_with_check_and_evidence: float | None,
+    declared_material_risk_items: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return material risks covered by checks and evidence / 返回由检查与证据覆盖的重大风险比例。"""
+
+    return bounded_ratio(
+        "generator_critic_risk_evidence_coverage_rate",
+        risk_items_with_check_and_evidence,
+        declared_material_risk_items,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def generator_critic_rubber_stamp_escape_rate(
+    accepted_artifacts_with_downstream_covered_defect: float | None,
+    accepted_artifacts_with_outcome_evidence: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return accepted artifacts with later in-scope defects / 返回后续发现范围内缺陷的接受工件比例。"""
+
+    return bounded_ratio(
+        "generator_critic_rubber_stamp_escape_rate",
+        accepted_artifacts_with_downstream_covered_defect,
+        accepted_artifacts_with_outcome_evidence,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def generator_critic_pass_budget_compliance_rate(
+    sessions_within_critique_pass_budget: float | None,
+    generator_critic_sessions: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return sessions closed within the sealed critique-pass budget / 返回在封存评审批次预算内闭环的会话比例。"""
+
+    return bounded_ratio(
+        "generator_critic_pass_budget_compliance_rate",
+        sessions_within_critique_pass_budget,
+        generator_critic_sessions,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def skill_candidate_recurrence_evidence_rate(
+    candidates_meeting_recurrence_policy: float | None,
+    nominated_skill_candidates: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return nominations backed by recurrent successful runs / 返回由重复成功运行支撑的提名比例。"""
+
+    return bounded_ratio(
+        "skill_candidate_recurrence_evidence_rate",
+        candidates_meeting_recurrence_policy,
+        nominated_skill_candidates,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def skill_package_contract_completeness_rate(
+    complete_skill_package_contracts: float | None,
+    registered_trial_packages: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return TRIAL packages with complete sealed boundaries / 返回具有完整封存边界的 TRIAL 技能包比例。"""
+
+    return bounded_ratio(
+        "skill_package_contract_completeness_rate",
+        complete_skill_package_contracts,
+        registered_trial_packages,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def skill_package_five_dimension_verification_rate(
+    packages_passing_all_five_dimensions: float | None,
+    completed_skill_package_evaluations: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return evaluations passing all five independent dimensions / 返回通过全部五个独立维度的评估比例。"""
+
+    return bounded_ratio(
+        "skill_package_five_dimension_verification_rate",
+        packages_passing_all_five_dimensions,
+        completed_skill_package_evaluations,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def trial_to_verified_rate(
+    trial_versions_promoted_verified: float | None,
+    trial_versions_with_completed_evaluation: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return evaluated TRIAL versions promoted to VERIFIED / 返回已评估 TRIAL 版本中晋升 VERIFIED 的比例。"""
+
+    return bounded_ratio(
+        "trial_to_verified_rate",
+        trial_versions_promoted_verified,
+        trial_versions_with_completed_evaluation,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def credential_exact_binding_rate(
+    credentials_with_exact_binding: float | None,
+    issued_skill_credentials: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return credentials matching contract, manifest, evaluation, and scope / 返回精确匹配契约、清单、评估与权限范围的凭证比例。"""
+
+    return bounded_ratio(
+        "credential_exact_binding_rate",
+        credentials_with_exact_binding,
+        issued_skill_credentials,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def alias_switch_integrity_rate(
+    valid_atomic_alias_switches: float | None,
+    production_alias_switch_attempts: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return production switches with valid exact-version CAS receipts / 返回具有有效精确版本 CAS 回执的生产切换比例。"""
+
+    return bounded_ratio(
+        "alias_switch_integrity_rate",
+        valid_atomic_alias_switches,
+        production_alias_switch_attempts,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def skill_reuse_success_rate(
+    successful_real_skill_reuses: float | None,
+    real_skill_reuses_with_determined_outcome: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return real production reuses with successful external outcomes / 返回外部结果成功的真实生产复用比例。"""
+
+    return bounded_ratio(
+        "skill_reuse_success_rate",
+        successful_real_skill_reuses,
+        real_skill_reuses_with_determined_outcome,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def version_window_integrity_rate(
+    real_reuses_with_valid_version_window: float | None,
+    real_skill_reuses: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return reuses inside the exact credential and alias window / 返回位于精确凭证与别名时间窗内的复用比例。"""
+
+    return bounded_ratio(
+        "version_window_integrity_rate",
+        real_reuses_with_valid_version_window,
+        real_skill_reuses,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def reverification_prewithdrawal_compliance_rate(
+    reverifications_with_prior_withdrawal: float | None,
+    skill_reverifications_started: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return re-verifications preceded by suspension and demotion / 返回开始前已暂停凭证并降级的复验比例。"""
+
+    return bounded_ratio(
+        "reverification_prewithdrawal_compliance_rate",
+        reverifications_with_prior_withdrawal,
+        skill_reverifications_started,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
+def stale_credential_use_rate(
+    reuses_with_stale_or_inactive_credential: float | None,
+    real_skill_reuses: float | None,
+    *,
+    min_sample: float = 1,
+    unavailable_state: MetricState | None = None,
+) -> MetricResult:
+    """Return real reuses using stale, suspended, expired, or revoked credentials / 返回使用过时、暂停、过期或撤销凭证的真实复用比例。"""
+
+    return bounded_ratio(
+        "stale_credential_use_rate",
+        reuses_with_stale_or_inactive_credential,
+        real_skill_reuses,
+        min_sample=min_sample,
+        unavailable_state=unavailable_state,
+    )
+
+
 def budget_utilization_max(
     actual_use: Mapping[str, float | None] | None,
     configured_limits: Mapping[str, float | None] | None,
@@ -1915,6 +2257,25 @@ _METRIC_FUNCTIONS = {
     "qualified_new_signal_rate": qualified_new_signal_rate,
     "attribution_overclaim_rate": attribution_overclaim_rate,
     "learning_promotion_evidence_completeness": learning_promotion_evidence_completeness,
+    "generator_critic_review_version_match_rate": generator_critic_review_version_match_rate,
+    "generator_critic_revision_rereview_compliance_rate": generator_critic_revision_rereview_compliance_rate,
+    "generator_critic_receipt_coverage_rate": generator_critic_receipt_coverage_rate,
+    "generator_critic_version_escape_rate": generator_critic_version_escape_rate,
+    "generator_critic_evidenced_finding_rate": generator_critic_evidenced_finding_rate,
+    "generator_critic_opinion_retention_rate": generator_critic_opinion_retention_rate,
+    "generator_critic_risk_evidence_coverage_rate": generator_critic_risk_evidence_coverage_rate,
+    "generator_critic_rubber_stamp_escape_rate": generator_critic_rubber_stamp_escape_rate,
+    "generator_critic_pass_budget_compliance_rate": generator_critic_pass_budget_compliance_rate,
+    "skill_candidate_recurrence_evidence_rate": skill_candidate_recurrence_evidence_rate,
+    "skill_package_contract_completeness_rate": skill_package_contract_completeness_rate,
+    "skill_package_five_dimension_verification_rate": skill_package_five_dimension_verification_rate,
+    "trial_to_verified_rate": trial_to_verified_rate,
+    "credential_exact_binding_rate": credential_exact_binding_rate,
+    "alias_switch_integrity_rate": alias_switch_integrity_rate,
+    "skill_reuse_success_rate": skill_reuse_success_rate,
+    "version_window_integrity_rate": version_window_integrity_rate,
+    "reverification_prewithdrawal_compliance_rate": reverification_prewithdrawal_compliance_rate,
+    "stale_credential_use_rate": stale_credential_use_rate,
 }
 
 
@@ -2326,6 +2687,7 @@ __all__ = [
     "ProbeDependencyResolution",
     "UNIVERSAL_REQUIRED_PROBES",
     "alert_delivery_rate",
+    "alias_switch_integrity_rate",
     "bounded_ratio",
     "budget_overrun_rate",
     "budget_pre_reservation_coverage",
@@ -2340,6 +2702,7 @@ __all__ = [
     "closed_step_record_completeness",
     "checkpoint_validation_binding_rate",
     "contract_completeness",
+    "credential_exact_binding_rate",
     "cost_per_validated_success",
     "dispatch_admission_coverage",
     "dispatch_record_completeness",
@@ -2353,6 +2716,15 @@ __all__ = [
     "event_loss_rate",
     "false_release_rate",
     "frontier_escape_rate",
+    "generator_critic_evidenced_finding_rate",
+    "generator_critic_opinion_retention_rate",
+    "generator_critic_pass_budget_compliance_rate",
+    "generator_critic_receipt_coverage_rate",
+    "generator_critic_review_version_match_rate",
+    "generator_critic_revision_rereview_compliance_rate",
+    "generator_critic_risk_evidence_coverage_rate",
+    "generator_critic_rubber_stamp_escape_rate",
+    "generator_critic_version_escape_rate",
     "hypothesis_elimination_per_cost_unit",
     "hypothesis_elimination_per_iteration",
     "material_candidate_difference",
@@ -2379,6 +2751,7 @@ __all__ = [
     "reflection_admission_compliance",
     "reflection_closure_rate",
     "regression_free_verified_improvement_rate",
+    "reverification_prewithdrawal_compliance_rate",
     "readonly_tool_lifecycle_completion_rate",
     "result_unknown_rate",
     "resolve_required_probes",
@@ -2386,9 +2759,15 @@ __all__ = [
     "route_stability_rate",
     "safe_ratio",
     "side_effect_lease_coverage",
+    "skill_candidate_recurrence_evidence_rate",
+    "skill_package_contract_completeness_rate",
+    "skill_package_five_dimension_verification_rate",
+    "skill_reuse_success_rate",
+    "stale_credential_use_rate",
     "state_evidence_coverage",
     "stop_reason_completeness",
     "tool_success_rate",
+    "trial_to_verified_rate",
     "unbounded_ratio",
     "unsupported_conclusion_rate",
     "unavailable_metric",
@@ -2396,6 +2775,7 @@ __all__ = [
     "validation_coverage",
     "validation_pass_rate",
     "validator_gaming_rate",
+    "version_window_integrity_rate",
     "qualified_new_signal_rate",
     "approval_binding_coverage",
     "metric_publication_failures",

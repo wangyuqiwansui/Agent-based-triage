@@ -797,7 +797,7 @@ class MetricRegistryTest(unittest.TestCase):
         registry = json.loads(PROBE_REGISTRY_PATH.read_text(encoding="utf-8"))
         records = {record["probe_id"]: record for record in registry["probes"]}
         self.assertEqual(registry["schema_version"], "1.0.0")
-        self.assertEqual(set(records), {f"PROBE_{index:04d}" for index in range(1, 24)})
+        self.assertEqual(set(records), {f"PROBE_{index:04d}" for index in range(1, 34)})
         required_fields = {
             "version",
             "name_en",

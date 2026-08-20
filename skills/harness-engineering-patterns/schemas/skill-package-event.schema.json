@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/skill-package-event.schema.json",
+  "title": "Skill Package Lifecycle Event / 技能包生命周期事件",
+  "description": "Immutable, chained, replayable event for one Skill qualification and release lifecycle. / 一个 Skill 资格与发布生命周期中的不可变、链式、可重放事件。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_type",
+    "lifecycle_id",
+    "sequence",
+    "occurred_at",
+    "idempotency_key",
+    "previous_event_hash",
+    "contract_binding",
+    "manifest_binding",
+    "credential_binding",
+    "actor_binding",
+    "qualification_before",
+    "qualification_after",
+    "release_before",
+    "release_after",
+    "payload",
+    "event_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "event_id": { "$ref": "#/$defs/Identifier" },
+    "event_type": {
+      "enum": [
+        "skill.candidate_nominated",
+        "skill.distillation_completed",
+        "skill.registered_trial",
+        "skill.verification_started",
+        "skill.verification_completed",
+        "skill.credential_issued",
+        "skill.promoted_verified",
+        "skill.release_stage_changed",
+        "skill.route_alias_switched",
+        "skill.reuse_recorded",
+        "skill.credential_suspended",
+        "skill.credential_revoked",
+        "skill.demoted_trial",
+        "skill.reverification_started",
+        "skill.retired",
+        "skill.archived"
+      ]
+    },
+    "lifecycle_id": { "$ref": "#/$defs/Identifier" },
+    "sequence": { "type": "integer", "minimum": 1 },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "idempotency_key": { "type": "string", "minLength": 1, "maxLength": 240 },
+    "previous_event_hash": { "$ref": "#/$defs/NullableSha256" },
+    "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "manifest_binding": { "$ref": "#/$defs/NullableBinding" },
+    "credential_binding": { "$ref": "#/$defs/NullableBinding" },
+    "actor_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "qualification_before": { "$ref": "#/$defs/QualificationState" },
+    "qualification_after": { "$ref": "#/$defs/QualificationState" },
+    "release_before": { "$ref": "#/$defs/ReleaseState" },
+    "release_after": { "$ref": "#/$defs/ReleaseState" },
+    "payload": { "$ref": "#/$defs/SafeExternalValue" },
+    "event_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": { "type": "string", "minLength": 1, "maxLength": 240, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$" },
+    "SemanticVersion": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$" },
+    "Sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "NullableSha256": { "oneOf": [{ "$ref": "#/$defs/Sha256" }, { "type": "null" }] },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "NullableBinding": { "oneOf": [{ "$ref": "#/$defs/VersionedBinding" }, { "type": "null" }] },
+    "QualificationState": { "enum": ["UNREGISTERED", "TRIAL", "VERIFIED", "RETIRED"] },
+    "ReleaseState": { "enum": ["unpublished", "shadow", "limited", "production", "suspended", "retired", "archived"] },
+    "SafeExternalValue": {
+      "oneOf": [
+        { "type": ["string", "number", "boolean", "null"] },
+        { "type": "array", "items": { "$ref": "#/$defs/SafeExternalValue" } },
+        {
+          "type": "object",
+          "propertyNames": { "$ref": "#/$defs/SafeExternalPropertyName" },
+          "additionalProperties": { "$ref": "#/$defs/SafeExternalValue" }
+        }
+      ]
+    },
+    "SafeExternalPropertyName": {
+      "type": "string",
+      "not": {
+        "pattern": "^(?:[cC][oO][tT]|[cC][hH][aA][iI][nN][_-]?[oO][fF][_-]?[tT][hH][oO][uU][gG][hH][tT]|[pP][rR][iI][vV][aA][tT][eE][_-]?(?:[cC][oO][tT]|[rR][eE][aA][sS][oO][nN][iI][nN][gG])|[hH][iI][dD][dD][eE][nN][_-]?(?:[rR][eE][aA][sS][oO][nN][iI][nN][gG]|[tT][hH][oO][uU][gG][hH][tT][sS]?)|[iI][nN][tT][eE][rR][nN][aA][lL][_-]?(?:[tT][hH][oO][uU][gG][hH][tT][sS]?|[mM][oO][nN][oO][lL][oO][gG][uU][eE])|[tT][hH][oO][uU][gG][hH][tT][_-]?[pP][rR][oO][cC][eE][sS][sS]|[sS][cC][rR][aA][tT][cC][hH][pP][aA][dD]|思维链|内部推理)$"
+      }
+    }
+  }
+}

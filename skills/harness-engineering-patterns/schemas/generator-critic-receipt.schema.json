@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/generator-critic-receipt.schema.json",
+  "title": "Generator-Critic Review Receipt / 生成评审回执",
+  "description": "Release receipt binding the accepted decision, exact artifact revision and digest, critic, policy, and evidence snapshots. / 将接受裁决、精确工件修订与摘要、评审器、策略及证据快照绑定的发布回执。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "receipt_id",
+    "contract_binding",
+    "review_binding",
+    "decision_binding",
+    "artifact_binding",
+    "critic_binding",
+    "policy_gate_binding",
+    "release_gate_binding",
+    "evidence_snapshot_bindings",
+    "shared_reflection_assurance_binding",
+    "issued_at",
+    "expires_at",
+    "receipt_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "receipt_id": { "$ref": "#/$defs/Identifier" },
+    "contract_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "review_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "decision_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "artifact_binding": { "$ref": "#/$defs/ArtifactBinding" },
+    "critic_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "policy_gate_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "release_gate_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "evidence_snapshot_bindings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/VersionedBinding" },
+      "uniqueItems": true
+    },
+    "shared_reflection_assurance_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "issued_at": { "type": "string", "format": "date-time" },
+    "expires_at": {
+      "oneOf": [
+        { "type": "string", "format": "date-time" },
+        { "type": "null" }
+      ]
+    },
+    "receipt_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": { "type": "string", "minLength": 1, "maxLength": 160, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$" },
+    "SemanticVersion": { "type": "string", "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$" },
+    "Sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "ArtifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "revision", "artifact_digest", "artifact_record_hash"],
+      "properties": {
+        "artifact_id": { "$ref": "#/$defs/Identifier" },
+        "revision": { "type": "integer", "minimum": 0 },
+        "artifact_digest": { "$ref": "#/$defs/Sha256" },
+        "artifact_record_hash": { "$ref": "#/$defs/Sha256" }
+      }
+    }
+  }
+}

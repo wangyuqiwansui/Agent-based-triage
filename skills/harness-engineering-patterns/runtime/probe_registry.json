@@ -267,6 +267,126 @@
       "accepted_event_schemas": ["reflection-event.schema.json", "reflection-round-observation.schema.json"],
       "output_event_type": "feedback_updated",
       "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0024",
+      "version": "1.0.0",
+      "name_en": "Generator-Critic Artifact Version Lineage",
+      "name_zh": "生成评审工件版本谱系",
+      "owner": "artifact_governance",
+      "trigger_event_types": ["artifact_revision_created", "artifact_review_started"],
+      "required_capture_fields": ["session_id", "contract_binding", "artifact_binding.artifact_id", "artifact_binding.revision", "artifact_binding.artifact_digest", "artifact_binding.artifact_record_hash", "payload.parent_binding", "payload.revision", "payload.shared_reflection_assurance_binding"],
+      "accepted_event_schemas": ["generator-critic-event.schema.json", "generator-critic-artifact.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "fail_closed_on_protected_transition"
+    },
+    {
+      "probe_id": "PROBE_0025",
+      "version": "1.0.0",
+      "name_en": "Generator-Critic Evidence And Risk Coverage",
+      "name_zh": "生成评审证据与风险覆盖",
+      "owner": "review_governance",
+      "trigger_event_types": ["artifact_review_started", "artifact_review_recorded"],
+      "required_capture_fields": ["contract_binding", "artifact_binding", "review_id", "critic_binding", "critic_configuration_binding", "evidence_snapshots", "criteria_results", "supported_findings", "unsupported_opinions", "score", "risk_refs_checked", "review_hash"],
+      "accepted_event_schemas": ["generator-critic-event.schema.json", "generator-critic-review.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0026",
+      "version": "1.0.0",
+      "name_en": "Generator-Critic Decision And Receipt Separation",
+      "name_zh": "生成评审裁决与回执分权",
+      "owner": "release_governance",
+      "trigger_event_types": ["artifact_review_recorded", "review_decision_recorded", "review_receipt_issued", "artifact_release_verified"],
+      "required_capture_fields": ["review_binding", "decision_binding", "receipt_binding", "artifact_binding", "critic_binding", "policy_gate_binding", "release_gate_binding", "triggered_rules", "gating_issue_refs", "retained_opinion_refs", "evidence_snapshot_bindings", "shared_reflection_assurance_binding"],
+      "accepted_event_schemas": ["generator-critic-event.schema.json", "generator-critic-decision.schema.json", "generator-critic-receipt.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "fail_closed_on_protected_transition"
+    },
+    {
+      "probe_id": "PROBE_0027",
+      "version": "1.0.0",
+      "name_en": "Generator-Critic Re-review And Version Escape",
+      "name_zh": "生成评审显式复审与版本逃逸",
+      "owner": "release_governance",
+      "trigger_event_types": ["artifact_revision_created", "artifact_review_started", "review_decision_recorded", "review_receipt_issued", "artifact_release_verified"],
+      "required_capture_fields": ["session_id", "sequence", "state_before", "state_after", "artifact_binding.revision", "artifact_binding.artifact_digest", "payload.parent_binding", "payload.invalidated_receipt_bindings", "payload.shared_reflection_assurance_binding", "decision", "receipt_binding"],
+      "accepted_event_schemas": ["generator-critic-event.schema.json", "generator-critic-artifact.schema.json", "generator-critic-decision.schema.json", "generator-critic-receipt.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "fail_closed_on_protected_transition"
+    },
+    {
+      "probe_id": "PROBE_0028",
+      "version": "1.0.0",
+      "name_en": "Skill Candidate Recurrence And Provenance",
+      "name_zh": "技能候选复现与来源",
+      "owner": "skill_governance",
+      "trigger_event_types": ["skill.candidate_nominated", "skill.distillation_completed"],
+      "required_capture_fields": ["contract_binding", "payload.candidate_binding", "payload.reflection_assurance_binding", "payload.distinct_run_count", "payload.verified_contribution_count", "payload.distillation_binding", "payload.boundary_evidence_bindings"],
+      "accepted_event_schemas": ["skill-package-event.schema.json", "skill-package-candidate.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0029",
+      "version": "1.0.0",
+      "name_en": "Skill Package Boundary And Supply Chain",
+      "name_zh": "技能包边界与供应链",
+      "owner": "skill_governance",
+      "trigger_event_types": ["skill.distillation_completed", "skill.registered_trial"],
+      "required_capture_fields": ["manifest_binding", "payload.distillation_binding", "payload.qualification_state", "package_content_binding", "core_sections", "discovery", "parameterization", "execution.tool_contract_bindings", "execution.permission_scopes", "dependencies", "resources", "source"],
+      "accepted_event_schemas": ["skill-package-event.schema.json", "skill-package-manifest.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "block_named_transition"
+    },
+    {
+      "probe_id": "PROBE_0030",
+      "version": "1.0.0",
+      "name_en": "Independent Skill Verification And Credential Binding",
+      "name_zh": "技能独立验证与凭证绑定",
+      "owner": "validation_governance",
+      "trigger_event_types": ["skill.verification_started", "skill.verification_completed", "skill.credential_issued", "skill.promoted_verified"],
+      "required_capture_fields": ["contract_binding", "manifest_binding", "credential_binding", "actor_binding", "payload.evaluation_suite_binding", "payload.environment_binding", "payload.evaluation_binding", "payload.overall_status", "payload.dimensions", "runtime_bindings", "tool_contract_bindings", "permission_scopes", "payload.supersedes_credential_binding"],
+      "accepted_event_schemas": ["skill-package-event.schema.json", "skill-package-evaluation.schema.json", "capability-credential.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "fail_closed_on_protected_transition"
+    },
+    {
+      "probe_id": "PROBE_0031",
+      "version": "1.0.0",
+      "name_en": "Skill Qualification And Atomic Alias Release",
+      "name_zh": "技能资格与原子别名发布",
+      "owner": "release_governance",
+      "trigger_event_types": ["skill.promoted_verified", "skill.release_stage_changed", "skill.route_alias_switched", "skill.credential_suspended", "skill.credential_revoked", "skill.demoted_trial", "skill.retired"],
+      "required_capture_fields": ["qualification_before", "qualification_after", "release_before", "release_after", "manifest_binding", "credential_binding", "payload.stage", "payload.alias_receipt_binding", "payload.expected_revision", "payload.new_revision", "payload.compare_and_swap_succeeded"],
+      "accepted_event_schemas": ["skill-package-event.schema.json", "skill-package-alias-receipt.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "fail_closed_on_protected_transition"
+    },
+    {
+      "probe_id": "PROBE_0032",
+      "version": "1.0.0",
+      "name_en": "Real Skill Reuse Outcome And Version Window",
+      "name_zh": "技能真实复用结果与版本窗口",
+      "owner": "outcome_measurement",
+      "trigger_event_types": ["skill.route_alias_switched", "skill.reuse_recorded", "outcome_recorded"],
+      "required_capture_fields": ["manifest_binding", "credential_binding", "payload.reuse_receipt_binding", "payload.external_outcome_status", "payload.attribution_status", "run_binding", "route_decision_binding", "external_outcome", "route_selected_at", "run_completed_at", "observed_at"],
+      "accepted_event_schemas": ["skill-package-event.schema.json", "skill-package-reuse-receipt.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "record_and_recompute"
+    },
+    {
+      "probe_id": "PROBE_0033",
+      "version": "1.0.0",
+      "name_en": "Skill Freshness Withdrawal And Re-verification",
+      "name_zh": "技能新鲜度撤权与复验",
+      "owner": "skill_governance",
+      "trigger_event_types": ["skill.credential_suspended", "skill.demoted_trial", "skill.reverification_started", "skill.verification_started", "skill.credential_issued", "skill.retired", "skill.archived"],
+      "required_capture_fields": ["sequence", "previous_event_hash", "qualification_before", "qualification_after", "release_before", "release_after", "credential_binding", "payload.reason_code", "payload.evidence_bindings", "payload.old_credential_binding", "payload.supersedes_credential_binding"],
+      "accepted_event_schemas": ["skill-package-event.schema.json", "capability-credential.schema.json"],
+      "output_event_type": "feedback_updated",
+      "disposition": "fail_closed_on_protected_transition"
     }
   ]
 }

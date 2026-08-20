@@ -28,6 +28,16 @@ except ImportError:  # Direct test/module import / 测试与直接模块导入
         validate_schema,
     )
 
+try:  # Package import / 包导入
+    from .generator_critic import GENERATOR_CRITIC_PROBES
+except ImportError:  # Direct test/module import / 测试与直接模块导入
+    from generator_critic import GENERATOR_CRITIC_PROBES
+
+try:  # Package import / 包导入
+    from .skill_package import SKILL_PACKAGE_PROBES
+except ImportError:  # Direct test/module import / 测试与直接模块导入
+    from skill_package import SKILL_PACKAGE_PROBES
+
 
 REFLECTION_CORE_PROBES = tuple(f"PROBE_{number:04d}" for number in range(16, 22))
 REFLECTION_ATTRIBUTION_PROBE = "PROBE_0022"
@@ -637,12 +647,22 @@ def _validate_learning_candidate(
 
 
 def resolve_reflection_required_probes(
-    *, attribution_claimed: bool = False, learning_promotion: bool = False
+    *,
+    attribution_claimed: bool = False,
+    learning_promotion: bool = False,
+    generator_critic: bool = False,
+    skill_package: bool = False,
 ) -> tuple[str, ...]:
     """Resolve the reflection-specific probe profile / 解析反思专用探针档案。"""
 
-    if not isinstance(attribution_claimed, bool) or not isinstance(
-        learning_promotion, bool
+    if not all(
+        isinstance(value, bool)
+        for value in (
+            attribution_claimed,
+            learning_promotion,
+            generator_critic,
+            skill_package,
+        )
     ):
         raise TypeError("reflection probe conditions must be boolean")
     probes = set(REFLECTION_CORE_PROBES)
@@ -650,6 +670,11 @@ def resolve_reflection_required_probes(
         probes.add(REFLECTION_ATTRIBUTION_PROBE)
     if learning_promotion:
         probes.add(REFLECTION_LEARNING_PROBE)
+    if generator_critic:
+        probes.update(GENERATOR_CRITIC_PROBES)
+    if skill_package:
+        probes.add(REFLECTION_LEARNING_PROBE)
+        probes.update(SKILL_PACKAGE_PROBES)
     return tuple(sorted(probes))
 
 
@@ -3360,9 +3385,11 @@ class ReflectionSession:
 
 
 __all__ = [
+    "GENERATOR_CRITIC_PROBES",
     "REFLECTION_ATTRIBUTION_PROBE",
     "REFLECTION_CORE_PROBES",
     "REFLECTION_LEARNING_PROBE",
+    "SKILL_PACKAGE_PROBES",
     "ReflectionAuthorizationError",
     "ReflectionEligibility",
     "ReflectionImprovementState",

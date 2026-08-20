@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/generator-critic-artifact.schema.json",
+  "title": "Generator-Critic Artifact Revision / 生成评审工件修订",
+  "description": "Immutable artifact revision whose content digest is reviewed independently; every new revision starts unreviewed. / 由独立评审绑定内容摘要的不可变工件修订；每个新修订均从未评审状态开始。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "artifact_type",
+    "revision",
+    "artifact_digest",
+    "parent_binding",
+    "content_ref",
+    "producer_binding",
+    "review_status",
+    "created_at",
+    "artifact_record_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "artifact_id": { "$ref": "#/$defs/Identifier" },
+    "artifact_type": { "$ref": "#/$defs/Identifier" },
+    "revision": { "type": "integer", "minimum": 0 },
+    "artifact_digest": { "$ref": "#/$defs/Sha256" },
+    "parent_binding": {
+      "oneOf": [
+        { "$ref": "#/$defs/ArtifactBinding" },
+        { "type": "null" }
+      ]
+    },
+    "content_ref": { "type": "string", "minLength": 1 },
+    "producer_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "review_status": { "const": "unreviewed" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "artifact_record_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    },
+    "ArtifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "revision", "artifact_digest", "artifact_record_hash"],
+      "properties": {
+        "artifact_id": { "$ref": "#/$defs/Identifier" },
+        "revision": { "type": "integer", "minimum": 0 },
+        "artifact_digest": { "$ref": "#/$defs/Sha256" },
+        "artifact_record_hash": { "$ref": "#/$defs/Sha256" }
+      }
+    }
+  }
+}
