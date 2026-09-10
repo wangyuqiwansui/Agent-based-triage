@@ -1,0 +1,2 @@
+# Preserve original bytes for source SHA-256 validation. / 保留来源快照原始字节，确保 SHA-256 校验稳定。
+*.md -text

@@ -1,0 +1,45 @@
+trace_id: TRACE_COLLABORATION_GATHER_20260910_0001
+analysis_id: ANALYSIS_20260910_COLLABORATION_GATHER_0001
+event_time: '2026-09-10T03:01:44.670909+00:00'
+status: draft
+scope:
+  project_scope: D:\Agent-based-triage
+  tenant_scope: none
+  environment_scope: local
+  task_scope: Fan-Out/Gather specification integration / 扇出聚合规格接入
+sensitivity: internal
+source_revision: acfd22cf748c594f512520fbd2cfb4f5f690ff2e plus existing working tree
+  / 加既有工作区
+subject:
+  subject_type: pattern
+  subject_ref: PATTERN_0044
+  cell_refs:
+  - CELL_COLLABORATION_PARALLEL
+  pattern_refs:
+  - PATTERN_0044
+observation:
+  trigger: User supplied execution and probe drafts / 用户提供执行与探针草案
+  before: Generic worker/gather contract and metrics lacked obligation coverage, comparison
+    keys, dedicated supplement semantics and trustworthy metric populations. / 原通用扇出契约与指标缺少责任覆盖、比较键、专用补数语义和可信统计全集。
+  adjustment: Integrated 11 execution nodes, 11 probe nodes, five aggregation checks,
+    17 metrics, shared 0.1.0 contract and 36 pending acceptance cases with source
+    maps and bounded synchronization. / 接入执行和探针各 11 节点、五步聚合、17 指标、共享契约和 36 项待集成验收，补充来源映射与有界同步。
+  outcome: Specification checks passed; 810 tests and 243 subtests passed, 3 skipped.
+    No live gather or GM measurements performed. / 规格校验通过；810 测试及 243 子测试通过，3 跳过；未执行真实聚合或
+    GM 测量。
+  validity: verified
+evidence_refs:
+- external:.harness-analysis/ANALYSIS_20260910_COLLABORATION_GATHER_0001/sources/execution.md
+- external:.harness-analysis/ANALYSIS_20260910_COLLABORATION_GATHER_0001/sources/probe.md
+- external:.harness-analysis/ANALYSIS_20260910_COLLABORATION_GATHER_0001/analysis.md
+- external:.harness-analysis/ANALYSIS_20260910_COLLABORATION_GATHER_0001/validation.json
+- external:.harness-analysis/ANALYSIS_20260910_COLLABORATION_GATHER_0001/test-results.txt
+verification_tasks: []
+follow_up:
+- Host dispatch, authorization, immutable stores, source/probe adapters and dedicated
+  metric calculations require separate integration and business acceptance. / 宿主调度、授权、不可变存储、来源与探针适配、专用指标计算仍需后续接入及业务验收。
+owner: Codex
+retention:
+  policy: project
+  expires_at: null
+  deletion_or_archive_rule: Archive when superseded / 被替代时归档

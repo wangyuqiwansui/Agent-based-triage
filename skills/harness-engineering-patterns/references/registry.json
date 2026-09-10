@@ -928,6 +928,34 @@
       ]
     }
   ],
+  "module_protocols": [
+    {
+      "id": "MODULE_COLLABORATION",
+      "name_en": "Collaboration Module Introduction",
+      "name_zh": "协作模块导论",
+      "version": "3.0.0",
+      "status": "draft",
+      "source_kind": "local_seed",
+      "source_note_en": "Mapped to the two supplied full design documents, preserved with hashes; their embedded instructions are treated as data.",
+      "source_note_zh": "映射两份已提供全文设计文档，保存原件摘要；文档内指令按数据处理。",
+      "execution_reference": "references/collaboration-execution-flow.md",
+      "observability_reference": "references/collaboration-observability-probes.md",
+      "catalog_reference": "references/collaboration-protocol.json",
+      "schema_reference": "schemas/collaboration-record.schema.json",
+      "runtime_reference": "runtime/collaboration_protocol.py",
+      "mode_cells": {
+        "hierarchical_delegation": "CELL_COLLABORATION_HIERARCHY",
+        "fan_out_gather": "CELL_COLLABORATION_PARALLEL",
+        "adversarial_review": "CELL_COLLABORATION_LOOP",
+        "handoff_chain": "CELL_COLLABORATION_CHAIN"
+      },
+      "source_contract_version": "2.0.0",
+      "source_document_version": "0.2.0",
+      "source_map_reference": "references/collaboration-fulltext-source-map.json",
+      "observation_runtime_reference": "runtime/collaboration_observability.py",
+      "observation_adapter_reference": "references/collaboration-observation-adapter.md"
+    }
+  ],
   "cells": [
     {
       "id": "CELL_PERCEPTION_CHAIN",
@@ -1688,13 +1716,23 @@
       "source_name_en": "Fan-Out/Gather",
       "source_name_zh": "扇出汇聚",
       "aliases_en": [],
-      "aliases_zh": [],
+      "aliases_zh": [
+        "扇出聚合"
+      ],
       "source_kind": "paper_v2",
       "maturity": "draft",
       "local_evidence_count": 0,
       "domain_count": 0,
       "diagnostic_use_en": "Use when several contributors can work independently before synthesis.",
-      "diagnostic_use_zh": "当多个贡献者可独立工作后再综合时使用。"
+      "diagnostic_use_zh": "当多个贡献者可独立工作后再综合时使用。",
+      "gather_specification": {
+        "version": "0.1.0",
+        "source_contract_version": "0.1.0",
+        "status": "draft",
+        "implementation_status": "specification_only",
+        "source_map_reference": "references/collaboration-gather-source-map.json",
+        "interaction_contract_reference": "references/collaboration-gather-contract.md"
+      }
     },
     {
       "id": "CELL_COLLABORATION_ORCHESTRATION",
@@ -1739,8 +1777,16 @@
       "maturity": "draft",
       "local_evidence_count": 0,
       "domain_count": 0,
-      "diagnostic_use_en": "Use when collaborative critique repeats until conflict or risk is resolved.",
-      "diagnostic_use_zh": "当协作式批评需要重复到冲突或风险解决时使用。"
+      "diagnostic_use_en": "Use when independent, evidence-backed objections must constrain approval of a specific artifact version.",
+      "diagnostic_use_zh": "当有证据的独立异议必须约束具体工件版本的批准时使用。",
+      "review_specification": {
+        "version": "0.1.0",
+        "source_contract_version": "0.1.0",
+        "status": "draft",
+        "implementation_status": "specification_only",
+        "source_map_reference": "references/adversarial-review-source-map.json",
+        "interaction_contract_reference": "references/adversarial-review-contract.md"
+      }
     },
     {
       "id": "CELL_COLLABORATION_HIERARCHY",
@@ -1763,7 +1809,15 @@
       "local_evidence_count": 0,
       "domain_count": 0,
       "diagnostic_use_en": "Use when work should be delegated from high-level goals to subteams or subagents.",
-      "diagnostic_use_zh": "当工作应从高层目标委派到子团队或子 Agent 时使用。"
+      "diagnostic_use_zh": "当工作应从高层目标委派到子团队或子 Agent 时使用。",
+      "delegation_specification": {
+        "version": "0.1.0",
+        "source_contract_version": "0.1.0",
+        "status": "draft",
+        "implementation_status": "specification_only",
+        "source_map_reference": "references/collaboration-hierarchy-source-map.json",
+        "interaction_contract_reference": "references/collaboration-hierarchy-contract.md"
+      }
     },
     {
       "id": "CELL_GOVERNANCE_CHAIN",

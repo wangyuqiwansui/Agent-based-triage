@@ -1,0 +1,25 @@
+{
+  "checked_at": "2026-09-10T03:37:29.881620+00:00",
+  "scope": "specification_and_maintenance_tools",
+  "focused_tests": {
+    "passed": 18
+  },
+  "full_regression": {
+    "passed": 828,
+    "skipped": 3,
+    "subtests_passed": 243,
+    "duration_seconds": 135.96,
+    "skipped_reason": "HARNESS_POSTGRES_DSN is not configured"
+  },
+  "skill_validation": {
+    "errors": 0,
+    "warnings": 18,
+    "warnings_preexisting": true
+  },
+  "quick_validate": "passed",
+  "html_source_consistency": "passed",
+  "navigation": "passed",
+  "diff_check": "passed",
+  "dedicated_business_integration": "pending",
+  "deployed": false
+}

@@ -1,0 +1,58 @@
+trace_id: TRACE_20260909_COLLABORATION_FULLTEXT_0002
+analysis_id: ANALYSIS_20260909_COLLABORATION_FULLTEXT_0002
+event_time: "2026-09-09T09:11:47Z"
+status: verified
+scope:
+  project_scope: "D:/Agent-based-triage"
+  tenant_scope: "none"
+  environment_scope: local
+  task_scope: "Full-text collaboration alignment / 协作全文对齐"
+sensitivity: internal
+source_revision: "acfd22c+working-tree"
+subject:
+  subject_type: workflow
+  subject_ref: MODULE_COLLABORATION
+  cell_refs:
+    - CELL_COLLABORATION_CHAIN
+    - CELL_COLLABORATION_PARALLEL
+    - CELL_COLLABORATION_LOOP
+    - CELL_COLLABORATION_HIERARCHY
+  pattern_refs:
+    - PATTERN_0043
+    - PATTERN_0044
+    - PATTERN_0045
+    - PATTERN_0046
+observation:
+  trigger: "User supplied both full revision documents and requested continued engineering improvement. / 用户提供两份全文并要求继续完善工程。"
+  before: "Summary-derived local 2.0.0 IDs and formulas differed from the source 2.0.0 contract. / 摘要推导的本地 2.0.0 编号与口径不同于来源 2.0.0 契约。"
+  adjustment: "Preserved source IDs and snapshots; separated local profile 3.0.0; added scoped attempt, delivery, causal acceptance and supplement guards plus 20 source metric calculations. / 保留来源编号与副本，区分本地 3.0.0 配置，补充尝试、交付、因果验收、补证闸门及 20 项来源指标参考计算。"
+  outcome: "783 tests and 243 subtests passed; 3 PostgreSQL integrations skipped without a DSN. Source/schema/Skill checks passed; real collaboration integrations remain pending. / 783 项测试与 243 个子测试通过，3 项 PostgreSQL 集成因缺少连接配置跳过；来源、契约与 Skill 校验通过，真实协作集成仍待验证。"
+  validity: verified
+evidence_refs:
+  - "repository:.harness-analysis/ANALYSIS_20260909_COLLABORATION_FULLTEXT_0002/sources/execution.md"
+  - "repository:.harness-analysis/ANALYSIS_20260909_COLLABORATION_FULLTEXT_0002/sources/observability.md"
+  - "repository:skills/harness-engineering-patterns/references/collaboration-fulltext-source-map.json"
+  - "repository:skills/harness-engineering-patterns/references/collaboration-observation-adapter.md"
+  - "repository:skills/harness-engineering-patterns/runtime/collaboration_protocol.py"
+  - "repository:skills/harness-engineering-patterns/runtime/collaboration_observability.py"
+  - "repository:tests/test_collaboration_protocol.py"
+  - "repository:tests/test_collaboration_observability.py"
+  - "verification:shared source appendices and original source checksums match"
+  - "verification:source IDs, formulas, related nodes, generated contracts and reference-test functions validate"
+  - "verification:registry patterns and cells unchanged"
+  - "verification:full pytest => 783 passed, 3 skipped, 243 subtests passed; 85.87 seconds"
+  - "verification:collaboration source/schema/views => 0 errors"
+  - "verification:Skill validation => 0 errors, 18 pre-existing navigation warnings"
+  - "verification:quick_validate => Skill is valid"
+  - "verification:artifact links, encoding and whitespace checked; HTML regenerated"
+verification_tasks: []
+follow_up:
+  - "Implement authenticated host adapters and durable authority/epoch/idempotency/CAS ledgers. / 实现认证宿主适配器及持久权限、代次、幂等和条件提交账本。"
+  - "All 28 execution and 38 probe source scenarios remain integration-pending. / 原文 28 项执行及 38 项探针场景均待集成验证。"
+  - "Add the remaining 14 source metric adapters/calculators without reusing legacy CM meanings. / 补齐其余 14 项来源指标适配与计算，不复用旧 CM 含义。"
+  - "Measure comparable single-actor and collaboration cohorts before claims of benefit or maturity. / 形成可比单体和协作实测后，再讨论收益与成熟度。"
+owner: "harness-engineering-patterns maintainers / Harness 工程模式维护者"
+retention:
+  policy: project
+  expires_at: null
+  deletion_or_archive_rule: "Archive when superseded / 被后续分析取代时归档"

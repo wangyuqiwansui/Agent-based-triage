@@ -17,6 +17,10 @@ These local draft patterns coordinate several matrix cells without changing cell
 | `PATTERN_0051` | Reasoning Execution Flow / 推理执行流程 | Route work into direct, chain, parallel, or iterative execution under machine-readable identity, budget, validation, switching, stopping, replay, and audit contracts, with a deterministic router and executable reference kernel. / 在机器可读的标识、预算、验证、换路、停止、回放和审计契约下，将工作路由到直接、链式、并行或迭代执行，并提供确定性路由器与可执行参考内核。 | [reasoning-execution-flow.md](reasoning-execution-flow.md) |
 | `PATTERN_0052` | Workflow Observability Probes / 工作流可观测性探针 | Deploy stable probes with a versioned event schema, mode-probe dependency matrix, field-level provenance, reproducible metric registry, and fail-closed protected transitions. / 使用版本化事件 Schema、模式—探针依赖矩阵、字段级来源、可复现指标注册表和默认阻断的受保护转换部署稳定探针。 | [workflow-observability-probes.md](workflow-observability-probes.md) |
 
+## Adversarial Review Specification / 对抗评审专用规格
+
+`PATTERN_0045` remains collaboration × loop with draft maturity. [Execution](patterns/collaboration/collaboration-loop.md) now defines 13 nodes, independent risk coverage, two-stage binding and approval/release controls; [the independent probe](patterns/collaboration/collaboration-loop-observability.md) defines 12 nodes and 27 metrics. [Contract 0.1.0](adversarial-review-contract.md) and [source mappings](adversarial-review-source-map.json) retain the supplied drafts and 44 pending integration cases. These dedicated specifications do not extend shared executable profile 3.0.0 or claim deployed receipt/metric services. / 保留既有协作 × 循环身份与草案成熟度；执行规约含 13 节点、独立风险覆盖、两层绑定和批准发布控制，独立探针含 12 节点及 27 指标；专用契约与来源映射保留两份草稿及 44 个待集成用例，不扩展共享执行配置或宣称回执指标服务已部署。
+
 ## Pattern Map / 模式映射
 
 | Cell / 交织点 | Pattern / 模式 | Diagnostic Use / 诊断用途 |
@@ -45,7 +49,7 @@ These local draft patterns coordinate several matrix cells without changing cell
 | reflection-hierarchy / 反思 x 层级 | Experience Replay / 经验回放 | Use when cross-run lessons must be recalled, filtered, evidenced as adopted, linked to external outcomes, and lifecycle-managed without replacing current truth. / 当跨运行经验必须被召回、过滤、以证据证明已采用、绑定外部结果并管理生命周期，且不得替代当前真值时使用。 |
 | collaboration-chain / 协作 x 链式 | Handoff Chain / 交接链 | Use when work passes through ordered actors or roles. / 当工作按顺序经过多个参与者或角色时使用。 |
 | collaboration-parallel / 协作 x 并行 | Fan-Out/Gather / 扇出汇聚 | Use when several contributors can work independently before synthesis. / 当多个贡献者可独立工作后再综合时使用。 |
-| collaboration-loop / 协作 x 循环 | Adversarial Review / 对抗评审 | Use when collaborative critique repeats until conflict or risk is resolved. / 当协作式批评需要重复到冲突或风险解决时使用。 |
+| collaboration-loop / 协作 x 循环 | Adversarial Review / 对抗评审 | Use when independent, evidence-backed objections must constrain approval of a specific artifact version. / 当有证据的独立异议必须约束具体工件版本的批准时使用。 |
 | collaboration-hierarchy / 协作 x 层级 | Hierarchical Delegation / 层级委派 | Use when work should be delegated from high-level goals to subteams or subagents. / 当工作应从高层目标委派到子团队或子 Agent 时使用。 |
 | governance-routing / 治理 x 路由 | Approval Gate / 审批门禁 | Use when risk or permission determines whether work can continue. / 当风险或权限决定工作能否继续时使用。 |
 | governance-parallel / 治理 x 并行 | Progressive Commitment / 渐进承诺 | Use when commitments should be staged and checked in parallel with execution evidence. / 当承诺需要分阶段并与执行证据并行检查时使用。 |
@@ -59,7 +63,7 @@ The article validates the catalog on four domains (financial lending, legal due 
 | Tier / 级别 | Patterns / 模式 | Meaning / 含义 |
 | --- | --- | --- |
 | Foundational / 基础（3+ 领域复现） | Context Triage / 上下文分诊, RAG Pipeline / RAG 管线, Complexity-Based Routing / 复杂度路由, Generator-Critic / 生成器-批评器 | Appear in most agent workflows regardless of domain; absence needs justification. / 与领域无关地出现在多数 Agent 工作流中；缺席需要说明理由。 |
-| Conditional / 条件 | Blast Radius Control / 爆炸半径控制, Fan-Out/Gather / 扇出汇聚 | Triggered by environment: action authority triggers blast radius, volume triggers fan-out (see Environmental Constraint Laws / 环境约束定律 in `diagnosis-method.md`). / 由环境触发：行动权限触发爆炸半径，处理量触发扇出（见 `diagnosis-method.md` 环境约束定律）。 |
+| Conditional / 条件 | Blast Radius Control / 爆炸半径控制, Fan-Out/Gather / 扇出汇聚 | Triggered by environment: action authority motivates blast-radius control; independent obligations and measured throughput needs motivate fan-out (see Environmental Constraint Laws / 环境约束定律 in `diagnosis-method.md`). / 由环境触发：行动权限要求控制爆炸半径，独立责任及实测吞吐需求支持扇出（见 `diagnosis-method.md` 环境约束定律）。 |
 
 ## Empty Or Exploratory Cells / 空白或探索单元
 

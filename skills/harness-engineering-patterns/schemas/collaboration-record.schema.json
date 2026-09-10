@@ -1,0 +1,1427 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:harness:collaboration-record:3.0.0",
+  "title": "Collaboration shared records / 协作共享记录",
+  "description": "Local executable profile 3.0.0 mapped explicitly to supplied source contract 2.0.0. No implicit migration from the summary-only profile. / 本地可执行配置 3.0.0 显式映射来源契约 2.0.0，禁止从摘要版隐式迁移。",
+  "type": "object",
+  "properties": {
+    "protocol_version": {
+      "const": "3.0.0"
+    },
+    "kind": {
+      "enum": [
+        "task_card",
+        "result_artifact",
+        "acceptance_receipt",
+        "objection",
+        "adjudication",
+        "evidence",
+        "gap",
+        "supplement_candidate",
+        "supplement_receipt",
+        "snapshot",
+        "delivery_receipt",
+        "responsibility_transfer",
+        "observation_repair_receipt"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "scope": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "actor": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "record_hash": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "source_contract_version": {
+      "const": "2.0.0"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "plan_revision": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "required": [
+    "protocol_version",
+    "kind",
+    "id",
+    "revision",
+    "run_id",
+    "scope",
+    "actor",
+    "payload",
+    "record_hash",
+    "source_contract_version",
+    "tenant_id",
+    "request_id",
+    "plan_revision"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "task_card"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/task_card"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "result_artifact"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/result_artifact"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "acceptance_receipt"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/acceptance_receipt"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "objection"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/objection"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "adjudication"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/adjudication"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "evidence"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/evidence"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "gap"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/gap"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "supplement_candidate"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/supplement_candidate"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "supplement_receipt"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/supplement_receipt"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "snapshot"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/snapshot"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "delivery_receipt"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/delivery_receipt"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "responsibility_transfer"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/responsibility_transfer"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "observation_repair_receipt"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "#/$defs/observation_repair_receipt"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "binding": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "hash"
+      ],
+      "additionalProperties": false,
+      "title": "Exact revision binding / 精确修订绑定"
+    },
+    "task_card": {
+      "type": "object",
+      "properties": {
+        "goal": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "criteria": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            },
+            "required": [
+              "id",
+              "required",
+              "description"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "acceptor": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "reviewer": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "arbiter": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "handoff_to": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "modes": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "hierarchical_delegation",
+              "fan_out_gather",
+              "adversarial_review",
+              "handoff_chain"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "input_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/binding"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "allowed_scope": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "forbidden_scope": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "isolation": {
+          "type": "object",
+          "properties": {
+            "namespace": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "write_resources": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "minItems": 0,
+              "uniqueItems": true
+            },
+            "merge_owner": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          },
+          "required": [
+            "namespace",
+            "write_resources",
+            "merge_owner"
+          ],
+          "additionalProperties": false
+        },
+        "budget": {
+          "type": "object",
+          "properties": {
+            "max_attempts": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "timeout_seconds": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "max_attempts",
+            "timeout_seconds"
+          ],
+          "additionalProperties": false
+        },
+        "tool_policy": {
+          "$ref": "#/$defs/binding"
+        },
+        "goal_binding": {
+          "$ref": "#/$defs/binding"
+        },
+        "rule_binding": {
+          "$ref": "#/$defs/binding"
+        },
+        "separation_required": {
+          "type": "boolean"
+        },
+        "coverage_units": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "deadline_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "delivery_scope": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "final_receiver": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "goal",
+        "criteria",
+        "owner",
+        "acceptor",
+        "reviewer",
+        "arbiter",
+        "handoff_to",
+        "modes",
+        "input_bindings",
+        "allowed_scope",
+        "forbidden_scope",
+        "isolation",
+        "budget",
+        "tool_policy",
+        "goal_binding",
+        "rule_binding",
+        "separation_required",
+        "coverage_units",
+        "deadline_at",
+        "delivery_scope",
+        "final_receiver"
+      ],
+      "additionalProperties": false,
+      "title": "Task card / 任务卡"
+    },
+    "result_artifact": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "#/$defs/binding"
+        },
+        "outcome": {
+          "enum": [
+            "complete",
+            "partial",
+            "failed",
+            "unknown"
+          ]
+        },
+        "content": {
+          "type": "object"
+        },
+        "content_digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/binding"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "attempt_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "delegation_epoch": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "input_snapshot": {
+          "$ref": "#/$defs/binding"
+        },
+        "submitted_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "task",
+        "outcome",
+        "content",
+        "content_digest",
+        "evidence",
+        "attempt_id",
+        "delegation_epoch",
+        "input_snapshot",
+        "submitted_at"
+      ],
+      "additionalProperties": false,
+      "title": "Result artifact / 结果工件"
+    },
+    "acceptance_receipt": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "#/$defs/binding"
+        },
+        "target": {
+          "$ref": "#/$defs/binding"
+        },
+        "stage": {
+          "enum": [
+            "arrival",
+            "local",
+            "global",
+            "review",
+            "handoff"
+          ]
+        },
+        "verdict": {
+          "enum": [
+            "received",
+            "accepted",
+            "rejected",
+            "unknown"
+          ]
+        },
+        "criteria_results": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "additionalProperties": {
+            "enum": [
+              "passed",
+              "failed",
+              "unknown"
+            ]
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/binding"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "next_owner": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "supplement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/binding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rule_binding": {
+          "$ref": "#/$defs/binding"
+        },
+        "accepted_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "access_verified": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "task",
+        "target",
+        "stage",
+        "verdict",
+        "criteria_results",
+        "evidence",
+        "next_owner",
+        "supplement",
+        "rule_binding",
+        "accepted_at",
+        "access_verified"
+      ],
+      "additionalProperties": false,
+      "title": "Acceptance receipt / 验收回执"
+    },
+    "objection": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "#/$defs/binding"
+        },
+        "target": {
+          "$ref": "#/$defs/binding"
+        },
+        "severity": {
+          "enum": [
+            "blocking",
+            "advisory"
+          ]
+        },
+        "finding": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/binding"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "raised_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "task",
+        "target",
+        "severity",
+        "finding",
+        "evidence",
+        "raised_at"
+      ],
+      "additionalProperties": false,
+      "title": "Objection / 异议单"
+    },
+    "adjudication": {
+      "type": "object",
+      "properties": {
+        "objection": {
+          "$ref": "#/$defs/binding"
+        },
+        "target": {
+          "$ref": "#/$defs/binding"
+        },
+        "decision": {
+          "enum": [
+            "uphold",
+            "dismiss"
+          ]
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/binding"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "decided_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "objection",
+        "target",
+        "decision",
+        "rationale",
+        "evidence",
+        "decided_at"
+      ],
+      "additionalProperties": false,
+      "title": "Adjudication / 裁决回执"
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "$ref": "#/$defs/binding"
+        },
+        "source_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "claim_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "evidence_type": {
+          "enum": [
+            "execution_record",
+            "approval",
+            "adjudication",
+            "current_state"
+          ]
+        },
+        "source_ref": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "attempt_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "input_snapshot": {
+          "$ref": "#/$defs/binding"
+        },
+        "fact_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "read_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "record_grade": {
+          "enum": [
+            "original",
+            "derived",
+            "candidate",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "target",
+        "source_id",
+        "claim_id",
+        "evidence_type",
+        "source_ref",
+        "observed_at",
+        "attempt_id",
+        "input_snapshot",
+        "fact_time",
+        "read_time",
+        "record_grade"
+      ],
+      "additionalProperties": false,
+      "title": "Source evidence / 来源证据"
+    },
+    "gap": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "$ref": "#/$defs/binding"
+        },
+        "gap_type": {
+          "enum": [
+            "observation_record",
+            "business_evidence",
+            "business_incomplete",
+            "authorization",
+            "unclassified"
+          ]
+        },
+        "required_claims": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^.+:(execution_record|approval|adjudication|current_state)$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "allowed_sources": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "attempt_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "input_snapshot": {
+          "$ref": "#/$defs/binding"
+        },
+        "active_read_authorized": {
+          "type": "boolean"
+        },
+        "authorization_binding": {
+          "$ref": "#/$defs/binding"
+        },
+        "allowed_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^/(observation_supplements|verification_candidates|evidence_candidates)/[^~]+$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "deadline_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "max_reads": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_rounds": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "receiver": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "target",
+        "gap_type",
+        "required_claims",
+        "allowed_sources",
+        "reason",
+        "attempt_id",
+        "input_snapshot",
+        "active_read_authorized",
+        "authorization_binding",
+        "allowed_paths",
+        "deadline_at",
+        "max_reads",
+        "max_rounds",
+        "receiver"
+      ],
+      "additionalProperties": false,
+      "title": "Gap request / 缺口单"
+    },
+    "supplement_candidate": {
+      "type": "object",
+      "properties": {
+        "gap": {
+          "$ref": "#/$defs/binding"
+        },
+        "target": {
+          "$ref": "#/$defs/binding"
+        },
+        "acquisition": {
+          "enum": [
+            "offline",
+            "archive_read",
+            "current_state"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/binding"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "observation_run_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "candidate_path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "reads_used": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rounds_used": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "gap",
+        "target",
+        "acquisition",
+        "evidence",
+        "observation_run_id",
+        "idempotency_key",
+        "candidate_path",
+        "generated_at",
+        "expires_at",
+        "reads_used",
+        "rounds_used"
+      ],
+      "additionalProperties": false,
+      "title": "Supplement candidate / 补充候选"
+    },
+    "supplement_receipt": {
+      "type": "object",
+      "properties": {
+        "candidate": {
+          "$ref": "#/$defs/binding"
+        },
+        "target": {
+          "$ref": "#/$defs/binding"
+        },
+        "decision": {
+          "enum": [
+            "pending",
+            "adopted",
+            "rejected",
+            "expired",
+            "version_conflict",
+            "human_required"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "recheck": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/binding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "disposed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "business_state_changed": {
+          "const": false
+        }
+      },
+      "required": [
+        "candidate",
+        "target",
+        "decision",
+        "reason",
+        "recheck",
+        "disposed_at",
+        "business_state_changed"
+      ],
+      "additionalProperties": false,
+      "title": "Supplement disposition / 补充处理回执"
+    },
+    "snapshot": {
+      "type": "object",
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "completeness": {
+          "enum": [
+            "complete",
+            "partial",
+            "unknown"
+          ]
+        },
+        "expected_tasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/binding"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "result_heads": {
+          "type": "object",
+          "propertyNames": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/binding"
+          }
+        },
+        "record_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/binding"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "observed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "active_assignments": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "worker": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "attempt_id": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "delegation_epoch": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "input_snapshot": {
+                "$ref": "#/$defs/binding"
+              },
+              "revoked": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "worker",
+              "attempt_id",
+              "delegation_epoch",
+              "input_snapshot",
+              "revoked"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "gap_usage": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "reads_used": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "rounds_used": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "reads_used",
+              "rounds_used"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "business_completeness": {
+          "enum": [
+            "complete",
+            "partial",
+            "unknown"
+          ]
+        },
+        "business_required_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/binding"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "source_id",
+        "completeness",
+        "expected_tasks",
+        "result_heads",
+        "record_bindings",
+        "observed_at",
+        "active_assignments",
+        "gap_usage",
+        "business_completeness",
+        "business_required_bindings"
+      ],
+      "additionalProperties": false,
+      "title": "Authoritative adapted snapshot / 权威适配快照"
+    },
+    "delivery_receipt": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "#/$defs/binding"
+        },
+        "target": {
+          "$ref": "#/$defs/binding"
+        },
+        "global_acceptance": {
+          "$ref": "#/$defs/binding"
+        },
+        "delivery_scope": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "delivered_to": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "delivered_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "outcome": {
+          "enum": [
+            "confirmed",
+            "failed",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "task",
+        "target",
+        "global_acceptance",
+        "delivery_scope",
+        "delivered_to",
+        "delivered_at",
+        "outcome"
+      ],
+      "additionalProperties": false,
+      "title": "Actual delivery receipt / 实际交付回执"
+    },
+    "responsibility_transfer": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "#/$defs/binding"
+        },
+        "target": {
+          "$ref": "#/$defs/binding"
+        },
+        "handoff_acceptance": {
+          "$ref": "#/$defs/binding"
+        },
+        "from_owner": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "to_owner": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "responsibility_scope": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "previous_epoch": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "next_epoch": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "expected_ledger_revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "committed_ledger_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "commit_ref": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "committed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "task",
+        "target",
+        "handoff_acceptance",
+        "from_owner",
+        "to_owner",
+        "responsibility_scope",
+        "previous_epoch",
+        "next_epoch",
+        "expected_ledger_revision",
+        "committed_ledger_revision",
+        "commit_ref",
+        "committed_at"
+      ],
+      "additionalProperties": false,
+      "title": "Atomic responsibility transfer attestation / 原子责任转移证明"
+    },
+    "observation_repair_receipt": {
+      "type": "object",
+      "properties": {
+        "candidate": {
+          "$ref": "#/$defs/binding"
+        },
+        "target": {
+          "$ref": "#/$defs/binding"
+        },
+        "view_ref": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "repaired_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "candidate",
+        "target",
+        "view_ref",
+        "repaired_at"
+      ],
+      "additionalProperties": false,
+      "title": "Observation view repair receipt / 观测视图修复回执"
+    }
+  }
+}

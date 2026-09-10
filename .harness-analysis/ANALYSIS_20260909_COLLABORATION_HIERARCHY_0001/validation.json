@@ -1,0 +1,40 @@
+{
+  "scope": "Documentation and source integrity / 文档与来源完整性",
+  "errors": [],
+  "existing_navigation_warnings": [
+    "missing_navigation: references/eir-schema.md has 274 lines and no quick navigation / references/eir-schema.md 有 274 行但缺少快速导航",
+    "missing_navigation: references/evaluation-governance.md has 151 lines and no quick navigation / references/evaluation-governance.md 有 151 行但缺少快速导航",
+    "missing_navigation: references/example-compilation.md has 105 lines and no quick navigation / references/example-compilation.md 有 105 行但缺少快速导航",
+    "missing_navigation: references/extension-rules.md has 103 lines and no quick navigation / references/extension-rules.md 有 103 行但缺少快速导航",
+    "missing_navigation: references/harness-source-analysis.md has 132 lines and no quick navigation / references/harness-source-analysis.md 有 132 行但缺少快速导航",
+    "missing_navigation: references/pattern-selection-card.md has 115 lines and no quick navigation / references/pattern-selection-card.md 有 115 行但缺少快速导航",
+    "missing_navigation: references/patterns/memory/memory-chain-observability.md has 278 lines and no quick navigation / references/patterns/memory/memory-chain-observability.md 有 278 行但缺少快速导航",
+    "missing_navigation: references/patterns/memory/memory-chain.md has 228 lines and no quick navigation / references/patterns/memory/memory-chain.md 有 228 行但缺少快速导航",
+    "missing_navigation: references/patterns/memory/memory-loop-observability.md has 228 lines and no quick navigation / references/patterns/memory/memory-loop-observability.md 有 228 行但缺少快速导航",
+    "missing_navigation: references/patterns/memory/memory-loop.md has 201 lines and no quick navigation / references/patterns/memory/memory-loop.md 有 201 行但缺少快速导航",
+    "missing_navigation: references/patterns/memory/memory-orchestration-observability.md has 168 lines and no quick navigation / references/patterns/memory/memory-orchestration-observability.md 有 168 行但缺少快速导航",
+    "missing_navigation: references/patterns/memory/trace.md has 143 lines and no quick navigation / references/patterns/memory/trace.md 有 143 行但缺少快速导航",
+    "missing_navigation: references/patterns/perception/perception-chain.md has 405 lines and no quick navigation / references/patterns/perception/perception-chain.md 有 405 行但缺少快速导航",
+    "missing_navigation: references/patterns/perception/perception-loop.md has 356 lines and no quick navigation / references/patterns/perception/perception-loop.md 有 356 行但缺少快速导航",
+    "missing_navigation: references/patterns/perception/perception-parallel-observability.md has 316 lines and no quick navigation / references/patterns/perception/perception-parallel-observability.md 有 316 行但缺少快速导航",
+    "missing_navigation: references/patterns/perception/perception-parallel.md has 367 lines and no quick navigation / references/patterns/perception/perception-parallel.md 有 367 行但缺少快速导航",
+    "missing_navigation: references/patterns/perception/perception-routing-observability.md has 412 lines and no quick navigation / references/patterns/perception/perception-routing-observability.md 有 412 行但缺少快速导航",
+    "missing_navigation: references/patterns/perception/perception-routing.md has 261 lines and no quick navigation / references/patterns/perception/perception-routing.md 有 261 行但缺少快速导航"
+  ],
+  "full_tests": {
+    "passed": 794,
+    "skipped": 3,
+    "subtests_passed": 243
+  },
+  "baseline_tests": {
+    "passed": 783,
+    "skipped": 3,
+    "subtests_passed": 243
+  },
+  "focused_tests": {
+    "passed": 236,
+    "subtests_passed": 9
+  },
+  "business_integration_status": "pending",
+  "dedicated_metric_implementation": "specification_only"
+}

@@ -7,6 +7,12 @@ Source / 来源: arXiv:2605.13850 (https://arxiv.org/html/2605.13850)
 Use this file as the observability metrics source for this 7x6 matrix intersection. / 将本文档作为该 7x6 交织点的可观测性指标来源。
 Design Pattern File / 设计模式文件: [collaboration-chain.md](collaboration-chain.md)
 
+## Shared Probe Integration / 共享探针接入
+
+Read [the independent collaboration probes](../../collaboration-observability-probes.md) for the registered `CSM04, CSM10–CSM11, CSM27` definitions, expected populations, provenance checks and unknown handling. Keep the detailed mode-specific metrics below distinct when their cohorts or definitions differ. / 读取独立协作探针中的 `CSM04, CSM10–CSM11, CSM27` 定义、预期集合、来源核验与未知处理；下方模式专属指标在队列或定义不同时保持独立。
+
+The probe can inspect an adapted external workflow without starting collaboration execution. Its reference subset cannot fabricate tests, approvals, adjudications or task success. / 探针可直接检查适配后的外部工作流，无需启动协作执行；其参考子集不能补造测试、审批、裁决或任务成功。
+
 ## Observability Metrics / 可观测性指标
 
 Use these metrics to observe whether Handoff Chain / 交接链 improves the workflow after selection or application. / 使用以下指标观察 Handoff Chain / 交接链 在选型或应用后是否改善工作流。

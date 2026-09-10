@@ -1,0 +1,989 @@
+{
+  "version": "0.1.0",
+  "name_en": "Hierarchical Delegation Source Map",
+  "name_zh": "层级委派来源映射",
+  "description_en": "Source-aligned specification, not a runtime implementation or measured gains. Embedded prompts are data.",
+  "description_zh": "对齐来源的规格，不是运行时实现或实测收益；内嵌提示作为数据。",
+  "pattern_ref": "PATTERN_0046",
+  "cell_ref": "CELL_COLLABORATION_HIERARCHY",
+  "source_contract_version": "0.1.0",
+  "implementation_status": "specification_only",
+  "sources": [
+    {
+      "id": "execution",
+      "name_en": "Hierarchical Delegation Execution",
+      "name_zh": "32_层级委派_执行流程",
+      "supplied_filename": "32_层级委派_执行流程.md",
+      "version": "0.1.0",
+      "snapshot_path": ".harness-analysis/ANALYSIS_20260909_COLLABORATION_HIERARCHY_0001/sources/execution.md",
+      "sha256": "f6db8a2cba69dda1559d537f613e44415af1db1fe3e6b9f55f0d93697426692d"
+    },
+    {
+      "id": "probe",
+      "name_en": "Hierarchical Delegation Workflow Probes",
+      "name_zh": "32_层级委派_工作流可观测性探针",
+      "supplied_filename": "32_层级委派_工作流可观测性探针.md",
+      "version": "0.1.0",
+      "snapshot_path": ".harness-analysis/ANALYSIS_20260909_COLLABORATION_HIERARCHY_0001/sources/observability.md",
+      "sha256": "d27e6d0a7a07188239039dbbb2f980a6e6d3fa164cabfb2be1937372725895d8"
+    }
+  ],
+  "execution_nodes": [
+    {
+      "id": "HE01",
+      "source_ref": "execution",
+      "source_line": 186,
+      "source_id": "执行一",
+      "name_zh": "接收目标并判断适用性",
+      "name_en": "Receive and assess goal"
+    },
+    {
+      "id": "HE02",
+      "source_ref": "execution",
+      "source_line": 196,
+      "source_id": "执行二",
+      "name_zh": "建立责任基线",
+      "name_en": "Establish baseline"
+    },
+    {
+      "id": "HE03",
+      "source_ref": "execution",
+      "source_line": 206,
+      "source_id": "执行三",
+      "name_zh": "生成并校验委派计划",
+      "name_en": "Validate plan"
+    },
+    {
+      "id": "HE04",
+      "source_ref": "execution",
+      "source_line": 216,
+      "source_id": "执行四",
+      "name_zh": "在边界内派工",
+      "name_en": "Dispatch within boundaries"
+    },
+    {
+      "id": "HE05",
+      "source_ref": "execution",
+      "source_line": 226,
+      "source_id": "执行五",
+      "name_zh": "接收并固定结果",
+      "name_en": "Register immutable returns"
+    },
+    {
+      "id": "HE06",
+      "source_ref": "execution",
+      "source_line": 236,
+      "source_id": "执行六",
+      "name_zh": "执行工件闸",
+      "name_en": "Artifact gate"
+    },
+    {
+      "id": "HE07",
+      "source_ref": "execution",
+      "source_line": 246,
+      "source_id": "执行七",
+      "name_zh": "组建有效工件集合",
+      "name_en": "Select valid collection"
+    },
+    {
+      "id": "HE08",
+      "source_ref": "execution",
+      "source_line": 258,
+      "source_id": "执行八",
+      "name_zh": "执行组合闸并核验综合产物",
+      "name_en": "Composition and synthesis gate"
+    },
+    {
+      "id": "HE09",
+      "source_ref": "execution",
+      "source_line": 268,
+      "source_id": "执行九",
+      "name_zh": "定位缺口并局部修复",
+      "name_en": "Local gap repair"
+    },
+    {
+      "id": "HE10",
+      "source_ref": "execution",
+      "source_line": 278,
+      "source_id": "执行十",
+      "name_zh": "原子提交父目标验收结果",
+      "name_en": "Atomic parent acceptance"
+    },
+    {
+      "id": "HE11",
+      "source_ref": "execution",
+      "source_line": 288,
+      "source_id": "执行十一",
+      "name_zh": "归档并交付",
+      "name_en": "Archive and deliver"
+    }
+  ],
+  "probe_nodes": [
+    {
+      "id": "HP01",
+      "source_ref": "probe",
+      "source_line": 178,
+      "source_id": "观测一",
+      "name_zh": "确定检查范围",
+      "name_en": "Scope observation"
+    },
+    {
+      "id": "HP02",
+      "source_ref": "probe",
+      "source_line": 184,
+      "source_id": "观测二",
+      "name_zh": "建立证据目录",
+      "name_en": "Catalog evidence"
+    },
+    {
+      "id": "HP03",
+      "source_ref": "probe",
+      "source_line": 190,
+      "source_id": "观测三",
+      "name_zh": "形成可复算快照",
+      "name_en": "Freeze reproducible snapshot"
+    },
+    {
+      "id": "HP04",
+      "source_ref": "probe",
+      "source_line": 196,
+      "source_id": "观测四",
+      "name_zh": "运行适用探针",
+      "name_en": "Run applicable probes"
+    },
+    {
+      "id": "HP05",
+      "source_ref": "probe",
+      "source_line": 202,
+      "source_id": "观测五",
+      "name_zh": "对缺口分类",
+      "name_en": "Classify gaps"
+    },
+    {
+      "id": "HP06",
+      "source_ref": "probe",
+      "source_line": 208,
+      "source_id": "观测六",
+      "name_zh": "有限补查与提案生成",
+      "name_en": "Bounded reads and proposals"
+    },
+    {
+      "id": "HP07",
+      "source_ref": "probe",
+      "source_line": 214,
+      "source_id": "观测七",
+      "name_zh": "交付报告与回执核对",
+      "name_en": "Report and reconcile receipts"
+    }
+  ],
+  "probe_catalog": [
+    {
+      "id": "HPR01",
+      "source_ref": "probe",
+      "source_line": 226,
+      "source_id": "探针一",
+      "name_zh": "目标基线",
+      "inputs_zh": "目标、原始要求、责任清单、规则",
+      "checks_zh": "是否有稳定责任人；清单是否来自目标；范围完备性如何确认",
+      "boundary_zh": "可补基线引用，不能自行删除必需责任或宣称开放范围穷尽",
+      "receiver_zh": "父目标责任人",
+      "summary_en": "Goal baseline: check owner, requirement-derived scope and completeness; do not remove obligations."
+    },
+    {
+      "id": "HPR02",
+      "source_ref": "probe",
+      "source_line": 227,
+      "source_id": "探针二",
+      "name_zh": "委派契约",
+      "inputs_zh": "责任基线、计划、任务契约",
+      "checks_zh": "责任覆盖、未声明重叠、边界、输入、交付、工具、预算和版本是否明确",
+      "boundary_zh": "报告无主责任、模糊交付和越界授权；不自动重写计划",
+      "receiver_zh": "父目标责任人与运行时",
+      "summary_en": "Delegation contracts: check deliverables, coverage, overlap, scope, budgets and versions; do not rewrite plans."
+    },
+    {
+      "id": "HPR03",
+      "source_ref": "probe",
+      "source_line": 228,
+      "source_id": "探针三",
+      "name_zh": "完成状态",
+      "inputs_zh": "权威任务快照、返回记录、工件与组合裁决",
+      "checks_zh": "执行者返回、工件通过、父目标通过是否被混淆",
+      "boundary_zh": "定位局部完成与整体完成的断点；状态无法核实时标未知",
+      "receiver_zh": "执行流程",
+      "summary_en": "Completion states: distinguish worker return, artifact acceptance and parent acceptance; unverifiable states remain unknown."
+    },
+    {
+      "id": "HPR04",
+      "source_ref": "probe",
+      "source_line": 229,
+      "source_id": "探针四",
+      "name_zh": "工件与证据",
+      "inputs_zh": "工件、任务契约、输入及来源、工件闸",
+      "checks_zh": "结构、归属、版本、证据定位与结论支撑；是否仅依赖自报",
+      "boundary_zh": "可提出补充来源或输入映射；改动正式工件须授权生成新版本",
+      "receiver_zh": "工件验收器",
+      "summary_en": "Artifacts and evidence: check structure, bindings, versions, source location and semantic support; formal changes require new versions."
+    },
+    {
+      "id": "HPR05",
+      "source_ref": "probe",
+      "source_line": 230,
+      "source_id": "探针五",
+      "name_zh": "组合验收",
+      "inputs_zh": "责任基线、有效候选集、组合规则与裁决",
+      "checks_zh": "缺失责任、候选超额、重复主键、口径冲突和全局约束",
+      "boundary_zh": "返回缺口与冲突清单；不能自动宣布父目标完成",
+      "receiver_zh": "组合验收器",
+      "summary_en": "Composition: check missing responsibilities, excess candidates, duplicate keys, conflicts and global rules; do not accept the parent."
+    },
+    {
+      "id": "HPR06",
+      "source_ref": "probe",
+      "source_line": 231,
+      "source_id": "探针六",
+      "name_zh": "执行隔离",
+      "inputs_zh": "权限配置、授权和调用回执、工作区与父子关系",
+      "checks_zh": "最小上下文、工具与数据范围、委派深度、并发及敏感内容暴露",
+      "boundary_zh": "区分被拦截的尝试和已发生的违规；无运行时证据不能证明隔离成立",
+      "receiver_zh": "核心运行时与治理负责人",
+      "summary_en": "Execution isolation: check live authority, context/workspace, depth and concurrency; distinguish blocked requests and realized violations."
+    },
+    {
+      "id": "HPR07",
+      "source_ref": "probe",
+      "source_line": 232,
+      "source_id": "探针七",
+      "name_zh": "失败与恢复",
+      "inputs_zh": "尝试历史、重派记录、工件复用、检查点",
+      "checks_zh": "局部失败是否扩大、累计预算是否清零、旧结果是否污染新计划",
+      "boundary_zh": "说明不必要重做、丢失工件、重复外部动作风险；不自行发起恢复",
+      "receiver_zh": "执行流程",
+      "summary_en": "Failure and recovery: check locality, cumulative budgets, reuse and obsolete results; do not autonomously restart work."
+    },
+    {
+      "id": "HPR08",
+      "source_ref": "probe",
+      "source_line": 233,
+      "source_id": "探针八",
+      "name_zh": "时延与预算",
+      "inputs_zh": "可比较时间、预算预留、结算与在途记录",
+      "checks_zh": "主管排队、工件等待验收、重试放大、总预算占用",
+      "boundary_zh": "补充可计算消耗与耗时；未知费用不当零，不能自行追加预算",
+      "receiver_zh": "运行时及流程负责人",
+      "summary_en": "Latency and budgets: check queues, acceptance waits, retries and cumulative occupancy; unknown spend is not zero."
+    },
+    {
+      "id": "HPR09",
+      "source_ref": "probe",
+      "source_line": 234,
+      "source_id": "探针九",
+      "name_zh": "观测质量",
+      "inputs_zh": "事件清单、生产者封口、采样与读取记录",
+      "checks_zh": "去重、漏段、迟到、时钟、关联缺失、报告输入是否可复算",
+      "boundary_zh": "先报告数据可靠程度；可恢复既有记录，不制造原始事件",
+      "receiver_zh": "可观测性维护方",
+      "summary_en": "Observation quality: check deduplication, gaps, lateness, clocks, provenance, sampling and reproducibility; never invent events."
+    },
+    {
+      "id": "HPR10",
+      "source_ref": "probe",
+      "source_line": 235,
+      "source_id": "探针十",
+      "name_zh": "补全闭环",
+      "inputs_zh": "请求、提案、采纳回执、新版本、重验结果",
+      "checks_zh": "白名单、基线有效性、重复请求、采纳及重验是否真正闭合",
+      "boundary_zh": "输出未关闭缺口、越界提案与补全消耗；不把“已发送”当“已完成”",
+      "receiver_zh": "探针与执行流程各自负责人",
+      "summary_en": "Supplementation closure: check allowlists, baseline, receipts, new versions and revalidation; sent is not resolved."
+    }
+  ],
+  "metrics": [
+    {
+      "id": "HM01",
+      "source_ref": "probe",
+      "source_line": 257,
+      "source_id": "指标一",
+      "name_zh": "计划责任覆盖率",
+      "formula_zh": "已有有效委派安排的不同必需责任数 ÷ 必需责任总数",
+      "inputs_zh": "责任基线、已批准计划、完整任务契约",
+      "boundary_zh": "有安排不代表已完成；需排除只写角色、没有交付约定的无效任务",
+      "summary_en": "Planned responsibility coverage: distinct required responsibilities with valid complete delivery contracts / required responsibilities. Assignments do not prove completion.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM02",
+      "source_ref": "probe",
+      "source_line": 258,
+      "source_id": "指标二",
+      "name_zh": "有效履约覆盖率",
+      "formula_zh": "满足工件验收、版本和责任基数的不同必需责任数 ÷ 必需责任总数",
+      "inputs_zh": "责任基线、工件与有效裁决、提交集合",
+      "boundary_zh": "是责任级结果，不按卡片数计算；关键未知不能计入通过",
+      "summary_en": "Effective fulfillment coverage: distinct required responsibilities meeting artifact acceptance, versions and cardinality in the submitted collection / required responsibilities. Unknown critical checks do not pass.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM03",
+      "source_ref": "probe",
+      "source_line": 259,
+      "source_id": "指标三",
+      "name_zh": "候选超额覆盖数",
+      "formula_zh": "对每项责任，累计“去重后的当前有效候选数－事先允许的候选数”的正数部分",
+      "inputs_zh": "候选池、尝试替代关系、冗余配置",
+      "boundary_zh": "在最终选择前统计；同一消息重投不增加，已被替代尝试不重复计；不等同于所有超额都毫无价值",
+      "summary_en": "Excess candidates: sum of positive (deduplicated current valid candidates minus preauthorized candidate count) per responsibility, before selection; exclude superseded attempts and redelivery. Excess is not necessarily useless.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM04",
+      "source_ref": "probe",
+      "source_line": 260,
+      "source_id": "指标四",
+      "name_zh": "提交集合非法重复键数",
+      "formula_zh": "对提交组合闸的实际记录按唯一键计数，累计超过允许基数的部分",
+      "inputs_zh": "提交集合内容、唯一键与基数规则",
+      "boundary_zh": "候选超额不必然成为最终重复；两个指标必须分开",
+      "summary_en": "Illegal duplicate submitted keys: sum of submitted record counts exceeding permitted cardinality by unique key. This differs from candidate excess; inspect records, not files.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM05",
+      "source_ref": "probe",
+      "source_line": 261,
+      "source_id": "指标五",
+      "name_zh": "输入主键覆盖率",
+      "formula_zh": "输入集中有合格输出的不同主键数 ÷ 输入集主键总数",
+      "inputs_zh": "冻结输入集、输出记录、裁决",
+      "boundary_zh": "仅用于主键分片；额外主键和重复主键另报，不能只看比例",
+      "summary_en": "Input-key coverage: distinct frozen input keys with qualified outputs / frozen input keys. Only for key-sharded scenarios; extra keys and duplicates are separate.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM06",
+      "source_ref": "probe",
+      "source_line": 262,
+      "source_id": "指标六",
+      "name_zh": "执行者返回率",
+      "formula_zh": "已有结构化终态回报的逻辑任务数 ÷ 当前计划已派发逻辑任务数",
+      "inputs_zh": "派工清单、任务快照、成功或失败工件",
+      "boundary_zh": "失败工件也算已回报；此指标不证明执行成功或父目标通过",
+      "summary_en": "Executor return rate: logical dispatched tasks with structured terminal success or failure reports / current-plan dispatched logical tasks. Return is not success.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM07",
+      "source_ref": "probe",
+      "source_line": 263,
+      "source_id": "指标七",
+      "name_zh": "工件首验通过率",
+      "formula_zh": "首次业务工件通过工件闸的逻辑任务数 ÷ 已发生首次业务工件提交的逻辑任务数",
+      "inputs_zh": "首次交付、首次闸门裁决",
+      "boundary_zh": "首次裁决待定须列未知；执行前失败另报，不能把该指标当端到端成功率",
+      "summary_en": "First artifact acceptance rate: logical tasks whose first business artifact passed its first gate / tasks with first business submission. Pending first verdicts are unknown; pre-execution failures are separate.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM08",
+      "source_ref": "probe",
+      "source_line": 264,
+      "source_id": "指标八",
+      "name_zh": "证据链完整率",
+      "formula_zh": "已具备可核验完整来源链的必需证据项数 ÷ 契约要求的证据项数",
+      "inputs_zh": "工件证据清单、输入与来源快照",
+      "boundary_zh": "完整来源链不等于来源必然真实或结论必然正确，语义支撑还需单独核验",
+      "summary_en": "Evidence-chain completeness: verifiably complete required evidence items / contract-required evidence items. Completeness alone proves neither truth nor semantic support.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM09",
+      "source_ref": "probe",
+      "source_line": 265,
+      "source_id": "指标九",
+      "name_zh": "局部全返回但整体未通过次数",
+      "formula_zh": "当前全部任务已回报，且组合裁决明确不通过的父目标快照数",
+      "inputs_zh": "任务快照、组合裁决",
+      "boundary_zh": "同一未变更问题只计一次，按问题编号去重；裁决未知单列，不混入不通过",
+      "summary_en": "All returned but whole rejected: snapshots with all tasks returned and explicit composition failure, deduplicated by unchanged problem ID. Unknown verdicts are separate.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM10",
+      "source_ref": "probe",
+      "source_line": 266,
+      "source_id": "指标十",
+      "name_zh": "父目标误报完成次数",
+      "formula_zh": "已声明完成，但经完整证据确认不满足当时必需验收条件的提交次数",
+      "inputs_zh": "完成提交、当时基线、工件和裁决",
+      "boundary_zh": "仅因查不到日志不能直接定性；证据不全应报告疑似误报",
+      "summary_en": "False parent-completion declarations: submissions proven by complete historical evidence to violate then-required acceptance. Unreadable logs only support suspicion or unknown.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM11",
+      "source_ref": "probe",
+      "source_line": 267,
+      "source_id": "指标十一",
+      "name_zh": "未解决组合冲突数",
+      "formula_zh": "当前候选集或综合产物中已确认、尚无有效裁决的不同冲突数",
+      "inputs_zh": "冲突记录、工件内容、裁决",
+      "boundary_zh": "未执行完整冲突检查时不能因为没有记录就报零",
+      "summary_en": "Unresolved composition conflicts: distinct confirmed unresolved conflicts in the current collection or synthesis. An incomplete conflict check cannot establish zero.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM12",
+      "source_ref": "probe",
+      "source_line": 268,
+      "source_id": "指标十二",
+      "name_zh": "范围完备性评审状态",
+      "formula_zh": "已确认、待评审、未定义或不适用",
+      "inputs_zh": "清单来源、独立评审或批准记录",
+      "boundary_zh": "属于状态指标；不能由覆盖率高低推导",
+      "summary_en": "Scope completeness review: confirmed, pending review, undefined or not applicable, based on baseline provenance and independent review/approval, never inferred from coverage.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM13",
+      "source_ref": "probe",
+      "source_line": 276,
+      "source_id": "指标十三",
+      "name_zh": "重试放大倍数",
+      "formula_zh": "实际已启动尝试数 ÷ 至少启动过一次的不同逻辑任务数",
+      "inputs_zh": "运行时尝试记录",
+      "boundary_zh": "无重试时为一；同一消息重投不算启动；新增业务责任不是重试",
+      "summary_en": "Retry amplification: actually started attempts / distinct logical tasks started at least once. No retry gives one; redelivery is not a start; new obligations are not retries.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM14",
+      "source_ref": "probe",
+      "source_line": 277,
+      "source_id": "指标十四",
+      "name_zh": "合格工件复用率",
+      "formula_zh": "修复后仍被合法复用的原工件数 ÷ 修复前经兼容性确认可复用的工件数",
+      "inputs_zh": "修复计划、版本依赖、接纳记录",
+      "boundary_zh": "无修复或无可复用对象时不适用；不能复用旧证据来追求高值",
+      "summary_en": "Qualified artifact reuse: original artifacts lawfully reused after repair / originals confirmed compatible for reuse before repair. No repair or no reusable objects is not applicable.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM15",
+      "source_ref": "probe",
+      "source_line": 278,
+      "source_id": "指标十五",
+      "name_zh": "父目标端到端时长",
+      "formula_zh": "有效终态提交时刻－目标开始执行时刻",
+      "inputs_zh": "统一或可比较的运行时时间",
+      "boundary_zh": "进行中报告下界；成功、失败、取消分别统计；不累加并行子任务耗时",
+      "summary_en": "Parent end-to-end duration: valid terminal submission time minus execution start using comparable runtime clocks. Report running lower bounds and separate success/failure/cancel cohorts; do not sum child durations.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM16",
+      "source_ref": "probe",
+      "source_line": 279,
+      "source_id": "指标十六",
+      "name_zh": "工件等待验收时长",
+      "formula_zh": "对每份工件，首次进入待验收至开始验收的时间差",
+      "inputs_zh": "工件登记和验收开始记录",
+      "boundary_zh": "反映排队，不等于验收计算耗时；缺少开始验收事件时未知",
+      "summary_en": "Artifact acceptance queue time: first pending-acceptance entry to acceptance start, per artifact. Queueing is not gate computation; missing acceptance-start event is unknown.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM17",
+      "source_ref": "probe",
+      "source_line": 280,
+      "source_id": "指标十七",
+      "name_zh": "预算占用率",
+      "formula_zh": "已确认消耗与在途预留之和 ÷ 已批准总预算",
+      "inputs_zh": "运行时预留与结算账本",
+      "boundary_zh": "结果不明调用的预留不得提前释放；按同一单位分别计算",
+      "summary_en": "Budget occupancy: confirmed spend plus outstanding reservations / approved budget, separately per common unit. Unknown-outcome calls retain reservations; include the entire run across plans.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM18",
+      "source_ref": "probe",
+      "source_line": 281,
+      "source_id": "指标十八",
+      "name_zh": "隔离违规与拦截次数",
+      "formula_zh": "分别计已确认越权实际发生数、未授权请求被拒绝数、无法核实数",
+      "inputs_zh": "授权服务、工具网关和实际调用回执",
+      "boundary_zh": "拦截不等于违规已发生；没有全量证据时不能宣称零违规",
+      "summary_en": "Isolation violations and blocked attempts: separate confirmed realized violations, rejected unauthorized requests and unverifiable counts. Partial evidence cannot establish zero violations.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM19",
+      "source_ref": "probe",
+      "source_line": 282,
+      "source_id": "指标十九",
+      "name_zh": "事件可核对完整率",
+      "formula_zh": "在可信封口范围内收到的不同事件数 ÷ 生产者确认的应有事件数",
+      "inputs_zh": "生产者事件清单、封口记录、采集事件",
+      "boundary_zh": "没有可信分母时未知；抽样链不能冒充全量完整率",
+      "summary_en": "Reconciled event completeness: distinct received events in a trusted sealed manifest / producer-confirmed expected events. Missing denominator is unknown; sampling is not full completeness.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM20",
+      "source_ref": "probe",
+      "source_line": 283,
+      "source_id": "指标二十",
+      "name_zh": "字段补全采纳率",
+      "formula_zh": "已有终态回执的字段提案中，被采纳字段数 ÷ 终态字段提案总数",
+      "inputs_zh": "提案与逐字段采纳回执",
+      "boundary_zh": "部分采纳逐字段算；等待回执单列；采纳不等于业务问题已解决",
+      "summary_en": "Field supplementation adoption: adopted field proposals / field proposals with terminal dispositions. Partial adoption counts per field; pending receipts are separate; adoption is not resolution.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM21",
+      "source_ref": "probe",
+      "source_line": 284,
+      "source_id": "指标二十一",
+      "name_zh": "关键补全闭环时长",
+      "formula_zh": "从缺口正式登记到必要重验通过且关闭的时间差",
+      "inputs_zh": "缺口、采纳回执、新版本与重验记录",
+      "boundary_zh": "没有重验通过不能结束计时；未闭合项单列，不能删除",
+      "summary_en": "Critical supplementation closure duration: gap registration to closure with necessary revalidation passed. Pending or failed revalidation leaves the interval open; retain unresolved cases.",
+      "implementation": "specification_only"
+    },
+    {
+      "id": "HM22",
+      "source_ref": "probe",
+      "source_line": 285,
+      "source_id": "指标二十二",
+      "name_zh": "必需观测字段未知率",
+      "formula_zh": "当前无法确定的必需观测字段单元数 ÷ 配置要求的字段单元总数",
+      "inputs_zh": "观测字段基线、证据目录",
+      "boundary_zh": "字段单元以对象、字段、版本去重；不适用字段不进分母",
+      "summary_en": "Required observation-field unknown rate: unknown required field cells / configured required field cells, deduplicated by object, field and version; exclude non-applicable cells.",
+      "implementation": "specification_only"
+    }
+  ],
+  "execution_cases": [
+    {
+      "id": "HET01",
+      "source_ref": "execution",
+      "source_line": 582,
+      "source_id": "执行验收一",
+      "source_label": "执行验收一",
+      "condition_zh": "三张合格工件实际都对应同一必需责任",
+      "expected_zh": "不能通过组合闸；保留另外两项责任缺口及重复候选记录",
+      "summary_en": "Three acceptable artifacts cover one obligation: reject composition; retain two missing obligations and excess candidates.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET02",
+      "source_ref": "execution",
+      "source_line": 583,
+      "source_id": "执行验收二",
+      "source_label": "执行验收二",
+      "condition_zh": "三项不同必需责任各有一份有效工件，全部约束通过",
+      "expected_zh": "允许提交父目标已验收",
+      "summary_en": "Three distinct obligations each have valid artifacts and all rules pass: allow parent acceptance submission.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET03",
+      "source_ref": "execution",
+      "source_line": 584,
+      "source_id": "执行验收三",
+      "source_label": "执行验收三",
+      "condition_zh": "三项责任名齐全，但一项来源无法支撑结论",
+      "expected_zh": "对应工件不通过或未知，不能被计为已履约",
+      "summary_en": "Labels are complete but a source does not support its conclusion: artifact fails or is unknown and does not count as fulfilled.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET04",
+      "source_ref": "execution",
+      "source_line": 585,
+      "source_id": "执行验收四",
+      "source_label": "执行验收四",
+      "condition_zh": "工件属于旧目标版本",
+      "expected_zh": "隔离，或经明确兼容性证明及重验后生成当前接纳记录",
+      "summary_en": "Old-goal artifact: quarantine or explicitly prove compatibility and revalidate for current acceptance.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET05",
+      "source_ref": "execution",
+      "source_line": 586,
+      "source_id": "执行验收五",
+      "source_label": "执行验收五",
+      "condition_zh": "同一消息重复投递",
+      "expected_zh": "只登记一次，不增加候选数或消耗计数",
+      "summary_en": "Repeated message: register once without increasing candidates or consumption counts.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET06",
+      "source_ref": "execution",
+      "source_line": 587,
+      "source_id": "执行验收六",
+      "source_label": "执行验收六",
+      "condition_zh": "同一责任失败后换人重试",
+      "expected_zh": "不增加父目标责任数量，累计预算不清零",
+      "summary_en": "Replace executor after failure: preserve the responsibility denominator and cumulative budget.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET07",
+      "source_ref": "execution",
+      "source_line": 588,
+      "source_id": "执行验收七",
+      "source_label": "执行验收七",
+      "condition_zh": "某项超时，其他项已通过",
+      "expected_zh": "只修复该项；其他工件在版本仍有效时保留",
+      "summary_en": "One timeout with other passed obligations: repair only that obligation and retain valid artifacts.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET08",
+      "source_ref": "execution",
+      "source_line": 589,
+      "source_id": "执行验收八",
+      "source_label": "执行验收八",
+      "condition_zh": "所有子调用都已返回，但组合闸未知",
+      "expected_zh": "父目标不能已验收",
+      "summary_en": "All calls returned but composition is unknown: parent cannot be accepted.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET09",
+      "source_ref": "execution",
+      "source_line": 590,
+      "source_id": "执行验收九",
+      "source_label": "执行验收九",
+      "condition_zh": "任务要求双人独立复核",
+      "expected_zh": "按已声明基数验收，不把合法复核误判为重复",
+      "summary_en": "Two independent reviewers are required: apply declared cardinality; lawful review is not duplication.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET10",
+      "source_ref": "execution",
+      "source_line": 591,
+      "source_id": "执行验收十",
+      "source_label": "执行验收十",
+      "condition_zh": "探针补充来源字段",
+      "expected_zh": "新工件版本，重跑两道受影响闸门",
+      "summary_en": "Probe supplements a source field: create a new artifact version and rerun both affected gates.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET11",
+      "source_ref": "execution",
+      "source_line": 592,
+      "source_id": "执行验收十一",
+      "source_label": "执行验收十一",
+      "condition_zh": "探针提案试图修改权限或完成状态",
+      "expected_zh": "拒绝写入，留下原因，不以模型解释替代权限检查",
+      "summary_en": "Proposal changes permissions/completion: reject with reason; explanations cannot replace authorization.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET12",
+      "source_ref": "execution",
+      "source_line": 593,
+      "source_id": "执行验收十二",
+      "source_label": "执行验收十二",
+      "condition_zh": "组合闸通过后目标升级，旧裁决尝试提交",
+      "expected_zh": "比较基线失败，不能覆盖新状态",
+      "summary_en": "Goal upgraded after composition passed: old submission fails baseline comparison and cannot overwrite new state.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET13",
+      "source_ref": "execution",
+      "source_line": 594,
+      "source_id": "执行验收十三",
+      "source_label": "执行验收十三",
+      "condition_zh": "外部执行超时，可能已经写入",
+      "expected_zh": "保持结果待核对，未确认前禁止盲目重试",
+      "summary_en": "External timeout may have written: keep outcome unknown and reconcile before retry.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET14",
+      "source_ref": "execution",
+      "source_line": 595,
+      "source_id": "执行验收十四",
+      "source_label": "执行验收十四",
+      "condition_zh": "探针停机但本地验收证据齐全",
+      "expected_zh": "不影响正常验收；标记可观测性缺口",
+      "summary_en": "Probe down but local evidence complete: normal acceptance continues with observation gaps disclosed.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET15",
+      "source_ref": "execution",
+      "source_line": 596,
+      "source_id": "执行验收十五",
+      "source_label": "执行验收十五",
+      "condition_zh": "父责任人重启后恢复",
+      "expected_zh": "从持久化状态继续，不重复已确认的外部动作",
+      "summary_en": "Parent restarts: recover durable state without repeating confirmed external effects.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HET16",
+      "source_ref": "execution",
+      "source_line": 597,
+      "source_id": "执行验收十六",
+      "source_label": "执行验收十六",
+      "condition_zh": "所有已枚举研究主题完成，但清单完备性未获确认",
+      "expected_zh": "仅报告已确认范围完成，不声称开放问题已穷尽",
+      "summary_en": "Enumerated topics finish but completeness unconfirmed: report confirmed-scope completion only.",
+      "integration_status": "pending"
+    }
+  ],
+  "probe_cases": [
+    {
+      "id": "HPT01",
+      "source_ref": "probe",
+      "source_line": 601,
+      "source_id": "探针验收一",
+      "source_label": "探针验收一",
+      "condition_zh": "无主流程在线，仅有完整离线快照",
+      "expected_zh": "能输出独立报告和未应用提案，不要求调用执行流程",
+      "summary_en": "Offline complete snapshot: produce an independent report and unapplied proposals without calling execution.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT02",
+      "source_ref": "probe",
+      "source_line": 602,
+      "source_id": "探针验收二",
+      "source_label": "探针验收二",
+      "condition_zh": "只有三张工件，没有责任基线",
+      "expected_zh": "可统计工件数；责任覆盖率未知",
+      "summary_en": "Artifacts without responsibility baseline: count artifacts; responsibility coverage remains unknown.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT03",
+      "source_ref": "probe",
+      "source_line": 603,
+      "source_id": "探针验收三",
+      "source_label": "探针验收三",
+      "condition_zh": "三项责任，可信核验与选择后仅一项履约",
+      "expected_zh": "有效履约覆盖为三分之一；缺少两项业务责任",
+      "summary_en": "Only one of three obligations fulfills trusted acceptance and selection: report one-third and two business gaps.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT04",
+      "source_ref": "probe",
+      "source_line": 604,
+      "source_id": "探针验收四",
+      "source_label": "探针验收四",
+      "condition_zh": "三份当前候选同属一责任，允许一份；最终只选一份",
+      "expected_zh": "候选超额为二，提交集合重复为零，不混淆两者",
+      "summary_en": "Three valid candidates allowing one, with one selected: candidate excess is two; submitted duplication is zero.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT05",
+      "source_ref": "probe",
+      "source_line": 605,
+      "source_id": "探针验收五",
+      "source_label": "探针验收五",
+      "condition_zh": "约定每项责任需两份独立复核，确有两份",
+      "expected_zh": "不记为超额；仍核验独立性与冲突处理",
+      "summary_en": "Two required independent reviews are present: no excess; still verify independence and conflicts.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT06",
+      "source_ref": "probe",
+      "source_line": 606,
+      "source_id": "探针验收六",
+      "source_label": "探针验收六",
+      "condition_zh": "三项责任，两项已确认通过，一项裁决不可读",
+      "expected_zh": "覆盖值未知；可报告下界三分之二、上界一和未知原因",
+      "summary_en": "Two passes and one unreadable verdict: coverage unknown, lower bound two-thirds, upper bound one, with reasons.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT07",
+      "source_ref": "probe",
+      "source_line": 607,
+      "source_id": "探针验收七",
+      "source_label": "探针验收七",
+      "condition_zh": "同一事件重投三次",
+      "expected_zh": "只记一次，不增加尝试和候选数量",
+      "summary_en": "One event redelivered three times: count once; no extra attempts or candidates.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT08",
+      "source_ref": "probe",
+      "source_line": 608,
+      "source_id": "探针验收八",
+      "source_label": "探针验收八",
+      "condition_zh": "同一事件编号出现不同内容",
+      "expected_zh": "隔离并报告冲突，不任意择一",
+      "summary_en": "One event ID has divergent payloads: quarantine conflict, never choose arbitrarily.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT09",
+      "source_ref": "probe",
+      "source_line": 609,
+      "source_id": "探针验收九",
+      "source_label": "探针验收九",
+      "condition_zh": "工件责任标签正确，但来源不支撑结论",
+      "expected_zh": "不以标签计有效履约；报告语义核验问题",
+      "summary_en": "Correct tag but unsupported conclusion: no tag-based fulfillment; report semantic failure.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT10",
+      "source_ref": "probe",
+      "source_line": 610,
+      "source_id": "探针验收十",
+      "source_label": "探针验收十",
+      "condition_zh": "只有开始事件且时钟不可比较",
+      "expected_zh": "不伪造结束时间或精确耗时",
+      "summary_en": "Only start event and incomparable clocks: no invented end or exact duration.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT11",
+      "source_ref": "probe",
+      "source_line": 611,
+      "source_id": "探针验收十一",
+      "source_label": "探针验收十一",
+      "condition_zh": "日志经过抽样，没有可信总事件数",
+      "expected_zh": "事件完整率未知，不能报告全量零违规",
+      "summary_en": "Sampled logs without trusted total: event completeness unknown; no claim of full zero violations.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT12",
+      "source_ref": "probe",
+      "source_line": 612,
+      "source_id": "探针验收十二",
+      "source_label": "探针验收十二",
+      "condition_zh": "缺少结束事件，但可信实例回执可恢复",
+      "expected_zh": "标明历史恢复来源，不覆盖原始事件",
+      "summary_en": "Trusted executor receipt restores missing end: record reconstruction provenance without overwriting original events.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT13",
+      "source_ref": "probe",
+      "source_line": 613,
+      "source_id": "探针验收十三",
+      "source_label": "探针验收十三",
+      "condition_zh": "原始业务数据没有任何可信来源",
+      "expected_zh": "返回业务补做或输入缺口，不自行生成正式值",
+      "summary_en": "Business data without trusted source: return work/input gaps; never invent official values.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT14",
+      "source_ref": "probe",
+      "source_line": 614,
+      "source_id": "探针验收十四",
+      "source_label": "探针验收十四",
+      "condition_zh": "新资料仅在原任务之后出现",
+      "expected_zh": "标记当前补充证据，不能证明原任务当时已获证",
+      "summary_en": "Material appeared after the task: label current supplementation, not historical possession.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT15",
+      "source_ref": "probe",
+      "source_line": 615,
+      "source_id": "探针验收十五",
+      "source_label": "探针验收十五",
+      "condition_zh": "补全提案目标版本已过期",
+      "expected_zh": "不应用，返回过期或重新生成提案",
+      "summary_en": "Proposal targets obsolete goal: do not apply; expire or rebuild it.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT16",
+      "source_ref": "probe",
+      "source_line": 616,
+      "source_id": "探针验收十六",
+      "source_label": "探针验收十六",
+      "condition_zh": "提案要求改父目标完成状态",
+      "expected_zh": "拒绝越权字段，保留诊断和拒绝原因",
+      "summary_en": "Proposal changes parent completion: reject field and preserve diagnostic and refusal reasons.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT17",
+      "source_ref": "probe",
+      "source_line": 617,
+      "source_id": "探针验收十七",
+      "source_label": "探针验收十七",
+      "condition_zh": "提案已采纳，关键组合重验未通过",
+      "expected_zh": "字段采纳可计入，关键缺口不能关闭",
+      "summary_en": "Adopted proposal but required composition revalidation failed: field adoption counts, critical gap stays open.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT18",
+      "source_ref": "probe",
+      "source_line": 618,
+      "source_id": "探针验收十八",
+      "source_label": "探针验收十八",
+      "condition_zh": "所有执行者已回报，组合闸不通过",
+      "expected_zh": "返回率可以为一，但父目标仍未通过",
+      "summary_en": "All returned and composition failed: return rate may equal one while parent remains unaccepted.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT19",
+      "source_ref": "probe",
+      "source_line": 619,
+      "source_id": "探针验收十九",
+      "source_label": "探针验收十九",
+      "condition_zh": "正式完成状态存在，验收日志不可读",
+      "expected_zh": "报疑似误报或未知；不武断确认违规",
+      "summary_en": "Completion exists but logs unreadable: suspected misreport or unknown, not confirmed violation.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT20",
+      "source_ref": "probe",
+      "source_line": 620,
+      "source_id": "探针验收二十",
+      "source_label": "探针验收二十",
+      "condition_zh": "同一缺口被多次刷新或报告触发",
+      "expected_zh": "去重且受预算约束，不形成自激循环",
+      "summary_en": "Repeated refresh/report triggers: deduplicate, bound usage and prevent self-triggering loops.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT21",
+      "source_ref": "probe",
+      "source_line": 621,
+      "source_id": "探针验收二十一",
+      "source_label": "探针验收二十一",
+      "condition_zh": "探针离线，运行时仍有合法验收能力",
+      "expected_zh": "非关键观测不阻塞；关键证据仍依业务规则处理",
+      "summary_en": "Probe offline with lawful runtime validation: optional observation does not block; critical evidence follows business rules.",
+      "integration_status": "pending"
+    },
+    {
+      "id": "HPT22",
+      "source_ref": "probe",
+      "source_line": 622,
+      "source_id": "探针验收二十二",
+      "source_label": "探针验收二十二",
+      "condition_zh": "把其他计划版本的责任集用于当前统计",
+      "expected_zh": "拒绝混算，按版本分组重建分母",
+      "summary_en": "Denominator comes from another plan: reject mixed-version calculation and reconstruct grouped baselines.",
+      "integration_status": "pending"
+    }
+  ]
+}

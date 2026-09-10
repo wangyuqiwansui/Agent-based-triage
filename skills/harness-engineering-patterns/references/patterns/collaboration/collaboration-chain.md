@@ -7,6 +7,14 @@ Source / 来源: arXiv:2605.13850 (https://arxiv.org/html/2605.13850)
 
 Use this file as the design pattern source for this 7x6 matrix intersection. / 将本文档作为该 7x6 交织点的设计模式来源。
 
+## Shared Module Contract / 共享模块契约
+
+Read [the collaboration execution procedure](../../collaboration-execution-flow.md) and [independent probes](../../collaboration-observability-probes.md) before applying this mode. Its integration points are `CE11`; source contract is `2.0.0` and local executable profile is `3.0.0`. / 应用本模式前读取协作执行规程与独立探针；接入节点为 `CE11`，来源契约为 `2.0.0`，本地执行配置为 `3.0.0`。
+
+Handoff must bind the current artifact head and the receiver's explicit acceptance; material arrival and sender approval cannot transfer responsibility. / 交接必须绑定当前工件版本与接收方明确验收；材料到达与交出方批准不能转移责任。
+
+This is local engineering guidance, not a new paper claim or a maturity promotion. / 本节为本地工程指导，不是新增论文观点或成熟度晋升。
+
 ## Design Pattern / 设计模式
 
 Handoff Chain transfers work through ordered roles with an explicit context package at each boundary — artifact, done criteria, open risks, acceptance check — and responsibility moves only after the receiver runs the acceptance check and accepts. / 交接链让工作按有序角色传递，每个边界附显式上下文包——产物、完成标准、未决风险、验收检查——责任只在接收方运行验收检查并接受后才转移。

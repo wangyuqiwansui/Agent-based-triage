@@ -1,0 +1,24 @@
+Validation scope / 验证范围: source fidelity, document synchronization and repository regression; no live fan-out or GM metric measurements.
+/ 来源保真、文档同步与仓库回归；未执行真实扇出或 GM 指标测量。
+
+Baseline command / 基线命令: python -m pytest -q
+794 passed, 3 skipped, 243 subtests passed in 82.43s (0:01:22)
+
+Final command / 最终命令: python -X utf8 -m pytest -q --tb=short
+Environment / 环境: PYTHONIOENCODING=utf-8, PYTHONDONTWRITEBYTECODE=1
+810 passed, 3 skipped, 243 subtests passed in 82.64s (0:01:22)
+
+Added checks / 新增检查: 16 document-tool tests in tests/test_collaboration_gather_docs.py.
+Source business cases / 来源业务用例: 16 execution and 20 probe cases remain pending host integration.
+
+Checks / 校验:
+- sync_collaboration_gather_docs.py: 0 errors.
+- sync_collaboration_docs.py: 0 errors.
+- validate_harness_skill.py: 0 errors, 18 pre-existing navigation warnings in unrelated references.
+- skill-creator quick_validate.py (python -X utf8): Skill is valid.
+- generate_skill_visualization.py: regenerated root HTML; both pattern links and current source hash verified.
+- UTF-8 source/map/contract/documents: no replacement characters.
+- git diff --check: clean.
+
+An intermediate visualization regression detected missing legacy metadata in the revised pattern page; the compatible fields were restored before the final passing run.
+/ 中间展示层回归发现模式页缺少旧版元数据字段，已在最终通过的回归前恢复兼容字段。

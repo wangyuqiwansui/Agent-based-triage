@@ -2915,6 +2915,37 @@ def validate_skill(skill_dir: pathlib.Path) -> ValidationReport:
     validate_relative_links(skill_dir, report)
     validate_analysis_contracts(skill_dir, report)
     validate_runtime_protocols(registry, skill_dir, report)
+    # Keep module contracts registered and their generated views synchronized.
+    # / 保持模块契约已注册，并同步其派生视图。
+    import runpy
+    collaboration_validator = skill_dir / "scripts/sync_collaboration_docs.py"
+    if not collaboration_validator.is_file():
+        report.error("collaboration_contract", "missing collaboration validator", "缺少协作契约校验器")
+    else:
+        validate_collaboration = runpy.run_path(str(collaboration_validator))["validate_collaboration_assets"]
+        for error in validate_collaboration(skill_dir, registry):
+            report.error("collaboration_contract", error, "协作契约或视图校验失败")
+    hierarchy_validator = skill_dir / "scripts/sync_collaboration_hierarchy_docs.py"
+    if not hierarchy_validator.is_file():
+        report.error("hierarchy_specification", "missing hierarchy specification validator", "缺少层级委派规格校验器")
+    else:
+        validate_hierarchy = runpy.run_path(str(hierarchy_validator))["validate_hierarchy_assets"]
+        for error in validate_hierarchy(skill_dir, registry):
+            report.error("hierarchy_specification", error, "层级委派来源或视图校验失败")
+    gather_validator = skill_dir / "scripts/sync_collaboration_gather_docs.py"
+    if not gather_validator.is_file():
+        report.error("gather_specification", "missing gather specification validator", "缺少扇出聚合规格校验器")
+    else:
+        validate_gather = runpy.run_path(str(gather_validator))["validate_gather_assets"]
+        for error in validate_gather(skill_dir, registry):
+            report.error("gather_specification", error, "扇出聚合来源或视图校验失败")
+    review_validator = skill_dir / "scripts/sync_adversarial_review_docs.py"
+    if not review_validator.is_file():
+        report.error("review_specification", "missing review specification validator", "缺少对抗评审规格校验器")
+    else:
+        validate_review = runpy.run_path(str(review_validator))["validate_review_assets"]
+        for error in validate_review(skill_dir, registry):
+            report.error("review_specification", error, "对抗评审来源或视图校验失败")
     validate_navigation(skill_dir, report)
     return report
 

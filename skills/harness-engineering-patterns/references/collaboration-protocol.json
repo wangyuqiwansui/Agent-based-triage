@@ -1,0 +1,1009 @@
+{
+  "protocol_version": "3.0.0",
+  "name_en": "Collaboration module introduction",
+  "name_zh": "协作模块导论",
+  "status": "draft",
+  "source_kind": "local_seed",
+  "description_en": "Local profile 3.0.0 explicitly mapped to the two supplied full design documents and their shared source contract 2.0.0.",
+  "description_zh": "本地配置 3.0.0 显式映射两份已提供全文设计文档及其共享来源契约 2.0.0。",
+  "execution_nodes": [
+    {
+      "id": "CE01",
+      "name_en": "Admission",
+      "name_zh": "协作启用判断",
+      "procedure_en": "Separate expected benefit from decomposability, manageable state and verifiable results; unknown signals require evidence or a baseline.",
+      "procedure_zh": "分开评估预期收益与任务可拆、状态可管、结果可验；未知信号转补证或单体基线。",
+      "outputs": "admission_record"
+    },
+    {
+      "id": "CE02",
+      "name_en": "Goal and criteria",
+      "name_zh": "目标与验收标准",
+      "procedure_en": "Freeze the global goal, required criteria, scope and accountable acceptor before decomposition.",
+      "procedure_zh": "拆分前固定全局目标、必选标准、范围与验收负责人。",
+      "outputs": "goal_contract"
+    },
+    {
+      "id": "CE03",
+      "name_en": "Ownership and decomposition",
+      "name_zh": "责任与任务划分",
+      "procedure_en": "Define disjoint responsibilities, dependencies, aggregation ownership and the smallest useful mode combination.",
+      "procedure_zh": "定义职责边界、依赖、汇总责任与最小必要模式组合。",
+      "outputs": "responsibility_map"
+    },
+    {
+      "id": "CE04",
+      "name_en": "Task and isolation contract",
+      "name_zh": "任务卡与隔离配置",
+      "procedure_en": "Bind versioned inputs, outputs, role authority, write isolation, budgets and bounded recovery.",
+      "procedure_zh": "绑定输入版本、输出、角色权限、写入隔离、预算与有界恢复。",
+      "outputs": "task_card"
+    },
+    {
+      "id": "CE05",
+      "name_en": "Dispatch and acknowledgment",
+      "name_zh": "派发与签收",
+      "procedure_en": "Dispatch only to the assigned role; persist delivery and acknowledgment separately; do not infer acceptance from arrival.",
+      "procedure_zh": "仅派发给指定角色，分别记录送达与签收，送达不代表验收。",
+      "outputs": "dispatch_ack"
+    },
+    {
+      "id": "CE06",
+      "name_en": "Bounded execution",
+      "name_zh": "边界内执行",
+      "procedure_en": "Use the assigned scope and tool policy; produce business work through the existing action runtime.",
+      "procedure_zh": "遵守任务范围与工具策略，业务动作走现有行动运行时。",
+      "outputs": "execution_record"
+    },
+    {
+      "id": "CE07",
+      "name_en": "Artifact and local acceptance",
+      "name_zh": "工件与局部验收",
+      "procedure_en": "Submit public result artifacts and evidence; accept or reject the exact version against required criteria.",
+      "procedure_zh": "提交公开工件与证据，按必选标准验收或拒绝精确版本。",
+      "outputs": "result_artifact, acceptance_receipt.local"
+    },
+    {
+      "id": "CE08",
+      "name_en": "Aggregation and reconciliation",
+      "name_zh": "聚合与口径对齐",
+      "procedure_en": "Account for all expected branches, align definitions and resolve write or semantic conflicts before synthesis.",
+      "procedure_zh": "核对全部预期分支，对齐定义，综合前处理写入与语义冲突。",
+      "outputs": "aggregation_manifest"
+    },
+    {
+      "id": "CE09",
+      "name_en": "Adversarial review and adjudication",
+      "name_zh": "对抗评审与裁决",
+      "procedure_en": "Enable when justified by independent challenge; blocking objections require evidence-backed adjudication and current-version re-review.",
+      "procedure_zh": "需要独立质疑时启用；阻塞异议必须有据裁决，改版后重审当前版本。",
+      "outputs": "objection, adjudication, acceptance_receipt.review"
+    },
+    {
+      "id": "CE10",
+      "name_en": "Global acceptance",
+      "name_zh": "全局验收",
+      "procedure_en": "Check the complete deliverable against the original global goal; local success alone cannot release it.",
+      "procedure_zh": "按原全局目标验收整体交付，局部成功不能直接放行。",
+      "outputs": "acceptance_receipt.global"
+    },
+    {
+      "id": "CE11",
+      "name_en": "Versioned handoff and delivery",
+      "name_zh": "正确版本交接与交付",
+      "procedure_en": "Bind the current result head; distinguish arrival, acceptance and explicit responsibility transfer to the receiver.",
+      "procedure_zh": "绑定当前工件版本，区分到达、验收与接收方明确承接责任。",
+      "outputs": "acceptance_receipt.handoff"
+    },
+    {
+      "id": "CE12",
+      "name_en": "Local recovery",
+      "name_zh": "局部恢复",
+      "procedure_en": "Repair only failed and affected work within budget; evidence-only gaps go to probes; preserve completed side-effect facts.",
+      "procedure_zh": "预算内只修复失败及受影响工作；纯证据缺口交探针；保留已完成副作用事实。",
+      "outputs": "recovery_record"
+    },
+    {
+      "id": "CE13",
+      "name_en": "Benefit comparison",
+      "name_zh": "协作收益复盘",
+      "procedure_en": "Compare with a single-actor baseline under the same criteria, workload and environment, including time, resources, duplicate work and convergence.",
+      "procedure_zh": "同标准、负载与环境对比单体基线，覆盖耗时、资源、重复工作与收口成本。",
+      "outputs": "baseline_comparison"
+    }
+  ],
+  "probe_nodes": [
+    {
+      "id": "CP01",
+      "name_en": "Authorized intake",
+      "name_zh": "获准数据接入",
+      "procedure_en": "Read permitted sources and freeze the snapshot scope; do not start the execution flow.",
+      "procedure_zh": "读取获准来源并固定快照范围，不启动执行流程。"
+    },
+    {
+      "id": "CP02",
+      "name_en": "Provenance and version",
+      "name_zh": "来源与版本核验",
+      "procedure_en": "Verify source authority, exact versions, hashes and declared inventory completeness.",
+      "procedure_zh": "核验来源权威、精确版本、哈希与声明的清单完整性。"
+    },
+    {
+      "id": "CP03",
+      "name_en": "Deduplication and correlation",
+      "name_zh": "去重与执行关联",
+      "procedure_en": "Collapse identical retries, reject conflicting duplicates, and correlate by run, scope, identity and revision.",
+      "procedure_zh": "折叠相同重试，拒绝冲突重复，按运行、范围、标识与修订关联。"
+    },
+    {
+      "id": "CP04",
+      "name_en": "Coverage and ownership",
+      "name_zh": "覆盖与责任检查",
+      "procedure_en": "Compare observed tasks with the trusted expected set, not just successful records.",
+      "procedure_zh": "对比观测任务与可信预期集合，不能只统计成功记录。"
+    },
+    {
+      "id": "CP05",
+      "name_en": "Evidence and handoff",
+      "name_zh": "证据与交接检查",
+      "procedure_en": "Check exact-version evidence, objections, acceptance stages and responsibility transfer.",
+      "procedure_zh": "检查精确版本证据、异议、各层验收与责任转移。"
+    },
+    {
+      "id": "CP06",
+      "name_en": "Gap classification",
+      "name_zh": "缺口识别与分类",
+      "procedure_en": "Separate unfinished business work from missing evidence of work that already happened.",
+      "procedure_zh": "区分业务未完成与业务已发生但证据缺失。"
+    },
+    {
+      "id": "CP07",
+      "name_en": "Authorized supplementation",
+      "name_zh": "授权范围内补证",
+      "procedure_en": "Retrieve existing evidence or observe current state within approved sources; never fabricate historical actions or decisions.",
+      "procedure_zh": "在获准来源内查已有证据或观测当前状态，不补造历史行动或决定。"
+    },
+    {
+      "id": "CP08",
+      "name_en": "Metrics with unknowns",
+      "name_zh": "指标计算与未知保留",
+      "procedure_en": "Use registered populations, windows and units; missing fields and zero denominators remain unknown.",
+      "procedure_zh": "采用注册的样本、窗口与单位，字段缺失或分母为零保持未知。"
+    },
+    {
+      "id": "CP09",
+      "name_en": "Candidate submission",
+      "name_zh": "补充候选提交",
+      "procedure_en": "Return a version-bound candidate with provenance; do not mutate task success.",
+      "procedure_zh": "返回带版本与来源的补充候选，不修改任务成功状态。"
+    },
+    {
+      "id": "CP10",
+      "name_en": "Disposition tracking",
+      "name_zh": "采纳拒收回执跟踪",
+      "procedure_en": "Track adopted or rejected candidates; adoption requires a separate business recheck bound to the candidate.",
+      "procedure_zh": "追踪采纳或拒收；采纳必须有绑定该候选的独立业务复验。"
+    },
+    {
+      "id": "CP11",
+      "name_en": "Probe self-health",
+      "name_zh": "探针自健康与关闭",
+      "procedure_en": "Report source gaps, stale targets, pending receipts and unsupported measurements; close only the observation run.",
+      "procedure_zh": "报告来源缺口、陈旧目标、待回执与未支持测量，只关闭观测运行。"
+    }
+  ],
+  "metrics": [
+    {
+      "id": "CM01",
+      "name_en": "Task contract coverage",
+      "name_zh": "任务契约覆盖率",
+      "formula_en": "verified expected task cards / expected task cards",
+      "formula_zh": "已核验预期任务卡数 / 预期任务卡数",
+      "unit": "ratio",
+      "probe_ref": "CP04",
+      "implementation": "reference",
+      "sources": "snapshot.expected_tasks; task_card",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM02",
+      "name_en": "Responsibility coverage",
+      "name_zh": "责任覆盖率",
+      "formula_en": "tasks with complete ownership and acceptance roles / expected tasks",
+      "formula_zh": "责任与验收角色齐全任务数 / 预期任务数",
+      "unit": "ratio",
+      "probe_ref": "CP04",
+      "implementation": "adapter_required",
+      "sources": "responsibility_map; task_card",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM03",
+      "name_en": "Criteria coverage",
+      "name_zh": "验收标准覆盖率",
+      "formula_en": "tasks with frozen required criteria / expected tasks",
+      "formula_zh": "已固化必选标准任务数 / 预期任务数",
+      "unit": "ratio",
+      "probe_ref": "CP04",
+      "implementation": "adapter_required",
+      "sources": "goal_contract; task_card",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM04",
+      "name_en": "Input binding coverage",
+      "name_zh": "输入绑定覆盖率",
+      "formula_en": "resolved required input bindings / required input bindings",
+      "formula_zh": "已解析必选输入绑定数 / 必选输入绑定数",
+      "unit": "ratio",
+      "probe_ref": "CP05",
+      "implementation": "adapter_required",
+      "sources": "input_manifest",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM05",
+      "name_en": "Dispatch acknowledgment rate",
+      "name_zh": "派发签收率",
+      "formula_en": "acknowledged dispatches / dispatched tasks",
+      "formula_zh": "已签收派发数 / 已派发任务数",
+      "unit": "ratio",
+      "probe_ref": "CP04",
+      "implementation": "adapter_required",
+      "sources": "dispatch_ack",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM06",
+      "name_en": "Isolation coverage",
+      "name_zh": "隔离配置覆盖率",
+      "formula_en": "isolated writable tasks / tasks requiring isolation",
+      "formula_zh": "已隔离可写任务数 / 需要隔离任务数",
+      "unit": "ratio",
+      "probe_ref": "CP04",
+      "implementation": "adapter_required",
+      "sources": "isolation_config; workspace_audit",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM07",
+      "name_en": "Dependency readiness rate",
+      "name_zh": "依赖就绪率",
+      "formula_en": "dispatches with accepted dependencies / dependency-bearing dispatches",
+      "formula_zh": "派发时依赖已验收数 / 有依赖派发数",
+      "unit": "ratio",
+      "probe_ref": "CP04",
+      "implementation": "adapter_required",
+      "sources": "dependency_manifest; dispatch_ack",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM08",
+      "name_en": "Local acceptance rate",
+      "name_zh": "局部验收通过率",
+      "formula_en": "expected task heads with valid local acceptance / expected tasks",
+      "formula_zh": "当前版本有有效局部验收的预期任务数 / 预期任务数",
+      "unit": "ratio",
+      "probe_ref": "CP05",
+      "implementation": "reference",
+      "sources": "snapshot.expected_tasks; result_heads; acceptance_receipt",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM09",
+      "name_en": "Whole delivery completion rate",
+      "name_zh": "整体交付完成率",
+      "formula_en": "expected task heads passing all configured delivery gates / expected tasks",
+      "formula_zh": "当前版本通过全部已配置交付闸门的任务数 / 预期任务数",
+      "unit": "ratio",
+      "probe_ref": "CP05",
+      "implementation": "reference",
+      "sources": "snapshot.expected_tasks; assess_delivery",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM10",
+      "name_en": "Evidence binding coverage",
+      "name_zh": "证据绑定覆盖率",
+      "formula_en": "verified required evidence bindings / required evidence bindings",
+      "formula_zh": "已核验必选证据绑定数 / 必选证据绑定数",
+      "unit": "ratio",
+      "probe_ref": "CP05",
+      "implementation": "adapter_required",
+      "sources": "evidence_manifest; evidence",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM11",
+      "name_en": "Version alignment rate",
+      "name_zh": "版本对齐率",
+      "formula_en": "handoffs binding current heads / attempted handoffs",
+      "formula_zh": "绑定当前版本交接数 / 尝试交接数",
+      "unit": "ratio",
+      "probe_ref": "CP05",
+      "implementation": "adapter_required",
+      "sources": "handoff_attempt; result_heads",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM12",
+      "name_en": "Handoff arrival rate",
+      "name_zh": "交接材料到达率",
+      "formula_en": "received deliveries / attempted deliveries",
+      "formula_zh": "已到达交付数 / 尝试交付数",
+      "unit": "ratio",
+      "probe_ref": "CP05",
+      "implementation": "adapter_required",
+      "sources": "acceptance_receipt.arrival; delivery_attempt",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM13",
+      "name_en": "Handoff acceptance rate",
+      "name_zh": "交接验收通过率",
+      "formula_en": "accepted receiver handoffs / attempted handoffs",
+      "formula_zh": "接收方验收通过交接数 / 尝试交接数",
+      "unit": "ratio",
+      "probe_ref": "CP05",
+      "implementation": "adapter_required",
+      "sources": "acceptance_receipt.handoff; handoff_attempt",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM14",
+      "name_en": "Responsibility transfer rate",
+      "name_zh": "责任转移闭合率",
+      "formula_en": "explicit accepted receiver transfers / required transfers",
+      "formula_zh": "接收方明确验收承接数 / 必需责任转移数",
+      "unit": "ratio",
+      "probe_ref": "CP05",
+      "implementation": "adapter_required",
+      "sources": "ownership_manifest; acceptance_receipt.handoff",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM15",
+      "name_en": "Aggregation coverage",
+      "name_zh": "聚合覆盖率",
+      "formula_en": "branches with explicit terminal disposition / expected branches",
+      "formula_zh": "有显式终态处置分支数 / 预期分支数",
+      "unit": "ratio",
+      "probe_ref": "CP04",
+      "implementation": "adapter_required",
+      "sources": "aggregation_manifest",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM16",
+      "name_en": "Definition alignment rate",
+      "name_zh": "口径对齐率",
+      "formula_en": "aggregated artifacts using frozen definitions / aggregated artifacts",
+      "formula_zh": "采用固定口径的聚合工件数 / 聚合工件数",
+      "unit": "ratio",
+      "probe_ref": "CP05",
+      "implementation": "adapter_required",
+      "sources": "definition_registry; aggregation_manifest",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM17",
+      "name_en": "Conflict closure rate",
+      "name_zh": "冲突闭合率",
+      "formula_en": "conflicts with validated resolutions / identified conflicts",
+      "formula_zh": "已核验解决冲突数 / 已识别冲突数",
+      "unit": "ratio",
+      "probe_ref": "CP05",
+      "implementation": "adapter_required",
+      "sources": "conflict_register; resolution_receipt",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM18",
+      "name_en": "Blocking objection closure rate",
+      "name_zh": "阻塞异议闭合率",
+      "formula_en": "blocking objections with a verified current-version disposition / blocking objections",
+      "formula_zh": "有已核验当前版本处置的阻塞异议数 / 阻塞异议数",
+      "unit": "ratio",
+      "probe_ref": "CP05",
+      "implementation": "adapter_required",
+      "sources": "objection; adjudication; review_receipt",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM19",
+      "name_en": "Review coverage",
+      "name_zh": "评审覆盖率",
+      "formula_en": "required current-version reviews completed / required reviews",
+      "formula_zh": "已完成当前版本必选评审数 / 必选评审数",
+      "unit": "ratio",
+      "probe_ref": "CP05",
+      "implementation": "adapter_required",
+      "sources": "review_manifest; acceptance_receipt.review",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM20",
+      "name_en": "Local recovery success rate",
+      "name_zh": "局部恢复成功率",
+      "formula_en": "verified successful local recoveries / attempted local recoveries",
+      "formula_zh": "已验证成功局部恢复数 / 局部恢复尝试数",
+      "unit": "ratio",
+      "probe_ref": "CP06",
+      "implementation": "adapter_required",
+      "sources": "recovery_record",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM21",
+      "name_en": "Attempts per completed task",
+      "name_zh": "每完成任务尝试数",
+      "formula_en": "all attempts in cohort / completed tasks in cohort",
+      "formula_zh": "同队列全部尝试次数 / 已完成任务数",
+      "unit": "attempts/task",
+      "probe_ref": "CP08",
+      "implementation": "adapter_required",
+      "sources": "attempt_log; completion_inventory",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM22",
+      "name_en": "Duplicate work share",
+      "name_zh": "重复工作占比",
+      "formula_en": "effort spent on overlapping work / total measured effort",
+      "formula_zh": "重复范围工作耗用 / 总测得工作耗用",
+      "unit": "ratio",
+      "probe_ref": "CP08",
+      "implementation": "adapter_required",
+      "sources": "scope_overlap_audit; effort_log",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM23",
+      "name_en": "Actual elapsed time",
+      "name_zh": "实际耗时",
+      "formula_en": "delivery or terminal time minus admitted start time, including waits",
+      "formula_zh": "交付或终止时间减准入开始时间，含等待",
+      "unit": "seconds",
+      "probe_ref": "CP08",
+      "implementation": "adapter_required",
+      "sources": "clocked_run",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM24",
+      "name_en": "Resource use",
+      "name_zh": "资源消耗",
+      "formula_en": "sum of measured resources in one declared unit; report token and currency series separately",
+      "formula_zh": "按一种声明单位汇总实测资源；token 与货币分列",
+      "unit": "declared_unit",
+      "probe_ref": "CP08",
+      "implementation": "adapter_required",
+      "sources": "resource_ledger",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM25",
+      "name_en": "Quality delta",
+      "name_zh": "质量变化",
+      "formula_en": "collaboration score minus single-actor baseline score under identical rubric",
+      "formula_zh": "相同量表下协作得分减单体基线得分",
+      "unit": "score_points",
+      "probe_ref": "CP08",
+      "implementation": "adapter_required",
+      "sources": "paired_baseline; quality_evaluation",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM26",
+      "name_en": "Elapsed-time delta",
+      "name_zh": "耗时变化",
+      "formula_en": "collaboration elapsed seconds minus matched baseline elapsed seconds",
+      "formula_zh": "协作实际秒数减匹配基线实际秒数",
+      "unit": "seconds",
+      "probe_ref": "CP08",
+      "implementation": "adapter_required",
+      "sources": "paired_baseline; clocked_run",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM27",
+      "name_en": "Resource delta",
+      "name_zh": "资源变化",
+      "formula_en": "collaboration resource use minus matched baseline use in the same unit",
+      "formula_zh": "相同单位协作资源消耗减匹配基线消耗",
+      "unit": "declared_unit",
+      "probe_ref": "CP08",
+      "implementation": "adapter_required",
+      "sources": "paired_baseline; resource_ledger",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM28",
+      "name_en": "Completion-rate delta",
+      "name_zh": "完成率变化",
+      "formula_en": "collaboration completion rate minus matched baseline completion rate",
+      "formula_zh": "协作完成率减匹配基线完成率",
+      "unit": "ratio_difference",
+      "probe_ref": "CP08",
+      "implementation": "adapter_required",
+      "sources": "paired_baseline; completion_inventory",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM29",
+      "name_en": "Post-parallel convergence time",
+      "name_zh": "并行结束后收口耗时",
+      "formula_en": "final acceptance time minus last required branch terminal time",
+      "formula_zh": "最终验收时间减最后必选分支终态时间",
+      "unit": "seconds",
+      "probe_ref": "CP08",
+      "implementation": "adapter_required",
+      "sources": "branch_manifest; final_acceptance_clock",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM30",
+      "name_en": "Source verification coverage",
+      "name_zh": "来源核验覆盖率",
+      "formula_en": "unique verified listed records / expected listed records",
+      "formula_zh": "已核验唯一清单记录数 / 预期清单记录数",
+      "unit": "ratio",
+      "probe_ref": "CP02",
+      "implementation": "reference",
+      "sources": "snapshot.record_bindings; host_verifier",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM31",
+      "name_en": "Duplicate record share",
+      "name_zh": "重复记录占比",
+      "formula_en": "identical duplicate input records / input records before deduplication",
+      "formula_zh": "完全相同重复输入记录数 / 去重前输入记录数",
+      "unit": "ratio",
+      "probe_ref": "CP03",
+      "implementation": "reference",
+      "sources": "input_batch",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM32",
+      "name_en": "Supplement adoption rate",
+      "name_zh": "补充采纳率",
+      "formula_en": "valid adopted candidates / candidates submitted in the observation window",
+      "formula_zh": "有效采纳候选数 / 观察窗口内提交候选数",
+      "unit": "ratio",
+      "probe_ref": "CP10",
+      "implementation": "adapter_required",
+      "sources": "supplement_candidate; supplement_receipt; business_recheck",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM33",
+      "name_en": "Supplement receipt coverage",
+      "name_zh": "补充回执覆盖率",
+      "formula_en": "candidates with valid adopted or rejected receipts / submitted candidates",
+      "formula_zh": "有有效采纳或拒收回执候选数 / 提交候选数",
+      "unit": "ratio",
+      "probe_ref": "CP10",
+      "implementation": "adapter_required",
+      "sources": "supplement_candidate; supplement_receipt",
+      "status": "deprecated_local"
+    },
+    {
+      "id": "CM34",
+      "name_en": "Unknown metric share",
+      "name_zh": "未知指标占比",
+      "formula_en": "unknown enabled metrics / enabled metrics excluding CM34 itself",
+      "formula_zh": "未知的已启用指标数 / 除 CM34 自身外的已启用指标数",
+      "unit": "ratio",
+      "probe_ref": "CP11",
+      "implementation": "reference",
+      "sources": "probe_report.metrics",
+      "status": "deprecated_local"
+    }
+  ],
+  "execution_cases": [
+    {
+      "id": "CET01",
+      "name_en": "Benefit and readiness are separate",
+      "name_zh": "收益与运行条件分开",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET02",
+      "name_en": "False benefit selects single actor",
+      "name_zh": "无预期收益走单体",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET03",
+      "name_en": "Unknown readiness blocks admission",
+      "name_zh": "运行条件未知不准入",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET04",
+      "name_en": "Freeze goal before splitting",
+      "name_zh": "拆分前冻结目标",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET05",
+      "name_en": "Missing ownership rejects task",
+      "name_zh": "缺责任拒绝任务",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET06",
+      "name_en": "Inputs bind exact revisions",
+      "name_zh": "输入精确版本绑定",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET07",
+      "name_en": "Isolation and merge owner required",
+      "name_zh": "隔离与合并责任必填",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET08",
+      "name_en": "Mode combinations do not imply serial execution",
+      "name_zh": "组合模式不强制串行",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET09",
+      "name_en": "Arrival does not imply acceptance",
+      "name_zh": "到达不代表验收",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET10",
+      "name_en": "Wrong executor cannot submit success",
+      "name_zh": "错误执行者不能提交成功",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET11",
+      "name_en": "Partial work cannot release",
+      "name_zh": "部分完成不能放行",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET12",
+      "name_en": "Missing required criterion blocks",
+      "name_zh": "缺必选标准阻断",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET13",
+      "name_en": "Local pass cannot replace global pass",
+      "name_zh": "局部通过不能替代全局",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET14",
+      "name_en": "Missing expected branch blocks aggregation",
+      "name_zh": "缺预期分支阻断聚合",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET15",
+      "name_en": "Definition conflict blocks synthesis",
+      "name_zh": "口径冲突阻断综合",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET16",
+      "name_en": "Review is conditional",
+      "name_zh": "评审按场景启用",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET17",
+      "name_en": "Review must cover current version",
+      "name_zh": "评审必须覆盖当前版本",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET18",
+      "name_en": "Unresolved objection blocks delivery",
+      "name_zh": "未裁决异议阻断交付",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET19",
+      "name_en": "Upholding objection blocks delivery",
+      "name_zh": "维持异议阻断交付",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET20",
+      "name_en": "Only assigned arbiter can dismiss",
+      "name_zh": "仅指定裁决者可驳回",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET21",
+      "name_en": "Conflicting adjudications fail closed",
+      "name_zh": "冲突裁决默认阻断",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET22",
+      "name_en": "Old artifact acceptance cannot release new head",
+      "name_zh": "旧工件验收不能放行新版本",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET23",
+      "name_en": "Receiver must accept ownership",
+      "name_zh": "接收者必须验收承责",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET24",
+      "name_en": "Recovery preserves completed work",
+      "name_zh": "局部恢复保留已完成工作",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET25",
+      "name_en": "Recovery is bounded",
+      "name_zh": "恢复必须有界",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET26",
+      "name_en": "Unknown side effect requires reconciliation",
+      "name_zh": "未知副作用先核验",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET27",
+      "name_en": "Baseline comparisons require matched cohorts",
+      "name_zh": "基线对比要求队列可比",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CET28",
+      "name_en": "Convergence cost is included",
+      "name_zh": "计入并行后收口成本",
+      "status": "integration_pending"
+    }
+  ],
+  "probe_cases": [
+    {
+      "id": "CPT01",
+      "name_en": "Probe runs without execution session",
+      "name_zh": "无需执行会话可运行探针",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT02",
+      "name_en": "External workflows use field adapter",
+      "name_zh": "外部工作流通过字段适配",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT03",
+      "name_en": "Unauthorized snapshot rejected",
+      "name_zh": "未授权快照拒绝",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT04",
+      "name_en": "Unknown protocol version rejected",
+      "name_zh": "未知协议版本拒绝",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT05",
+      "name_en": "Invalid content digest rejected",
+      "name_zh": "错误内容摘要拒绝",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT06",
+      "name_en": "Cross-scope reuse rejected",
+      "name_zh": "跨范围复用拒绝",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT07",
+      "name_en": "Identical retries deduplicated",
+      "name_zh": "相同重试去重",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT08",
+      "name_en": "Conflicting duplicates rejected",
+      "name_zh": "冲突重复拒绝",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT09",
+      "name_en": "Omitted expected task remains in denominator",
+      "name_zh": "缺失预期任务保留分母",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT10",
+      "name_en": "Missing record remains a gap",
+      "name_zh": "缺失记录保持缺口",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT11",
+      "name_en": "Unknown inventory never proves completion",
+      "name_zh": "未知清单不能证明完成",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT12",
+      "name_en": "Unlisted record cannot alter inventory",
+      "name_zh": "未列记录不能改变清单",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT13",
+      "name_en": "Missing owner reported",
+      "name_zh": "缺责任被报告",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT14",
+      "name_en": "Stale receipt cannot close current version",
+      "name_zh": "陈旧回执不能关闭当前版本",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT15",
+      "name_en": "Current-version evidence required",
+      "name_zh": "要求当前版本证据",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT16",
+      "name_en": "Review gap remains visible",
+      "name_zh": "评审缺口保持可见",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT17",
+      "name_en": "Business gap goes to execution",
+      "name_zh": "业务缺口回执行",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT18",
+      "name_en": "Evidence gap may be supplemented",
+      "name_zh": "证据缺口可补证",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT19",
+      "name_en": "Supplement source must be allowed",
+      "name_zh": "补证来源必须获准",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT20",
+      "name_en": "Current observation cannot invent test execution",
+      "name_zh": "当前观测不能虚构历史测试",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT21",
+      "name_en": "Current observation cannot invent approval",
+      "name_zh": "当前观测不能虚构审批",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT22",
+      "name_en": "Current observation cannot invent adjudication",
+      "name_zh": "当前观测不能虚构裁决",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT23",
+      "name_en": "Existing historical records can be retrieved",
+      "name_zh": "可检索已有历史记录",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT24",
+      "name_en": "Candidate target must match gap",
+      "name_zh": "候选目标必须匹配缺口",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT25",
+      "name_en": "Stale candidate rejected",
+      "name_zh": "陈旧候选拒绝",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT26",
+      "name_en": "Missing requested claim stays open",
+      "name_zh": "缺所需声明保持开放",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT27",
+      "name_en": "Candidate does not mutate success",
+      "name_zh": "候选不改变成功状态",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT28",
+      "name_en": "Adoption requires business recheck",
+      "name_zh": "采纳需要业务复验",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT29",
+      "name_en": "Recheck must consume candidate evidence",
+      "name_zh": "复验必须消费候选证据",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT30",
+      "name_en": "Rejected candidate has reason and owner",
+      "name_zh": "拒收有理由与责任人",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT31",
+      "name_en": "Pending receipt remains pending",
+      "name_zh": "未回执保持待定",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT32",
+      "name_en": "Empty denominator returns unknown",
+      "name_zh": "空分母返回未知",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT33",
+      "name_en": "Unsupported metrics remain unknown",
+      "name_zh": "未支持指标保持未知",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT34",
+      "name_en": "Unknown metric share excludes itself",
+      "name_zh": "未知指标占比排除自身",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT35",
+      "name_en": "Units are not mixed",
+      "name_zh": "计量单位不混用",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT36",
+      "name_en": "Baseline mismatch yields unknown",
+      "name_zh": "基线不可比保持未知",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT37",
+      "name_en": "Verifier failure rejects input",
+      "name_zh": "核验器故障拒绝输入",
+      "status": "integration_pending"
+    },
+    {
+      "id": "CPT38",
+      "name_en": "Probe closes only its own run",
+      "name_zh": "探针仅关闭自身观测",
+      "status": "integration_pending"
+    }
+  ],
+  "source_contract_version": "2.0.0",
+  "source_document_version": "0.2.0",
+  "legacy_metric_status_en": "CM01-CM34 retain their prior meanings as deprecated local diagnostics; they are not aliases for source metric numbers.",
+  "legacy_metric_status_zh": "CM01-CM34 保留先前含义作为弃用的本地诊断项，不能作为全文指标编号的别名。",
+  "source_map_reference": "references/collaboration-fulltext-source-map.json"
+}

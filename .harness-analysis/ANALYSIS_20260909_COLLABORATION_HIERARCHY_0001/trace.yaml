@@ -1,0 +1,43 @@
+trace_id: TRACE_COLLABORATION_HIERARCHY_20260909_0001
+analysis_id: ANALYSIS_20260909_COLLABORATION_HIERARCHY_0001
+event_time: '2026-09-09T09:50:14.300589+00:00'
+status: draft
+scope:
+  project_scope: D:\Agent-based-triage
+  tenant_scope: none
+  environment_scope: local
+  task_scope: Hierarchy specification integration / 层级委派规格接入
+sensitivity: internal
+source_revision: acfd22cf748c594f512520fbd2cfb4f5f690ff2e
+subject:
+  subject_type: pattern
+  subject_ref: PATTERN_0046
+  cell_refs:
+  - CELL_COLLABORATION_HIERARCHY
+  pattern_refs:
+  - PATTERN_0046
+observation:
+  trigger: User supplied two chapter-32 documents / 用户提供两份第 32 讲文档
+  before: Layer model and generic metrics lacked explicit responsibilities, two-gate
+    acceptance and dedicated supplementation semantics. / 原分层模型与通用指标缺少明确责任、两闸验收与专用补全语义。
+  adjustment: Integrated 11 execution nodes, 7 probe steps, 10 probes, 22 metrics,
+    shared 0.1.0 contract and 38 required cases; preserved draft identity and existing
+    edits. / 接入 11 执行节点、7 观测步骤、10 探针、22 指标、共享 0.1.0 契约与 38 项验收要求，保留草案身份与已有修改。
+  outcome: Source/skill checks passed; 794 tests and 243 subtests passed, 3 skipped.
+    No live delegation or HM measurements performed. / 来源与技能校验通过，794 测试与 243 子测试通过，3
+    跳过；未运行真实委派或 HM 实测。
+  validity: verified
+evidence_refs:
+- external:.harness-analysis/ANALYSIS_20260909_COLLABORATION_HIERARCHY_0001/sources/execution.md
+- external:.harness-analysis/ANALYSIS_20260909_COLLABORATION_HIERARCHY_0001/sources/observability.md
+- external:.harness-analysis/ANALYSIS_20260909_COLLABORATION_HIERARCHY_0001/validation.json
+- external:.harness-analysis/ANALYSIS_20260909_COLLABORATION_HIERARCHY_0001/test-results.txt
+verification_tasks: []
+follow_up:
+- Host integration and business acceptance cases remain outside this documentation
+  update / 宿主集成及业务验收用例仍属于本次文档更新之外的接入工作
+owner: Codex
+retention:
+  policy: project
+  expires_at: null
+  deletion_or_archive_rule: Archive when superseded / 被替代时归档

@@ -7,6 +7,21 @@ verifiable artifacts; it never asks for or persists private chain-of-thought.
 外部可核验产物，绝不请求或持久化私密思维过程。
 """
 
+from .collaboration_observability import (
+    calculate_source_metrics as calculate_collaboration_source_metrics,
+)
+from .collaboration_protocol import (
+    CollaborationContractError,
+    RecordInventory as CollaborationRecordInventory,
+    assess_admission as assess_collaboration_admission,
+    assess_delivery as assess_collaboration_delivery,
+    binding as collaboration_record_binding,
+    inspect_workflow as inspect_collaboration_workflow,
+    seal_record as seal_collaboration_record,
+    validate_record as validate_collaboration_record,
+    validate_supplement as validate_collaboration_supplement,
+    validate_supplement_receipt as validate_collaboration_supplement_receipt,
+)
 from .reasoning_artifacts import (
     ArtifactValidationError,
     artifact_fingerprint,
@@ -311,6 +326,17 @@ from .tool_dispatch_sqlite_store import (
 
 
 __all__ = [
+    "CollaborationContractError",
+    "CollaborationRecordInventory",
+    "calculate_collaboration_source_metrics",
+    "assess_collaboration_admission",
+    "assess_collaboration_delivery",
+    "collaboration_record_binding",
+    "inspect_collaboration_workflow",
+    "seal_collaboration_record",
+    "validate_collaboration_record",
+    "validate_collaboration_supplement",
+    "validate_collaboration_supplement_receipt",
     "ADMISSION_CHECK_ORDER",
     "ALLOWED_TRANSITIONS",
     "ActionClaim",
