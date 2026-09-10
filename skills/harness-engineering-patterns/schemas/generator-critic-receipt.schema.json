@@ -29,7 +29,11 @@
     "review_binding": { "$ref": "#/$defs/VersionedBinding" },
     "decision_binding": { "$ref": "#/$defs/VersionedBinding" },
     "artifact_binding": { "$ref": "#/$defs/ArtifactBinding" },
+    "artifact_execution_attestation_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "artifact_execution_verification_binding": { "$ref": "#/$defs/VersionedBinding" },
     "critic_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "critic_execution_attestation_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "critic_execution_verification_binding": { "$ref": "#/$defs/VersionedBinding" },
     "policy_gate_binding": { "$ref": "#/$defs/VersionedBinding" },
     "release_gate_binding": { "$ref": "#/$defs/VersionedBinding" },
     "evidence_snapshot_bindings": {

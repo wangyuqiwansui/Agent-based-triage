@@ -49,6 +49,11 @@ _SEMANTIC_VERSION = re.compile(
     r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
 )
 _SHA256 = re.compile(r"^sha256:[a-f0-9]{64}$")
+_EXECUTION_STAGE_ROLE = {
+    "generator": "generator_binding",
+    "critic": "critic_binding",
+    "reviser": "reviser_binding",
+}
 
 
 class GeneratorCriticRuntimeError(RuntimeError):
@@ -153,6 +158,68 @@ def artifact_binding(artifact: Mapping[str, Any]) -> dict[str, Any]:
         "artifact_digest": artifact["artifact_digest"],
         "artifact_record_hash": artifact["artifact_record_hash"],
     }
+
+
+def execution_attestation_binding(
+    attestation: Mapping[str, Any],
+) -> dict[str, str]:
+    """Return the content-addressed execution-proof binding. / 返回内容寻址的执行证明绑定。"""
+
+    return {
+        "id": str(attestation["attestation_id"]),
+        "version": str(attestation["schema_version"]),
+        "hash": str(attestation["attestation_hash"]),
+    }
+
+
+def build_generator_critic_execution_attestation(
+    attestation: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Seal structural adapter evidence; trust still requires an external verifier. / 封存结构化适配器证据；可信性仍须外部验证器确认。"""
+
+    sealed = build_artifact("generator_critic_execution_attestation", attestation)
+    validate_generator_critic_execution_attestation(sealed)
+    return sealed
+
+
+def validate_generator_critic_execution_attestation(
+    attestation: Mapping[str, Any],
+) -> None:
+    """Validate shape, self-hash, and temporal coherence only. / 仅校验结构、自哈希与时间一致性。"""
+
+    validate_schema("generator_critic_execution_attestation", attestation)
+    validate_artifact_hash("generator_critic_execution_attestation", attestation)
+    started = _parse_datetime(attestation["started_at"])
+    completed = _parse_datetime(attestation["completed_at"])
+    if completed < started:
+        raise GeneratorCriticValidationError(
+            ["execution completion precedes start / 执行完成时间早于开始时间"]
+        )
+
+
+def generator_critic_review_output_fingerprint(
+    *,
+    evidence_snapshots: Sequence[Mapping[str, Any]],
+    criteria_results: Sequence[Mapping[str, Any]],
+    supported_findings: Sequence[Mapping[str, Any]],
+    unsupported_opinions: Sequence[Mapping[str, Any]],
+    score: Mapping[str, Any],
+    risk_refs_checked: Sequence[str],
+    reviewed_at: str,
+) -> str:
+    """Hash the exact public critic output accepted by ``record_review``. / 哈希 ``record_review`` 接收的精确公开评审输出。"""
+
+    return artifact_fingerprint({
+        "evidence_snapshots": [deepcopy(dict(item)) for item in evidence_snapshots],
+        "criteria_results": [deepcopy(dict(item)) for item in criteria_results],
+        "supported_findings": [deepcopy(dict(item)) for item in supported_findings],
+        "unsupported_opinions": [
+            deepcopy(dict(item)) for item in unsupported_opinions
+        ],
+        "score": deepcopy(dict(score)),
+        "risk_refs_checked": list(risk_refs_checked),
+        "reviewed_at": reviewed_at,
+    })
 
 
 def reflection_subject_binding_for_artifact(
@@ -397,6 +464,13 @@ def validate_generator_critic_artifact(
     validate_schema("generator_critic_artifact", artifact)
     validate_artifact_hash("generator_critic_artifact", artifact)
     errors: list[str] = []
+    if bool(artifact.get("execution_attestation_binding")) != bool(
+        artifact.get("execution_verification_binding")
+    ):
+        errors.append(
+            "artifact execution attestation and verification bindings must appear together / "
+            "工件执行证明与验证绑定必须同时出现"
+        )
     if contract is not None:
         policy = contract["artifact_policy"]
         if artifact["artifact_id"] != policy["artifact_id"]:
@@ -448,6 +522,13 @@ def validate_generator_critic_review(
     validate_schema("generator_critic_review", review)
     validate_artifact_hash("generator_critic_review", review)
     errors: list[str] = []
+    if bool(review.get("execution_attestation_binding")) != bool(
+        review.get("execution_verification_binding")
+    ):
+        errors.append(
+            "review execution attestation and verification bindings must appear together / "
+            "评审执行证明与验证绑定必须同时出现"
+        )
     reviewed_at = _parse_datetime(review["reviewed_at"])
     snapshots = _snapshot_index(review)
     if len(snapshots) != len(review["evidence_snapshots"]):
@@ -612,12 +693,24 @@ def validate_generator_critic_receipt(
     contract: Mapping[str, Any] | None = None,
     review: Mapping[str, Any] | None = None,
     decision: Mapping[str, Any] | None = None,
+    artifact: Mapping[str, Any] | None = None,
 ) -> None:
     """Validate a receipt binding the accepted exact version / 校验绑定已接受精确版本的回执。"""
 
     validate_schema("generator_critic_receipt", receipt)
     validate_artifact_hash("generator_critic_receipt", receipt)
     errors: list[str] = []
+    attestation_fields = (
+        "artifact_execution_attestation_binding",
+        "artifact_execution_verification_binding",
+        "critic_execution_attestation_binding",
+        "critic_execution_verification_binding",
+    )
+    supplied_attestations = [field in receipt for field in attestation_fields]
+    if any(supplied_attestations) and not all(supplied_attestations):
+        errors.append(
+            "receipt execution-proof bindings must be complete / 回执执行证明绑定必须完整"
+        )
     issued_at = _parse_datetime(receipt["issued_at"])
     if receipt["expires_at"] is not None and _parse_datetime(receipt["expires_at"]) <= issued_at:
         errors.append("receipt expiry must be after issue time / 回执过期时间必须晚于签发时间")
@@ -640,6 +733,19 @@ def validate_generator_critic_receipt(
         expected_evidence = [snapshot["binding"] for snapshot in review["evidence_snapshots"]]
         if _binding_set(receipt["evidence_snapshot_bindings"]) != _binding_set(expected_evidence):
             errors.append("receipt evidence snapshot set mismatch / 回执证据快照集合不匹配")
+        if review.get("execution_attestation_binding") is not None:
+            if receipt.get("critic_execution_attestation_binding") != review.get(
+                "execution_attestation_binding"
+            ):
+                errors.append(
+                    "receipt critic execution attestation mismatch / 回执评审执行证明不匹配"
+                )
+            if receipt.get("critic_execution_verification_binding") != review.get(
+                "execution_verification_binding"
+            ):
+                errors.append(
+                    "receipt critic execution verification mismatch / 回执评审执行验证不匹配"
+                )
     if decision is not None:
         validate_generator_critic_decision(decision, contract=contract, review=review)
         if decision["decision"] != GeneratorCriticDecision.ACCEPT.value:
@@ -648,6 +754,23 @@ def validate_generator_critic_receipt(
             decision, identifier_field="decision_id", hash_field="decision_hash"
         ):
             errors.append("receipt decision binding mismatch / 回执裁决绑定不匹配")
+    if artifact is not None:
+        validate_generator_critic_artifact(artifact, contract=contract)
+        if receipt["artifact_binding"] != artifact_binding(artifact):
+            errors.append("receipt artifact record mismatch / 回执工件记录不匹配")
+        if artifact.get("execution_attestation_binding") is not None:
+            if receipt.get("artifact_execution_attestation_binding") != artifact.get(
+                "execution_attestation_binding"
+            ):
+                errors.append(
+                    "receipt artifact execution attestation mismatch / 回执工件执行证明不匹配"
+                )
+            if receipt.get("artifact_execution_verification_binding") != artifact.get(
+                "execution_verification_binding"
+            ):
+                errors.append(
+                    "receipt artifact execution verification mismatch / 回执工件执行验证不匹配"
+                )
     if errors:
         raise GeneratorCriticValidationError(errors)
 
@@ -698,15 +821,31 @@ class GeneratorCriticSession:
         shared_reflection_guard: Callable[
             [str, Mapping[str, Any]], Mapping[str, Any]
         ],
+        execution_attestation_verifier: Callable[
+            [Mapping[str, Any], Mapping[str, Any]], Mapping[str, Any]
+        ]
+        | None = None,
+        require_execution_attestation: bool = False,
     ) -> None:
         validate_generator_critic_contract(contract)
         if not isinstance(session_id, str) or not session_id.strip():
             raise ValueError("session_id must be a non-empty string")
         if not callable(shared_reflection_guard):
             raise TypeError("shared_reflection_guard must be callable")
+        if execution_attestation_verifier is not None and not callable(
+            execution_attestation_verifier
+        ):
+            raise TypeError("execution_attestation_verifier must be callable")
+        if require_execution_attestation and execution_attestation_verifier is None:
+            raise TypeError(
+                "strict execution attestation requires a trusted verifier / "
+                "严格执行证明模式必须提供可信验证器"
+            )
         self._contract = deepcopy(dict(contract))
         self._session_id = session_id
         self._shared_reflection_guard = shared_reflection_guard
+        self._execution_attestation_verifier = execution_attestation_verifier
+        self._require_execution_attestation = bool(require_execution_attestation)
         self._state = GeneratorCriticState.INITIALIZED
         self._artifacts: list[dict[str, Any]] = []
         self._reviews: list[dict[str, Any]] = []
@@ -717,6 +856,13 @@ class GeneratorCriticSession:
         self._pending_review_id: str | None = None
         self._review_ids: set[str] = set()
         self._receipt_ids: set[str] = set()
+        self._execution_challenges: dict[str, dict[str, Any]] = {}
+        self._execution_attestations: list[dict[str, Any]] = []
+        self._execution_verification_bindings: list[dict[str, str]] = []
+        self._used_execution_session_ids: set[str] = set()
+        self._used_provider_response_hashes: set[str] = set()
+        self._artifact_execution_attestations: dict[str, dict[str, Any]] = {}
+        self._review_execution_attestations: dict[str, dict[str, Any]] = {}
 
     def _require_shared_reflection_assurance(
         self,
@@ -788,6 +934,12 @@ class GeneratorCriticSession:
         return tuple(deepcopy(self._receipts))
 
     @property
+    def execution_attestations(self) -> tuple[dict[str, Any], ...]:
+        """Return verified adapter attestations retained for audit. / 返回为审计保留的已验证适配器证明。"""
+
+        return tuple(deepcopy(self._execution_attestations))
+
+    @property
     def events(self) -> tuple[dict[str, Any], ...]:
         return tuple(deepcopy(self._events))
 
@@ -809,6 +961,210 @@ class GeneratorCriticSession:
             raise GeneratorCriticAuthorizationError(
                 f"{role_field} binding mismatch / {role_field} 绑定不匹配"
             )
+
+    def prepare_execution_challenge(
+        self,
+        *,
+        stage: str,
+        dispatch_id: str,
+        request_nonce: str,
+        request_payload: Any,
+    ) -> dict[str, Any]:
+        """Freeze one coordinator-owned request challenge before provider dispatch. / 在供应商调度前冻结一份由协调器所有的请求挑战。"""
+
+        if stage not in _EXECUTION_STAGE_ROLE:
+            raise ValueError("stage must be generator, critic, or reviser")
+        if not isinstance(dispatch_id, str) or not dispatch_id.strip():
+            raise ValueError("dispatch_id must be a non-empty string")
+        if not isinstance(request_nonce, str) or not request_nonce.strip():
+            raise ValueError("request_nonce must be a non-empty string")
+        if dispatch_id in self._execution_challenges:
+            raise GeneratorCriticAuthorizationError(
+                "execution dispatch id must be unique / 执行调度标识必须唯一"
+            )
+        if any(
+            item["request_nonce"] == request_nonce
+            for item in self._execution_challenges.values()
+        ):
+            raise GeneratorCriticAuthorizationError(
+                "execution request nonce must be unique / 执行请求随机数必须唯一"
+            )
+        role_binding = deepcopy(
+            self._contract["roles"][_EXECUTION_STAGE_ROLE[stage]]
+        )
+        input_hash = artifact_fingerprint({"request_payload": request_payload})
+        challenge_material = {
+            "session_id": self._session_id,
+            "contract_binding": _contract_binding(self._contract),
+            "stage": stage,
+            "dispatch_id": dispatch_id,
+            "request_nonce": request_nonce,
+            "role_binding": role_binding,
+            "input_hash": input_hash,
+        }
+        challenge = {
+            **challenge_material,
+            "request_hash": artifact_fingerprint(challenge_material),
+            "consumed": False,
+        }
+        self._execution_challenges[dispatch_id] = challenge
+        return deepcopy({key: value for key, value in challenge.items() if key != "consumed"})
+
+    def _authorize_execution_attestation(
+        self,
+        *,
+        stage: str,
+        execution_attestation: Mapping[str, Any] | None,
+        expected_output_hash: str,
+    ) -> tuple[dict[str, str], dict[str, str], dict[str, Any]] | None:
+        if execution_attestation is None:
+            if self._require_execution_attestation:
+                raise GeneratorCriticAuthorizationError(
+                    f"{stage} execution attestation is required / {stage} 执行证明为必需"
+                )
+            return None
+        if self._execution_attestation_verifier is None:
+            raise GeneratorCriticAuthorizationError(
+                "execution attestation has no trusted verifier / 执行证明缺少可信验证器"
+            )
+        attestation = deepcopy(dict(execution_attestation))
+        try:
+            validate_generator_critic_execution_attestation(attestation)
+        except Exception as exc:
+            raise GeneratorCriticAuthorizationError(
+                "execution attestation is structurally invalid / 执行证明结构无效"
+            ) from exc
+        challenge = self._execution_challenges.get(attestation["dispatch_id"])
+        if challenge is None or challenge["consumed"]:
+            raise GeneratorCriticAuthorizationError(
+                "execution challenge is missing or already consumed / 执行挑战缺失或已消费"
+            )
+        expected_fields = {
+            "stage": stage,
+            "session_id": self._session_id,
+            "dispatch_id": challenge["dispatch_id"],
+            "request_nonce": challenge["request_nonce"],
+            "role_binding": challenge["role_binding"],
+            "request_hash": challenge["request_hash"],
+            "input_hash": challenge["input_hash"],
+            "output_hash": expected_output_hash,
+        }
+        mismatched = [
+            field
+            for field, expected in expected_fields.items()
+            if attestation.get(field) != expected
+        ]
+        if mismatched:
+            raise GeneratorCriticAuthorizationError(
+                "execution attestation binding mismatch: "
+                + ", ".join(mismatched)
+                + " / 执行证明绑定不匹配"
+            )
+        execution_session_id = str(attestation["execution_session_id"])
+        provider_response_hash = str(attestation["provider_response_hash"])
+        if execution_session_id in self._used_execution_session_ids:
+            raise GeneratorCriticAuthorizationError(
+                "execution session was reused across agent calls / 代理调用复用了执行会话"
+            )
+        if provider_response_hash in self._used_provider_response_hashes:
+            raise GeneratorCriticAuthorizationError(
+                "provider response was reused across agent calls / 代理调用复用了供应商响应"
+            )
+        if stage == "critic" and self._contract["review_policy"][
+            "require_clean_context"
+        ]:
+            isolation = attestation["isolation"]
+            if (
+                isolation["clean_context"] is not True
+                or isolation["messages_retained"] is not False
+                or isolation["prior_context_hash"] is not None
+            ):
+                raise GeneratorCriticAuthorizationError(
+                    "critic clean-context attestation failed / 评审器洁净上下文证明失败"
+                )
+        if stage == "critic" and self._artifacts:
+            producer_attestation = self._artifact_execution_attestations.get(
+                self._artifacts[-1]["artifact_record_hash"]
+            )
+            if producer_attestation is not None:
+                if (
+                    producer_attestation["execution_session_id"]
+                    == execution_session_id
+                ):
+                    raise GeneratorCriticAuthorizationError(
+                        "critic reused the producer execution session / 评审器复用了生产者执行会话"
+                    )
+                if self._contract["review_policy"]["feedback_variant"] == "cross_model":
+                    producer_provider = producer_attestation["provider"]
+                    critic_provider = attestation["provider"]
+                    if (
+                        producer_provider["provider_id"],
+                        producer_provider["model_id"],
+                    ) == (
+                        critic_provider["provider_id"],
+                        critic_provider["model_id"],
+                    ):
+                        raise GeneratorCriticAuthorizationError(
+                            "cross-model review used the producer model / 跨模型评审使用了生产者模型"
+                        )
+        expected_verification = {
+            **expected_fields,
+            "contract_binding": _contract_binding(self._contract),
+            "attestation_binding": execution_attestation_binding(attestation),
+        }
+        try:
+            verification = self._execution_attestation_verifier(
+                deepcopy(attestation), deepcopy(expected_verification)
+            )
+        except Exception as exc:
+            raise GeneratorCriticAuthorizationError(
+                "trusted execution-attestation verification failed / 可信执行证明验证失败"
+            ) from exc
+        if not isinstance(verification, Mapping) or set(verification) != {
+            "id",
+            "version",
+            "hash",
+        }:
+            raise GeneratorCriticAuthorizationError(
+                "trusted verifier must return one exact binding / 可信验证器必须返回一个精确绑定"
+            )
+        verification_binding = deepcopy(dict(verification))
+        if (
+            not isinstance(verification_binding["id"], str)
+            or not verification_binding["id"]
+            or not isinstance(verification_binding["version"], str)
+            or _SEMANTIC_VERSION.fullmatch(verification_binding["version"]) is None
+            or not isinstance(verification_binding["hash"], str)
+            or _SHA256.fullmatch(verification_binding["hash"]) is None
+        ):
+            raise GeneratorCriticAuthorizationError(
+                "trusted execution verification binding is invalid / 可信执行验证绑定无效"
+            )
+        return (
+            execution_attestation_binding(attestation),
+            verification_binding,
+            attestation,
+        )
+
+    def _commit_execution_attestation(
+        self,
+        authorized: tuple[dict[str, str], dict[str, str], dict[str, Any]] | None,
+        *,
+        record_hash: str,
+        record_kind: str,
+    ) -> None:
+        if authorized is None:
+            return
+        _, verification, attestation = authorized
+        self._execution_challenges[attestation["dispatch_id"]]["consumed"] = True
+        self._used_execution_session_ids.add(attestation["execution_session_id"])
+        self._used_provider_response_hashes.add(attestation["provider_response_hash"])
+        self._execution_attestations.append(deepcopy(attestation))
+        self._execution_verification_bindings.append(deepcopy(verification))
+        if record_kind == "artifact":
+            self._artifact_execution_attestations[record_hash] = deepcopy(attestation)
+        elif record_kind == "review":
+            self._review_execution_attestations[record_hash] = deepcopy(attestation)
 
     def _make_event(
         self,
@@ -846,6 +1202,7 @@ class GeneratorCriticSession:
         content_ref: str,
         producer_binding: Mapping[str, Any],
         created_at: str,
+        execution_attestation: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Create revision zero or the configured initial revision / 创建零号或契约配置的初始修订。"""
 
@@ -854,21 +1211,40 @@ class GeneratorCriticSession:
         _parse_datetime(created_at)
         if not isinstance(content_ref, str) or not content_ref.strip():
             raise ValueError("content_ref must be a non-empty string")
+        content_digest = artifact_fingerprint({"content": content})
+        authorized_execution = self._authorize_execution_attestation(
+            stage="generator",
+            execution_attestation=execution_attestation,
+            expected_output_hash=content_digest,
+        )
         policy = self._contract["artifact_policy"]
         artifact = {
             "schema_version": "1.0.0",
             "artifact_id": policy["artifact_id"],
             "artifact_type": policy["artifact_type"],
             "revision": policy["initial_revision"],
-            "artifact_digest": artifact_fingerprint({"content": content}),
+            "artifact_digest": content_digest,
             "parent_binding": None,
             "content_ref": content_ref,
             "producer_binding": deepcopy(dict(producer_binding)),
+            **(
+                {
+                    "execution_attestation_binding": authorized_execution[0],
+                    "execution_verification_binding": authorized_execution[1],
+                }
+                if authorized_execution is not None
+                else {}
+            ),
             "review_status": "unreviewed",
             "created_at": created_at,
         }
         sealed = build_artifact("generator_critic_artifact", artifact)
         validate_generator_critic_artifact(sealed, contract=self._contract)
+        self._commit_execution_attestation(
+            authorized_execution,
+            record_hash=sealed["artifact_record_hash"],
+            record_kind="artifact",
+        )
         assurance = self._require_shared_reflection_assurance(
             "initial_artifact", artifact=sealed
         )
@@ -935,12 +1311,27 @@ class GeneratorCriticSession:
         score: Mapping[str, Any],
         risk_refs_checked: Sequence[str],
         reviewed_at: str,
+        execution_attestation: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Record critic output without granting a decision / 记录评审器输出但不授予裁决权。"""
 
         self._require_state(GeneratorCriticState.REVIEWING)
         assert self._pending_review_id is not None
         current = self._artifacts[-1]
+        output_hash = generator_critic_review_output_fingerprint(
+            evidence_snapshots=evidence_snapshots,
+            criteria_results=criteria_results,
+            supported_findings=supported_findings,
+            unsupported_opinions=unsupported_opinions,
+            score=score,
+            risk_refs_checked=risk_refs_checked,
+            reviewed_at=reviewed_at,
+        )
+        authorized_execution = self._authorize_execution_attestation(
+            stage="critic",
+            execution_attestation=execution_attestation,
+            expected_output_hash=output_hash,
+        )
         review = {
             "schema_version": "1.0.0",
             "review_id": self._pending_review_id,
@@ -949,6 +1340,14 @@ class GeneratorCriticSession:
             "critic_binding": deepcopy(self._contract["roles"]["critic_binding"]),
             "critic_configuration_binding": deepcopy(
                 self._contract["roles"]["critic_configuration_binding"]
+            ),
+            **(
+                {
+                    "execution_attestation_binding": authorized_execution[0],
+                    "execution_verification_binding": authorized_execution[1],
+                }
+                if authorized_execution is not None
+                else {}
             ),
             "feedback_variant": self._contract["review_policy"]["feedback_variant"],
             "evidence_snapshots": [deepcopy(dict(item)) for item in evidence_snapshots],
@@ -962,6 +1361,11 @@ class GeneratorCriticSession:
         sealed = build_artifact("generator_critic_review", review)
         validate_generator_critic_review(
             sealed, contract=self._contract, artifact=current
+        )
+        self._commit_execution_attestation(
+            authorized_execution,
+            record_hash=sealed["review_hash"],
+            record_kind="review",
         )
         event = self._make_event(
             "artifact_review_recorded",
@@ -1091,6 +1495,7 @@ class GeneratorCriticSession:
         producer_binding: Mapping[str, Any],
         resolved_issue_refs: Sequence[str],
         created_at: str,
+        execution_attestation: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Create a new unreviewed revision from adopted issues only / 仅基于已采纳问题创建新的未评审修订。"""
 
@@ -1099,6 +1504,12 @@ class GeneratorCriticSession:
         _parse_datetime(created_at)
         if not isinstance(content_ref, str) or not content_ref.strip():
             raise ValueError("content_ref must be a non-empty string")
+        content_digest = artifact_fingerprint({"content": content})
+        authorized_execution = self._authorize_execution_attestation(
+            stage="reviser",
+            execution_attestation=execution_attestation,
+            expected_output_hash=content_digest,
+        )
         decision = self._decisions[-1]
         allowed = set(decision["gating_issue_refs"])
         provided = set(resolved_issue_refs)
@@ -1115,16 +1526,29 @@ class GeneratorCriticSession:
             "artifact_id": parent["artifact_id"],
             "artifact_type": parent["artifact_type"],
             "revision": parent["revision"] + 1,
-            "artifact_digest": artifact_fingerprint({"content": content}),
+            "artifact_digest": content_digest,
             "parent_binding": artifact_binding(parent),
             "content_ref": content_ref,
             "producer_binding": deepcopy(dict(producer_binding)),
+            **(
+                {
+                    "execution_attestation_binding": authorized_execution[0],
+                    "execution_verification_binding": authorized_execution[1],
+                }
+                if authorized_execution is not None
+                else {}
+            ),
             "review_status": "unreviewed",
             "created_at": created_at,
         }
         sealed = build_artifact("generator_critic_artifact", artifact)
         validate_generator_critic_artifact(
             sealed, contract=self._contract, parent=parent
+        )
+        self._commit_execution_attestation(
+            authorized_execution,
+            record_hash=sealed["artifact_record_hash"],
+            record_kind="artifact",
         )
         assurance = self._require_shared_reflection_assurance(
             "revision",
@@ -1178,6 +1602,16 @@ class GeneratorCriticSession:
                 expires_at = _format_datetime(issued + timedelta(seconds=ttl))
         review = self._reviews[-1]
         decision = self._decisions[-1]
+        current_artifact = self._artifacts[-1]
+        if self._require_execution_attestation and (
+            "execution_attestation_binding" not in current_artifact
+            or "execution_verification_binding" not in current_artifact
+            or "execution_attestation_binding" not in review
+            or "execution_verification_binding" not in review
+        ):
+            raise GeneratorCriticAuthorizationError(
+                "accepted records lack verified execution proof / 已接受记录缺少已验证执行证明"
+            )
         assurance = self._require_shared_reflection_assurance(
             "receipt",
             artifact=self._artifacts[-1],
@@ -1203,6 +1637,25 @@ class GeneratorCriticSession:
                 decision, identifier_field="decision_id", hash_field="decision_hash"
             ),
             "artifact_binding": deepcopy(decision["artifact_binding"]),
+            **(
+                {
+                    "artifact_execution_attestation_binding": deepcopy(
+                        current_artifact["execution_attestation_binding"]
+                    ),
+                    "artifact_execution_verification_binding": deepcopy(
+                        current_artifact["execution_verification_binding"]
+                    ),
+                    "critic_execution_attestation_binding": deepcopy(
+                        review["execution_attestation_binding"]
+                    ),
+                    "critic_execution_verification_binding": deepcopy(
+                        review["execution_verification_binding"]
+                    ),
+                }
+                if "execution_attestation_binding" in current_artifact
+                and "execution_attestation_binding" in review
+                else {}
+            ),
             "critic_binding": deepcopy(self._contract["roles"]["critic_binding"]),
             "policy_gate_binding": deepcopy(
                 self._contract["roles"]["policy_gate_binding"]
@@ -1222,6 +1675,7 @@ class GeneratorCriticSession:
             contract=self._contract,
             review=review,
             decision=decision,
+            artifact=current_artifact,
         )
         event = self._make_event(
             "review_receipt_issued",
@@ -1251,6 +1705,7 @@ class GeneratorCriticSession:
         change_proposal_binding: Mapping[str, Any],
         change_reason: str,
         created_at: str,
+        execution_attestation: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Invalidate an accepted version by creating new unreviewed content / 以新未评审内容使旧接受版本失效。"""
 
@@ -1261,6 +1716,12 @@ class GeneratorCriticSession:
             raise ValueError("content_ref must be a non-empty string")
         if not isinstance(change_reason, str) or not change_reason.strip():
             raise ValueError("change_reason must be a non-empty string")
+        content_digest = artifact_fingerprint({"content": content})
+        authorized_execution = self._authorize_execution_attestation(
+            stage="reviser",
+            execution_attestation=execution_attestation,
+            expected_output_hash=content_digest,
+        )
         parent = self._artifacts[-1]
         policy = self._contract["artifact_policy"]
         if parent["revision"] - policy["initial_revision"] >= policy["max_revisions"]:
@@ -1270,16 +1731,29 @@ class GeneratorCriticSession:
             "artifact_id": parent["artifact_id"],
             "artifact_type": parent["artifact_type"],
             "revision": parent["revision"] + 1,
-            "artifact_digest": artifact_fingerprint({"content": content}),
+            "artifact_digest": content_digest,
             "parent_binding": artifact_binding(parent),
             "content_ref": content_ref,
             "producer_binding": deepcopy(dict(producer_binding)),
+            **(
+                {
+                    "execution_attestation_binding": authorized_execution[0],
+                    "execution_verification_binding": authorized_execution[1],
+                }
+                if authorized_execution is not None
+                else {}
+            ),
             "review_status": "unreviewed",
             "created_at": created_at,
         }
         sealed = build_artifact("generator_critic_artifact", artifact)
         validate_generator_critic_artifact(
             sealed, contract=self._contract, parent=parent
+        )
+        self._commit_execution_attestation(
+            authorized_execution,
+            record_hash=sealed["artifact_record_hash"],
+            record_kind="artifact",
         )
         assurance = self._require_shared_reflection_assurance(
             "superseding_revision",
@@ -1343,6 +1817,7 @@ class GeneratorCriticSession:
             contract=self._contract,
             review=review,
             decision=decision,
+            artifact=current,
         )
         if receipt["artifact_binding"] != artifact_binding(current):
             raise GeneratorCriticReleaseError(
@@ -1433,14 +1908,18 @@ __all__ = [
     "GeneratorCriticStateError",
     "GeneratorCriticValidationError",
     "artifact_binding",
+    "build_generator_critic_execution_attestation",
     "build_shared_reflection_guard",
     "build_generator_critic_contract",
+    "execution_attestation_binding",
+    "generator_critic_review_output_fingerprint",
     "reflection_subject_binding_for_artifact",
     "validate_generator_critic_artifact",
     "validate_generator_critic_contract",
     "validate_generator_critic_decision",
     "validate_generator_critic_event",
     "validate_generator_critic_event_stream",
+    "validate_generator_critic_execution_attestation",
     "validate_generator_critic_receipt",
     "validate_generator_critic_review",
 ]

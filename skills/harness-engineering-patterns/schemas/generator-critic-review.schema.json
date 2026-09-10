@@ -30,6 +30,8 @@
     "artifact_binding": { "$ref": "#/$defs/ArtifactBinding" },
     "critic_binding": { "$ref": "#/$defs/VersionedBinding" },
     "critic_configuration_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "execution_attestation_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "execution_verification_binding": { "$ref": "#/$defs/VersionedBinding" },
     "feedback_variant": { "enum": ["self_critique", "cross_model", "tool_grounded", "human_review"] },
     "evidence_snapshots": {
       "type": "array",

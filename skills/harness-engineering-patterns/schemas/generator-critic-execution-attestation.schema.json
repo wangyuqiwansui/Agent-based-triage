@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-based-triage.local/schemas/generator-critic-execution-attestation.schema.json",
+  "title": "Generator-Critic Execution Attestation / 生成评审执行证明",
+  "description": "Signed adapter evidence for one actual generator, critic, or reviser invocation. Structural validity is not trust; a coordinator-owned verifier must authenticate the signature and dispatch binding. / 单次生成器、评审器或修订器实际调用的适配器签名证据。结构有效不等于可信；必须由协调器所有的验证器认证签名与调度绑定。",
+  "x-contract-version": "1.0.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "attestation_id",
+    "stage",
+    "session_id",
+    "execution_session_id",
+    "dispatch_id",
+    "request_nonce",
+    "role_binding",
+    "request_hash",
+    "input_hash",
+    "output_hash",
+    "provider_response_hash",
+    "provider",
+    "adapter_binding",
+    "started_at",
+    "completed_at",
+    "isolation",
+    "signer",
+    "signature",
+    "attestation_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "attestation_id": { "$ref": "#/$defs/Identifier" },
+    "stage": { "enum": ["generator", "critic", "reviser"] },
+    "session_id": { "$ref": "#/$defs/Identifier" },
+    "execution_session_id": { "$ref": "#/$defs/Identifier" },
+    "dispatch_id": { "$ref": "#/$defs/Identifier" },
+    "request_nonce": { "$ref": "#/$defs/Identifier" },
+    "role_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "request_hash": { "$ref": "#/$defs/Sha256" },
+    "input_hash": { "$ref": "#/$defs/Sha256" },
+    "output_hash": { "$ref": "#/$defs/Sha256" },
+    "provider_response_hash": { "$ref": "#/$defs/Sha256" },
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider_id", "model_id", "response_id"],
+      "properties": {
+        "provider_id": { "$ref": "#/$defs/Identifier" },
+        "model_id": { "$ref": "#/$defs/Identifier" },
+        "response_id": { "$ref": "#/$defs/Identifier" }
+      }
+    },
+    "adapter_binding": { "$ref": "#/$defs/VersionedBinding" },
+    "started_at": { "type": "string", "format": "date-time" },
+    "completed_at": { "type": "string", "format": "date-time" },
+    "isolation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["clean_context", "messages_retained", "prior_context_hash"],
+      "properties": {
+        "clean_context": { "type": "boolean" },
+        "messages_retained": { "type": "boolean" },
+        "prior_context_hash": {
+          "oneOf": [
+            { "$ref": "#/$defs/Sha256" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "signer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key_id", "algorithm"],
+      "properties": {
+        "key_id": { "$ref": "#/$defs/Identifier" },
+        "algorithm": { "enum": ["ed25519", "ecdsa-p256-sha256", "hmac-sha256"] }
+      }
+    },
+    "signature": {
+      "type": "string",
+      "minLength": 16,
+      "maxLength": 8192,
+      "pattern": "^[A-Za-z0-9_+=./:-]+$"
+    },
+    "attestation_hash": { "$ref": "#/$defs/Sha256" }
+  },
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "SemanticVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "Sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+    "VersionedBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "hash"],
+      "properties": {
+        "id": { "$ref": "#/$defs/Identifier" },
+        "version": { "$ref": "#/$defs/SemanticVersion" },
+        "hash": { "$ref": "#/$defs/Sha256" }
+      }
+    }
+  }
+}

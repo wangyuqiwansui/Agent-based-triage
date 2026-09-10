@@ -21,7 +21,10 @@ from generator_critic import (  # noqa: E402
     GeneratorCriticStateError,
     GeneratorCriticValidationError,
     artifact_binding,
+    artifact_fingerprint,
+    build_generator_critic_execution_attestation,
     build_generator_critic_contract,
+    generator_critic_review_output_fingerprint,
     validate_generator_critic_contract,
     validate_generator_critic_event_stream,
 )
@@ -44,6 +47,58 @@ def allow_shared_reflection(
 ) -> dict[str, str]:
     revision = context["artifact_binding"]["revision"]  # type: ignore[index]
     return binding(f"shared-assurance-{stage}-{revision}", HASH_D)
+
+
+def verify_execution_attestation(
+    attestation: dict[str, object], expected: dict[str, object]
+) -> dict[str, str]:
+    assert expected["attestation_binding"]["hash"] == attestation["attestation_hash"]  # type: ignore[index]
+    return binding(f"verified-{attestation['attestation_id']}", HASH_D)
+
+
+def execution_attestation(
+    challenge: dict[str, object],
+    *,
+    output_hash: str,
+    execution_session_id: str,
+    provider_id: str,
+    model_id: str,
+    response_id: str,
+) -> dict[str, object]:
+    return build_generator_critic_execution_attestation({
+        "schema_version": "1.0.0",
+        "attestation_id": f"attestation-{response_id}",
+        "stage": challenge["stage"],
+        "session_id": challenge["session_id"],
+        "execution_session_id": execution_session_id,
+        "dispatch_id": challenge["dispatch_id"],
+        "request_nonce": challenge["request_nonce"],
+        "role_binding": challenge["role_binding"],
+        "request_hash": challenge["request_hash"],
+        "input_hash": challenge["input_hash"],
+        "output_hash": output_hash,
+        "provider_response_hash": artifact_fingerprint({
+            "provider_response_id": response_id
+        }),
+        "provider": {
+            "provider_id": provider_id,
+            "model_id": model_id,
+            "response_id": response_id,
+        },
+        "adapter_binding": binding("trusted-provider-adapter", HASH_C),
+        "started_at": "2026-08-13T08:00:00Z",
+        "completed_at": "2026-08-13T08:00:30Z",
+        "isolation": {
+            "clean_context": True,
+            "messages_retained": False,
+            "prior_context_hash": None,
+        },
+        "signer": {
+            "key_id": "trusted-adapter-key-1",
+            "algorithm": "ed25519",
+        },
+        "signature": "signed-adapter-proof-token-0001",
+    })
 
 
 def contract_example(
@@ -594,3 +649,214 @@ def test_generator_critic_probe_profile_adds_exact_version_probes() -> None:
     probes = resolve_reflection_required_probes(generator_critic=True)
     assert set(f"PROBE_{number:04d}" for number in range(16, 22)).issubset(probes)
     assert set(f"PROBE_{number:04d}" for number in range(24, 28)).issubset(probes)
+
+
+def strict_session_with_artifact() -> GeneratorCriticSession:
+    session = GeneratorCriticSession(
+        contract_example(),
+        session_id="strict-generator-critic-session-1",
+        shared_reflection_guard=allow_shared_reflection,
+        execution_attestation_verifier=verify_execution_attestation,
+        require_execution_attestation=True,
+    )
+    content = {"text": "strict-draft-0"}
+    challenge = session.prepare_execution_challenge(
+        stage="generator",
+        dispatch_id="dispatch-generator-1",
+        request_nonce="nonce-generator-1",
+        request_payload={"prompt": "Produce strict draft zero."},
+    )
+    attestation = execution_attestation(
+        challenge,
+        output_hash=artifact_fingerprint({"content": content}),
+        execution_session_id="provider-session-generator-1",
+        provider_id="provider-a",
+        model_id="model-generator-a",
+        response_id="provider-response-generator-1",
+    )
+    session.create_initial_artifact(
+        content=content,
+        content_ref="memory://artifact-1/strict-revision-0",
+        producer_binding=binding("generator", HASH_A),
+        created_at=T0,
+        execution_attestation=attestation,
+    )
+    return session
+
+
+def test_strict_execution_attestation_fails_closed_when_missing() -> None:
+    session = GeneratorCriticSession(
+        contract_example(),
+        session_id="strict-missing-attestation-session",
+        shared_reflection_guard=allow_shared_reflection,
+        execution_attestation_verifier=verify_execution_attestation,
+        require_execution_attestation=True,
+    )
+
+    with pytest.raises(GeneratorCriticAuthorizationError, match="attestation is required"):
+        session.create_initial_artifact(
+            content={"text": "unsigned"},
+            content_ref="memory://artifact-1/unsigned",
+            producer_binding=binding("generator", HASH_A),
+            created_at=T0,
+        )
+
+
+def test_strict_receipt_binds_actual_generator_and_critic_invocations() -> None:
+    session = strict_session_with_artifact()
+    evidence = binding("evidence-strict", HASH_C)
+    evidence_snapshots = [snapshot("evidence-strict")]
+    criteria_results = passing_results(evidence)
+    score = {
+        "value": 0.95,
+        "evidence_bindings": [evidence],
+        "rationale": "Verified strict review. / 已验证严格评审。",
+    }
+    reviewed_at = "2026-08-13T08:02:00Z"
+    session.start_review(
+        review_id="review-strict-1",
+        artifact=artifact_binding(session.current_artifact or {}),
+        occurred_at="2026-08-13T08:01:00Z",
+    )
+    challenge = session.prepare_execution_challenge(
+        stage="critic",
+        dispatch_id="dispatch-critic-1",
+        request_nonce="nonce-critic-1",
+        request_payload={
+            "artifact_binding": artifact_binding(session.current_artifact or {}),
+            "criteria": ["criterion-accuracy", "criterion-style"],
+        },
+    )
+    output_hash = generator_critic_review_output_fingerprint(
+        evidence_snapshots=evidence_snapshots,
+        criteria_results=criteria_results,
+        supported_findings=[],
+        unsupported_opinions=[],
+        score=score,
+        risk_refs_checked=["risk-factual-error", "risk-usability"],
+        reviewed_at=reviewed_at,
+    )
+    critic_attestation = execution_attestation(
+        challenge,
+        output_hash=output_hash,
+        execution_session_id="provider-session-critic-1",
+        provider_id="provider-b",
+        model_id="model-critic-b",
+        response_id="provider-response-critic-1",
+    )
+    review = session.record_review(
+        evidence_snapshots=evidence_snapshots,
+        criteria_results=criteria_results,
+        supported_findings=[],
+        unsupported_opinions=[],
+        score=score,
+        risk_refs_checked=["risk-factual-error", "risk-usability"],
+        reviewed_at=reviewed_at,
+        execution_attestation=critic_attestation,
+    )
+    session.decide(decided_at="2026-08-13T08:03:00Z")
+    receipt = session.issue_receipt(
+        receipt_id="receipt-strict-1",
+        release_gate_binding=binding("release-gate", HASH_B),
+        issued_at="2026-08-13T08:04:00Z",
+    )
+
+    artifact = session.current_artifact or {}
+    assert len(session.execution_attestations) == 2
+    assert receipt["artifact_execution_attestation_binding"] == artifact[
+        "execution_attestation_binding"
+    ]
+    assert receipt["critic_execution_attestation_binding"] == review[
+        "execution_attestation_binding"
+    ]
+    assert receipt["artifact_execution_verification_binding"] == artifact[
+        "execution_verification_binding"
+    ]
+    assert receipt["critic_execution_verification_binding"] == review[
+        "execution_verification_binding"
+    ]
+
+
+def test_execution_attestation_rejects_output_substitution() -> None:
+    session = GeneratorCriticSession(
+        contract_example(),
+        session_id="strict-output-substitution-session",
+        shared_reflection_guard=allow_shared_reflection,
+        execution_attestation_verifier=verify_execution_attestation,
+        require_execution_attestation=True,
+    )
+    challenge = session.prepare_execution_challenge(
+        stage="generator",
+        dispatch_id="dispatch-substitution-1",
+        request_nonce="nonce-substitution-1",
+        request_payload={"prompt": "Generate the signed content."},
+    )
+    attestation = execution_attestation(
+        challenge,
+        output_hash=artifact_fingerprint({"content": {"text": "signed"}}),
+        execution_session_id="provider-session-substitution-1",
+        provider_id="provider-a",
+        model_id="model-generator-a",
+        response_id="provider-response-substitution-1",
+    )
+
+    with pytest.raises(GeneratorCriticAuthorizationError, match="output_hash"):
+        session.create_initial_artifact(
+            content={"text": "substituted"},
+            content_ref="memory://artifact-1/substituted",
+            producer_binding=binding("generator", HASH_A),
+            created_at=T0,
+            execution_attestation=attestation,
+        )
+
+
+def test_cross_model_review_rejects_same_actual_provider_model() -> None:
+    session = strict_session_with_artifact()
+    evidence = binding("evidence-same-model", HASH_C)
+    evidence_snapshots = [snapshot("evidence-same-model")]
+    criteria_results = passing_results(evidence)
+    score = {
+        "value": 0.95,
+        "evidence_bindings": [evidence],
+        "rationale": "Same-model attempt. / 同模型尝试。",
+    }
+    reviewed_at = "2026-08-13T08:02:00Z"
+    session.start_review(
+        review_id="review-same-model-1",
+        artifact=artifact_binding(session.current_artifact or {}),
+        occurred_at="2026-08-13T08:01:00Z",
+    )
+    challenge = session.prepare_execution_challenge(
+        stage="critic",
+        dispatch_id="dispatch-same-model-critic-1",
+        request_nonce="nonce-same-model-critic-1",
+        request_payload={"artifact": artifact_binding(session.current_artifact or {})},
+    )
+    attestation = execution_attestation(
+        challenge,
+        output_hash=generator_critic_review_output_fingerprint(
+            evidence_snapshots=evidence_snapshots,
+            criteria_results=criteria_results,
+            supported_findings=[],
+            unsupported_opinions=[],
+            score=score,
+            risk_refs_checked=["risk-factual-error", "risk-usability"],
+            reviewed_at=reviewed_at,
+        ),
+        execution_session_id="provider-session-same-model-critic-1",
+        provider_id="provider-a",
+        model_id="model-generator-a",
+        response_id="provider-response-same-model-critic-1",
+    )
+
+    with pytest.raises(GeneratorCriticAuthorizationError, match="producer model"):
+        session.record_review(
+            evidence_snapshots=evidence_snapshots,
+            criteria_results=criteria_results,
+            supported_findings=[],
+            unsupported_opinions=[],
+            score=score,
+            risk_refs_checked=["risk-factual-error", "risk-usability"],
+            reviewed_at=reviewed_at,
+            execution_attestation=attestation,
+        )

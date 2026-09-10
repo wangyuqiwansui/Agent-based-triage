@@ -63,6 +63,7 @@ This is a Chain pattern because the expected production path converges in one or
 11. Cap the chain at one or two review passes. On unresolved blocking issues at the cap, escalate or reject according to the sealed policy. / 链式评审限制为一至两次；到达上限仍有阻断问题时，按封存策略升级或拒绝。
 12. Release only when the receipt, decision, review, artifact revision, digest, policy, and evidence freshness all match. / 只有回执、裁决、评审、工件修订、摘要、策略及证据新鲜度全部匹配时才允许发布。
 13. Record public claims, checks, evidence bindings, and decisions only; never collect private chain-of-thought or 私密思维过程. / 只记录公开声明、检查、证据绑定与裁决；不得采集私密思维过程。
+14. For external or production dispatch, require a one-time coordinator challenge plus a cryptographically verified adapter attestation for every generator, critic, and reviser call. Static role bindings and agent-self-reported audit fields do not prove actual execution. / 对外部或生产调度，每次生成器、评审器与修订器调用都必须具备一次性协调器挑战及经密码学验证的适配器执行证明；静态角色绑定与代理自报审计字段不能证明实际执行。
 
 ## Normative Artifacts / 规范制品
 
@@ -74,10 +75,11 @@ Treat these files as the executable source of truth / 将以下文件视为可�
 - [`generator-critic-decision.schema.json`](../../../schemas/generator-critic-decision.schema.json): policy-owned decision, triggered rules, gating issue references, and retained opinion references. / 策略所有的裁决、触发规则、门控问题引用及保留意见引用。
 - [`generator-critic-receipt.schema.json`](../../../schemas/generator-critic-receipt.schema.json): accepted exact version, review, decision, actors, evidence snapshots, and expiry. / 已接受精确版本、评审、裁决、角色、证据快照及过期时间。
 - [`generator-critic-event.schema.json`](../../../schemas/generator-critic-event.schema.json): contiguous lifecycle events for artifact, review, decision, revision, receipt, release, and stop. / 工件、评审、裁决、修订、回执、发布与停止的连续生命周期事件。
+- [`generator-critic-execution-attestation.schema.json`](../../../schemas/generator-critic-execution-attestation.schema.json): signed invocation identity, one-time dispatch challenge, provider response, isolation facts, and exact input/output hashes. Structural validation alone does not authenticate the signer. / 已签名的调用身份、一次性调度挑战、供应商响应、隔离事实及精确输入/输出哈希；仅结构校验不能认证签名者。
 - [`generator_critic.py`](../../../runtime/generator_critic.py): producer-side hashing, semantic guards, `build_shared_reflection_guard`, exact artifact-to-subject mapping, deterministic decisions, revision lineage, receipt issuance, release verification, and event replay checks. / 生产端哈希、语义闸门、共享反思闸构造器、精确工件到对象映射、确定性裁决、修订谱系、回执签发、发布校验及事件回放检查。
 - [`reflection_runtime.py`](../../../runtime/reflection_runtime.py): shared reflection admission, baseline, change authorization, independent revalidation, rollback, attribution, and learning lifecycle. / 共享反思准入、基线、改变授权、独立复验、回滚、归因及学习生命周期。
 
-JSON Schema validates local shape. `generator_critic.py` additionally validates cross-record binding, actor separation, trusted evidence subsets, exact criterion coverage, deterministic decisions, contiguous lineage, shared-reflection assurance bindings, receipt freshness, and release-version equality. Use the supplied guard builder rather than fabricating a binding callback; it calls the shared validators over the complete contract, event stream, and observation and checks accepted revalidation against the exact mapped artifact. A Schema pass alone is not proof that the workflow is safe. / JSON Schema 校验局部结构；`generator_critic.py` 还校验跨记录绑定、角色分权、可信证据子集、完整判据覆盖、确定性裁决、连续谱系、共享反思保证绑定、回执新鲜度及发布版本相等性。应使用随附闸构造器，不得伪造绑定回调；它对完整共享契约、事件流与观察包调用共享校验器，并以精确映射工件核对已接受复验。仅通过 Schema 不等于工作流安全。
+JSON Schema validates local shape. `generator_critic.py` additionally validates cross-record binding, actor separation, trusted evidence subsets, exact criterion coverage, deterministic decisions, contiguous lineage, shared-reflection assurance bindings, execution challenge replay protection, exact output binding, clean critic context, actual cross-model separation, receipt freshness, and release-version equality. Use a deployment-owned cryptographic verifier for execution attestations and the supplied shared-reflection guard builder for governed history; neither callback may be fabricated from agent output. A Schema pass, self-hash, signature string, role binding, or self-reported audit field alone is not proof that the workflow is safe or that an agent actually ran. / JSON Schema 校验局部结构；`generator_critic.py` 还校验跨记录绑定、角色分权、可信证据子集、完整判据覆盖、确定性裁决、连续谱系、共享反思保证绑定、执行挑战防重放、精确输出绑定、评审器洁净上下文、实际跨模型分离、回执新鲜度及发布版本相等性。执行证明必须使用部署方所有的密码学验证器，受治理历史必须使用随附的共享反思闸构造器；两种回调都不得从代理输出伪造。仅通过 Schema、自哈希、存在签名字符串、角色绑定或自报审计字段，不能证明工作流安全或代理真实执行。
 
 ## Roles And Authority / 角色与权限
 
@@ -90,7 +92,7 @@ JSON Schema validates local shape. `generator_critic.py` additionally validates 
 | Release gate / 发布闸 | Issue and verify the exact-version receipt after acceptance. / 在接受后签发并校验精确版本回执。 | Release a different digest, stale evidence, or changed policy. / 发布不同摘要、过期证据或策略已变化的版本。 |
 | Probe / 探针 | Observe, reconstruct, alert, and request missing data. / 观测、重建、告警并请求缺失数据。 | Invent facts or directly mutate business state. / 虚构事实或直接修改业务状态。 |
 
-The critic, policy gate, and release gate must use distinct versioned bindings. For `cross_model`, `tool_grounded`, or `human_review`, the generator and critic must also be distinct. `self_critique` may share a model identity only when it binds a separate critic configuration and remains limited to low-risk style, format, or completeness checks. / 评审器、策略闸与发布闸必须使用不同版本化绑定。`cross_model`、`tool_grounded` 或 `human_review` 还要求生成器与评审器分离。`self_critique` 仅可在绑定独立评审配置且任务限于低风险风格、格式或完整性检查时共享模型身份。
+The critic, policy gate, and release gate must use distinct versioned bindings. For `cross_model`, `tool_grounded`, or `human_review`, the generator and critic must also be distinct. In strict external execution, the verified attestation must show a distinct execution session and provider response for every call; `cross_model` must additionally show a different actual provider/model pair from the producing call. `self_critique` may share a model identity only when it binds a separate critic configuration and remains limited to low-risk style, format, or completeness checks. / 评审器、策略闸与发布闸必须使用不同版本化绑定。`cross_model`、`tool_grounded` 或 `human_review` 还要求生成器与评审器分离。在严格外部执行中，经验证证明必须显示每次调用使用不同执行会话与供应商响应；`cross_model` 还必须显示实际供应商/模型组合不同于生产调用。`self_critique` 仅可在绑定独立评审配置且任务限于低风险风格、格式或完整性检查时共享模型身份。
 
 ## Contract Compilation / 契约编译
 
@@ -131,6 +133,12 @@ any nonterminal unreleased state
 `reviewed` is never a release state. `accepted` without a receipt is never a release state. `receipt issued` does not mutate the artifact. A superseding content change moves back to `artifact_unreviewed` and records every invalidated receipt binding. / `reviewed` 绝不是发布状态；缺少回执的 `accepted` 也不是发布状态；签发回执不会修改工件。任何替代内容变更都会回到 `artifact_unreviewed`，并记录全部失效回执绑定。
 
 ## Execution Workflow / 执行流程
+
+### 0. Bind Actual Provider Execution / 绑定实际供应商执行
+
+For any externally dispatched or production agent, construct `GeneratorCriticSession(..., require_execution_attestation=True, execution_attestation_verifier=deployment_verifier)`. Before each provider call, invoke `prepare_execution_challenge(stage=..., dispatch_id=..., request_nonce=..., request_payload=...)`; send that frozen challenge through the trusted adapter. The adapter signs `generator-critic-execution-attestation.schema.json` only after the provider returns. The coordinator then checks the one-time challenge, role, request/input hash, exact public output hash, execution session, provider response, isolation facts, and actual model separation before calling the deployment-owned signature verifier. Store the returned verification binding with the artifact or review, and bind both artifact and critic proofs into the release receipt. Compatibility-only in-process tests may leave strict mode off; production and external agents may not. / 对任何外部分派或生产代理，使用 `GeneratorCriticSession(..., require_execution_attestation=True, execution_attestation_verifier=deployment_verifier)` 构造会话。每次供应商调用前先执行 `prepare_execution_challenge(stage=..., dispatch_id=..., request_nonce=..., request_payload=...)`，并通过可信适配器传递冻结挑战。只有供应商返回后，适配器才能签名 `generator-critic-execution-attestation.schema.json`。随后协调器核对一次性挑战、角色、请求/输入哈希、精确公开输出哈希、执行会话、供应商响应、隔离事实与实际模型分离，再调用部署方所有的签名验证器。验证器返回的绑定随工件或评审保存，并将工件与评审双方的证明绑定进发布回执。仅兼容性进程内测试可关闭严格模式；生产及外部代理不得关闭。
+
+`build_generator_critic_execution_attestation()` only seals shape and self-hash; it does not verify the signature. A caller-provided “verified” boolean, an `agent_audit` object, or a verifier callback derived from the same untrusted result must be rejected. / `build_generator_critic_execution_attestation()` 只封存结构与自哈希，不验证签名。调用方自报的“verified”布尔值、`agent_audit` 对象，或从同一不可信结果派生的验证器回调都必须拒绝。
 
 ### 1. Create The Initial Artifact / 创建初始工件
 
@@ -319,6 +327,8 @@ Observability Metrics File / 可观测性指标文件: [reflection-chain-observa
 
 - [ ] Criteria and material risks exist before generation. / 生成前已有判据与重大风险。
 - [ ] Contract roles are version-bound and critic, policy gate, and release gate are distinct. / 契约角色已版本绑定，且评审器、策略闸、发布闸相互分离。
+- [ ] Every external generator, critic, and reviser call consumes a unique coordinator challenge and carries a signature accepted by a deployment-owned verifier. / 每次外部生成器、评审器与修订器调用都消费唯一协调器挑战，并携带由部署方所有验证器接受的签名。
+- [ ] Execution sessions and provider responses are never reused; `cross_model` records a different actual provider/model pair, not just a different role label. / 执行会话与供应商响应从不复用；`cross_model` 记录实际不同的供应商/模型组合，而非仅使用不同角色标签。
 - [ ] Every artifact revision is immutable, digest-bound, parent-linked when revised, and initially unreviewed. / 每个工件修订不可变、绑定摘要、修订时链接父版本且初始未评审。
 - [ ] Review starts only for the current exact artifact binding. / 评审只针对当前精确工件绑定启动。
 - [ ] Every sealed criterion has one explicit result; missing and unknown are not pass. / 每个封存判据均有明确结果；缺失和未知不等于通过。
@@ -327,7 +337,7 @@ Observability Metrics File / 可观测性指标文件: [reflection-chain-observa
 - [ ] Automatic revision uses only adopted issue IDs and creates a new unreviewed version. / 自动修订只使用采纳问题标识并创建新的未评审版本。
 - [ ] A revised or superseding version obtains a new review, decision, and receipt. / 修订或替代版本取得新的评审、裁决及回执。
 - [ ] Pass budget never exceeds two; unresolved work explicitly escalates or rejects. / 评审批次不超过两次；未解决工作明确升级或拒绝。
-- [ ] Release checks exact artifact, receipt, policy, and evidence freshness. / 发布校验精确工件、回执、策略及证据新鲜度。
+- [ ] Release checks exact artifact, generator/reviser and critic execution-proof bindings, receipt, policy, and evidence freshness. / 发布校验精确工件、生成器/修订器与评审器执行证明绑定、回执、策略及证据新鲜度。
 - [ ] Every protected boundary records a valid `shared_reflection_guard` assurance binding, and the real publish side effect cannot bypass `verify_release()`. / 每个受保护边界记录有效共享反思闸保证绑定，真实发布副作用无法绕过 `verify_release()`。
 - [ ] Event stream is contiguous, self-hashed, replayable, and contains no private reasoning. / 事件流连续、自哈希、可回放且不含私密推理。
 - [ ] Production durability claims are backed by a real transactional persistence implementation. / 生产持久化声明由真实事务持久化实现支撑。
