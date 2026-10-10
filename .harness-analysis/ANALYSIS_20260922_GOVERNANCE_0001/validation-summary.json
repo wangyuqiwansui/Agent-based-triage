@@ -1,0 +1,28 @@
+{
+  "name_en": "Governance specification validation",
+  "name_zh": "治理工程规格验证",
+  "base_commit": "d36c2b240d085a1b8a6eea57a58dabb3f773a0f4",
+  "scope_en": "Baseline plus governance changes in an isolated snapshot; concurrent handoff edits excluded.",
+  "scope_zh": "基线叠加本次治理变更的隔离快照，排除同期交接链改动。",
+  "governance_asset_validation_errors": 0,
+  "targeted_tests_passed": 21,
+  "full_tests_passed": 849,
+  "subtests_passed": 243,
+  "skipped": 3,
+  "skipped_reason_en": "PostgreSQL integration requires HARNESS_POSTGRES_DSN; none was configured.",
+  "skipped_reason_zh": "未配置 HARNESS_POSTGRES_DSN，跳过真实 PostgreSQL 集成。",
+  "skill_validation_errors": 0,
+  "skill_navigation_warnings": 18,
+  "business_acceptance_scenarios": 54,
+  "business_acceptance_status": "not_executed",
+  "forward_review_scenarios": 3,
+  "forward_review_status": "document_only_consistent",
+  "shared_workspace_run": {
+    "passed": 849,
+    "failed": 3,
+    "errors": 40,
+    "skipped": 3,
+    "reason_en": "Concurrent handoff specification files were incomplete during this run.",
+    "reason_zh": "该次检查期间同期交接链规格文件尚未落盘或同步完成。"
+  }
+}

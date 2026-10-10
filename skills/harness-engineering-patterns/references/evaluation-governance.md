@@ -70,6 +70,10 @@ Ask these questions for any Agent Harness or workflow. / 对任何 Agent Harness
 
 ## Evaluation Output / 评估输出
 
+For runtime action governance, use the [execution flow](governance-execution-flow.md), [independent probes](governance-observability-probes.md) and [shared exchange contract](governance-contract.md). These extend the existing governance patterns with specifications, without changing their IDs or declaring deployment. Separate permission, budget reservation, dispatch and verified business outcome; source-backed observation repair never grants action authority. / 运行时行动治理使用执行流程、独立探针与共享交互契约；这些规格完善已有治理模式，不改变编号，也不宣称已部署。分别记录许可、预算预留、派发和已核验业务结果；有来源的观测修复不授予行动权。
+
+Use an independent authoritative inventory for metric denominators. Unknown denominators remain unknown; known empty applicable populations are not applicable, never 100%. Report original evidence completeness separately from retrospective reconstruction, and retain pending or unknown results in their defined populations. See the [36 metric definitions](governance-observability-probes.md#metric-catalog). / 指标分母来自独立权威清单；未知分母仍为未知，已知无适用样本标为不适用，不能记为 100%。原始证据完整性与事后还原程度分报，待处理或未知结果按指标口径保留在总体中；详见 36 项指标定义。
+
 Use this seven-dimension shape when a user needs a scored result. Every dimension declares how it is judged, which direction is better, which evidence is used, and which observation window the score covers. / 当用户需要评分结果时使用以下七维结构。每个维度都声明判断方式、优劣方向、证据来源和评分覆盖的观察窗口。
 
 ```yaml
@@ -149,3 +153,19 @@ Metric metadata rules / 指标元数据规则：
 - `evidence_sources` contains resolvable EIR evidence IDs or external references. / `evidence_sources` 包含可解析的 EIR 证据 ID 或外部引用。
 - `observation_window` prevents scores from silently mixing versions or time periods. / `observation_window` 防止评分静默混合不同版本或时间区间。
 - `confidence` is `high`, `medium`, or `low` and does not substitute for a score. / `confidence` 使用 `high`、`medium` 或 `low`，不能替代分数。
+
+## Observability evidence boundary / 可观测性证据边界
+
+The [Observability Harness supplement](observability-contract.md) is `specification_only`. Its [source map](observability-source-map.json) preserves 13 stages, 45 probes, 50 metric definitions and 15 source acceptance scenarios; [12 additional boundary scenarios](observability-probes.md#acceptance) cover completion, recovery and measurement integrity. All 27 scenarios remain `not_executed` until an adopting host records input, expected/actual result and independently verifiable evidence. Asset/hash/link checks neither execute these scenarios nor promote pattern maturity. / 可观测性扩展仅为规格；来源映射保留 13 阶段、45 探针、50 指标及 15 来源验收场景，另补 12 个补全恢复统计边界场景。27 个场景在接入宿主提供输入、预期实际结果及独立证据前均为未执行；资产哈希链接检查不执行场景，也不晋升模式成熟度。
+
+Require authority-confirmed outcomes, scoped authenticated correlation, reviewed labels for diagnostic accuracy, independent expected-event populations, qualified denominators and isolated replay. A healthy collector, completed run, high coverage score, accepted observation patch or generated artifact does not by itself prove a successful business outcome. / 要求权威确认结果、范围认证关联、诊断准确性的复核标签、独立预期事件总体、合格分母及隔离重放；采集健康、运行结束、高覆盖分、补丁采纳或工件生成本身均不证明业务成功。
+
+## Pattern Combination Evidence Boundary / 模式组合证据边界
+
+The [composition contract](pattern-combination-contract.md) and [source map](pattern-combination-source-map.json) retain 11 stages, 14 probes, 54 formulas and 20 source cases, with seven additional host-integration scenarios. All business scenarios remain unexecuted. Evaluate never-started mandatory branches, shared-budget races, unknown external effects, late/duplicate/conflicting events, cross-task enrichment, empty or sampled populations and optional probe failure. Document validation is not evidence of a working scheduler, calculator or business acceptance. / 组合契约与来源映射保留 11 阶段、14 探针、54 公式及 20 来源场景，另含七项宿主接入场景，业务场景均未执行。应评估未启动必需分支、共享预算竞争、未知效果、迟到重复冲突事件、跨任务补数、空或采样总体及可选探针故障；文档校验不证明调度器、计算器或业务验收已实现。
+
+## Progressive Commitment Evidence Boundary / 渐进承诺证据边界
+
+The [progressive commitment contract](progressive-commitment-contract.md) is specification-only. Its [source map](progressive-commitment-source-map.json) binds 15 execution nodes, 13 probe nodes, 20 specialized probes, 114 metric definitions and 60 source cases; 8 additional execution cases target concurrency and authority boundaries. None is a passed business test until an adopting implementation supplies input, expected/actual outcome and independent evidence. Source/hash/navigation validation does not promote pattern maturity or prove enforcement. / 渐进承诺契约仅为规范；来源映射绑定 15 执行节点、13 探针节点、20 专项探针、114 指标及 60 来源场景，另有 8 项并发权限边界场景。在采用实现提供输入、预期实际结果及独立证据前，均不能称为业务测试通过。来源哈希导航校验不晋升模式成熟度，也不证明控制已生效。
+
+Evaluate distinct task progression, evidence cohort uniqueness/diversity/freshness, authority revision and failure-watermark races, atomic predecessor replacement, gateway revocation coverage, unknown effects and post-incident recovery. Report conditional success with terminal coverage; do not confuse a stable digest, a high aggregate score, a verified observation patch or a Skill routing qualification with an action grant. / 评估独立任务推进、证据组唯一多样新鲜度、权限修订与失败水位竞争、原子新旧替代、执行点吊销覆盖、未知效果及事故后恢复。条件成功率同时报告终态覆盖；稳定摘要、高汇总分、核验补全及 Skill 路由资格均不能当作行动授权。

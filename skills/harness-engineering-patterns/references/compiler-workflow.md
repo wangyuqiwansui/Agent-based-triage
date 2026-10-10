@@ -84,6 +84,7 @@ If evidence is missing, mark the claim as unsupported and convert it into an obs
 - Use `workflow-nodes.md` for business node splitting. / 使用 `workflow-nodes.md` 拆分业务节点。
 - Use `harness-source-analysis.md` for source repository reverse engineering. / 使用 `harness-source-analysis.md` 进行源码仓库逆向分析。
 - Use `axes.md`, `matrix-index.md`, and `pattern-selection-card.md` for matrix mapping. / 使用 `axes.md`、`matrix-index.md` 和 `pattern-selection-card.md` 做矩阵映射。
+- For composition, use [selection execution](pattern-selection-execution-flow.md), [independent probes](pattern-selection-observability-probes.md) and the [shared contract](pattern-selection-contract.md). Evaluate the minimum baseline before mapping; a sufficient deterministic solution needs no added pattern. / 组合设计使用选型执行、独立探针及共享契约；映射前先评估最小基线，充分的确定性方案无需新增模式。
 - Use `pattern-skill-packaging.md` for pattern cards and Skill specs. / 使用 `pattern-skill-packaging.md` 生成模式卡与 Skill 规格。
 - Use `evaluation-governance.md` and `failure-modes.md` for quality, risk, and governance. / 使用 `evaluation-governance.md` 和 `failure-modes.md` 做质量、风险与治理分析。
 

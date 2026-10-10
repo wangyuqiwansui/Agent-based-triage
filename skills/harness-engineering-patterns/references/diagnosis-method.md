@@ -4,7 +4,7 @@ Use this file to move from classification to workflow modification. / 使用本�
 
 ## Automatic Engineering Node Analysis / 工程节点自动分析
 
-When the user asks to analyze an engineering node, automatically run Trace Insert / 自动运行 Trace 插入, then run Pattern Selection Card / 模式选型卡 after evidence is ready. / 当用户要求分析工程节点时，自动运行 Trace 插入；证据就绪后，再运行模式选型卡。
+When the user asks to analyze an engineering node, automatically run Trace Insert / 自动运行 Trace 插入, then use Pattern Selection Card / 模式选型卡 to define correctness and evaluate the minimum baseline. Final adoption requires evidence; preliminary diagnosis can expose gaps earlier. / 当用户要求分析工程节点时，自动运行 Trace 插入，再用模式选型卡定义正确性并评估最小基线。最终采用须有证据，初步诊断可先暴露缺口。
 
 This automatic flow applies even when the user names only one node and does not explicitly mention ASSESS, ROUTE, SELECT, matrix, or Trace. / 即使用户只给出一个节点，未显式提到 ASSESS、ROUTE、SELECT、矩阵或 Trace，也适用该自动流程。
 
@@ -13,7 +13,7 @@ This automatic flow applies even when the user names only one node and does not 
 1. Describe the current workflow in 3-7 steps. / 用 3-7 步描述当前工作流。
 2. Split those steps into business nodes from `workflow-nodes.md`. / 使用 `workflow-nodes.md` 将步骤拆成业务节点。
 3. Apply Trace Insert / Trace 插入 to collect complete node evidence before selection. / 应用 Trace Insert / Trace 插入，在选型前采集完整节点证据。
-4. Run the Pattern Selection Card / 模式选型卡 only after node evidence is ready. / 仅在节点证据就绪后运行 Pattern Selection Card / 模式选型卡。
+4. Run the Pattern Selection Card / 模式选型卡 and [selection workflow](pattern-selection-execution-flow.md): contract, baseline, concrete difficulties and model/program/human boundaries. Retain a sufficient baseline without additional patterns. / 运行模式选型卡及选型流程，先明确契约、基线、具体困难和模型程序人工边界；基线足够则保留，不新增模式。
 5. Map each node to one primary capability and one primary orchestration mode through ASSESS / 评估 and ROUTE / 判拓扑. / 通过 ASSESS / 评估 与 ROUTE / 判拓扑，为每个节点映射一个主要能力和一个主要编排模式。
 6. Inspect the matrix cell through SELECT / 查矩阵 and compare current behavior against fit signals. / 通过 SELECT / 查矩阵 检查交织点，并将当前行为与适配信号比较。
 7. Identify whether the issue is missing node, wrong mode, weak capability, missing loop, poor handoff, missing memory, or weak governance. / 识别问题属于节点缺失、模式错误、能力薄弱、循环缺失、交接不良、记忆缺失或治理薄弱。
@@ -27,14 +27,14 @@ Use `pattern-selection-card.md` to insert Trace before any matrix decision. / �
 - First collect Engineering Node / 工程节点, Node Evidence / 节点证据, risk, current behavior, and failure signals. / 先采集工程节点、节点证据、风险、当前行为和失败信号。
 - If Trace Evidence / Trace 证据 exists, use it to compare repeated outcomes and previous pattern effects. / 如果存在 Trace 证据，用它比较重复结果和既往模式效果。
 - If no Trace exists, mark the analysis as initial planning and state the missing observation points. / 如果没有 Trace，将分析标记为初次规划，并说明缺失的观察点。
-- Stop before ASSESS / 评估, ROUTE / 判拓扑, and SELECT / 查矩阵 when node evidence is incomplete. / 当节点证据不完整时，在 ASSESS、ROUTE、SELECT 前停止。
+- When evidence is incomplete, mark ASSESS / 评估, ROUTE / 判拓扑 and SELECT / 查矩阵 results preliminary and name verification tasks; withhold final adoption only. / 证据不完整时将评估、判拓扑及查矩阵结果标为初步并列出验证任务，仅保留最终采用决定。
 
 ## Article-Informed Selection Flow / 文章启发的选型流程
 
 Use this flow when choosing or changing a pattern. / 选择或调整模式时使用此流程。
 
 1. Bound the workflow slice. Identify trigger, actor, decision, output, and failure cost. / 界定工作流切片：识别触发、参与者、决策、输出和失败成本。
-2. Insert Trace. Gather current node evidence and read existing trace files when available. / 插入 Trace：采集当前节点证据，并在可用时读取既有追踪文件。
+2. Insert Trace. Gather current evidence, define completion and prohibited effects, and run the minimum baseline before adding structure. Read existing trace files when available. / 插入 Trace：采集当前证据，定义完成及禁止效果，增加结构前实跑最小基线；有既有追踪时读取。
 3. Run ASSESS / 评估. Ask which capability is truly responsible for the bottleneck. / 执行 ASSESS / 评估：判断真正造成瓶颈的是哪类能力。
 4. Run ROUTE / 判拓扑. Select the simplest mode that preserves the needed dependencies. / 执行 ROUTE / 判拓扑：选择能保留必要依赖的最简单模式。
 5. Run SELECT / 查矩阵. Prefer a named pattern when the cell has one; use extension rules when it does not. / 执行 SELECT / 查矩阵：若单元已有命名模式则优先使用；若没有则使用扩展规则。
@@ -49,7 +49,7 @@ Use this flow when choosing or changing a pattern. / 选择或调整模式时使
 - Feedback drives loops. / 反馈推动循环：结果会改变下一步判断时，需要循环而非单向链式。
 - Coordination burden drives orchestration. / 协调负担推动编排：工具、状态、角色或依赖越多，越需要控制器。
 - Depth drives hierarchy. / 深度推动层级：目标需要递归拆解或分层授权时，使用层级。
-- Risk can override topology. / 风险可以覆盖拓扑：高风险场景优先加入治理门禁、审计和爆炸半径控制。
+- Risk adds mandatory controls; change topology only when dependencies or authority boundaries require it. / 风险增加强制控制，仅当依赖或权限边界确有要求时改变拓扑。
 
 ## Environmental Constraint Laws / 环境约束定律
 

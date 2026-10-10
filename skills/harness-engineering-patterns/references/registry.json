@@ -924,7 +924,55 @@
         "COG_GOVERNANCE__TOP_HIERARCHY"
       ],
       "related_pattern_refs": [
-        "PATTERN_0051"
+        "PATTERN_0051",
+        "PATTERN_0053"
+      ]
+    },
+    {
+      "id": "PATTERN_0053",
+      "name_en": "Pattern Combination Execution Flow",
+      "name_zh": "模式组合执行流程",
+      "source_kind": "local_seed",
+      "aliases_en": [
+        "Pattern Composition"
+      ],
+      "aliases_zh": [
+        "模式组合"
+      ],
+      "status": "draft",
+      "reference": "references/pattern-combination-execution-flow.md",
+      "observability_reference": "references/pattern-combination-observability-probes.md",
+      "source_version": "0.1.0",
+      "source_draft_id": "PATTERN_COMBINATION_0001",
+      "cognition_refs": [
+        "COG_PERCEPTION",
+        "COG_MEMORY",
+        "COG_REASONING",
+        "COG_ACTION",
+        "COG_REFLECTION",
+        "COG_COLLABORATION",
+        "COG_GOVERNANCE"
+      ],
+      "topology_refs": [
+        "TOP_CHAIN",
+        "TOP_ROUTING",
+        "TOP_PARALLEL",
+        "TOP_ORCHESTRATION",
+        "TOP_LOOP",
+        "TOP_HIERARCHY"
+      ],
+      "matrix_coordinates": [
+        "COG_PERCEPTION__TOP_ROUTING",
+        "COG_MEMORY__TOP_ORCHESTRATION",
+        "COG_REASONING__TOP_LOOP",
+        "COG_ACTION__TOP_ORCHESTRATION",
+        "COG_REFLECTION__TOP_LOOP",
+        "COG_COLLABORATION__TOP_PARALLEL",
+        "COG_GOVERNANCE__TOP_CHAIN"
+      ],
+      "related_pattern_refs": [
+        "PATTERN_0051",
+        "PATTERN_0052"
       ]
     }
   ],
@@ -1675,8 +1723,16 @@
       "maturity": "draft",
       "local_evidence_count": 0,
       "domain_count": 0,
-      "diagnostic_use_en": "Use when work passes through ordered actors or roles.",
-      "diagnostic_use_zh": "当工作按顺序经过多个参与者或角色时使用。"
+      "diagnostic_use_en": "Use when ordered roles must transfer committed state, responsibility and evidence with verifiable acceptance and bounded recovery.",
+      "diagnostic_use_zh": "当有序角色须通过可验证验收与有界恢复，一并交接正式状态、责任和证据时使用。",
+      "handoff_specification": {
+        "version": "0.1.0",
+        "source_contract_version": "1.0",
+        "status": "draft",
+        "implementation_status": "specification_only",
+        "source_map_reference": "references/handoff-chain-source-map.json",
+        "interaction_contract_reference": "references/handoff-chain-contract.md"
+      }
     },
     {
       "id": "CELL_COLLABORATION_ROUTING",
@@ -1862,8 +1918,18 @@
       "maturity": "draft",
       "local_evidence_count": 1,
       "domain_count": 1,
-      "diagnostic_use_en": "Use when risk or permission determines whether work can continue.",
-      "diagnostic_use_zh": "当风险或权限决定工作能否继续时使用。"
+      "diagnostic_use_en": "Use when reviewable proposals need scoped approval, durable waiting, revalidation and accountable effect reconciliation.",
+      "diagnostic_use_zh": "当可审提案需要受限审批、持久等待、执行前重检及可追责的效果核对时使用。",
+      "approval_specification": {
+        "version": "0.1.0",
+        "source_contract_version": "1.0.0",
+        "status": "draft",
+        "implementation_status": "specification_only",
+        "execution_reference": "references/approval-gate-execution-flow.md",
+        "observability_reference": "references/approval-gate-observability-probes.md",
+        "interaction_contract_reference": "references/approval-gate-contract.md",
+        "source_map_reference": "references/approval-gate-source-map.json"
+      }
     },
     {
       "id": "CELL_GOVERNANCE_PARALLEL",
@@ -1885,8 +1951,8 @@
       "maturity": "draft",
       "local_evidence_count": 0,
       "domain_count": 0,
-      "diagnostic_use_en": "Use when commitments should be staged and checked in parallel with execution evidence.",
-      "diagnostic_use_zh": "当承诺需要分阶段并与执行证据并行检查时使用。"
+      "diagnostic_use_en": "Use when scoped capability authority must grow through verified evidence, independent checks and approved promotion, with fast revocation.",
+      "diagnostic_use_zh": "当范围明确的能力权限需要通过核验证据、独立检查和获批晋级逐步扩大，并能快速收权时使用。"
     },
     {
       "id": "CELL_GOVERNANCE_ORCHESTRATION",
@@ -1908,8 +1974,8 @@
       "maturity": "draft",
       "local_evidence_count": 0,
       "domain_count": 0,
-      "diagnostic_use_en": "Use when governance requires coordinated evidence, traces, metrics, and review.",
-      "diagnostic_use_zh": "当治理需要协调证据、追踪、指标和评审时使用。"
+      "diagnostic_use_en": "Use when workflows must prove business outcomes, preserve raw state, reconcile asynchronous effects and bind public claims to auditable evidence.",
+      "diagnostic_use_zh": "当工作流需要证明业务结果、保留原始状态、对账异步副作用，并把对外承诺绑定到可审计证据时使用。"
     },
     {
       "id": "CELL_GOVERNANCE_LOOP",
@@ -1954,8 +2020,102 @@
       "maturity": "draft",
       "local_evidence_count": 0,
       "domain_count": 0,
-      "diagnostic_use_en": "Use when permissions, rollout, or impact must be limited by level.",
-      "diagnostic_use_zh": "当权限、发布或影响范围必须按层级限制时使用。"
+      "diagnostic_use_en": "Use when external effects need shared cumulative limits, conserved child reservations, bound permits and unknown-result reconciliation.",
+      "diagnostic_use_zh": "当外部效果需要共享累计限额、守恒子预留、绑定许可及未知结果对账时使用。"
     }
-  ]
+  ],
+  "governance_specification": {
+    "name_en": "Runtime Action Authority Governance",
+    "name_zh": "运行时行动权治理",
+    "description_en": "Source-backed execution and independent observation specifications across the existing governance cells; no deployed governance adapter or metric calculator is claimed.",
+    "description_zh": "基于来源完善现有治理单元的执行与独立观测规格；不宣称已部署治理适配器或指标计算器。",
+    "version": "0.1.0",
+    "protocol_id": "GOV_BOUNDARY_OBS",
+    "protocol_version": "1.0.0",
+    "implementation_status": "specification_only",
+    "status": "draft",
+    "execution_reference": "references/governance-execution-flow.md",
+    "observability_reference": "references/governance-observability-probes.md",
+    "interaction_contract_reference": "references/governance-contract.md",
+    "source_map_reference": "references/governance-source-map.json"
+  },
+  "blast_radius_specification": {
+    "name_en": "Blast Radius Control Execution and Probes",
+    "name_zh": "爆炸半径控制执行与探针",
+    "description_en": "Source-backed specifications for conserved hierarchical envelopes, effect permits, unknown outcomes and independent observation.",
+    "description_zh": "基于来源的层级信封守恒、效果许可、未知结果与独立观测规格。",
+    "version": "0.1.0",
+    "status": "draft",
+    "implementation_status": "specification_only",
+    "pattern_ref": "PATTERN_0050",
+    "cell_ref": "CELL_GOVERNANCE_HIERARCHY",
+    "execution_reference": "references/blast-radius-execution-flow.md",
+    "observability_reference": "references/blast-radius-observability-probes.md",
+    "interaction_contract_reference": "references/blast-radius-contract.md",
+    "source_map_reference": "references/blast-radius-source-map.json"
+  },
+  "observability_specification": {
+    "name_en": "Observability Harness Execution and Probes",
+    "name_zh": "可观测性框架执行与探针",
+    "description_en": "Source-backed business outcome, state fidelity, evidence completion and replay specifications.",
+    "description_zh": "有来源的业务结果、状态保真、证据补全与重放规格。",
+    "version": "0.1.0",
+    "status": "draft",
+    "implementation_status": "specification_only",
+    "pattern_ref": "PATTERN_0049",
+    "cell_ref": "CELL_GOVERNANCE_ORCHESTRATION",
+    "execution_reference": "references/observability-execution-flow.md",
+    "observability_reference": "references/observability-probes.md",
+    "interaction_contract_reference": "references/observability-contract.md",
+    "source_map_reference": "references/observability-source-map.json",
+    "shared_probe_pattern_ref": "PATTERN_0052",
+    "shared_probe_version": "0.8.0"
+  },
+  "progressive_commitment_specification": {
+    "name_en": "Progressive Commitment Execution and Probes",
+    "name_zh": "渐进承诺执行与探针",
+    "description_en": "Source-backed specification for scoped capability credentials, separate task and authority clocks, evidence-bound promotion, revocation and independent observation.",
+    "description_zh": "基于来源的范围能力凭证、独立任务与权限钟表、证据绑定晋级、吊销及独立观测规格。",
+    "version": "0.1.0",
+    "status": "draft",
+    "implementation_status": "specification_only",
+    "pattern_ref": "PATTERN_0048",
+    "cell_ref": "CELL_GOVERNANCE_PARALLEL",
+    "execution_reference": "references/progressive-commitment-execution-flow.md",
+    "observability_reference": "references/progressive-commitment-observability-probes.md",
+    "interaction_contract_reference": "references/progressive-commitment-contract.md",
+    "source_map_reference": "references/progressive-commitment-source-map.json"
+  },
+  "pattern_selection_specification": {
+    "name_en": "Evidence-Based Pattern Composition and Selection",
+    "name_zh": "基于证据的组合设计与模式选型",
+    "description_en": "Baseline-first composition with scoped topologies, independent probes and append-only evidence supplements.",
+    "description_zh": "基线优先、有范围的拓扑组合、独立探针及追加式证据补全。",
+    "version": "0.1.0",
+    "status": "draft",
+    "implementation_status": "specification_only",
+    "profile": "pattern-selection/0.1.0",
+    "probe_pattern_ref": "PATTERN_0052",
+    "entry_reference": "references/pattern-selection-card.md",
+    "execution_reference": "references/pattern-selection-execution-flow.md",
+    "observability_reference": "references/pattern-selection-observability-probes.md",
+    "interaction_contract_reference": "references/pattern-selection-contract.md",
+    "source_map_reference": "references/pattern-selection-source-map.json"
+  },
+  "pattern_combination_specification": {
+    "name_en": "Pattern Combination Execution and Independent Probes",
+    "name_zh": "模式组合执行与独立探针",
+    "description_en": "Source-backed composition of existing patterns with dependency, version, budget, recovery, evidence and acceptance contracts.",
+    "description_zh": "基于来源组合既有模式，明确依赖、版本、预算、恢复、证据及验收契约。",
+    "version": "0.1.0",
+    "status": "draft",
+    "implementation_status": "specification_only",
+    "pattern_ref": "PATTERN_0053",
+    "shared_probe_pattern_ref": "PATTERN_0052",
+    "shared_probe_version": "0.8.0",
+    "execution_reference": "references/pattern-combination-execution-flow.md",
+    "observability_reference": "references/pattern-combination-observability-probes.md",
+    "interaction_contract_reference": "references/pattern-combination-contract.md",
+    "source_map_reference": "references/pattern-combination-source-map.json"
+  }
 }

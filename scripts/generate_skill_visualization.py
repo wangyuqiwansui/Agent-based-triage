@@ -299,6 +299,9 @@ def parse_selection_card(skill_dir: pathlib.Path) -> dict[str, str]:
         "title": title_match.group(1).strip() if title_match else "Pattern Selection Card / 模式选型卡",
         "source": source,
         "href": f"skills/harness-engineering-patterns/{source}",
+        "execution_href": "skills/harness-engineering-patterns/references/pattern-selection-execution-flow.md",
+        "probe_href": "skills/harness-engineering-patterns/references/pattern-selection-observability-probes.md",
+        "contract_href": "skills/harness-engineering-patterns/references/pattern-selection-contract.md",
     }
 
 
@@ -310,7 +313,15 @@ def source_files(skill_dir: pathlib.Path) -> list[pathlib.Path]:
         references / "matrix-index.md",
         references / "pattern-catalog.md",
         references / "pattern-selection-card.md",
+        references / "pattern-selection-execution-flow.md",
+        references / "pattern-selection-observability-probes.md",
+        references / "pattern-selection-contract.md",
+        references / "pattern-selection-source-map.json",
     ]
+    combination = load_registry(skill_dir).get("pattern_combination_specification", {})
+    files.extend(skill_dir / combination[key] for key in (
+        "execution_reference", "observability_reference", "interaction_contract_reference", "source_map_reference"
+    ) if key in combination)
     files.extend(sorted((references / "patterns").glob("*/*.md")))
     return files
 
@@ -382,6 +393,7 @@ def render_html(data: dict[str, Any]) -> str:
     axis_cards = "\n".join(render_axis_card(axis) for axis in vertical_axes)
     mode_cards = "\n".join(render_mode_card(mode) for mode in horizontal_axes)
     selection_flow = render_selection_flow(data["selection_card"])
+    combination = render_combination_card(data["registry"])
     matrix_rows = "\n".join(
         render_matrix_row(axis, horizontal_axes, matrix_by_axis) for axis in vertical_axes
     )
@@ -655,6 +667,8 @@ def render_html(data: dict[str, Any]) -> str:
 
     {selection_flow}
 
+    {combination}
+
     <h2>Vertical Capabilities / 纵轴能力</h2>
     <section class="grid">{axis_cards}</section>
 
@@ -682,6 +696,33 @@ def render_html(data: dict[str, Any]) -> str:
 """
 
 
+def render_combination_card(registry: dict[str, Any]) -> str:
+    """Expose the registered composition entry / 展示注册的模式组合入口。"""
+    record = registry.get("pattern_combination_specification")
+    if not record:
+        return ""
+    labels = (
+        ("execution_reference", "Execution / 执行流程"),
+        ("observability_reference", "Independent probes / 独立探针"),
+        ("interaction_contract_reference", "Exchange contract / 交互契约"),
+        ("source_map_reference", "Source evidence / 来源证据"),
+    )
+    links = " · ".join(
+        f'<a href="skills/harness-engineering-patterns/{escape_attr(record[key])}">{escape(label)}</a>'
+        for key, label in labels
+    )
+    return f"""
+    <h2>Pattern Combination / 模式组合</h2>
+    <section class="selection-flow" aria-label="Pattern combination">
+      <div>
+        <p class="flow-title">Task contract → Minimum composition → Governed execution → Five acceptance gates<br>任务契约 → 最小组合 → 受治理执行 → 五道验收门</p>
+        <p class="flow-copy">{escape(record['description_en'])} / {escape(record['description_zh'])}</p>
+        <p class="flow-copy">Draft specification / 草案规格 · Business scenarios not executed / 业务场景未执行</p>
+        <p>{links}</p>
+      </div>
+    </section>"""
+
+
 def render_metric(value: int, label: str) -> str:
     return f'<div class="metric"><strong>{value}</strong><span>{escape(label)}</span></div>'
 
@@ -691,8 +732,10 @@ def render_selection_flow(card: dict[str, str]) -> str:
     <h2>Pattern Selection Card / 模式选型卡</h2>
     <section class="selection-flow" aria-label="Pattern selection card">
       <div>
-        <p class="flow-title">Trace Insert / Trace 插入 -> ASSESS / 评估 -> ROUTE / 判拓扑 -> SELECT / 查矩阵 -> Plan / 规划</p>
-        <p class="flow-copy">Trace is inserted first to complete engineering node evidence; the card runs only after the node is ready. / 先插入 Trace 补全工程节点证据，节点就绪后再运行选型卡。</p>
+        <p class="flow-title">Trace Insert / Trace 插入 → Contract &amp; Baseline / 契约与基线 → ASSESS / 评估 → ROUTE / 判拓扑 → SELECT / 查矩阵 → Validate / 验证</p>
+        <p class="flow-copy">Keep a sufficient baseline. Compose one primary topology with scoped auxiliaries only for evidenced gaps, then compare on the same task set. / 基线足够则保留；仅为有证据的缺口组合主拓扑和局部辅助拓扑，再用同一任务集验证。</p>
+        <p class="flow-copy">Draft specification / 草案规格：S0–S10 · 16 probes / 探针 · 68 metrics / 指标 · 30 anomalies / 异常。Business acceptance cases remain unexecuted. / 业务验收用例尚未执行。</p>
+        <p class="axis-links"><a class="guide-link" href="{escape_attr(card['execution_href'])}">Execution / 执行流程</a> <a class="guide-link" href="{escape_attr(card['probe_href'])}">Probes / 独立探针</a> <a class="guide-link" href="{escape_attr(card['contract_href'])}">Contract / 共享契约</a></p>
       </div>
       <a class="flow-link" href="{escape_attr(card['href'])}">{escape(card['source'])}</a>
     </section>"""

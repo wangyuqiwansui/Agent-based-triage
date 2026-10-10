@@ -1,0 +1,43 @@
+[
+  {
+    "name": "visualization",
+    "command": [
+      "C:\\Users\\wangs\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+      "-X",
+      "utf8",
+      "-B",
+      "scripts/generate_skill_visualization.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.15,
+    "log": "C:\\Users\\wangs\\AppData\\Local\\Temp\\governance-regression-3hv18z_o\\visualization.log"
+  },
+  {
+    "name": "skill_validation",
+    "command": [
+      "C:\\Users\\wangs\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+      "-X",
+      "utf8",
+      "-B",
+      "skills/harness-engineering-patterns/scripts/validate_harness_skill.py"
+    ],
+    "exit_code": 0,
+    "seconds": 2.25,
+    "log": "C:\\Users\\wangs\\AppData\\Local\\Temp\\governance-regression-3hv18z_o\\skill_validation.log"
+  },
+  {
+    "name": "pytest_full",
+    "command": [
+      "C:\\Users\\wangs\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+      "-X",
+      "utf8",
+      "-B",
+      "-m",
+      "pytest",
+      "-q"
+    ],
+    "exit_code": 0,
+    "seconds": 99.4,
+    "log": "C:\\Users\\wangs\\AppData\\Local\\Temp\\governance-regression-3hv18z_o\\pytest_full.log"
+  }
+]

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN" data-source-hash="ef7f38c98f959f62">
+<html lang="zh-CN" data-source-hash="5ac0885e560fa8f1">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -269,10 +269,23 @@
     <h2>Pattern Selection Card / 模式选型卡</h2>
     <section class="selection-flow" aria-label="Pattern selection card">
       <div>
-        <p class="flow-title">Trace Insert / Trace 插入 -> ASSESS / 评估 -> ROUTE / 判拓扑 -> SELECT / 查矩阵 -> Plan / 规划</p>
-        <p class="flow-copy">Trace is inserted first to complete engineering node evidence; the card runs only after the node is ready. / 先插入 Trace 补全工程节点证据，节点就绪后再运行选型卡。</p>
+        <p class="flow-title">Trace Insert / Trace 插入 → Contract &amp; Baseline / 契约与基线 → ASSESS / 评估 → ROUTE / 判拓扑 → SELECT / 查矩阵 → Validate / 验证</p>
+        <p class="flow-copy">Keep a sufficient baseline. Compose one primary topology with scoped auxiliaries only for evidenced gaps, then compare on the same task set. / 基线足够则保留；仅为有证据的缺口组合主拓扑和局部辅助拓扑，再用同一任务集验证。</p>
+        <p class="flow-copy">Draft specification / 草案规格：S0–S10 · 16 probes / 探针 · 68 metrics / 指标 · 30 anomalies / 异常。Business acceptance cases remain unexecuted. / 业务验收用例尚未执行。</p>
+        <p class="axis-links"><a class="guide-link" href="skills/harness-engineering-patterns/references/pattern-selection-execution-flow.md">Execution / 执行流程</a> <a class="guide-link" href="skills/harness-engineering-patterns/references/pattern-selection-observability-probes.md">Probes / 独立探针</a> <a class="guide-link" href="skills/harness-engineering-patterns/references/pattern-selection-contract.md">Contract / 共享契约</a></p>
       </div>
       <a class="flow-link" href="skills/harness-engineering-patterns/references/pattern-selection-card.md">references/pattern-selection-card.md</a>
+    </section>
+
+
+    <h2>Pattern Combination / 模式组合</h2>
+    <section class="selection-flow" aria-label="Pattern combination">
+      <div>
+        <p class="flow-title">Task contract → Minimum composition → Governed execution → Five acceptance gates<br>任务契约 → 最小组合 → 受治理执行 → 五道验收门</p>
+        <p class="flow-copy">Source-backed composition of existing patterns with dependency, version, budget, recovery, evidence and acceptance contracts. / 基于来源组合既有模式，明确依赖、版本、预算、恢复、证据及验收契约。</p>
+        <p class="flow-copy">Draft specification / 草案规格 · Business scenarios not executed / 业务场景未执行</p>
+        <p><a href="skills/harness-engineering-patterns/references/pattern-combination-execution-flow.md">Execution / 执行流程</a> · <a href="skills/harness-engineering-patterns/references/pattern-combination-observability-probes.md">Independent probes / 独立探针</a> · <a href="skills/harness-engineering-patterns/references/pattern-combination-contract.md">Exchange contract / 交互契约</a> · <a href="skills/harness-engineering-patterns/references/pattern-combination-source-map.json">Source evidence / 来源证据</a></p>
+      </div>
     </section>
 
     <h2>Vertical Capabilities / 纵轴能力</h2>
@@ -710,7 +723,7 @@
                 <div class="cell-links"><a class="cell-link" href="skills/harness-engineering-patterns/references/patterns/collaboration/collaboration-chain.md">Design Pattern / 设计模式</a><a class="cell-link" href="skills/harness-engineering-patterns/references/patterns/collaboration/collaboration-chain-observability.md">Observability / 可观测性</a></div>
                 <div class="use"><strong>Provenance / 来源:</strong> Paper v2 / 论文 v2</div>
                 <div class="use"><strong>Maturity / 成熟度:</strong> Draft / 草案</div>
-                <div class="use">Use when work passes through ordered actors or roles. / 当工作按顺序经过多个参与者或角色时使用。</div>
+                <div class="use">Use when ordered roles must transfer committed state, responsibility and evidence with verifiable acceptance and bounded recovery. / 当有序角色须通过可验证验收与有界恢复，一并交接正式状态、责任和证据时使用。</div>
               </div>
             </td>
             <td>
@@ -785,7 +798,7 @@
                 <div class="cell-links"><a class="cell-link" href="skills/harness-engineering-patterns/references/patterns/governance/governance-routing.md">Design Pattern / 设计模式</a><a class="cell-link" href="skills/harness-engineering-patterns/references/patterns/governance/governance-routing-observability.md">Observability / 可观测性</a></div>
                 <div class="use"><strong>Provenance / 来源:</strong> Paper v2 / 论文 v2</div>
                 <div class="use"><strong>Maturity / 成熟度:</strong> Draft / 草案</div>
-                <div class="use">Use when risk or permission determines whether work can continue. / 当风险或权限决定工作能否继续时使用。</div>
+                <div class="use">Use when reviewable proposals need scoped approval, durable waiting, revalidation and accountable effect reconciliation. / 当可审提案需要受限审批、持久等待、执行前重检及可追责的效果核对时使用。</div>
               </div>
             </td>
             <td>
@@ -795,7 +808,7 @@
                 <div class="cell-links"><a class="cell-link" href="skills/harness-engineering-patterns/references/patterns/governance/governance-parallel.md">Design Pattern / 设计模式</a><a class="cell-link" href="skills/harness-engineering-patterns/references/patterns/governance/governance-parallel-observability.md">Observability / 可观测性</a></div>
                 <div class="use"><strong>Provenance / 来源:</strong> Paper v2 / 论文 v2</div>
                 <div class="use"><strong>Maturity / 成熟度:</strong> Draft / 草案</div>
-                <div class="use">Use when commitments should be staged and checked in parallel with execution evidence. / 当承诺需要分阶段并与执行证据并行检查时使用。</div>
+                <div class="use">Use when scoped capability authority must grow through verified evidence, independent checks and approved promotion, with fast revocation. / 当范围明确的能力权限需要通过核验证据、独立检查和获批晋级逐步扩大，并能快速收权时使用。</div>
               </div>
             </td>
             <td>
@@ -805,7 +818,7 @@
                 <div class="cell-links"><a class="cell-link" href="skills/harness-engineering-patterns/references/patterns/governance/governance-orchestration.md">Design Pattern / 设计模式</a><a class="cell-link" href="skills/harness-engineering-patterns/references/patterns/governance/governance-orchestration-observability.md">Observability / 可观测性</a></div>
                 <div class="use"><strong>Provenance / 来源:</strong> Paper v2 / 论文 v2</div>
                 <div class="use"><strong>Maturity / 成熟度:</strong> Draft / 草案</div>
-                <div class="use">Use when governance requires coordinated evidence, traces, metrics, and review. / 当治理需要协调证据、追踪、指标和评审时使用。</div>
+                <div class="use">Use when workflows must prove business outcomes, preserve raw state, reconcile asynchronous effects and bind public claims to auditable evidence. / 当工作流需要证明业务结果、保留原始状态、对账异步副作用，并把对外承诺绑定到可审计证据时使用。</div>
               </div>
             </td>
             <td>
@@ -825,14 +838,14 @@
                 <div class="cell-links"><a class="cell-link" href="skills/harness-engineering-patterns/references/patterns/governance/governance-hierarchy.md">Design Pattern / 设计模式</a><a class="cell-link" href="skills/harness-engineering-patterns/references/patterns/governance/governance-hierarchy-observability.md">Observability / 可观测性</a></div>
                 <div class="use"><strong>Provenance / 来源:</strong> Paper v2 / 论文 v2</div>
                 <div class="use"><strong>Maturity / 成熟度:</strong> Draft / 草案</div>
-                <div class="use">Use when permissions, rollout, or impact must be limited by level. / 当权限、发布或影响范围必须按层级限制时使用。</div>
+                <div class="use">Use when external effects need shared cumulative limits, conserved child reservations, bound permits and unknown-result reconciliation. / 当外部效果需要共享累计限额、守恒子预留、绑定许可及未知结果对账时使用。</div>
               </div>
             </td>
           </tr></tbody>
       </table>
     </section>
 
-    <footer>Source hash / 源哈希: ef7f38c98f959f62</footer>
+    <footer>Source hash / 源哈希: 5ac0885e560fa8f1</footer>
   </main>
 </body>
 </html>

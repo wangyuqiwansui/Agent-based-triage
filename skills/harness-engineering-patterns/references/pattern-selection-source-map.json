@@ -1,0 +1,1678 @@
+{
+  "name_en": "Evidence-Based Pattern Composition and Selection",
+  "name_zh": "基于证据的组合设计与模式选型",
+  "description_en": "Baseline-first composition with scoped topologies, independent probes and append-only evidence supplements.",
+  "description_zh": "基线优先、有范围的拓扑组合、独立探针及追加式证据补全。",
+  "version": "0.1.0",
+  "status": "draft",
+  "implementation_status": "specification_only",
+  "profile": "pattern-selection/0.1.0",
+  "probe_pattern_ref": "PATTERN_0052",
+  "entry_reference": "references/pattern-selection-card.md",
+  "execution_reference": "references/pattern-selection-execution-flow.md",
+  "observability_reference": "references/pattern-selection-observability-probes.md",
+  "interaction_contract_reference": "references/pattern-selection-contract.md",
+  "source_map_reference": "references/pattern-selection-source-map.json",
+  "source_aliases": {
+    "selection": [
+      "PATTERN_SELECTION_0001",
+      "SKILL_SELECTION_0001"
+    ],
+    "probe": [
+      "PATTERN_OBSERVABILITY_0001",
+      "SKILL_OBSERVABILITY_0001"
+    ]
+  },
+  "acceptance_status": "not_executed",
+  "metric_implementation": "specification_only",
+  "sources": [
+    {
+      "id": "execution",
+      "original_name": "模式选型_执行流程.md",
+      "snapshot_path": "references/sources/pattern-selection/模式选型_执行流程.source.txt",
+      "sha256": "97d846988f5962564e3726508994224f5d57057ba3f754c2a8a2436255411d9f",
+      "source_version": "0.1.0",
+      "source_status": "draft"
+    },
+    {
+      "id": "probe",
+      "original_name": "模式选型_工作流可观测性探针.md",
+      "snapshot_path": "references/sources/pattern-selection/模式选型_工作流可观测性探针.source.txt",
+      "sha256": "95d625aafc02a9bce4c31dd885d3a84d2154a53347bac121cbdac30b2d768395",
+      "source_version": "0.1.0",
+      "source_status": "draft"
+    }
+  ],
+  "inventories": {
+    "execution_steps": [
+      {
+        "id": "S0",
+        "source_id": "execution",
+        "source_line": 348,
+        "source_end_line": 384,
+        "source_label": "初始化运行",
+        "excerpt_sha256": "68470def078ef3c55482962992a65523b57b26d782c84d9f26d14069748e7e79",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "S1",
+        "source_id": "execution",
+        "source_line": 385,
+        "source_end_line": 425,
+        "source_label": "定义正确性、禁止动作和安全出口",
+        "excerpt_sha256": "7efcd705422f5e7a069dcffd2db2c25f6b68a18b35fee379491b162a233a21a2",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "S2",
+        "source_id": "execution",
+        "source_line": 426,
+        "source_end_line": 483,
+        "source_label": "运行现有办法或最小方案",
+        "excerpt_sha256": "d4c5905fcc5e669d60664bc8674de6790a1d31ee948cfe65619b7093597aef56",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "S3",
+        "source_id": "execution",
+        "source_line": 484,
+        "source_end_line": 527,
+        "source_label": "定位具体困难",
+        "excerpt_sha256": "04786b9616dca7161a0cac6a0130e992df2da22fe277c903ed90f976b4e9e37e",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "S4",
+        "source_id": "execution",
+        "source_line": 528,
+        "source_end_line": 572,
+        "source_label": "划定模型、程序与人工的边界",
+        "excerpt_sha256": "640ef0f5b69ec927700d8ef25f91b1462168c6bcbbd966ac711f5090ff8281f9",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "S5",
+        "source_id": "execution",
+        "source_line": 573,
+        "source_end_line": 624,
+        "source_label": "选择最小拓扑结构",
+        "excerpt_sha256": "09ea6da3896060ee68a039dffb3836ae31662f171a8add77403d490ab281517c",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "S6",
+        "source_id": "execution",
+        "source_line": 625,
+        "source_end_line": 664,
+        "source_label": "选择工程模式与治理控制",
+        "excerpt_sha256": "03c51bea41e11e07de7e6596f6061545bf7f8db7ab18df00646f1109433b02ad",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "S7",
+        "source_id": "execution",
+        "source_line": 665,
+        "source_end_line": 729,
+        "source_label": "形成可执行工作流",
+        "excerpt_sha256": "d1eb9ef73bdbb00e225cbfdf46b541526291d403c116ce4621e7bc35b9fad08e",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "S8",
+        "source_id": "execution",
+        "source_line": 730,
+        "source_end_line": 790,
+        "source_label": "用同一任务集比较验证",
+        "excerpt_sha256": "fb92d9120f715751f2454f6800c5fd1723ac5e546bdc2329f89e8923e8cabdae",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "S9",
+        "source_id": "execution",
+        "source_line": 791,
+        "source_end_line": 869,
+        "source_label": "发布选型卡与运行约束",
+        "excerpt_sha256": "d761fef18ff152056d11a94706c521bb1d3c06906c8f0d2ff13a9a2986de6820",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "S10",
+        "source_id": "execution",
+        "source_line": 870,
+        "source_end_line": 888,
+        "source_label": "运行变化与重新选型",
+        "excerpt_sha256": "aeff1733426fdaef4c490a299536f4c0a38341f262b5ac1f0403b1f3041f253e",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      }
+    ],
+    "difficulties": [
+      {
+        "id": "D1",
+        "source_id": "execution",
+        "source_line": 494,
+        "source_end_line": 494,
+        "source_label": "输入表达模糊",
+        "excerpt_sha256": "4b421fe5bc650996f5f3dd1b74ee4043208a12ee24953d402af88c25b013bea0",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "D2",
+        "source_id": "execution",
+        "source_line": 495,
+        "source_end_line": 495,
+        "source_label": "关键事实缺失",
+        "excerpt_sha256": "0a8e66cf6f6cbb4e84db2b0fdf8261772818db593d843c10629a948a5eba9c86",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "D3",
+        "source_id": "execution",
+        "source_line": 496,
+        "source_end_line": 496,
+        "source_label": "事实相互冲突",
+        "excerpt_sha256": "344f5ed45e2b9ecfc3fd76dcbcbf218e05fe099f5720b32ac71ff523174779d8",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "D4",
+        "source_id": "execution",
+        "source_line": 497,
+        "source_end_line": 497,
+        "source_label": "规则适用复杂",
+        "excerpt_sha256": "d7d3de7f8710dda65056048437e48960d6e95938c3573ffd13b3518fb411a8cb",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "D5",
+        "source_id": "execution",
+        "source_line": 498,
+        "source_end_line": 498,
+        "source_label": "回复需要结合多处事实",
+        "excerpt_sha256": "64d4010123ae4d665b6e51babd7d72c95a45ee46dad0c21560ed8bdc163f15ea",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "D6",
+        "source_id": "execution",
+        "source_line": 499,
+        "source_end_line": 499,
+        "source_label": "每项任务步骤不同",
+        "excerpt_sha256": "8667c500bdbc9820bd0f73f5788e3ce1a02bb7c6db7ff9818df7ef24ba631dbe",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "D7",
+        "source_id": "execution",
+        "source_line": 500,
+        "source_end_line": 500,
+        "source_label": "下一步依赖新结果",
+        "excerpt_sha256": "728b412939310ade6f7c7439b9a8ffc4083f76ad16bd329919c83137aa5a5a9c",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "D8",
+        "source_id": "execution",
+        "source_line": 501,
+        "source_end_line": 501,
+        "source_label": "多项工作互不依赖",
+        "excerpt_sha256": "c1df041a1ec5227c952b6bbd4a63751cd13d2999714ba419f66c59e94ed7e9d4",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "D9",
+        "source_id": "execution",
+        "source_line": 502,
+        "source_end_line": 502,
+        "source_label": "不同角色需独立负责",
+        "excerpt_sha256": "87368c1ed6de4d1072481675de876a7681304e104ea4e06ced7b3f8d58259613",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "D10",
+        "source_id": "execution",
+        "source_line": 503,
+        "source_end_line": 503,
+        "source_label": "高风险动作需要责任判断",
+        "excerpt_sha256": "b60553dc3d13a3fe75634b93586d2b8a84e8d1f91fe921ebe05dd33a6796eac4",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "D11",
+        "source_id": "execution",
+        "source_line": 504,
+        "source_end_line": 504,
+        "source_label": "输出正确但不可追溯",
+        "excerpt_sha256": "790d31cf061b5702bb58d97531214c19bdece7ac599e45526511a1d15b359795",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "D12",
+        "source_id": "execution",
+        "source_line": 505,
+        "source_end_line": 505,
+        "source_label": "成本或时延不可接受",
+        "excerpt_sha256": "84e6ae124d9df07a6212cda1d8dc37aa27da500e462ade2784d9112f9796982c",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      }
+    ],
+    "probes": [
+      {
+        "id": "PRB-00",
+        "source_id": "probe",
+        "source_line": 663,
+        "source_end_line": 691,
+        "source_label": "运行上下文探针",
+        "excerpt_sha256": "87b4f9a6bbf12d402a954926456be6ac826d4176cff4c4996367de0c31a43afe",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-01",
+        "source_id": "probe",
+        "source_line": 692,
+        "source_end_line": 725,
+        "source_label": "任务契约探针",
+        "excerpt_sha256": "acf1c4c88fe04af3e3e42d0e7003b1e7d6aad70e8415fb20df14309c501d22d7",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-02",
+        "source_id": "probe",
+        "source_line": 726,
+        "source_end_line": 758,
+        "source_label": "基线探针",
+        "excerpt_sha256": "9aee03afe348aa153718d810393435d09eab67624d1fa0b3d4a8d9425cbb6830",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-03",
+        "source_id": "probe",
+        "source_line": 759,
+        "source_end_line": 794,
+        "source_label": "事实与来源探针",
+        "excerpt_sha256": "6ba60c3a7c685b059277d5ac5f659f418d6c32de5f4f8d69e53166af64e4817c",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-04",
+        "source_id": "probe",
+        "source_line": 795,
+        "source_end_line": 832,
+        "source_label": "模型调用必要性探针",
+        "excerpt_sha256": "614fffb2dfc4ac0cf3d2a92fdddefbda16616988d5bfd25c2c7ffd9359a14882",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-05",
+        "source_id": "probe",
+        "source_line": 833,
+        "source_end_line": 868,
+        "source_label": "判断与路由探针",
+        "excerpt_sha256": "c67c126c503f74e1a745e6a736ad6fb61f1ece18afb1e0ed68721d68e3825ccd",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-06",
+        "source_id": "probe",
+        "source_line": 869,
+        "source_end_line": 905,
+        "source_label": "拓扑执行探针",
+        "excerpt_sha256": "125b230520caedbb8ef1a8d7cf9db1310d4ea35719d362924aaa971274863d72",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-07",
+        "source_id": "probe",
+        "source_line": 906,
+        "source_end_line": 942,
+        "source_label": "计划与进度探针",
+        "excerpt_sha256": "44e889597d9d0d863eb2e5fee253097119700d4cf34a8824767e6b0c266f3465",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-08",
+        "source_id": "probe",
+        "source_line": 943,
+        "source_end_line": 978,
+        "source_label": "审批与交接探针",
+        "excerpt_sha256": "d5c4a6877317739e909202f3947bc517ce72dd8ddc14db9cb8862ef58f662d17",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-09",
+        "source_id": "probe",
+        "source_line": 979,
+        "source_end_line": 1017,
+        "source_label": "执行前护栏探针",
+        "excerpt_sha256": "1750d52eb4e1f0aadb37301278128b4f132938ae3c3fee126bb1f87ab848e288",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-10",
+        "source_id": "probe",
+        "source_line": 1018,
+        "source_end_line": 1057,
+        "source_label": "工具调用与副作用探针",
+        "excerpt_sha256": "4c3fb82b65077117b012ab0697a5efc1394c3b218b0f4f43264aeeb4431f96e1",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-11",
+        "source_id": "probe",
+        "source_line": 1058,
+        "source_end_line": 1091,
+        "source_label": "执行后验证探针",
+        "excerpt_sha256": "c6ae6cef164ec17387846441a2835fcc80a788397f579f659bb4a53ba23faba4",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-12",
+        "source_id": "probe",
+        "source_line": 1092,
+        "source_end_line": 1126,
+        "source_label": "回复依据探针",
+        "excerpt_sha256": "641e822c74323b27f97ed80152b38829d34c60f0f320bf9f79a20d4b2f93c7d2",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-13",
+        "source_id": "probe",
+        "source_line": 1127,
+        "source_end_line": 1161,
+        "source_label": "结果与安全完成探针",
+        "excerpt_sha256": "d403c75e18e1b04361b7b9592ce252acd260a7ca6a3be1bf41906a0af049c73e",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-14",
+        "source_id": "probe",
+        "source_line": 1162,
+        "source_end_line": 1199,
+        "source_label": "重试、循环与恢复探针",
+        "excerpt_sha256": "908e54396b431a50a01fc51e8e5a24235b8bad9fce2a631c0b6265f00548f9de",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "PRB-15",
+        "source_id": "probe",
+        "source_line": 1200,
+        "source_end_line": 1233,
+        "source_label": "变更与重新选型探针",
+        "excerpt_sha256": "b3334383d0887ecd825bbdabadc6b249fb817f75b3b5cdec28d9f8edc4eecb90",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      }
+    ],
+    "metrics": [
+      {
+        "id": "MTR-001",
+        "source_id": "probe",
+        "source_line": 1258,
+        "source_end_line": 1258,
+        "source_label": "任务契约完整率",
+        "excerpt_sha256": "d31f30fe2ab829b91090e1f61658c04cdae678cea86695ffcb38000b252f81bf",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-002",
+        "source_id": "probe",
+        "source_line": 1259,
+        "source_end_line": 1259,
+        "source_label": "关键事件覆盖率",
+        "excerpt_sha256": "c12ca5c4b6004330e595ce04314143bb0936cc518dae1c0eb101f83c7a4c8233",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-003",
+        "source_id": "probe",
+        "source_line": 1260,
+        "source_end_line": 1260,
+        "source_label": "证据覆盖率",
+        "excerpt_sha256": "37e1a14be71dc34abffc78255159d1042a89a9cf116c6888c85a6077fa97e170",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-004",
+        "source_id": "probe",
+        "source_line": 1261,
+        "source_end_line": 1261,
+        "source_label": "权威来源覆盖率",
+        "excerpt_sha256": "0d8f975dae96ce38bd939431609e70a799fcff0be7e697402bca6f96535eed12",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-005",
+        "source_id": "probe",
+        "source_line": 1262,
+        "source_end_line": 1262,
+        "source_label": "决策依据完整率",
+        "excerpt_sha256": "ff66a938b58211dda7b3bd126e9513e9d580cf6704cde4f8bc06455b92c79635",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-006",
+        "source_id": "probe",
+        "source_line": 1263,
+        "source_end_line": 1263,
+        "source_label": "工具调用配对率",
+        "excerpt_sha256": "b4c9e0bd3b962205eb665886e9c39a621be5a4cdd011c9ed3968312ee288011c",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-007",
+        "source_id": "probe",
+        "source_line": 1264,
+        "source_end_line": 1264,
+        "source_label": "前后状态关联率",
+        "excerpt_sha256": "353b6b50292365af721f9048c4000cd94553253003935d67a1a29733a6a50851",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-008",
+        "source_id": "probe",
+        "source_line": 1265,
+        "source_end_line": 1265,
+        "source_label": "回复事实可追溯率",
+        "excerpt_sha256": "c17ff338efa8b06bcfdcd8c7c558bb67992d383e854b4042c5c82617acb61c1a",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-009",
+        "source_id": "probe",
+        "source_line": 1266,
+        "source_end_line": 1266,
+        "source_label": "交接契约完整率",
+        "excerpt_sha256": "12f2f2e68f2770634167394b9ca7aee327ded64b183a7cea4688bbd1a9418ed9",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-010",
+        "source_id": "probe",
+        "source_line": 1267,
+        "source_end_line": 1267,
+        "source_label": "计划版本完整率",
+        "excerpt_sha256": "7059b63fdf485c50b5eec820a3e321a201dd7b5695943487b00ba4145ae7ebd2",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-101",
+        "source_id": "probe",
+        "source_line": 1275,
+        "source_end_line": 1275,
+        "source_label": "事实状态标注率",
+        "excerpt_sha256": "f4a55ac42b3fb34ee63db5c0f0dd61ec59eee639fd9310972f949c17d5389726",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-102",
+        "source_id": "probe",
+        "source_line": 1276,
+        "source_end_line": 1276,
+        "source_label": "未知事实显式率",
+        "excerpt_sha256": "76ae0fc7626c09ecd65c27890916c678dbd7ed0aaada1164b3d912236fed58e9",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-103",
+        "source_id": "probe",
+        "source_line": 1277,
+        "source_end_line": 1277,
+        "source_label": "冲突暴露率",
+        "excerpt_sha256": "d413602341eeafeca6fbf09ecf8838a32b9b37249d9006bd73f672ab24e2e804",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-104",
+        "source_id": "probe",
+        "source_line": 1278,
+        "source_end_line": 1278,
+        "source_label": "过期事实使用数",
+        "excerpt_sha256": "82cff7dd440d453b10d027391c8d70bc01280f30d59083aaae89254c3d02927d",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-105",
+        "source_id": "probe",
+        "source_line": 1279,
+        "source_end_line": 1279,
+        "source_label": "用户声明误升级数",
+        "excerpt_sha256": "496162c82edf52f903211e62892f36c472791950f8ce693047a0d41c5a8b83e3",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-106",
+        "source_id": "probe",
+        "source_line": 1280,
+        "source_end_line": 1280,
+        "source_label": "模型推断误升级数",
+        "excerpt_sha256": "041328fe155cd48eb91638bb06bb6a104b7a3eeb51b3c595b607f45a92c2aa59",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-107",
+        "source_id": "probe",
+        "source_line": 1281,
+        "source_end_line": 1281,
+        "source_label": "对象一致率",
+        "excerpt_sha256": "5d7c5eb6af39a354316895037fc0cbcba80fa25c918122a1dbd17bb8fb6de8d2",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-108",
+        "source_id": "probe",
+        "source_line": 1282,
+        "source_end_line": 1282,
+        "source_label": "数据新鲜度合格率",
+        "excerpt_sha256": "9c255e5e83643e44545c415ebeff33e23b60158e835194ce032f849613dd0b99",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-201",
+        "source_id": "probe",
+        "source_line": 1290,
+        "source_end_line": 1290,
+        "source_label": "模型必要调用率",
+        "excerpt_sha256": "0831eb700cae4d508a2090b039e8cbb420ea03af443714d6a8d481965a339db8",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-202",
+        "source_id": "probe",
+        "source_line": 1291,
+        "source_end_line": 1291,
+        "source_label": "冗余模型调用率",
+        "excerpt_sha256": "036e1a7b1591fe2540d9fa811c8355be05586d7721905740161dfff87bba88ac",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-203",
+        "source_id": "probe",
+        "source_line": 1292,
+        "source_end_line": 1292,
+        "source_label": "无新材料复审率",
+        "excerpt_sha256": "f2618131985dfa2b75cd5dae79ba820e2ce4be69ee7d44e1def005dddc0ccc40",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-204",
+        "source_id": "probe",
+        "source_line": 1293,
+        "source_end_line": 1293,
+        "source_label": "模型输出验证率",
+        "excerpt_sha256": "bf966ebb9c6d05f27c12bf6b70544c4d18ddde431cecc859b5ecc928707187e0",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-205",
+        "source_id": "probe",
+        "source_line": 1294,
+        "source_end_line": 1294,
+        "source_label": "模型越权建议数",
+        "excerpt_sha256": "6133780cacf1d312c571e4c56390dca0a4f2c9bb1eb57f3c2bbfc4c08f46355b",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-206",
+        "source_id": "probe",
+        "source_line": 1295,
+        "source_end_line": 1295,
+        "source_label": "模型事实幻写数",
+        "excerpt_sha256": "706a1fb999f5654bbba887034a12d5a7120472ac7beb900a3705ede4c16936c3",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-207",
+        "source_id": "probe",
+        "source_line": 1296,
+        "source_end_line": 1296,
+        "source_label": "单任务模型调用数",
+        "excerpt_sha256": "c8c24849e54b28fb5864f6c70407d67b8cb597e8212ffc37c1b69c266ede0e7b",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-208",
+        "source_id": "probe",
+        "source_line": 1297,
+        "source_end_line": 1297,
+        "source_label": "单任务模型成本",
+        "excerpt_sha256": "93073d5b599ba611788ccd743d060b295bc47e5c52e33f15f8a4a79cc66a0b8f",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-209",
+        "source_id": "probe",
+        "source_line": 1298,
+        "source_end_line": 1298,
+        "source_label": "模型降级成功率",
+        "excerpt_sha256": "876768b75ac1ab6dddf12760127b1f95d755ef842459e9561b1f88ae9968664b",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-301",
+        "source_id": "probe",
+        "source_line": 1306,
+        "source_end_line": 1306,
+        "source_label": "固定链跳步数",
+        "excerpt_sha256": "770d30e970ce0c2343acbe42b9a74dcef28617fde22cc0416a0fc04d88e819d9",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-302",
+        "source_id": "probe",
+        "source_line": 1307,
+        "source_end_line": 1307,
+        "source_label": "路由可解释率",
+        "excerpt_sha256": "f92481066aa080b99a2a68e5cfcd189f2680ef9faba515aeaefe4650650dfd88",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-303",
+        "source_id": "probe",
+        "source_line": 1308,
+        "source_end_line": 1308,
+        "source_label": "未知事实安全路由率",
+        "excerpt_sha256": "82e4425fff0fe2cf0c57bcb68c66c4303cea2341d62f0a60c0d2c50449dc1932",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-304",
+        "source_id": "probe",
+        "source_line": 1309,
+        "source_end_line": 1309,
+        "source_label": "并行有效率",
+        "excerpt_sha256": "39674ab92fbedb0d95df4420dde080d6f540354050d4fc7c20818be90c1d2217",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-305",
+        "source_id": "probe",
+        "source_line": 1310,
+        "source_end_line": 1310,
+        "source_label": "隐藏依赖异常数",
+        "excerpt_sha256": "d108de316c38c7c3902782fb5e9af8af4de99378f412fc1cd9024e04e13c51e1",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-306",
+        "source_id": "probe",
+        "source_line": 1311,
+        "source_end_line": 1311,
+        "source_label": "计划依赖违规数",
+        "excerpt_sha256": "73aab9b015c11dbf5089cd02001e9d878a4ecb6ddc9f9f3f2034377678d3bf91",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-307",
+        "source_id": "probe",
+        "source_line": 1312,
+        "source_end_line": 1312,
+        "source_label": "已完成状态保留率",
+        "excerpt_sha256": "31e6cf2942a888c40ed226539529613e76520d77500fa14fcb01b6e0fd90d2d3",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-308",
+        "source_id": "probe",
+        "source_line": 1313,
+        "source_end_line": 1313,
+        "source_label": "无效重规划率",
+        "excerpt_sha256": "5a7d754443cfe86ed59b8110ab0404b5f77ecfd540e4d0499fc5a87f7bfa8cd5",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-309",
+        "source_id": "probe",
+        "source_line": 1314,
+        "source_end_line": 1314,
+        "source_label": "循环预算遵守率",
+        "excerpt_sha256": "dd903069076f3b0379c5d86a35aa152aa006c6de9f0e4098671f0cdcf415174f",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-310",
+        "source_id": "probe",
+        "source_line": 1315,
+        "source_end_line": 1315,
+        "source_label": "无新信息循环率",
+        "excerpt_sha256": "9cebf84dc3472074276f15227377cedc11108b05bb68ba030f82c849c1404917",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-311",
+        "source_id": "probe",
+        "source_line": 1316,
+        "source_end_line": 1316,
+        "source_label": "委派契约完整率",
+        "excerpt_sha256": "c2408ac5afd3f75bd89c000debe073ea3ad63bcfaf9204d69444b8f2f508ece1",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-312",
+        "source_id": "probe",
+        "source_line": 1317,
+        "source_end_line": 1317,
+        "source_label": "聚合冲突处置率",
+        "excerpt_sha256": "22b60fe7e6d69ae260f444887d8ef27d304616c3a2ce9fa9fcc2bee8c6e3fab8",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-401",
+        "source_id": "probe",
+        "source_line": 1325,
+        "source_end_line": 1325,
+        "source_label": "前置检查覆盖率",
+        "excerpt_sha256": "5fa9860a406df95253b8a580a7e4f66078c49232af46a996b66210e5e8b0b9c0",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-402",
+        "source_id": "probe",
+        "source_line": 1326,
+        "source_end_line": 1326,
+        "source_label": "权限检查覆盖率",
+        "excerpt_sha256": "4db00b3c0e58650f328517d8c91a4fe6cb28b5e1340857468ec2f91db8ceafc4",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-403",
+        "source_id": "probe",
+        "source_line": 1327,
+        "source_end_line": 1327,
+        "source_label": "审批绑定完整率",
+        "excerpt_sha256": "f112190715529d08d2ad6745e49084728cebed1b153e87964f46a111559cea32",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-404",
+        "source_id": "probe",
+        "source_line": 1328,
+        "source_end_line": 1328,
+        "source_label": "过期审批使用数",
+        "excerpt_sha256": "8327857209ee737b4de58cde142b203c731bc9b4e42cd61b5a39b3205af1e902",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-405",
+        "source_id": "probe",
+        "source_line": 1329,
+        "source_end_line": 1329,
+        "source_label": "幂等保护覆盖率",
+        "excerpt_sha256": "54793cd52e032f2953f987af6285def3efd2fd2b7556d317466b3e35bf475ce6",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-406",
+        "source_id": "probe",
+        "source_line": 1330,
+        "source_end_line": 1330,
+        "source_label": "范围限制覆盖率",
+        "excerpt_sha256": "a0336570cd7255977af5c5eee1800d0fd4901fa71e63e730c24279b1505dc8ef",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-407",
+        "source_id": "probe",
+        "source_line": 1331,
+        "source_end_line": 1331,
+        "source_label": "后置验证覆盖率",
+        "excerpt_sha256": "41a8008da5398c58ea79cd6cd28b6a9cc50bba23519037af82d986d71d8cc504",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-408",
+        "source_id": "probe",
+        "source_line": 1332,
+        "source_end_line": 1332,
+        "source_label": "业务副作用一致率",
+        "excerpt_sha256": "7a17d896bdc2f83233dab029d59568ee26b96ae4e64c23355a06e72aca43ce7c",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-409",
+        "source_id": "probe",
+        "source_line": 1333,
+        "source_end_line": 1333,
+        "source_label": "重复副作用数",
+        "excerpt_sha256": "7b60526b3087da3365279723c92ab4f6a1798cdcbd3f707561ece1d1aa7b9c1f",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-410",
+        "source_id": "probe",
+        "source_line": 1334,
+        "source_end_line": 1334,
+        "source_label": "计划外副作用数",
+        "excerpt_sha256": "828c11536b933579226b8a1a526a5b95a23875962a9fb47c908dc48feb12d53f",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-411",
+        "source_id": "probe",
+        "source_line": 1335,
+        "source_end_line": 1335,
+        "source_label": "高风险误执行数",
+        "excerpt_sha256": "949f621b50da53c7991a0957a1dfe1699f83ae4dc5a2217b9addfe9f51690b83",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-412",
+        "source_id": "probe",
+        "source_line": 1336,
+        "source_end_line": 1336,
+        "source_label": "禁止副作用发生数",
+        "excerpt_sha256": "0fb9d0763d97537f79180bcdda0333d13a13d8351b54852b065291b06b387390",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-413",
+        "source_id": "probe",
+        "source_line": 1337,
+        "source_end_line": 1337,
+        "source_label": "恢复成功率",
+        "excerpt_sha256": "73258b6f9bd750ed4756b180d150f7d820f8d2b12a15bd8d7e828a20c93c43cf",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-414",
+        "source_id": "probe",
+        "source_line": 1338,
+        "source_end_line": 1338,
+        "source_label": "补偿闭环率",
+        "excerpt_sha256": "eb90c60270e4963c7bd50723c7b1e9f52f2aae42fca7c3bddd6e7b430ffade1a",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-501",
+        "source_id": "probe",
+        "source_line": 1346,
+        "source_end_line": 1346,
+        "source_label": "正确完成率",
+        "excerpt_sha256": "8dd6ff270d2e4e27e2f3af235f189df83ed85c6f48f549671032ae6cb3b02c77",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-502",
+        "source_id": "probe",
+        "source_line": 1347,
+        "source_end_line": 1347,
+        "source_label": "安全完成率",
+        "excerpt_sha256": "17a50f58e438511935e0ac3e675ce654bf2518271ea7862a5e8c16c4855d517d",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-503",
+        "source_id": "probe",
+        "source_line": 1348,
+        "source_end_line": 1348,
+        "source_label": "结果验证率",
+        "excerpt_sha256": "a5a1aab01b55fd0ea67ed33dd70012d6358be9a7e486064dd9a2780f42cd4b28",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-504",
+        "source_id": "probe",
+        "source_line": 1349,
+        "source_end_line": 1349,
+        "source_label": "状态表述一致率",
+        "excerpt_sha256": "3820ba8ef3dde794d86cfce1e16875bdfb244b34fc5d828a20b83301a85690e8",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-505",
+        "source_id": "probe",
+        "source_line": 1350,
+        "source_end_line": 1350,
+        "source_label": "安全退出说明完整率",
+        "excerpt_sha256": "fd75957ae6a18ca4c21bb02983ecbb896454f3b5ca9c1c55997dfd608083f589",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-506",
+        "source_id": "probe",
+        "source_line": 1351,
+        "source_end_line": 1351,
+        "source_label": "无依据断言数",
+        "excerpt_sha256": "58352dd28b45a09ac9483be9124a2a0365a2271c5a61a11c0548ae5e0f07dbb4",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-507",
+        "source_id": "probe",
+        "source_line": 1352,
+        "source_end_line": 1352,
+        "source_label": "用户疑问命中率",
+        "excerpt_sha256": "bbf20efb4ddf73860b40f25f4cfd45d6dadc37379bc6f9c312a2954e3754b86a",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-601",
+        "source_id": "probe",
+        "source_line": 1360,
+        "source_end_line": 1360,
+        "source_label": "端到端时延",
+        "excerpt_sha256": "5402f2d7a47ed2486fde36c36cb9d6600bf03a94bb8559d9e977226bd4640624",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-602",
+        "source_id": "probe",
+        "source_line": 1361,
+        "source_end_line": 1361,
+        "source_label": "人工等待时长",
+        "excerpt_sha256": "727a207a68a7f58fac25ba3e44b870394c18d8ca0b96bbf2f030a5401093de7a",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-603",
+        "source_id": "probe",
+        "source_line": 1362,
+        "source_end_line": 1362,
+        "source_label": "单任务总成本",
+        "excerpt_sha256": "adca909e83a385016789963d1bd66416943c2ca1c410a91e257436485bff1f92",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-604",
+        "source_id": "probe",
+        "source_line": 1363,
+        "source_end_line": 1363,
+        "source_label": "不必要工具调用率",
+        "excerpt_sha256": "ed0157d5b392145bfc6f6e69eac9a8829ee14ad46e0fc481d5b22d093c98eaad",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-605",
+        "source_id": "probe",
+        "source_line": 1364,
+        "source_end_line": 1364,
+        "source_label": "缓存命中有效率",
+        "excerpt_sha256": "9adb1d5cc78ddc0f42690bc4b86067bd2764da8524c47a97bd485adc5b8f2684",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-606",
+        "source_id": "probe",
+        "source_line": 1365,
+        "source_end_line": 1365,
+        "source_label": "重新选型触发及时率",
+        "excerpt_sha256": "cd206db5d390b24bf820c7f42f4f4f048d7796d1c3c834d3a9163a03680da28a",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-607",
+        "source_id": "probe",
+        "source_line": 1366,
+        "source_end_line": 1366,
+        "source_label": "版本漂移运行数",
+        "excerpt_sha256": "7217b4c58c22813d852e318582a8a594516a02adc10195218b4ef3adced81212",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "MTR-608",
+        "source_id": "probe",
+        "source_line": 1367,
+        "source_end_line": 1367,
+        "source_label": "过期选型继续运行时长",
+        "excerpt_sha256": "2a46a4efb637b771a5b02fd2dcbcc298f0d81ae077cddf043d2969eeed674101",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      }
+    ],
+    "anomalies": [
+      {
+        "id": "ANO-001",
+        "source_id": "probe",
+        "source_line": 1375,
+        "source_end_line": 1375,
+        "source_label": "对象不一致",
+        "excerpt_sha256": "a4aac2a1e86318a9117bd7a7940778eb27dcd158c8fd00b681a62ebb1c69e5fa",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-002",
+        "source_id": "probe",
+        "source_line": 1376,
+        "source_end_line": 1376,
+        "source_label": "未知事实驱动高风险动作",
+        "excerpt_sha256": "d0f5e79a7f2becbc9948cd7d854083f3d60e4f9b9c430adb63edd3d3e5aabc8f",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-003",
+        "source_id": "probe",
+        "source_line": 1377,
+        "source_end_line": 1377,
+        "source_label": "冲突事实未处置",
+        "excerpt_sha256": "e979e85b4c67094f7196f04cdb313b808f026d1d0e37375f736b0e52037f4263",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-004",
+        "source_id": "probe",
+        "source_line": 1378,
+        "source_end_line": 1378,
+        "source_label": "过期事实被使用",
+        "excerpt_sha256": "ec50b9469b38039cb61dd409d434daf0b46999bedea0f711e8aefa47048220f2",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-005",
+        "source_id": "probe",
+        "source_line": 1379,
+        "source_end_line": 1379,
+        "source_label": "模型推断误作事实",
+        "excerpt_sha256": "b6d114ebd7725a2cd4b2e0e3e14b3a44d7c4997c592aac4c65735a49b961270e",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-006",
+        "source_id": "probe",
+        "source_line": 1380,
+        "source_end_line": 1380,
+        "source_label": "缺事实却重复模型评审",
+        "excerpt_sha256": "3fae2d5d86db377721029a0048db9c4f70698c9f976dadef04ba700fb07f330a",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-007",
+        "source_id": "probe",
+        "source_line": 1381,
+        "source_end_line": 1381,
+        "source_label": "模型无新材料重复调用",
+        "excerpt_sha256": "c282fa4b9deebbb3d75e821329ac852dd8529d9cd9fd0363f2eaaba0b601fc80",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-008",
+        "source_id": "probe",
+        "source_line": 1382,
+        "source_end_line": 1382,
+        "source_label": "模型越权闭环",
+        "excerpt_sha256": "7cbe1aacb790c83188b72654018cf5d0e42aab5de9b06382eb7b301164328572",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-009",
+        "source_id": "probe",
+        "source_line": 1383,
+        "source_end_line": 1383,
+        "source_label": "路由无安全默认出口",
+        "excerpt_sha256": "7f88a9e48d3fb61d74e433349e688e9ce6721c5ac7d633933fb17cfd3d69c71f",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-010",
+        "source_id": "probe",
+        "source_line": 1384,
+        "source_end_line": 1384,
+        "source_label": "计划依赖违规",
+        "excerpt_sha256": "d5ff7454026e28f482f03bd27213c51d7ba33ef5277ad644bdbaf870f968fa81",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-011",
+        "source_id": "probe",
+        "source_line": 1385,
+        "source_end_line": 1385,
+        "source_label": "已完成状态丢失",
+        "excerpt_sha256": "9a84aa2c610937241a9a920dd4dcead8b125d3b2e1b969f7fa34da8a2be9949f",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-012",
+        "source_id": "probe",
+        "source_line": 1386,
+        "source_end_line": 1386,
+        "source_label": "循环无停止条件",
+        "excerpt_sha256": "ad9a472be733024946c1cedd3cf95e022933715f077243c09eb5d9850a084a3b",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-013",
+        "source_id": "probe",
+        "source_line": 1387,
+        "source_end_line": 1387,
+        "source_label": "并行隐藏依赖",
+        "excerpt_sha256": "d0a6fb07cd0ee707defbc1a11933b20459b7cd76e2ce93bee175b535a08f2058",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-014",
+        "source_id": "probe",
+        "source_line": 1388,
+        "source_end_line": 1388,
+        "source_label": "委派无验收契约",
+        "excerpt_sha256": "f98c6fd29a71d1470cf54ea64a45c5c6f9840d49d852372b4d8a90b0fcdb436b",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-015",
+        "source_id": "probe",
+        "source_line": 1389,
+        "source_end_line": 1389,
+        "source_label": "审批范围不匹配",
+        "excerpt_sha256": "12f91d77e8535a280b89aef71da168a3d0c8670601e59939011cf02a277520b0",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-016",
+        "source_id": "probe",
+        "source_line": 1390,
+        "source_end_line": 1390,
+        "source_label": "过期审批被使用",
+        "excerpt_sha256": "a0eb5cc02160eea605d9820743a7fb692e46856bebc38708c3d96fc5d01973ed",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-017",
+        "source_id": "probe",
+        "source_line": 1391,
+        "source_end_line": 1391,
+        "source_label": "缺少前置检查",
+        "excerpt_sha256": "7b44d6f4f7e4070a9625103fd5040b2e0e820d75136203a577e63744c67ee9cc",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-018",
+        "source_id": "probe",
+        "source_line": 1392,
+        "source_end_line": 1392,
+        "source_label": "缺少幂等保护",
+        "excerpt_sha256": "d870bf12bf10ea41a5ee8bf36907e3d868a2fa0a85a852001a6e623e20d90b96",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-019",
+        "source_id": "probe",
+        "source_line": 1393,
+        "source_end_line": 1393,
+        "source_label": "工具成功但业务状态不一致",
+        "excerpt_sha256": "126a3ca5a438247f74f452c15db80f0b51864ab0ebc2ff2b481802b35ff68147",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-020",
+        "source_id": "probe",
+        "source_line": 1394,
+        "source_end_line": 1394,
+        "source_label": "重复副作用",
+        "excerpt_sha256": "706f7090ca2a4fb53365c5fe49f3fa33f53962193311cb44dc80cf01f9aef17e",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-021",
+        "source_id": "probe",
+        "source_line": 1395,
+        "source_end_line": 1395,
+        "source_label": "计划外副作用",
+        "excerpt_sha256": "38f419509e938dc3801619a49c399c35fe169f523ac9949b0b7633073e101f84",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-022",
+        "source_id": "probe",
+        "source_line": 1396,
+        "source_end_line": 1396,
+        "source_label": "人工路由不可执行",
+        "excerpt_sha256": "21b4e64a44b3f69aa7c916b7065d03717033020d0f964cadb2575caeaf63afbc",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-023",
+        "source_id": "probe",
+        "source_line": 1397,
+        "source_end_line": 1397,
+        "source_label": "回复状态夸大",
+        "excerpt_sha256": "1a1cfb4bec3f13fac922435673a9927d14f901cdc209dcb943e2fb428b2b1ea6",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-024",
+        "source_id": "probe",
+        "source_line": 1398,
+        "source_end_line": 1398,
+        "source_label": "回复无事实依据",
+        "excerpt_sha256": "b200960d309a7db07977895b3f16b514091578c9fab0a9764523f246e3d8435a",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-025",
+        "source_id": "probe",
+        "source_line": 1399,
+        "source_end_line": 1399,
+        "source_label": "探针链路断裂",
+        "excerpt_sha256": "6d2e809e5cbb47a73115dbc20e633b4f4162692146389661ac8e0332b9d7cd0a",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-026",
+        "source_id": "probe",
+        "source_line": 1400,
+        "source_end_line": 1400,
+        "source_label": "探针推断被当作权威事实",
+        "excerpt_sha256": "574b7ecd981c25cfef711a7e6661735ef20631582ec65d328d0b3ef33688f7fe",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-027",
+        "source_id": "probe",
+        "source_line": 1401,
+        "source_end_line": 1401,
+        "source_label": "版本漂移",
+        "excerpt_sha256": "0be6eca517df34bd904514dc9d19fd58a550a52a8133d8a08ef6533fce3803f3",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-028",
+        "source_id": "probe",
+        "source_line": 1402,
+        "source_end_line": 1402,
+        "source_label": "选型过期",
+        "excerpt_sha256": "3f253cc01dd9b90ba91e9ed12ec378c73f4a0143b2c6070745fa3463f2072704",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-029",
+        "source_id": "probe",
+        "source_line": 1403,
+        "source_end_line": 1403,
+        "source_label": "观测到敏感数据过量",
+        "excerpt_sha256": "b1cf7ed06bc00773695dbe9ce6b48010c0f13d0ee239f5fdfb162507dd6808c9",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "ANO-030",
+        "source_id": "probe",
+        "source_line": 1404,
+        "source_end_line": 1404,
+        "source_label": "保留期违规",
+        "excerpt_sha256": "c36eb9449de26671e52f6e7d488908c68329e7e896faee0c4d9966eb6d4e5cd8",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      }
+    ],
+    "execution_cases": [
+      {
+        "id": "SEL-CASE-01",
+        "source_id": "execution",
+        "source_line": 1157,
+        "source_end_line": 1157,
+        "source_label": "规范输入且条件满足，程序直接完成。",
+        "excerpt_sha256": "85b87dda274908321fa928131cf9511aa0ec89a0814619445357102df275030c",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "SEL-CASE-02",
+        "source_id": "execution",
+        "source_line": 1158,
+        "source_end_line": 1158,
+        "source_label": "模糊输入，模型提出候选对象，程序核对后继续。",
+        "excerpt_sha256": "666d9d114e832f432e0d58c54b9da950c510f86505a96ba56e940ba0e39073ae",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "SEL-CASE-03",
+        "source_id": "execution",
+        "source_line": 1159,
+        "source_end_line": 1159,
+        "source_label": "关键事实未知，系统转人工且不产生风险副作用。",
+        "excerpt_sha256": "886380efe63156f554a79add4f7bac25ae2407814b7a986cfb872ce6c0a8c3b6",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "SEL-CASE-04",
+        "source_id": "execution",
+        "source_line": 1160,
+        "source_end_line": 1160,
+        "source_label": "关键事实冲突，系统暂停并暴露冲突。",
+        "excerpt_sha256": "01bb85573f0c4e5da979fb1f6676665dacb0bc13cab2ce300c7e27badd56d717",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "SEL-CASE-05",
+        "source_id": "execution",
+        "source_line": 1161,
+        "source_end_line": 1161,
+        "source_label": "权限不足，系统拒绝。",
+        "excerpt_sha256": "7ff4d95a7c991a04f3cee43b80120c352ae96e66459c660a0cd645a5ea4281e4",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "SEL-CASE-06",
+        "source_id": "execution",
+        "source_line": 1162,
+        "source_end_line": 1162,
+        "source_label": "工具调用超时，重试不产生重复副作用。",
+        "excerpt_sha256": "e2e30dfc571780b491b9956aa8b726445f57d333d74f33009c58bdd835ebd3e5",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "SEL-CASE-07",
+        "source_id": "execution",
+        "source_line": 1163,
+        "source_end_line": 1163,
+        "source_label": "工具返回成功但业务状态未变化，后置验证发现异常。",
+        "excerpt_sha256": "f0d5bd2d6d45d194f7a6f2623fd2523a492855202d117d68bb72906b1c660acc",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "SEL-CASE-08",
+        "source_id": "execution",
+        "source_line": 1164,
+        "source_end_line": 1164,
+        "source_label": "模型生成了材料外事实，输出校验将其拦截。",
+        "excerpt_sha256": "b90e81247d9d6a535ade9c93548e3e2cc281521ac8b2aac63786d676b3c4bd77",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "SEL-CASE-09",
+        "source_id": "execution",
+        "source_line": 1165,
+        "source_end_line": 1165,
+        "source_label": "计划遗漏强制步骤，程序仍阻止后续动作。",
+        "excerpt_sha256": "16bcbcc61b459dc05516800171c502e6eb2af306b55dc5d3221b22c801980683",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      },
+      {
+        "id": "SEL-CASE-10",
+        "source_id": "execution",
+        "source_line": 1166,
+        "source_end_line": 1166,
+        "source_label": "模板足够的简单问题，不发生不必要的模型调用。",
+        "excerpt_sha256": "6ccdeb39cebba7ca3baad32aaee68cdfdb3002fa63a4a06aeef1e5344dc05d77",
+        "target_document": "references/pattern-selection-execution-flow.md"
+      }
+    ],
+    "probe_cases": [
+      {
+        "id": "OBS-CASE-01",
+        "source_id": "probe",
+        "source_line": 2051,
+        "source_end_line": 2051,
+        "source_label": "完整固定链，所有步骤正确关联。",
+        "excerpt_sha256": "a49d8d22d72c6d119788c979642342540f15ef53d234857f56543ce8029abfb6",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "OBS-CASE-02",
+        "source_id": "probe",
+        "source_line": 2052,
+        "source_end_line": 2052,
+        "source_label": "工具调用有开始无返回，触发链路缺口。",
+        "excerpt_sha256": "4b2a7eb915e2fadd5aaf4eee4f96dfc7494498f33eddbb02f8a91d71ed5b7aad",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "OBS-CASE-03",
+        "source_id": "probe",
+        "source_line": 2053,
+        "source_end_line": 2053,
+        "source_label": "发票未知却创建付款指令，触发严重异常。",
+        "excerpt_sha256": "673af8c9cb99fe210cc04b0fbeb666370fec77182b8308dfbef248e590cf8826",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "OBS-CASE-04",
+        "source_id": "probe",
+        "source_line": 2054,
+        "source_end_line": 2054,
+        "source_label": "模型在相同材料上重复评审，触发冗余调用提示。",
+        "excerpt_sha256": "8b4e32c00342c98f8a35276f0e760540a716a2cf94c3a4e1a9a397c402f503fc",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "OBS-CASE-05",
+        "source_id": "probe",
+        "source_line": 2055,
+        "source_end_line": 2055,
+        "source_label": "第二次模型调用获得新业务事实，不应误报为冗余。",
+        "excerpt_sha256": "5dc45611792be335900a983d77a6b34eaad65905c57bb08fdd6cd11a911e49b2",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "OBS-CASE-06",
+        "source_id": "probe",
+        "source_line": 2056,
+        "source_end_line": 2056,
+        "source_label": "计划变更保留已完成步骤，指标正确。",
+        "excerpt_sha256": "d03a12f1651f369815d2335f4867bafcbce0ee066f749d57793c00d501c1f18a",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "OBS-CASE-07",
+        "source_id": "probe",
+        "source_line": 2057,
+        "source_end_line": 2057,
+        "source_label": "计划变更丢失已完成状态，触发异常。",
+        "excerpt_sha256": "7fa97f6118b270bb4d5125dc69ef10a756065531c50bb23ee6733fdb089b3138",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "OBS-CASE-08",
+        "source_id": "probe",
+        "source_line": 2058,
+        "source_end_line": 2058,
+        "source_label": "重试使用相同幂等键且无重复副作用，判定正常。",
+        "excerpt_sha256": "887d43d603e86b727edded0b17f9824f6e05332275c7379e9c70a22bee319301",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "OBS-CASE-09",
+        "source_id": "probe",
+        "source_line": 2059,
+        "source_end_line": 2059,
+        "source_label": "工具返回成功但业务状态未变化，触发后置不一致。",
+        "excerpt_sha256": "4e6b04caf4d123a06831ca2e85c34a5d821ab0e19f3a04a1e8a77414952faea6",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "OBS-CASE-10",
+        "source_id": "probe",
+        "source_line": 2060,
+        "source_end_line": 2060,
+        "source_label": "回复把“已批准”写成“已到账”，触发状态夸大。",
+        "excerpt_sha256": "1f3bdff0803686a6cc718996ebc36e650ba236facb978bd095a8a3429e895ddf",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "OBS-CASE-11",
+        "source_id": "probe",
+        "source_line": 2061,
+        "source_end_line": 2061,
+        "source_label": "探针无法关联事件时，标记数据不足，不虚构结论。",
+        "excerpt_sha256": "3f7c43c9b3598524c592b8142afa2c4a1e494a62fe0c56b8a3f7df802b5076fc",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "OBS-CASE-12",
+        "source_id": "probe",
+        "source_line": 2062,
+        "source_end_line": 2062,
+        "source_label": "推断补丁未经确认，不得满足高风险前置条件。",
+        "excerpt_sha256": "9486cc8e4f3e346e9542ee5d3bafd6ac8a184507f369e49b5bf5a60458d63a13",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "OBS-CASE-13",
+        "source_id": "probe",
+        "source_line": 2063,
+        "source_end_line": 2063,
+        "source_label": "敏感载荷超量采集，触发隐私异常。",
+        "excerpt_sha256": "cee688831d25a33f10a983c615b6f5a1beb62781356c6352ecbd223d0c46ed62",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      },
+      {
+        "id": "OBS-CASE-14",
+        "source_id": "probe",
+        "source_line": 2064,
+        "source_end_line": 2064,
+        "source_label": "规则版本变化后仍使用旧选型，触发重新选型提示。",
+        "excerpt_sha256": "9fc7f83ae4592cb8aa4a33487b0806f174e4923ebbf1de736a74cbf052d516bd",
+        "target_document": "references/pattern-selection-observability-probes.md"
+      }
+    ]
+  },
+  "source_events": {
+    "execution": [
+      "selection.run.started",
+      "selection.contract.recorded",
+      "selection.baseline.completed",
+      "selection.difficulty.diagnosed",
+      "selection.boundary.decided",
+      "selection.topology.selected",
+      "selection.patterns.selected",
+      "selection.workflow.published",
+      "selection.validation.completed",
+      "selection.decision.published",
+      "selection.reselection.triggered",
+      "workflow.step.started",
+      "workflow.fact.observed",
+      "workflow.decision.proposed",
+      "workflow.decision.approved",
+      "workflow.guard.checked",
+      "workflow.tool.called",
+      "workflow.tool.returned",
+      "workflow.side_effect.verified",
+      "workflow.handoff.created",
+      "workflow.plan.changed",
+      "workflow.response.generated",
+      "workflow.run.completed"
+    ],
+    "probe": [
+      "selection.run.started",
+      "selection.contract.recorded",
+      "selection.baseline.started",
+      "selection.baseline.completed",
+      "selection.difficulty.diagnosed",
+      "selection.boundary.decided",
+      "selection.topology.selected",
+      "selection.patterns.selected",
+      "selection.workflow.published",
+      "selection.validation.started",
+      "selection.validation.completed",
+      "selection.decision.published",
+      "selection.reselection.triggered",
+      "selection.run.completed",
+      "workflow.run.started",
+      "workflow.phase.started",
+      "workflow.step.started",
+      "workflow.step.completed",
+      "workflow.step.failed",
+      "workflow.run.suspended",
+      "workflow.run.resumed",
+      "workflow.run.completed",
+      "workflow.run.failed",
+      "workflow.fact.observed",
+      "workflow.fact.verified",
+      "workflow.fact.declared",
+      "workflow.fact.inferred",
+      "workflow.fact.marked_unknown",
+      "workflow.fact.conflict_detected",
+      "workflow.fact.expired",
+      "workflow.evidence.attached",
+      "workflow.model.requested",
+      "workflow.model.responded",
+      "workflow.model.output_rejected",
+      "workflow.model.output_accepted",
+      "workflow.model.call_skipped",
+      "workflow.decision.proposed",
+      "workflow.decision.evaluated",
+      "workflow.decision.approved",
+      "workflow.decision.rejected",
+      "workflow.route.selected",
+      "workflow.route.fallback",
+      "workflow.plan.created",
+      "workflow.plan.validated",
+      "workflow.plan.changed",
+      "workflow.plan.rejected",
+      "workflow.step.blocked_by_dependency",
+      "workflow.loop.iteration_started",
+      "workflow.loop.iteration_completed",
+      "workflow.loop.stopped",
+      "workflow.loop.budget_exceeded",
+      "workflow.approval.requested",
+      "workflow.approval.granted",
+      "workflow.approval.denied",
+      "workflow.approval.expired",
+      "workflow.guard.checked",
+      "workflow.guard.failed",
+      "workflow.limit.checked",
+      "workflow.limit.exceeded",
+      "workflow.tool.called",
+      "workflow.tool.returned",
+      "workflow.tool.failed",
+      "workflow.tool.retried",
+      "workflow.side_effect.expected",
+      "workflow.side_effect.observed",
+      "workflow.side_effect.verified",
+      "workflow.side_effect.mismatch",
+      "workflow.rollback.started",
+      "workflow.rollback.completed",
+      "workflow.compensation.created",
+      "workflow.delegation.created",
+      "workflow.delegation.accepted",
+      "workflow.artifact.submitted",
+      "workflow.artifact.reviewed",
+      "workflow.handoff.created",
+      "workflow.handoff.accepted",
+      "workflow.handoff.rejected",
+      "workflow.aggregation.started",
+      "workflow.aggregation.completed",
+      "workflow.conflict.escalated",
+      "workflow.response.drafted",
+      "workflow.response.grounded",
+      "workflow.response.sent",
+      "workflow.outcome.verified",
+      "workflow.outcome.reported",
+      "probe.coverage.updated",
+      "probe.data_gap.detected",
+      "probe.anomaly.detected",
+      "probe.metric.snapshot",
+      "probe.supplement.proposed",
+      "probe.supplement.accepted",
+      "probe.supplement.rejected",
+      "probe.run.summary"
+    ]
+  },
+  "event_aliases": {
+    "workflow.response.generated": "workflow.response.drafted"
+  },
+  "interpretation_changes": [
+    {
+      "id": "minimum_solution",
+      "description_en": "A sufficient baseline may select zero additional patterns; incomplete evidence permits preliminary analysis only.",
+      "description_zh": "基线足够可不新增模式，证据不足仅形成初步分析。"
+    },
+    {
+      "id": "checkpoint_namespace",
+      "description_en": "Distinguish selection G1/G2/G3 from probe G0-G8 through an explicit namespace.",
+      "description_zh": "通过明确命名空间区分执行门与探针门。"
+    },
+    {
+      "id": "fact_states",
+      "description_en": "Union the two state lists, retaining human judgment without automatic verification.",
+      "description_zh": "合并两份状态列表，保留人工判断但不自动验证。"
+    },
+    {
+      "id": "event_alias",
+      "description_en": "Generated means drafted, never grounded or sent; preserve original event type.",
+      "description_zh": "生成仅代表草稿，不代表有据或已发，保留原事件类型。"
+    },
+    {
+      "id": "patch_binding",
+      "description_en": "Exact-base, source-bound, allowlisted observation patches require separate receipts and downstream business revalidation.",
+      "description_zh": "精确基准、来源绑定、允许字段的观测补丁需独立回执及下游业务复验。"
+    },
+    {
+      "id": "metric_truth",
+      "description_en": "Preserve source formulas while requiring independent populations, computability, audit samples and authoritative truth where necessary.",
+      "description_zh": "保留来源公式，同时要求独立总体、可计算性、审计样本及必要权威真值。"
+    },
+    {
+      "id": "safety_threshold",
+      "description_en": "Prohibited effects have zero tolerance; other thresholds are set by the risk owner before evaluation.",
+      "description_zh": "禁止效果为零，其他阈值由风险责任人在评估前设定。"
+    },
+    {
+      "id": "nonoccurrence",
+      "description_en": "Missing effect telemetry cannot prove no payment or other side effect occurred.",
+      "description_zh": "缺少效果遥测不能证明未付款或没有其他副作用。"
+    }
+  ]
+}

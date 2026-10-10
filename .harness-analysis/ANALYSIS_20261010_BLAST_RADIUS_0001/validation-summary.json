@@ -1,0 +1,36 @@
+{
+  "analysis_id": "ANALYSIS_20261010_BLAST_RADIUS_0001",
+  "source_revision": "d36c2b240d085a1b8a6eea57a58dabb3f773a0f4 + pre-existing and current working-tree changes",
+  "scope": "PATTERN_0050 specification and provenance validation / 爆炸半径模式规格及来源验证",
+  "source_hashes": {
+    "execution": "5b26e1b111fe215836346bf8b274f165357b314985d06cef4d44f2276d335533",
+    "probe": "6bc69896ee69787926f3623bf36630ea1370b609ff2e3b79c4831d6f92ab4ce9"
+  },
+  "inventories": {
+    "execution_steps": 14,
+    "execution_cases": 16,
+    "probe_steps": 16,
+    "components": 18,
+    "metrics": 39,
+    "probe_cases": 16
+  },
+  "validation": {
+    "blast_radius_assets": {
+      "errors": 0
+    },
+    "skill_creator_quick_validate": "passed with python -X utf8",
+    "full_suite": {
+      "passed": 922,
+      "failed": 2,
+      "skipped": 3,
+      "subtests_passed": 243
+    },
+    "focused_rerun": {
+      "passed": 46,
+      "failed": 1
+    },
+    "remaining_failure": "tests/test_harness_skill_registry.py::HarnessSkillRegistryTest::test_source_aliases_and_harness_spelling_are_explicit: concurrent approval-gate-execution-flow.md contains Hanerss"
+  },
+  "implementation_status": "specification_only",
+  "business_acceptance": "not_executed"
+}

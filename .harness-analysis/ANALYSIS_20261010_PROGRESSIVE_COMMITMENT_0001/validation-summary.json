@@ -1,0 +1,51 @@
+{
+  "analysis_id": "ANALYSIS_20261010_PROGRESSIVE_COMMITMENT_0001",
+  "recorded_at": "2026-10-10T03:15:00Z",
+  "scope_en": "Documentation and asset integrity; no business runtime implemented or accepted.",
+  "scope_zh": "文档与资产完整性；未实现或验收业务运行时。",
+  "dedicated_asset_validation": {
+    "errors": 0
+  },
+  "full_skill_validation": {
+    "errors": 0,
+    "existing_navigation_warnings": 18
+  },
+  "skill_creator_quick_validation": {
+    "status": "passed",
+    "python_utf8_mode": true
+  },
+  "full_suite_initial": {
+    "command": "python -B -X utf8 -m pytest -q",
+    "passed": 1017,
+    "failed": 1,
+    "skipped": 3,
+    "subtests_passed": 243,
+    "duration_seconds": 286.19,
+    "failure": "tests/test_generate_skill_visualization.py::SkillVisualizationGeneratorTest::test_pattern_ids_are_unique_and_consistent"
+  },
+  "repair_en": "Use semicolon instead of slash between pattern ID and cell ID to avoid legacy name-binding parser ambiguity; no registry ID changed.",
+  "repair_zh": "模式编号与单元编号用分号分隔，避免旧名称绑定解析歧义；未修改注册编号。",
+  "final_targeted_regression": {
+    "command": "python -B -X utf8 -m pytest tests/test_generate_skill_visualization.py tests/test_progressive_commitment_docs.py -q",
+    "passed": 46,
+    "failed": 0,
+    "duration_seconds": 7.17
+  },
+  "remaining_known_test_failures": 0,
+  "business_acceptance": {
+    "source_scenarios": 60,
+    "additional_execution_scenarios": 8,
+    "status": "not_executed"
+  },
+  "git_diff_check": "passed",
+  "html_source_hash_verified": true,
+  "original_source_snapshots_unchanged": true,
+  "artifact_sha256": {
+    "skills/harness-engineering-patterns/references/progressive-commitment-contract.md": "8a67a7479783aff35151b4210995ad6fbfb1d5c42aace2ae329759c06eef5593",
+    "skills/harness-engineering-patterns/references/progressive-commitment-execution-flow.md": "20b49d063a0d3f1b39ad132d223e366da0a76877287250318e34810bc7fae553",
+    "skills/harness-engineering-patterns/references/progressive-commitment-observability-probes.md": "b03231c070bccdb22100d52a57f9f322191d12787c3b9a34346ba9dee9f19fa2",
+    "skills/harness-engineering-patterns/references/progressive-commitment-source-map.json": "96992958d6eb1f6c32e04ee6c3fcef70e75e28c2dac5153e86ee1468edb65458",
+    "skills/harness-engineering-patterns/scripts/validate_progressive_commitment_docs.py": "186f19c5dad8cccb75ccf19161f4591ffff0266aaa32d24494f04bd6f24a1661",
+    "tests/test_progressive_commitment_docs.py": "7427ad337e870109ffff831aac4d1e08e8dbf6f9c2deedab78a8cc5fdf59d334"
+  }
+}

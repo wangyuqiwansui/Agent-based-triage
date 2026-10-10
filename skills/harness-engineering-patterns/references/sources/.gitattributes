@@ -1,0 +1,2 @@
+# Preserve source evidence bytes across checkouts / 检出时保留来源证据原始字节。
+*.source.txt -text

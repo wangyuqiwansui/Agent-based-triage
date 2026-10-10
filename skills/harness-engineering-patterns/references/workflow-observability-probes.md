@@ -11,6 +11,8 @@ This reference turns workflow observability into a deployable probe suite that c
 
 Compatibility note / 兼容说明: the source draft used `PATTERN_0002`, which is already the stable registry ID for Context Assembly / 上下文装配模式. Preserve that historical ID and register this protocol as `PATTERN_0052`; do not rewrite existing registry or Trace history. / 来源草案使用了 `PATTERN_0002`，但该稳定 ID 已分配给上下文装配模式。应保留历史 ID，并将本协议登记为 `PATTERN_0052`；不得改写既有注册表或 Trace 历史。
 
+For full business-outcome confirmation, asynchronous reconciliation, public commitment checks and source-bound completion, also read the dedicated [Observability Harness execution](observability-execution-flow.md), [business probes and OBM definitions](observability-probes.md) and [contract](observability-contract.md). That `PATTERN_0049` supplement is specification-only; it neither replaces this `PATTERN_0052` `0.8.0` protocol nor renames its existing probes/metrics. Adapter mappings require explicit validation. / 完整业务结果确认、异步对账、对外承诺检查与有来源补全，另读可观测性框架专用执行、业务探针指标及契约。该扩展仅为规格，不替换本共享协议及版本，也不重命名已有探针指标；适配映射须显式验证。
+
 ## Quick Navigation / 快速导航
 
 - [Scope And Safety Boundary / 范围与安全边界](#scope-and-safety-boundary--范围与安全边界)
@@ -39,7 +41,13 @@ Enforce these invariants / 强制以下不变量:
 7. Observe probe coverage, loss, duplication, parsing, latency, persistence, metric calculation, and alert delivery. / 监控探针覆盖、丢失、重复、解析、延迟、持久化、指标计算和告警送达。
 8. Probes report and enforce configured governance gates; they do not decide business truth. / 探针报告并执行已配置治理门槛，不决定业务事实。
 
+## Pattern Combination Profile / 模式组合探针配置
+
+For cross-pattern workflows, the [source-backed composition profile](pattern-combination-observability-probes.md) adds 14 independently selectable probe specifications and 54 formulas for task, topology, state, dependency, evidence, compression, hypothesis, loop, action, governance, review, handoff, acceptance and efficiency. Read its [exchange contract](pattern-combination-contract.md) for scoped enrichment and report-only control boundaries. Source `PROBE_*_001` IDs use a separate namespace; they are not aliases of this shared protocol's executable probes. / 跨模式工作流可读取有来源的组合配置，包含 14 类独立可选探针规格及 54 项公式，覆盖任务到效率的完整链路；共享交互契约定义受限补全与默认仅报告的控制边界。来源编号使用独立名称空间，不充当现有可执行探针的别名。
+
 ## Cognition And Topology Mounts / 认知与拓扑挂载
+
+For baseline-first pattern composition, use the [selection-specific probe profile](pattern-selection-observability-probes.md) and [exchange contract](pattern-selection-contract.md). Its `PRB-*`, `MTR-*` and `ANO-*` definitions use namespace `pattern-selection/0.1.0` and remain specification-only; they do not replace this suite's existing collectors, schemas or metric identities. / 基线优先的组合选型使用专用探针配置及交互契约；其探针、指标与异常编号使用独立命名空间且仅为规格，不替换本套件已有采集器、Schema 或指标身份。
 
 The probe suite observes through perception, retains event chains and baselines through memory, diagnoses drift and no-progress through reflection, enforces privacy and protected transitions through governance, and uses reasoning only for labeled suggestions or estimates. / 探针套件通过感知采集，通过记忆保留事件链与基线，通过反思诊断漂移与无进展，通过治理执行隐私与受保护转换，只将推理用于已标注的建议或估计。
 

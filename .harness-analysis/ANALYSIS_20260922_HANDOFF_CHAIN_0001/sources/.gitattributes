@@ -1,0 +1,2 @@
+# Preserve original evidence bytes / 保留原始证据字节。
+*.md -text

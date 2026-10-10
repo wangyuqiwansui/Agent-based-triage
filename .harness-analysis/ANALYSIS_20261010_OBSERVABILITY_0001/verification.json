@@ -1,0 +1,34 @@
+{
+  "name_en": "Observability specification verification",
+  "name_zh": "可观测性规格验证",
+  "date": "2026-10-10",
+  "business_acceptance": "not_executed",
+  "dedicated_asset_validation": {
+    "errors": 0
+  },
+  "dedicated_fault_injection_tests": {
+    "passed": 26
+  },
+  "full_suite_initial": {
+    "passed": 986,
+    "failed": 1,
+    "skipped": 3,
+    "subtests_passed": 243,
+    "seconds": 269.38,
+    "failure": "test_pattern_ids_are_unique_and_consistent: concurrent progressive-commitment source ID formatting",
+    "failure_retest": "passed on latest workspace"
+  },
+  "final_focused_verification": {
+    "passed": 45,
+    "seconds": 10.04,
+    "scope": [
+      "test_observability_docs.py",
+      "test_generate_skill_visualization.py",
+      "test_real_skill_passes_full_validation"
+    ]
+  },
+  "skill_frontmatter_validation": "passed",
+  "source_snapshots": "Original bytes retained; -text attributes prevent checkout newline conversion / 保留原始字节，属性阻止检出换行转换",
+  "limitations_en": "Specification assets validated; no dedicated OBM calculator, production collector or business acceptance executed.",
+  "limitations_zh": "验证的是规格资产；未实现专用 OBM 计算器、生产采集器或执行业务验收。"
+}

@@ -1,0 +1,1895 @@
+{
+  "name_en": "Progressive Commitment Execution and Probes",
+  "name_zh": "渐进承诺执行与探针",
+  "description_en": "Source-backed specification for scoped capability credentials, separate task and authority clocks, evidence-bound promotion, revocation and independent observation.",
+  "description_zh": "基于来源的范围能力凭证、独立任务与权限钟表、证据绑定晋级、吊销及独立观测规格。",
+  "version": "0.1.0",
+  "status": "draft",
+  "implementation_status": "specification_only",
+  "pattern_ref": "PATTERN_0048",
+  "cell_ref": "CELL_GOVERNANCE_PARALLEL",
+  "execution_reference": "references/progressive-commitment-execution-flow.md",
+  "observability_reference": "references/progressive-commitment-observability-probes.md",
+  "interaction_contract_reference": "references/progressive-commitment-contract.md",
+  "source_map_reference": "references/progressive-commitment-source-map.json",
+  "source_aliases": {
+    "pattern": [
+      "PATTERN_GOVERNANCE_0003"
+    ],
+    "probe": [
+      "PROBE_GOVERNANCE_0003"
+    ]
+  },
+  "canonical_coordinate": "COG_GOVERNANCE__TOP_PARALLEL",
+  "source_coordinates": [
+    "COG_GOVERNANCE__TOP_CHAIN",
+    "COG_GOVERNANCE__TOP_LOOP"
+  ],
+  "acceptance_status": "not_executed",
+  "metric_implementation": "specification_only",
+  "sources": [
+    {
+      "id": "execution",
+      "original_name": "渐进承诺_执行流程.md",
+      "snapshot_path": "references/sources/progressive-commitment/渐进承诺_执行流程.source.txt",
+      "sha256": "963bbfc4f4fabbb76e3057cc8d47b60114818d7a26b27d100b26abd3511ab9be",
+      "source_version": "0.1.0",
+      "source_status": "draft"
+    },
+    {
+      "id": "probe",
+      "original_name": "渐进承诺_工作流可观测性探针.md",
+      "snapshot_path": "references/sources/progressive-commitment/渐进承诺_工作流可观测性探针.source.txt",
+      "sha256": "ad3850a3cf23ebda860c0e35d92b132b91cf20fbe78b5c2aaf2932431bf2d310",
+      "source_version": "0.1.0",
+      "source_status": "draft"
+    }
+  ],
+  "interpretation_changes": [
+    {
+      "id": "identity",
+      "description_en": "Keep PATTERN_0048 and the parallel cell; chain/loop are workflow facets, supplied IDs are source aliases.",
+      "description_zh": "保留现有模式及并行单元，链式循环是工作流视角，附件编号为来源别名。"
+    },
+    {
+      "id": "readiness",
+      "description_en": "Draft specifications and unexecuted business cases do not establish runtime maturity.",
+      "description_zh": "草稿规格及未执行业务用例不证明运行时成熟。"
+    },
+    {
+      "id": "two_clocks",
+      "description_en": "Separate task progression, capability authority and overriding freeze; full production remains scoped.",
+      "description_zh": "分离任务推进、能力权限及优先冻结，全量生产仍有范围。"
+    },
+    {
+      "id": "bootstrap",
+      "description_en": "Approved bounded pilots may use designated preproduction evidence; no unauthorized production prerequisite.",
+      "description_zh": "获批受限试点可使用指定上线前证据，不要求越权生产前置。"
+    },
+    {
+      "id": "issuance",
+      "description_en": "Freeze snapshot plus fresh failure watermarks and serialized authority revision; atomically replace predecessors.",
+      "description_zh": "冻结快照并核验最新失败水位、串行权限修订，原子替代前驱。"
+    },
+    {
+      "id": "revocation",
+      "description_en": "Fence dispatch, enumerate gateways and disclose leases; distinguish late settlement from new dispatch.",
+      "description_zh": "围栏阻断派发，列出执行点并披露租约，区分迟后结算与新增派发。"
+    },
+    {
+      "id": "outcomes",
+      "description_en": "Separate mechanical completion, effect certainty, business verdict and compensation; reconcile unknown effects.",
+      "description_zh": "分离机械完成、效果确定性、业务裁定与补偿，对账未知效果。"
+    },
+    {
+      "id": "evidence",
+      "description_en": "Count independent per-capability cohorts, not retries; preserve multi-capability outcomes and all failures.",
+      "description_zh": "按各能力独立证据组计数而非重试，保留多能力结果与全部失败。"
+    },
+    {
+      "id": "metrics",
+      "description_en": "Retain source formulas with explicit maintained clarifications, independent populations and unknown states.",
+      "description_zh": "保留原始公式并显式澄清维护口径，使用独立总体和未知状态。"
+    },
+    {
+      "id": "probe_boundary",
+      "description_en": "Verified completion appends observations; it cannot rewrite authority or retrospectively authorize effects.",
+      "description_zh": "已核验补全仅追加观察，不能改权限或追溯授权。"
+    },
+    {
+      "id": "existing_schema",
+      "description_en": "The existing capability credential is Skill routing qualification, not this action-authority contract.",
+      "description_zh": "已有能力凭证为 Skill 路由资格，不是本行动权限契约。"
+    }
+  ],
+  "inventories": {
+    "execution_steps": [
+      {
+        "id": "F01",
+        "source_line": 559,
+        "source_end_line": 589,
+        "source_label": "初始化与版本锁定",
+        "excerpt_sha256": "7a94eabe27bbfa17557a3901be5e709c5d6a511d34ade20013eb100940f78c7b",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "F02",
+        "source_line": 590,
+        "source_end_line": 613,
+        "source_label": "请求建模",
+        "excerpt_sha256": "5fd0eaf26b3519d5ca0c6bbc8fe0b70edc59e58c49398853bb54599daf7d5181",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "F03",
+        "source_line": 614,
+        "source_end_line": 634,
+        "source_label": "能力与范围识别",
+        "excerpt_sha256": "51e71d8746701cdbb495b5c781001c080896d91ca17e6269161c1ada9a1c1410",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "F04",
+        "source_line": 635,
+        "source_end_line": 654,
+        "source_label": "风险与不可逆性分类",
+        "excerpt_sha256": "cff8348225815f5d8a3dcf94ed2645842767d82261ecf87bf2e9140a664882f2",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "F05",
+        "source_line": 655,
+        "source_end_line": 676,
+        "source_label": "当前权限凭证解析",
+        "excerpt_sha256": "6b17fd3f7289f50b7715d19d623ba95b33bedfeba3df313669dbae01a8ddf2a5",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "F06",
+        "source_line": 677,
+        "source_end_line": 694,
+        "source_label": "永久人工确认规则检查",
+        "excerpt_sha256": "615225b70623b2b0e71fba7ed522ac6522f3501b03b8065b0d34ebcb5aed43bd",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "F07",
+        "source_line": 695,
+        "source_end_line": 731,
+        "source_label": "单次任务阶梯编排",
+        "excerpt_sha256": "108688a8e10bd7f654c9e1a17cb489b185645eba6dd8994689660f04f3640d15",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "F08",
+        "source_line": 732,
+        "source_end_line": 753,
+        "source_label": "执行前组合闸",
+        "excerpt_sha256": "6bac16b6b934f3ee7ecd00044b8b8335111251e9fe96b5332f97fb070cd1eca6",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "F09",
+        "source_line": 754,
+        "source_end_line": 775,
+        "source_label": "低风险与可撤销动作执行",
+        "excerpt_sha256": "496abc68d7af5bca158c05530ac0fb2f91798502164ec9c3a3b7cdbaa25247a8",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "F10",
+        "source_line": 776,
+        "source_end_line": 796,
+        "source_label": "影子、演练或受限真实执行",
+        "excerpt_sha256": "ba3f688d7c5a4509859959ed5c23ca2c3bc4d826feac39992f681ce5dc0b0865",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "F11",
+        "source_line": 797,
+        "source_end_line": 823,
+        "source_label": "业务结果核验",
+        "excerpt_sha256": "a793e940da417fc316575381934fb8c39220a351beeb3b95e85d81d9940737e6",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "F12",
+        "source_line": 824,
+        "source_end_line": 844,
+        "source_label": "运行结果记账",
+        "excerpt_sha256": "7b1adb935d119ca27d851a0ad39c0a5c64290496fb87eef9dc543f13c28ceca3",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "F13",
+        "source_line": 845,
+        "source_end_line": 871,
+        "source_label": "证据窗口评估",
+        "excerpt_sha256": "e7bdff8e811342dd96af057478b6bd8883ba753e5d04a5f0a69d88460aef92d8",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "F14",
+        "source_line": 872,
+        "source_end_line": 899,
+        "source_label": "晋级、降级或冻结决策",
+        "excerpt_sha256": "f3768e6c9d4a96d4199afaafee7218f0b8b4198bdf147b2332ea7b5d50893391",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "F15",
+        "source_line": 900,
+        "source_end_line": 928,
+        "source_label": "凭证签发、吊销与闭环",
+        "excerpt_sha256": "0ab1fe33008777128a467368e8a9562df16488ea1e2a0bb18ed9f413c45689e7",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      }
+    ],
+    "probe_steps": [
+      {
+        "id": "P01",
+        "source_line": 420,
+        "source_end_line": 439,
+        "source_label": "加载注册表、策略与版本",
+        "excerpt_sha256": "51ce44c8d0ca0e1997a9a20323e86c5c99efaeb507612189a49a55f1d932ef11",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "P02",
+        "source_line": 440,
+        "source_end_line": 453,
+        "source_label": "接收事件、快照和工件",
+        "excerpt_sha256": "b6b2e6ac215fcc5ea562069081e337bfd8db3b92e7b2ab9befc1610dc2190072",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "P03",
+        "source_line": 454,
+        "source_end_line": 469,
+        "source_label": "标准化与保留原始引用",
+        "excerpt_sha256": "70a2df93f51f9382f0db5fa45c98af6e459150d85d95f24b2496dd3d7bd5ace8",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "P04",
+        "source_line": 470,
+        "source_end_line": 485,
+        "source_label": "身份解析、去重与链路关联",
+        "excerpt_sha256": "2f1a7c2a706857919462567328f9acc9ce1d107e7dd2749b2589c19505b88c48",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "P05",
+        "source_line": 486,
+        "source_end_line": 504,
+        "source_label": "数据完整性和可信度检查",
+        "excerpt_sha256": "dbde3f1c9e06d4fe1786f23b6e5df249e51c93c051c3da947de9117a2d1362ef",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "P06",
+        "source_line": 505,
+        "source_end_line": 530,
+        "source_label": "重建单次任务钟表",
+        "excerpt_sha256": "ae1e040b490ea0018f230d62f30f780030b2dba403d374060c3b904362d2370c",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "P07",
+        "source_line": 531,
+        "source_end_line": 555,
+        "source_label": "重建跨任务权限钟表",
+        "excerpt_sha256": "2bd6b9b0358eb6479da97ecfaf4af82a159ccde2ee39d9bf149500c241faf93f",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "P08",
+        "source_line": 556,
+        "source_end_line": 573,
+        "source_label": "检查凭证与执行点边界",
+        "excerpt_sha256": "f750c5e9d858aaee829eb01bf00712aab386a90ac6d825e3197cd4586f5f0e1d",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "P09",
+        "source_line": 574,
+        "source_end_line": 590,
+        "source_label": "检查证据窗口与晋级批次",
+        "excerpt_sha256": "625df85976b6969b1887127bcb75091e0b59fcaf0ed9e74f7ba9960d6411897b",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "P10",
+        "source_line": 591,
+        "source_end_line": 607,
+        "source_label": "检查事故、降级与恢复",
+        "excerpt_sha256": "7039db09b1bd2309f28a13e0584ad49eef375bedf76b289086212221c9bba631",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "P11",
+        "source_line": 608,
+        "source_end_line": 631,
+        "source_label": "计算指标和趋势",
+        "excerpt_sha256": "8bd10bc1cc24e7ec085ce9e49c08ddace00550d3d2aac6923f358d3a6ca28057",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "P12",
+        "source_line": 632,
+        "source_end_line": 646,
+        "source_label": "生成缺口、补全包、发现和建议",
+        "excerpt_sha256": "6dc8d5c1c3fb82372d31a96c7bc6783fd5d47afb971c7736c576097762efd538",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "P13",
+        "source_line": 647,
+        "source_end_line": 662,
+        "source_label": "输出报告、告警和交互回执",
+        "excerpt_sha256": "6e30cb3ec4c4fbee2509b867b5d8618e4a6a2d53601a2fe8ce5f2fc57b7a2a75",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      }
+    ],
+    "specialized_probes": [
+      {
+        "id": "SP-01",
+        "source_line": 717,
+        "source_end_line": 717,
+        "source_label": "主体与版本探针",
+        "excerpt_sha256": "f96ac75acc348095a5e96758e4f5ff661d9894a53491d381259d95b3eb30d880",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-02",
+        "source_line": 718,
+        "source_end_line": 718,
+        "source_label": "能力与范围探针",
+        "excerpt_sha256": "3181785f1c330d91bd497e10a9bc791ed8ab8778335d35dfa7dec1c519a37ff3",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-03",
+        "source_line": 719,
+        "source_end_line": 719,
+        "source_label": "凭证有效性探针",
+        "excerpt_sha256": "ee6cca1d4eb74aa297a6acd3f5160dc6e5d59d84a2871108322e64fdc42fae28",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-04",
+        "source_line": 720,
+        "source_end_line": 720,
+        "source_label": "单次任务阶梯探针",
+        "excerpt_sha256": "9b31bc30a512f939ccd9c12aa39b49790ebf495eba3f3b22495dddb46c90c77c",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-05",
+        "source_line": 721,
+        "source_end_line": 721,
+        "source_label": "组合闸探针",
+        "excerpt_sha256": "74ca140a39d805e7113920969c672e5980a83f36fa9ddb300c422a2dcb7313c4",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-06",
+        "source_line": 722,
+        "source_end_line": 722,
+        "source_label": "影子隔离探针",
+        "excerpt_sha256": "13342d1457aa8365c5b11356cbf379661e4e30ada22a965ddb7271be91388be3",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-07",
+        "source_line": 723,
+        "source_end_line": 723,
+        "source_label": "证据唯一性探针",
+        "excerpt_sha256": "21b7e7d7c175c46da562d9a69406ccee9c46c7d36b309e3c51c3ed3c7cd1d663",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-08",
+        "source_line": 724,
+        "source_end_line": 724,
+        "source_label": "证据新鲜度探针",
+        "excerpt_sha256": "1269a281ceb0b2663947c65de7a51d3307bd920cc9a1e9500ad11773d57fe407",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-09",
+        "source_line": 725,
+        "source_end_line": 725,
+        "source_label": "证据覆盖探针",
+        "excerpt_sha256": "58dc33d88e1ff012b43301cf0fa57330acdcd11794bd16308e51176e631aeeeb",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-10",
+        "source_line": 726,
+        "source_end_line": 726,
+        "source_label": "验证者信任探针",
+        "excerpt_sha256": "ecdd9adc5ef8f4d1f88ed2fffba3048107dd6e97ebcd14ed4e12b9c910995965",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-11",
+        "source_line": 727,
+        "source_end_line": 727,
+        "source_label": "晋级批次完整性探针",
+        "excerpt_sha256": "139d37dda10bafdc8dedb81aa34752106b4fa761e6e625b1751eca06f18ee62a",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-12",
+        "source_line": 728,
+        "source_end_line": 728,
+        "source_label": "审批权探针",
+        "excerpt_sha256": "6864204136a11432262ce6151f247097b00f3d141244bf82ab17395ab5f293c8",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-13",
+        "source_line": 729,
+        "source_end_line": 729,
+        "source_label": "凭证签发一致性探针",
+        "excerpt_sha256": "8b9a81b2d71d81111bcfec6442e8dbc5ae42105d81a5fd1d23af4fc51a2fb4dc",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-14",
+        "source_line": 730,
+        "source_end_line": 730,
+        "source_label": "永久人工确认探针",
+        "excerpt_sha256": "4863d5debf7447c2cf54c7ccdd4f73126d2281c825cad5133a9007b527a6f977",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-15",
+        "source_line": 731,
+        "source_end_line": 731,
+        "source_label": "业务终态探针",
+        "excerpt_sha256": "a3c5932c476f4ae2f4bd04d759defb7bad8133d893727f52aee6e9ab13c1baab",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-16",
+        "source_line": 732,
+        "source_end_line": 732,
+        "source_label": "事故降级探针",
+        "excerpt_sha256": "dc4407717d6d427de2349ebf222ea56e58a7a6abb00b3fa91cc4474e660ba96b",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-17",
+        "source_line": 733,
+        "source_end_line": 733,
+        "source_label": "恢复基线探针",
+        "excerpt_sha256": "4a7bc73ebdd5071d9c43eb14e8d491f6457a92ffdbc94d0c21807d78f226d7c3",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-18",
+        "source_line": 734,
+        "source_end_line": 734,
+        "source_label": "数据缺口探针",
+        "excerpt_sha256": "e70d4369ecddde265a401a7c8f6dd4fa7ad3b16722c81556e06263a24fe9ce7a",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-19",
+        "source_line": 735,
+        "source_end_line": 735,
+        "source_label": "探针越权探针",
+        "excerpt_sha256": "449a7f7646ea9a079a660913dfe7214e548efed63b7342b0737ba0d1575dfc69",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "SP-20",
+        "source_line": 736,
+        "source_end_line": 736,
+        "source_label": "父子委派探针",
+        "excerpt_sha256": "a31e3d897b28d583e0e7d4bd0d4347592aa94cda6a4b7ec2d74f0588e1996f3f",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      }
+    ],
+    "metrics": [
+      {
+        "id": "PM-DQ-01",
+        "source_line": 785,
+        "source_end_line": 785,
+        "source_label": "必需事件完整率",
+        "excerpt_sha256": "22f8c39531cdb94dc9c107c1ebc5e934a2dbac6dd2efd05327f7d23b8e8e16e5",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-DQ-02",
+        "source_line": 786,
+        "source_end_line": 786,
+        "source_label": "必需字段完整率",
+        "excerpt_sha256": "37404db14e3c4af8245b3cf1fc5fe6d9cf1330ec478a0dd8203c695ba10cedcf",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-DQ-03",
+        "source_line": 787,
+        "source_end_line": 787,
+        "source_label": "链路关联成功率",
+        "excerpt_sha256": "950c3736bf6d928d302931d8c7b192d3d3cc8d4ec28f19d6e74d06059fca0070",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-DQ-04",
+        "source_line": 788,
+        "source_end_line": 788,
+        "source_label": "证据引用可解析率",
+        "excerpt_sha256": "651114bd60123c6dd245f0b2780e471bc8fafb85cc62ae449a46a70bc7129618",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-DQ-05",
+        "source_line": 789,
+        "source_end_line": 789,
+        "source_label": "权威来源覆盖率",
+        "excerpt_sha256": "b47fcf4038d7886290f4802f8c771240c4d6193084bee4891984e60449721204",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-DQ-06",
+        "source_line": 790,
+        "source_end_line": 790,
+        "source_label": "事件重复率",
+        "excerpt_sha256": "5dfb9a9e018bf02cd458c195eb1c2c2eb6f368935ade250c9395251d7e4befa2",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-DQ-07",
+        "source_line": 791,
+        "source_end_line": 791,
+        "source_label": "乱序事件率",
+        "excerpt_sha256": "56e5717e9c496b9f2c2c40152f62bc622d53535c0c5aaeb442b883e45babc764",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-DQ-08",
+        "source_line": 792,
+        "source_end_line": 792,
+        "source_label": "记录延迟",
+        "excerpt_sha256": "82ef3e388c99ece1a9d7b840835d1616919edf0a579a55be4ee002419119af65",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-DQ-09",
+        "source_line": 793,
+        "source_end_line": 793,
+        "source_label": "内容摘要一致率",
+        "excerpt_sha256": "d276ea552acfb48208e43625860840c1761a6475cbeac49f57508fd0be4767b0",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-DQ-10",
+        "source_line": 794,
+        "source_end_line": 794,
+        "source_label": "时钟偏差",
+        "excerpt_sha256": "4a569f68dbfbd486f4464bba91cc88ae82620562ef01b21913b5053004172440",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-DQ-11",
+        "source_line": 795,
+        "source_end_line": 795,
+        "source_label": "未知来源记录率",
+        "excerpt_sha256": "975ec906a9aade171d426b5c7717f91136ac1a4ec0989a2f57133ccd9882762d",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-DQ-12",
+        "source_line": 796,
+        "source_end_line": 796,
+        "source_label": "推断事实占比",
+        "excerpt_sha256": "edb8642d5fefa6c46450b9cf790cc80ae9e74eb2f7845a12fb507634ea9eeafb",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-RUN-01",
+        "source_line": 804,
+        "source_end_line": 804,
+        "source_label": "阶梯步骤覆盖率",
+        "excerpt_sha256": "bcb703709c8c307ee0e018e85ba1e6bb15602e6e96e1958234c4bcd1f5bca9b2",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-RUN-02",
+        "source_line": 805,
+        "source_end_line": 805,
+        "source_label": "未授权跳步次数",
+        "excerpt_sha256": "606ffca6d86214e0364cf968c16119d05455680e27b0af027d5907a6d7abead0",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-RUN-03",
+        "source_line": 806,
+        "source_end_line": 806,
+        "source_label": "可撤销优先合规率",
+        "excerpt_sha256": "743687dff0ffaea65e33b86364ba0334a5b4553964a1f1e0fcd62ff77f54349a",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-RUN-04",
+        "source_line": 807,
+        "source_end_line": 807,
+        "source_label": "演练覆盖率",
+        "excerpt_sha256": "0be650287ee79356d20ec894e5e7b6b1f585c01347aa38657e6759536b721549",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-RUN-05",
+        "source_line": 808,
+        "source_end_line": 808,
+        "source_label": "影子隔离违规数",
+        "excerpt_sha256": "2694cfcd698ded25a1041bb0e0b3d5d80fac6cad626ae68803df549324058f4f",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-RUN-06",
+        "source_line": 809,
+        "source_end_line": 809,
+        "source_label": "组合闸回执完整率",
+        "excerpt_sha256": "bdecf4a931ca5c11fe254a8a0650d368c3af50561900dedc4fcc380c262ca0a2",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-RUN-07",
+        "source_line": 810,
+        "source_end_line": 810,
+        "source_label": "外部效果先于授权次数",
+        "excerpt_sha256": "532d88bf8f34251508b506a56829ccb36cc9b76cf691e73287e3e3caaf1d1a34",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-RUN-08",
+        "source_line": 811,
+        "source_end_line": 811,
+        "source_label": "幂等键覆盖率",
+        "excerpt_sha256": "1b08116316d2559097ef5b022f5978c186166aa5149b24abd0c89a517230053d",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-RUN-09",
+        "source_line": 812,
+        "source_end_line": 812,
+        "source_label": "重复外部效果次数",
+        "excerpt_sha256": "d859a62529c2e3eae5fafa9bdd5a66bd2c034d4be54eecce3418dd8e0098ab39",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-RUN-10",
+        "source_line": 813,
+        "source_end_line": 813,
+        "source_label": "受限范围使用率",
+        "excerpt_sha256": "2dd122867a5fc15593823e91ac2b362a7f973a810b3938756d33507f3fa2cf75",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-RUN-11",
+        "source_line": 814,
+        "source_end_line": 814,
+        "source_label": "超限请求拦截率",
+        "excerpt_sha256": "d9acefba033b28c6822070b63e813a9b2afb77fc476533186cad383805adf5a5",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-RUN-12",
+        "source_line": 815,
+        "source_end_line": 815,
+        "source_label": "阶梯退回率",
+        "excerpt_sha256": "e8359fcf86ce952e7cf3f4c678be7b18538542f855b8371f43494639396da25c",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-RUN-13",
+        "source_line": 816,
+        "source_end_line": 816,
+        "source_label": "组合闸等待时长",
+        "excerpt_sha256": "28552353e85d5752507545b8d894aaafba167728c06626e3a6e606f2a9602f4c",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-RUN-14",
+        "source_line": 817,
+        "source_end_line": 817,
+        "source_label": "部分成功补偿率",
+        "excerpt_sha256": "51fbeae30e69cccf07891dca817603a03b6403932905c1d9d9277d7fc3d8ef11",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-01",
+        "source_line": 825,
+        "source_end_line": 825,
+        "source_label": "真实执行凭证检查覆盖率",
+        "excerpt_sha256": "435e848dceda2928a10990002d057697353d3f0b1fd28e542cde21f890a3f850",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-02",
+        "source_line": 826,
+        "source_end_line": 826,
+        "source_label": "无凭证执行次数",
+        "excerpt_sha256": "22c761297a30732684cc980914424acc608662f725279739d65c7936f4fd9d38",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-03",
+        "source_line": 827,
+        "source_end_line": 827,
+        "source_label": "无效凭证拦截率",
+        "excerpt_sha256": "cc7f59a5287962190e7c119169bdf21b175bd7ff4d7099ffd4ce1bab35ed72c1",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-04",
+        "source_line": 828,
+        "source_end_line": 828,
+        "source_label": "吊销凭证拒绝率",
+        "excerpt_sha256": "eef11836935018ed074dbbc5d56b9b11e245eda8217905b005e986da34de7986",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-05",
+        "source_line": 829,
+        "source_end_line": 829,
+        "source_label": "过期凭证拒绝率",
+        "excerpt_sha256": "3cace575be9e5de90bce863d815d1338050f5542c5cf076a902d96ef3167baf1",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-06",
+        "source_line": 830,
+        "source_end_line": 830,
+        "source_label": "被替代凭证拒绝率",
+        "excerpt_sha256": "c91b2862115631dca44cd62bb4a832927a0297c4b13a87c68c488a3482be2d7f",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-07",
+        "source_line": 831,
+        "source_end_line": 831,
+        "source_label": "范围错配拦截率",
+        "excerpt_sha256": "48cce0dbfa5098aac187b30c573a01daadc999ae1ccda5df26f7defc2841cc4f",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-08",
+        "source_line": 832,
+        "source_end_line": 832,
+        "source_label": "未授权外部效果次数",
+        "excerpt_sha256": "abaa2602dcc8dbedf8227b898d3916440e902b1fb45214a540fb3733a7bd48a2",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-09",
+        "source_line": 833,
+        "source_end_line": 833,
+        "source_label": "跨租户越权次数",
+        "excerpt_sha256": "cd433f96c5deda043635f54927d010454db8e7d710d8a40e81750ef69c4823a2",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-10",
+        "source_line": 834,
+        "source_end_line": 834,
+        "source_label": "跨能力证据借用次数",
+        "excerpt_sha256": "29aeef807dfdd3f8f527f7b315356da2141cca27a4f70cfb3f10b1758616d2fe",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-11",
+        "source_line": 835,
+        "source_end_line": 835,
+        "source_label": "永久人工确认绕过尝试数",
+        "excerpt_sha256": "1870d4e175d374ca298da45bc1371d3901b324964236ced179e4fec98208abeb",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-12",
+        "source_line": 836,
+        "source_end_line": 836,
+        "source_label": "永久人工确认绕过成功数",
+        "excerpt_sha256": "1a48c0c1e21c8f63df27c49d137d11d5b36be308072a13e95eaa48ec65b6834d",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-13",
+        "source_line": 837,
+        "source_end_line": 837,
+        "source_label": "审批门关联完整率",
+        "excerpt_sha256": "b90e478b5116398e683eebfb40f2f3a67514ecde796a42ae553fff09e2ac7f21",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-14",
+        "source_line": 838,
+        "source_end_line": 838,
+        "source_label": "爆炸半径回执完整率",
+        "excerpt_sha256": "583ad820401cc293058cfe129c5b584751c1db624b30d7c74dab099adb7c796e",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-AUTH-15",
+        "source_line": 839,
+        "source_end_line": 839,
+        "source_label": "父子委派越界次数",
+        "excerpt_sha256": "c7e37328972fd39a4cde54874fdb52047a525f8624ca140c880adce1624ada8c",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-01",
+        "source_line": 847,
+        "source_end_line": 847,
+        "source_label": "证据唯一率",
+        "excerpt_sha256": "7e36ebcd48ec46d0e5948d1ef92792f88feb011eb97b59a30a674a7c20baaee0",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-02",
+        "source_line": 848,
+        "source_end_line": 848,
+        "source_label": "证据新鲜率",
+        "excerpt_sha256": "8eca2a9ea8ca12a453ad73766a4b57acc976e8675dd359684484553af8bc3927",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-03",
+        "source_line": 849,
+        "source_end_line": 849,
+        "source_label": "版本匹配率",
+        "excerpt_sha256": "f6cc3a0b793055d41dcdee606fd84969d4422638c8f626cf0a627bae0a622d65",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-04",
+        "source_line": 850,
+        "source_end_line": 850,
+        "source_label": "环境匹配率",
+        "excerpt_sha256": "e38beed8dcb818cf0ea3a5611c1286f4ccd35065743191a3431877a970551f44",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-05",
+        "source_line": 851,
+        "source_end_line": 851,
+        "source_label": "任务切片覆盖率",
+        "excerpt_sha256": "c4e7eebb55d7edcb5104c55511065dbbf583b647e06781bc768ea9d2ecf94bc2",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-06",
+        "source_line": 852,
+        "source_end_line": 852,
+        "source_label": "风险场景覆盖率",
+        "excerpt_sha256": "258e546ac8fbde8234e29b72d02bc165ec4d79d25bd331d3019a31024b2ce619",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-07",
+        "source_line": 853,
+        "source_end_line": 853,
+        "source_label": "受信验证覆盖率",
+        "excerpt_sha256": "74d23a3bcb7cab8baafbfb30baaf5c0cde40ec978a51b54c9366eb73cf255725",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-08",
+        "source_line": 854,
+        "source_end_line": 854,
+        "source_label": "权威业务终态覆盖率",
+        "excerpt_sha256": "9d50c3f6b01ec342ec0d5fe8ca9dfd9eec058d4a689cca88f1d9784c0b71f8cf",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-09",
+        "source_line": 855,
+        "source_end_line": 855,
+        "source_label": "阻断性失败未关闭数",
+        "excerpt_sha256": "1d9a02266db0467c337f0dcaafaf76af7fdc6a262fda48ac4b10985e0a446967",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-10",
+        "source_line": 856,
+        "source_end_line": 856,
+        "source_label": "证据拒绝率",
+        "excerpt_sha256": "345a213e12be965e22075c8adc6a1158b509bf0bc4bb42a4b1d6b37a8e46eb56",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-11",
+        "source_line": 857,
+        "source_end_line": 857,
+        "source_label": "单一切片集中度",
+        "excerpt_sha256": "87a1bcbbd2262d2173b94d4e7b43f01d1b2e84d20a4eba96de3e5aac0a9065ab",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-12",
+        "source_line": 858,
+        "source_end_line": 858,
+        "source_label": "事故前证据复用数",
+        "excerpt_sha256": "9c550d45a5d4d9329b4f789e79f0103d4c6b1eb394118466d0d6942dbbdc19cb",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-13",
+        "source_line": 859,
+        "source_end_line": 859,
+        "source_label": "证据窗口稳定率",
+        "excerpt_sha256": "3bf315b2e6e4d451e9e7ff31ff9c33833c3fd6918d310376e0abe55dfaec6036",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-14",
+        "source_line": 860,
+        "source_end_line": 860,
+        "source_label": "证据来源多样性",
+        "excerpt_sha256": "ece7fa6f1981c293500d9b2160b1286648cea356e35aa7f8a63677322e732dec",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-EV-15",
+        "source_line": 861,
+        "source_end_line": 861,
+        "source_label": "证据补全依赖率",
+        "excerpt_sha256": "4526d8f0b5edf0d97879f379b25f6138d8b9ae77963aa13da8bc9edd4ed54a3e",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-PR-01",
+        "source_line": 869,
+        "source_end_line": 869,
+        "source_label": "相邻晋级合规率",
+        "excerpt_sha256": "89b5542100268ced354b8ac41431b8a92d77389dd3898bcacb0439b9fe0f8f48",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-PR-02",
+        "source_line": 870,
+        "source_end_line": 870,
+        "source_label": "晋级申请证据锁定率",
+        "excerpt_sha256": "d8adcd12cd1b5d668f442a2d05ae84d09fba3b0a87fcdc1d6275b3ce2eb204f3",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-PR-03",
+        "source_line": 871,
+        "source_end_line": 871,
+        "source_label": "审批权匹配率",
+        "excerpt_sha256": "b108ae2c321db9afa1253228b69308f15db5b814b5292dfc04ec5018354904c7",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-PR-04",
+        "source_line": 872,
+        "source_end_line": 872,
+        "source_label": "批准后摘要一致率",
+        "excerpt_sha256": "f48939320849c5790932671ad2291bded5c439d74b7de9cb96ff75e90301798b",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-PR-05",
+        "source_line": 873,
+        "source_end_line": 873,
+        "source_label": "凭证与批准范围一致率",
+        "excerpt_sha256": "dbf3739cb3b99bed3ac2ce93ab474e1088fe3738bc007b66e367ee3dff250349",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-PR-06",
+        "source_line": 874,
+        "source_end_line": 874,
+        "source_label": "晋级决策时长",
+        "excerpt_sha256": "e7a0aea0a653a952699afc6460d49be4abbb91802f73bb0aa80e1af34c00b9c9",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-PR-07",
+        "source_line": 875,
+        "source_end_line": 875,
+        "source_label": "等待期失败失效率",
+        "excerpt_sha256": "975687755632a26c8d9fa817a8561af30f38d11f2f07854d2322f4a697a64614",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-PR-08",
+        "source_line": 876,
+        "source_end_line": 876,
+        "source_label": "新凭证签发时长",
+        "excerpt_sha256": "30a2d43ac89b64b429f173b1ae32af10cf4cb4376bf7c45e7ccd3f672086df98",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-PR-09",
+        "source_line": 877,
+        "source_end_line": 877,
+        "source_label": "旧凭证替代完整率",
+        "excerpt_sha256": "757cc8e9eb2209d51cd04cf21cd51ef38989c73d5d778bd99174b25daf08561d",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-PR-10",
+        "source_line": 878,
+        "source_end_line": 878,
+        "source_label": "晋级后强化观测覆盖率",
+        "excerpt_sha256": "96b48f532fa933c4db9ff81cd5f658c9a8e78afb0b128c8b880355c7b963baf0",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-PR-11",
+        "source_line": 879,
+        "source_end_line": 879,
+        "source_label": "晋级撤回率",
+        "excerpt_sha256": "6ad63e631a586c85a16549351f95ba7addaef4c0f73e57a11107b7dbf72ea117",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-PR-12",
+        "source_line": 880,
+        "source_end_line": 880,
+        "source_label": "目标范围验证覆盖率",
+        "excerpt_sha256": "b96d8d9137c8c10343ca6d967600e5bc8fb84e9ffdb42b6ddc1d4bbe43478a8a",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OUT-01",
+        "source_line": 888,
+        "source_end_line": 888,
+        "source_label": "业务成功率",
+        "excerpt_sha256": "ce807b0e9a28769372e1eed90384f9b6f9b63665390be017682e24998c816ff5",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OUT-02",
+        "source_line": 889,
+        "source_end_line": 889,
+        "source_label": "机械成功误判率",
+        "excerpt_sha256": "3e543cc9a8de026f34826fb191bb9a893c30c140c47174e1efcf56fad048ab10",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OUT-03",
+        "source_line": 890,
+        "source_end_line": 890,
+        "source_label": "人工纠正率",
+        "excerpt_sha256": "51a1e331e8a8942a74cc46d826e2bd05341579c714a88d8c14599d82eda8c788",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OUT-04",
+        "source_line": 891,
+        "source_end_line": 891,
+        "source_label": "回滚率",
+        "excerpt_sha256": "0dc2f1080e53b0c1a02d8c65c3d128de185ce479e879676dc3f0f86d17b4b1ad",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OUT-05",
+        "source_line": 892,
+        "source_end_line": 892,
+        "source_label": "补偿率",
+        "excerpt_sha256": "0edaac9954ca8be71649c45ed4609fbc020b49c934adf83c0d180b0f636234fc",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OUT-06",
+        "source_line": 893,
+        "source_end_line": 893,
+        "source_label": "事故率",
+        "excerpt_sha256": "57b92a2b9a5c07254b9e11c3d5e1454ee2f01d5847d8232cb631d84ce10ebee2",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OUT-07",
+        "source_line": 894,
+        "source_end_line": 894,
+        "source_label": "严重度加权损失",
+        "excerpt_sha256": "604246f1885c681c9897c07d7b5f678ad4fd209345316c891e218fa3cba5c426",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OUT-08",
+        "source_line": 895,
+        "source_end_line": 895,
+        "source_label": "影子与真实结果差异率",
+        "excerpt_sha256": "d72e4a75eb04b2696064cb1fe82bd0ca1c1183185bed099fe64188e2c355e869",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OUT-09",
+        "source_line": 896,
+        "source_end_line": 896,
+        "source_label": "例外转人工准确率",
+        "excerpt_sha256": "543263d3dccd273ad4890e2f873b4d83cf9d276fcfceb333836eab8741b52153",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OUT-10",
+        "source_line": 897,
+        "source_end_line": 897,
+        "source_label": "错误转人工率",
+        "excerpt_sha256": "ba643fd8808c2679e7684cdc01efc3ef2be191e866980ecfbb552a40625d7198",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OUT-11",
+        "source_line": 898,
+        "source_end_line": 898,
+        "source_label": "晋级后成功率变化",
+        "excerpt_sha256": "5b2d0b0767ab528bd6238b578bcbd4f137758064cdbf6af714e00a3b922282db",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OUT-12",
+        "source_line": 899,
+        "source_end_line": 899,
+        "source_label": "晋级后事故率变化",
+        "excerpt_sha256": "49871994d6e5c58e692ae706b1faf44320125025bf124e56f23b2cfd267578ed",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OUT-13",
+        "source_line": 900,
+        "source_end_line": 900,
+        "source_label": "晋级后人工纠正率变化",
+        "excerpt_sha256": "5d25f2c61a1e96e65baa7d2fc5dd08d892348550cf149bed06024a7e7afd98e2",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OUT-14",
+        "source_line": 901,
+        "source_end_line": 901,
+        "source_label": "范围扩大边际风险",
+        "excerpt_sha256": "ff70f14bff0e7c509ff4745d32c3c6397f0e8cf2a937af9c095485043fac7d12",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-INC-01",
+        "source_line": 909,
+        "source_end_line": 909,
+        "source_label": "事故发现到冻结时长",
+        "excerpt_sha256": "fefcf44354c634213746d6f63fbc64141f469390135e298ce40816b85a90a114",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-INC-02",
+        "source_line": 910,
+        "source_end_line": 910,
+        "source_label": "冻结到吊销时长",
+        "excerpt_sha256": "8ee5ef2993cb2b52b4f373f31862151fe35711bd2ddef12f5beb3bc2044ede0e",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-INC-03",
+        "source_line": 911,
+        "source_end_line": 911,
+        "source_label": "吊销传播时长",
+        "excerpt_sha256": "bee6cc7d32972f1c1e4b6284f78fedc2c1549f9791ab7ea902efaccda5b804b5",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-INC-04",
+        "source_line": 912,
+        "source_end_line": 912,
+        "source_label": "吊销后成功执行数",
+        "excerpt_sha256": "323abeea00657b437c232fc5442ff5c01a088dff5fcd220274d1a17db514568a",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-INC-05",
+        "source_line": 913,
+        "source_end_line": 913,
+        "source_label": "在途动作停止率",
+        "excerpt_sha256": "a5043d90d80c939e7027ada692b97e8e7dcbfd67725443891e1e375eed0a9b8f",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-INC-06",
+        "source_line": 914,
+        "source_end_line": 914,
+        "source_label": "影响范围确定时长",
+        "excerpt_sha256": "7a56878485bac674ab83f0e3116fdeb7f501cfd7ada3ffbdee3c63fce235fa51",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-INC-07",
+        "source_line": 915,
+        "source_end_line": 915,
+        "source_label": "新基线建立时长",
+        "excerpt_sha256": "f4b2b33cf7376067b708d081b0f8ca07d9a8fb93c1f8d0b3a60a24158f20fcfe",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-INC-08",
+        "source_line": 916,
+        "source_end_line": 916,
+        "source_label": "事故前证据违规复用数",
+        "excerpt_sha256": "3c1d962a5db1443dfa1581c86d663ba0d2babf81acd107b3613c3fe4261fd551",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-INC-09",
+        "source_line": 917,
+        "source_end_line": 917,
+        "source_label": "恢复逐级合规率",
+        "excerpt_sha256": "05e5ee25730078b34d03f03451ceb148626daf9d348c8d16fa926a1c357f70da",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-INC-10",
+        "source_line": 918,
+        "source_end_line": 918,
+        "source_label": "重复事故率",
+        "excerpt_sha256": "badd87d7c1f0e9c22817080cdb35e70659293bd6baaf4e573a4a00efa6b78132",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-INC-11",
+        "source_line": 919,
+        "source_end_line": 919,
+        "source_label": "精准收权率",
+        "excerpt_sha256": "82391e9291eff51486311b480dda9f1bf1678fa626f78de698a0a6d69f498786",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-INC-12",
+        "source_line": 920,
+        "source_end_line": 920,
+        "source_label": "事故治理记录完整率",
+        "excerpt_sha256": "d339a50f65679713b17697bd643be167008e522823dde5bba873b7577a0e5459",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-HUM-01",
+        "source_line": 928,
+        "source_end_line": 928,
+        "source_label": "永久人工确认规则覆盖率",
+        "excerpt_sha256": "dce91ee2afcdc757d0ca8e38da011701101f718024076373684ddb3df2c2bf6e",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-HUM-02",
+        "source_line": 929,
+        "source_end_line": 929,
+        "source_label": "人工确认请求完整率",
+        "excerpt_sha256": "8af333e720a06be4c6950a106cd54b93255be8c70108b59240034415d1508876",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-HUM-03",
+        "source_line": 930,
+        "source_end_line": 930,
+        "source_label": "审批理由完整率",
+        "excerpt_sha256": "62297136eb9aaf647524cb6705c8ff8ae9798bdd46c688f2bf44b61963e8d30d",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-HUM-04",
+        "source_line": 931,
+        "source_end_line": 931,
+        "source_label": "无权审批尝试数",
+        "excerpt_sha256": "2f384c8fad7d9c9ba341ebdee0adef79c25fcf45488bb16d1d4e79260b04b0fa",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-HUM-05",
+        "source_line": 932,
+        "source_end_line": 932,
+        "source_label": "例外积压时长",
+        "excerpt_sha256": "26f9a521dfc3d8c7b419e68ecc8569610548efb2e01ed8830df89c048d77c391",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-HUM-06",
+        "source_line": 933,
+        "source_end_line": 933,
+        "source_label": "人工改判证据回流率",
+        "excerpt_sha256": "bee2059298240fa17f5af3d196332f8dc1bca172f51f3331f22c91e6797edf4a",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-HUM-07",
+        "source_line": 934,
+        "source_end_line": 934,
+        "source_label": "人工责任绕过成功数",
+        "excerpt_sha256": "276462ff70a2c467bafd1249c2a9d3adebf42f27a35292ee4b81b38a04a48e02",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-HUM-08",
+        "source_line": 935,
+        "source_end_line": 935,
+        "source_label": "人工确认重复打扰率",
+        "excerpt_sha256": "9b41c23831c690e96471dcdb9d5106623d2a8d2a25cab7fe9238c7a60aa39bb1",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OBS-01",
+        "source_line": 943,
+        "source_end_line": 943,
+        "source_label": "数据缺口发生率",
+        "excerpt_sha256": "91ed32c7354d2972c8c035bf34c9111ab793fda24e0e99361b9e4573f226b98b",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OBS-02",
+        "source_line": 944,
+        "source_end_line": 944,
+        "source_label": "数据缺口关闭率",
+        "excerpt_sha256": "62d903a859943532728ed1c43fca1d5b4c297e77051118537318113ff885ce3c",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OBS-03",
+        "source_line": 945,
+        "source_end_line": 945,
+        "source_label": "缺口关闭时长",
+        "excerpt_sha256": "44b4d13bd1618ef2298c2f6789f030a31328840e1e433d30e6770e8ee28920cc",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OBS-04",
+        "source_line": 946,
+        "source_end_line": 946,
+        "source_label": "补全包接纳率",
+        "excerpt_sha256": "59005f394aa5d748d910db4c1fa366b8b60e21069f3c21f8d6b48f52a00c290f",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OBS-05",
+        "source_line": 947,
+        "source_end_line": 947,
+        "source_label": "已核验补全占比",
+        "excerpt_sha256": "0090bcaa48b0ab29de98ab442007dbd255057b3d7f90863afc5da6420655b928",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OBS-06",
+        "source_line": 948,
+        "source_end_line": 948,
+        "source_label": "推断误用次数",
+        "excerpt_sha256": "a68522563e7ce5aedf52869a859ab894c052a374d7bca14bb13ba044f4f5a0be",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OBS-07",
+        "source_line": 949,
+        "source_end_line": 949,
+        "source_label": "探针直接改权次数",
+        "excerpt_sha256": "7304aea872f04baa633de38874d97a744c4247c3497734ef721169ceee4db900",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OBS-08",
+        "source_line": 950,
+        "source_end_line": 950,
+        "source_label": "建议转正式治理率",
+        "excerpt_sha256": "62f286a271470a901ed21c0461484683a5fe6e8826cbef0a0a4487b17d21c929",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OBS-09",
+        "source_line": 951,
+        "source_end_line": 951,
+        "source_label": "发现误报率",
+        "excerpt_sha256": "459746085630f0b196223fcf763a44f548d018c1764ac334de350b2f8f61f608",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OBS-10",
+        "source_line": 952,
+        "source_end_line": 952,
+        "source_label": "发现漏报率",
+        "excerpt_sha256": "3cd5a86e43733ad0bda9b15fc1d3ad0c81b2870188e02432ff98aa6d97a3d8e2",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OBS-11",
+        "source_line": 953,
+        "source_end_line": 953,
+        "source_label": "报告可下钻率",
+        "excerpt_sha256": "9356ac3a5915579658e1562192e46c9cd2e9ddd16a1c32892d4ad3403a22c8b3",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PM-OBS-12",
+        "source_line": 954,
+        "source_end_line": 954,
+        "source_label": "探针运行成功率",
+        "excerpt_sha256": "0a9ae59d6b04840f42f86d72923336f4b30f285efff06684d5e609632ab8ca7b",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      }
+    ],
+    "execution_cases": [
+      {
+        "id": "PCT-01",
+        "source_line": 1473,
+        "source_end_line": 1473,
+        "source_label": "观察级请求真实写入，必须拒绝。",
+        "excerpt_sha256": "1bd9cc337cbc97c6888c0a0cdd7e4a38fce0394c9c0231d831b5cbb060b5cfed",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-02",
+        "source_line": 1474,
+        "source_end_line": 1474,
+        "source_label": "建议级可以生成提案，但不能触发外部效果。",
+        "excerpt_sha256": "2a921fcfa5b3b6e1d6d5cf48d97a29c2be93ab1f8f93e3554974af47e2c6fa34",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-03",
+        "source_line": 1475,
+        "source_end_line": 1475,
+        "source_label": "影子级使用真实输入时，输出必须进入隔离位置。",
+        "excerpt_sha256": "85b417e834c9fc89bbf6dd1d801c29de2e2341548d91a6cf1240746675bca50b",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-04",
+        "source_line": 1476,
+        "source_end_line": 1476,
+        "source_label": "受限级在人数、金额或对象数上限内允许通过授权检查。",
+        "excerpt_sha256": "984d1ce11370aafed5b5d2544865e04f8322ab4751037254b5ff67bacf5ae58d",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-05",
+        "source_line": 1477,
+        "source_end_line": 1477,
+        "source_label": "受限级超过任一上限必须拒绝。",
+        "excerpt_sha256": "e8f55148ffd2312eeab7d6b8967ea979078f2e9eecc6111dc4b76bb62049a488",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-06",
+        "source_line": 1478,
+        "source_end_line": 1478,
+        "source_label": "自主级命中永久人工确认清单时必须转人工。",
+        "excerpt_sha256": "7e629ca592038a081f5067e5cea36e060d72e68d1d121b9629c1900d90b0b297",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-07",
+        "source_line": 1482,
+        "source_end_line": 1482,
+        "source_label": "相同 `run_id` 不得重复计数。",
+        "excerpt_sha256": "66331061f50ff18587184fa5d06825db49d8f0d90ceca111ac8615fbaccb482c",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-08",
+        "source_line": 1483,
+        "source_end_line": 1483,
+        "source_label": "相同 `evidence_ref` 不得重复计数。",
+        "excerpt_sha256": "a75203c2f3435d2bf584c74020a899020da2c9af6a6650786c7c840649b3f1f3",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-09",
+        "source_line": 1484,
+        "source_end_line": 1484,
+        "source_label": "事故前证据不得直接用于事故后恢复。",
+        "excerpt_sha256": "f350b576d7fd191823ed9486bde2d7de72c160104b4648d1172d4be538bd41a8",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-10",
+        "source_line": 1485,
+        "source_end_line": 1485,
+        "source_label": "旧模型、旧策略或旧环境证据不得自动继承。",
+        "excerpt_sha256": "2026b0454e0c48e242588648336b7dbc7a60131f09279258ee837ae4ebe54706",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-11",
+        "source_line": 1486,
+        "source_end_line": 1486,
+        "source_label": "单一任务切片不足以满足多样性要求。",
+        "excerpt_sha256": "62c957ea60837f250de672f7cad970dfc58fc1804d01e1c6347bee2b8e477fa0",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-12",
+        "source_line": 1487,
+        "source_end_line": 1487,
+        "source_label": "待核验和推断事实不得作为晋级成功证据。",
+        "excerpt_sha256": "a21cab8e92f5c142924a522216cb88aa04e86d49147fbc15b8d70137566bb1bf",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-13",
+        "source_line": 1491,
+        "source_end_line": 1491,
+        "source_label": "只能从相邻等级申请晋级，除非策略明确允许跨级。",
+        "excerpt_sha256": "38523c33bbf7e395ab1b6acfd42f65bd9839767cbb3ca07e212613bb82bff5b2",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-14",
+        "source_line": 1492,
+        "source_end_line": 1492,
+        "source_label": "证据窗口锁定后新增失败，旧申请必须失效。",
+        "excerpt_sha256": "1ee62a21ff87d1d31cfd17edea4cb822f58ddd6ad042a652500ce7fdde7fda94",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-15",
+        "source_line": 1493,
+        "source_end_line": 1493,
+        "source_label": "无权审批者批准时，凭证签发必须拒绝。",
+        "excerpt_sha256": "56f1a6872affecddbe297606b01332d6cb99155a02911d98ad203ee307391d69",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-16",
+        "source_line": 1494,
+        "source_end_line": 1494,
+        "source_label": "审批范围小于申请范围时，只能签发审批范围。",
+        "excerpt_sha256": "46da281a8057f3613816ec70a2ef078ca9d7d476d5cdeb03ca2b30c4aef33abe",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-17",
+        "source_line": 1495,
+        "source_end_line": 1495,
+        "source_label": "策略版本变化后，旧晋级申请必须重新评估。",
+        "excerpt_sha256": "fb971f83d3158c93caafa7dd87899d0d0038d67095fd405e5425684ef7b961bf",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-18",
+        "source_line": 1499,
+        "source_end_line": 1499,
+        "source_label": "严重事故触发后，相关能力应立即冻结。",
+        "excerpt_sha256": "cd421961bc47ac69bc3912326f846c0365ed244ef5d9580484d230b46daf24f0",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-19",
+        "source_line": 1500,
+        "source_end_line": 1500,
+        "source_label": "吊销通知到达后，旧凭证请求必须被执行点拒绝。",
+        "excerpt_sha256": "d3fb626b2cc8f13f69a22fb7c48f5d46e6e7ec0e2c98fb2d88263ac75d2e7b06",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-20",
+        "source_line": 1501,
+        "source_end_line": 1501,
+        "source_label": "降级应优先影响相关能力和范围，不应无理由全局停机。",
+        "excerpt_sha256": "ee6a2d7107ba84fd98c5a0791352b6714f12209077e199b0b22d5b7e638014ff",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-21",
+        "source_line": 1502,
+        "source_end_line": 1502,
+        "source_label": "恢复必须从新基线重新积累证据。",
+        "excerpt_sha256": "3823d66ed212d6be70704cf54886e14e4f01d39dbdb52662f9635f52f1c7a4e8",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-22",
+        "source_line": 1506,
+        "source_end_line": 1506,
+        "source_label": "审批通过但权限范围不足，必须拒绝。",
+        "excerpt_sha256": "c35a0f5a46d8871c0e434af9241ecef4c68519af9e094a7a22777cf93e92bd01",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-23",
+        "source_line": 1507,
+        "source_end_line": 1507,
+        "source_label": "权限足够但预算不足，必须拒绝。",
+        "excerpt_sha256": "cdb46b0886a612164b42e4e9d3b2f9ce3a3e2ef831b3844456f35d2c5a0b20bd",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-24",
+        "source_line": 1508,
+        "source_end_line": 1508,
+        "source_label": "权限和预算都足够但永久人工确认命中，必须转人工。",
+        "excerpt_sha256": "f3c0862453fc8af3cae1e39d568f84a7896276772d8932e1bdf6386f863d6211",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-25",
+        "source_line": 1509,
+        "source_end_line": 1509,
+        "source_label": "所有闸通过后，“允许”只代表可以进入执行，不代表业务已经成功。",
+        "excerpt_sha256": "d133c75de20951138d5d34aec843e060a18b9e2c8de07ad8c64123309750909f",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-26",
+        "source_line": 1513,
+        "source_end_line": 1513,
+        "source_label": "探针提供已核验业务终态，可被执行流程附加到运行结果。",
+        "excerpt_sha256": "cf598862a11122b1eeb417c7c45d3b7cb066c587f6c7626a24cfb878babceb60",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-27",
+        "source_line": 1514,
+        "source_end_line": 1514,
+        "source_label": "探针提供推断结果，不得触发晋级。",
+        "excerpt_sha256": "ad2a90a2eec855da46396c2caa4ea190f0549e405d93450df8bef1a4c8a45ee5",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-28",
+        "source_line": 1515,
+        "source_end_line": 1515,
+        "source_label": "探针建议降级，不得直接改写权限状态。",
+        "excerpt_sha256": "6b26e36f1dc0427718d4694b7aa0c83492ffc1a1aec49e96041a38b7854cad0f",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      },
+      {
+        "id": "PCT-29",
+        "source_line": 1516,
+        "source_end_line": 1516,
+        "source_label": "补全包摘要不一致时必须拒绝接纳。",
+        "excerpt_sha256": "9513023361c16a0eb56acd3167ba6b63edf0fbba6147fe7c385b18ed29d19434",
+        "target_document": "references/progressive-commitment-execution-flow.md"
+      }
+    ],
+    "probe_cases": [
+      {
+        "id": "PCQ-01",
+        "source_line": 1626,
+        "source_end_line": 1626,
+        "source_label": "缺少 `run_id` 的事件应被保留并生成缺口，而不是丢弃。",
+        "excerpt_sha256": "905125595ad14651c67cdef6fe70cfe92ca049b6e1db2ab115185a57cba1332f",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-02",
+        "source_line": 1627,
+        "source_end_line": 1627,
+        "source_label": "相同 `event_id` 重复到达不得重复计数。",
+        "excerpt_sha256": "da423ce0205c8a48ae9dae645d867b68f0c7eea74e16453dbd9295ec7812a882",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-03",
+        "source_line": 1628,
+        "source_end_line": 1628,
+        "source_label": "相同证据摘要使用不同标识时，应进入疑似重复集合。",
+        "excerpt_sha256": "6827069877e633fcc8149427a0340e34f7da7d5882a9cab7816f540c2f49a822",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-04",
+        "source_line": 1629,
+        "source_end_line": 1629,
+        "source_label": "多来源时间冲突时，应保留原始时间并标记时钟问题。",
+        "excerpt_sha256": "bb36739873e057afd82f8227c6611cb8335fd3e4afe7c35e3c45859ccea82d6a",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-05",
+        "source_line": 1630,
+        "source_end_line": 1630,
+        "source_label": "分母未知时，不得输出伪精确百分比。",
+        "excerpt_sha256": "f7eae5485ec90b79ce78f2984585547adc2966b74d3adce69f6f31177131d997",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-06",
+        "source_line": 1634,
+        "source_end_line": 1634,
+        "source_label": "真实执行先于凭证校验时，必须产生严重发现。",
+        "excerpt_sha256": "a917dbf0da6376dd2bc7fd44922c6c9cc1e6bd5463f673821e86217c3e1d5f3f",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-07",
+        "source_line": 1635,
+        "source_end_line": 1635,
+        "source_label": "影子级出现生产写入时，必须产生严重发现。",
+        "excerpt_sha256": "97d4fd685df5dbe726c0f63b92eeedb12c3b1e5b7c9fbbff24e1df1094b6b858",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-08",
+        "source_line": 1636,
+        "source_end_line": 1636,
+        "source_label": "跳过要求的演练或小范围步骤时，必须记录跳步。",
+        "excerpt_sha256": "313c8d0137a56f57c10a7891a08333c35214df2770560f1945800421a9f322cb",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-09",
+        "source_line": 1637,
+        "source_end_line": 1637,
+        "source_label": "超限请求被正确阻断时，应计入超限拦截率。",
+        "excerpt_sha256": "b9eba6b08a9a244420cdbb7e494b98b1b9be9eb5b01988e379c66011d6177f89",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-10",
+        "source_line": 1638,
+        "source_end_line": 1638,
+        "source_label": "工具成功但业务失败时，应计入机械成功误判率。",
+        "excerpt_sha256": "7ef8618090d8647834392c059de0aedb6c376254c3054a8783cb41966f610548",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-11",
+        "source_line": 1642,
+        "source_end_line": 1642,
+        "source_label": "相同 `run_id` 不得重复计入。",
+        "excerpt_sha256": "2b44cd44f99f1a0fbcfae96e738f333d3189698b19db12e73b69ce3ca1a0547b",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-12",
+        "source_line": 1643,
+        "source_end_line": 1643,
+        "source_label": "相同 `evidence_ref` 不得重复计入。",
+        "excerpt_sha256": "925e1974f250c8ccb52aae6084b7e318d79c7854e5238d1e1370ee4ddc1a15c4",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-13",
+        "source_line": 1644,
+        "source_end_line": 1644,
+        "source_label": "旧版本证据进入新版本窗口时，应标记版本失配。",
+        "excerpt_sha256": "ecb637c5479df01dbde1123662b0cc9d538dcc3c4b800c60a5f9611caa8e1ec3",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-14",
+        "source_line": 1645,
+        "source_end_line": 1645,
+        "source_label": "单一简单切片占比过高时，应生成覆盖不足发现。",
+        "excerpt_sha256": "99375543f1c15fbb7a583b45d9143f02171006ac461479c0faa8e9b09d60bc79",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-15",
+        "source_line": 1646,
+        "source_end_line": 1646,
+        "source_label": "未经受信验证的证据不得被标记为合格晋级证据。",
+        "excerpt_sha256": "403710d39af28ae47562f31e406b9a3dd8107837ac1d11200b0b919c0535f273",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-16",
+        "source_line": 1647,
+        "source_end_line": 1647,
+        "source_label": "评审期间新增失败时，探针应判断旧申请失效。",
+        "excerpt_sha256": "0442b4473ebbf09ce244c5978fbb25d29c3c2f5a3c5d3c06a09a7114f797a019",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-17",
+        "source_line": 1651,
+        "source_end_line": 1651,
+        "source_label": "审批者权限不足时，应产生审批权不匹配发现。",
+        "excerpt_sha256": "09dba9d84d66ec0b1e3417d891d53a57a1899bddd288e9130440d400d7897bcc",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-18",
+        "source_line": 1652,
+        "source_end_line": 1652,
+        "source_label": "新凭证范围超过批准范围时，应产生超签发发现。",
+        "excerpt_sha256": "b8bedac7308dafcd70014b6ecad3f4f0ca555c214503ac0238d5141672ac8406",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-19",
+        "source_line": 1653,
+        "source_end_line": 1653,
+        "source_label": "批准后证据摘要变化时，应产生批次不一致发现。",
+        "excerpt_sha256": "4804cead1debbe338800ba8634e0880b5125e233b6a54368b8b6c7f3b15bc5da",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-20",
+        "source_line": 1654,
+        "source_end_line": 1654,
+        "source_label": "新凭证生效后旧凭证仍有效时，应产生双凭证窗口发现。",
+        "excerpt_sha256": "a9c51cb369d915a90eae0a24f3874b34189b1916196bfe1fcce0b40f09107e3e",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-21",
+        "source_line": 1655,
+        "source_end_line": 1655,
+        "source_label": "跨级晋升没有策略依据时，应产生晋级路径违规发现。",
+        "excerpt_sha256": "9acf26a25c56b41a92f6bf7710686f9a072427cd6c8bdb7667e368f65ea07662",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-22",
+        "source_line": 1659,
+        "source_end_line": 1659,
+        "source_label": "严重事故后没有冻结事件，应产生高优先级发现。",
+        "excerpt_sha256": "6534636d0de8f5ef5112119804ff3baef8e16f349426e22645f5ee4ba8e8292e",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-23",
+        "source_line": 1660,
+        "source_end_line": 1660,
+        "source_label": "吊销后旧凭证成功执行，应产生严重发现。",
+        "excerpt_sha256": "72f76d84ff3724c63ab47bc0bc2f6ff0786d28eb8dcb5b802152d441e5451539",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-24",
+        "source_line": 1661,
+        "source_end_line": 1661,
+        "source_label": "事故前证据被用于恢复晋级，应产生恢复证据污染发现。",
+        "excerpt_sha256": "f17f72b05cd1fded19808f1ae78610a393551503ff61ec51ebbd8d259f27d56f",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-25",
+        "source_line": 1662,
+        "source_end_line": 1662,
+        "source_label": "直接从观察级恢复到自主级，应产生恢复路径违规发现。",
+        "excerpt_sha256": "ed08f3010e7c69d0bee40b6c9ae203991f2b7ad7e512a500f8846035a6256658",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-26",
+        "source_line": 1663,
+        "source_end_line": 1663,
+        "source_label": "事故只影响单一能力却无理由全局停机，应标记为可能过度收权，供治理评估。",
+        "excerpt_sha256": "b4497f11fa01ef8735f4503ee8d0ec47061083187147d1811f925d35ea39813e",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-27",
+        "source_line": 1667,
+        "source_end_line": 1667,
+        "source_label": "探针写入权限状态应被检测并阻断。",
+        "excerpt_sha256": "14f27a232cfad5d5800cb243704b5e016f5e4c8039f02bed3199baa305a5a227",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-28",
+        "source_line": 1668,
+        "source_end_line": 1668,
+        "source_label": "推断事实进入正式晋级证据应被检测。",
+        "excerpt_sha256": "4d4cbebf278b689c59292ab28e3e343e37419ffcb50f558973d10ad345c3c063",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-29",
+        "source_line": 1669,
+        "source_end_line": 1669,
+        "source_label": "补全包来源摘要不一致时，执行流程应拒绝，探针记录拒绝原因。",
+        "excerpt_sha256": "92950fed632edca58939a491a2ada79106513eb39cabb4bce8ec0de4b93354fe",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-30",
+        "source_line": 1670,
+        "source_end_line": 1670,
+        "source_label": "探针不可用时，执行流程仍能执行正式权限控制。",
+        "excerpt_sha256": "1b9324a3bf3b405f6fc1e60a5953142f568f62683300d91517b784e89c0dac1f",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      },
+      {
+        "id": "PCQ-31",
+        "source_line": 1671,
+        "source_end_line": 1671,
+        "source_label": "执行流程恢复后，探针可以补采并重建中断时间线。",
+        "excerpt_sha256": "f121871bf04c55d7ad56fff5f9cbff05d2c7e1d6c3c4dcd7a53cd086e264f45e",
+        "target_document": "references/progressive-commitment-observability-probes.md"
+      }
+    ]
+  }
+}

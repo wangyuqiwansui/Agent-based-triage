@@ -1,0 +1,29 @@
+{
+  "scope_en": "Approval Gate asset validation only; business integration remains unexecuted",
+  "scope_zh": "仅审批门资产校验；业务集成仍未执行",
+  "asset_tests": {
+    "command": "python -m pytest -q tests/test_approval_gate_docs.py",
+    "passed": 40
+  },
+  "skill_validation": {
+    "errors": 0,
+    "existing_navigation_warnings": 18
+  },
+  "skill_creator_validation": "passed",
+  "integration_acceptance": "not_executed",
+  "full_suite": {
+    "command": "python -m pytest -q --tb=line",
+    "passed": 964,
+    "skipped": 3,
+    "subtests_passed": 243,
+    "duration_seconds": 118.05
+  },
+  "artifact_sha256": {
+    "skills/harness-engineering-patterns/references/approval-gate-contract.md": "82a0a6c68b5fce003edc93a1a92b7e4685cb0e7a3a5e591da842253e87fabe37",
+    "skills/harness-engineering-patterns/references/approval-gate-execution-flow.md": "eefb7ac9698a2e02ce8f84b71239564e39972cc01df40cc2ec4bed9ce629ba09",
+    "skills/harness-engineering-patterns/references/approval-gate-observability-probes.md": "e37771b2ed11b96eaf761d7cc077171d7905cf9e37ecc308e1d94093f3d87da8",
+    "skills/harness-engineering-patterns/references/approval-gate-source-map.json": "2878df30cbf573ed187848289defbe96cd6a636c10e12f4ecc0ca474dd33ef5a",
+    "skills/harness-engineering-patterns/scripts/sync_approval_gate_docs.py": "4e50bcbfd5a6d1c3ac5e7a9581604ad2f9e932ef6f3d1d69c9b9a7deebc029a2",
+    "tests/test_approval_gate_docs.py": "a2a39fd498a4588990d9cbd606f5b48f7e2d1a42f187e270a132d6ab68797e38"
+  }
+}

@@ -1,0 +1,1046 @@
+{
+  "name_en": "Blast Radius Control Execution and Probes",
+  "name_zh": "爆炸半径控制执行与探针",
+  "description_en": "Source-backed specifications for conserved hierarchical envelopes, effect permits, unknown outcomes and independent observation.",
+  "description_zh": "基于来源的层级信封守恒、效果许可、未知结果与独立观测规格。",
+  "version": "0.1.0",
+  "status": "draft",
+  "implementation_status": "specification_only",
+  "pattern_ref": "PATTERN_0050",
+  "cell_ref": "CELL_GOVERNANCE_HIERARCHY",
+  "execution_reference": "references/blast-radius-execution-flow.md",
+  "observability_reference": "references/blast-radius-observability-probes.md",
+  "interaction_contract_reference": "references/blast-radius-contract.md",
+  "source_map_reference": "references/blast-radius-source-map.json",
+  "source_aliases": {
+    "pattern": [
+      "PATTERN_GOVERNANCE_BLAST_RADIUS_0001"
+    ],
+    "skill": [
+      "SKILL_GOVERNANCE_BLAST_RADIUS_EXECUTION_0001",
+      "SKILL_GOVERNANCE_BLAST_RADIUS_PROBE_0001"
+    ]
+  },
+  "acceptance_status": "not_executed",
+  "metric_implementation": "specification_only",
+  "sources": [
+    {
+      "id": "execution",
+      "original_filename": "爆炸半径控制_执行流程_v0.1.md",
+      "snapshot_path": "references/sources/blast-radius/execution.source.txt",
+      "sha256": "5b26e1b111fe215836346bf8b274f165357b314985d06cef4d44f2276d335533",
+      "role_en": "Unmodified user-supplied evidence; not executable instructions",
+      "role_zh": "未经修改的用户来源证据，不是可执行指令"
+    },
+    {
+      "id": "probe",
+      "original_filename": "爆炸半径控制_工作流可观测性探针_v0.1.md",
+      "snapshot_path": "references/sources/blast-radius/probe.source.txt",
+      "sha256": "6bc69896ee69787926f3623bf36630ea1370b609ff2e3b79c4831d6f92ab4ce9",
+      "role_en": "Unmodified user-supplied evidence; not executable instructions",
+      "role_zh": "未经修改的用户来源证据，不是可执行指令"
+    }
+  ],
+  "inventories": {
+    "execution_steps": [
+      {
+        "id": "BRE01",
+        "source_line": 494,
+        "source_end_line": 494,
+        "source_label": "1. 接收提案",
+        "excerpt_sha256": "8bb27ec51f0772c985c807d0165c7c831003b78f1d5c9de01805d92120b6b5f6",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRE02",
+        "source_line": 495,
+        "source_end_line": 495,
+        "source_label": "2. 加载边界",
+        "excerpt_sha256": "eb44ab913aaf047dad7d0c3c2c267accea6ae6b45f83c2bc1e1e40bc893a5ade",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRE03",
+        "source_line": 496,
+        "source_end_line": 496,
+        "source_label": "3. 计算交集",
+        "excerpt_sha256": "44dc1a9080a27e8444b338e7e0db7d72fd2216ce0ef74fd24f0359c3fb0cd313",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRE04",
+        "source_line": 497,
+        "source_end_line": 497,
+        "source_label": "4. 建立根信封",
+        "excerpt_sha256": "a3742e8bd5ca7305052e224174aa5ba18f6e7c61e1a7914ccba1559e8456679a",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRE05",
+        "source_line": 498,
+        "source_end_line": 498,
+        "source_label": "5. 制定阶段计划",
+        "excerpt_sha256": "33b9d0ce44bde85ca3296b20d0815d0c88db6af5ba52e74b51910d30ede3436e",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRE06",
+        "source_line": 499,
+        "source_end_line": 499,
+        "source_label": "6. 预留子信封",
+        "excerpt_sha256": "b815e00cb36338065e60f14f28a4d9204a65d313b35ddf738abcc925a195d396",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRE07",
+        "source_line": 500,
+        "source_end_line": 500,
+        "source_label": "7. 申请效果许可",
+        "excerpt_sha256": "8e81ceb35d5b10d256d2c7b464a0dd844ecb616307924c9a6198ac3baa7d946d",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRE08",
+        "source_line": 501,
+        "source_end_line": 501,
+        "source_label": "8. 原子占用",
+        "excerpt_sha256": "ebd582de974d9022025e566708f1f7dd51caaf3077fc393ec76dcd2409b4ca32",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRE09",
+        "source_line": 502,
+        "source_end_line": 502,
+        "source_label": "9. 提交外部效果",
+        "excerpt_sha256": "21d530847a0bc3a5eb591bc7f320557b286b3d767ecfa3a16b62134b0f1ec635",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRE10",
+        "source_line": 503,
+        "source_end_line": 503,
+        "source_label": "10. 处理回执",
+        "excerpt_sha256": "293b840129f6f973f034e750cd4b2b9b33f07d077b74cc965d3eae1cc02846fd",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRE11",
+        "source_line": 504,
+        "source_end_line": 504,
+        "source_label": "11. 核算额度",
+        "excerpt_sha256": "9117cbbec40530a44d09ea4e60e96dbdfa71dc6db486207a3fc0b7e02deda0c1",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRE12",
+        "source_line": 505,
+        "source_end_line": 505,
+        "source_label": "12. 阶段检查",
+        "excerpt_sha256": "0da97cc5fc9a7b9d6517d4660f3cf03827ccfa5e3f995e543235d836da86f2e0",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRE13",
+        "source_line": 506,
+        "source_end_line": 506,
+        "source_label": "13. 对账未知",
+        "excerpt_sha256": "06fce3317b7822644aeb7250663477259f7ede221e46310c978fef1dfdcb5e1b",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRE14",
+        "source_line": 507,
+        "source_end_line": 507,
+        "source_label": "14. 返还与关闭",
+        "excerpt_sha256": "66a4873294a8607de0dfea4763d366494a1ca0775c7244dae8af65d269166dcb",
+        "target_document": "references/blast-radius-execution-flow.md"
+      }
+    ],
+    "execution_cases": [
+      {
+        "id": "BRT01",
+        "source_line": 839,
+        "source_end_line": 839,
+        "source_label": "单次请求超过金额上限",
+        "excerpt_sha256": "7c4d4be2ce86a54fad525ea6d849d766414eca7bf58635dcd1506b97c8c92ced",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT02",
+        "source_line": 840,
+        "source_end_line": 840,
+        "source_label": "多次小请求累计超过上限",
+        "excerpt_sha256": "503ff7a4b146c2632214df9f1bd1bf0f2836380b4e5381b1c1a95106b4416f2c",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT03",
+        "source_line": 841,
+        "source_end_line": 841,
+        "source_label": "十个 Worker 并发消费同一余额",
+        "excerpt_sha256": "cbb68a378f608398abb6626d122fa71901251eb7d33ccd4612ad6f5dcf2c174a",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT04",
+        "source_line": 842,
+        "source_end_line": 842,
+        "source_label": "子信封总和超过父信封",
+        "excerpt_sha256": "1e662a1bcb4279140aa3640bd8cf41c37ce3d7007a34275dcb7a956fad3819ce",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT05",
+        "source_line": 843,
+        "source_end_line": 843,
+        "source_label": "子信封包含父范围外对象",
+        "excerpt_sha256": "e4a78f8769e95e2cecc7b06460722fb118aabb3588f1a06fd7578e5865eb28ae",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT06",
+        "source_line": 844,
+        "source_end_line": 844,
+        "source_label": "循环终止条件失效",
+        "excerpt_sha256": "d70b9f40c75582124425ef94672522da705d46b77c396dacc6f3220e6c8e7a4a",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT07",
+        "source_line": 845,
+        "source_end_line": 845,
+        "source_label": "同一请求重复提交",
+        "excerpt_sha256": "5d4809c5acb45fbcdc39cd3d66728f146b8a4250097392326d1a6aab9ac0725d",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT08",
+        "source_line": 846,
+        "source_end_line": 846,
+        "source_label": "同一幂等键参数变化",
+        "excerpt_sha256": "aed2a02c573d2a69e5473f7efc257fa612282b0b50ec67d688bac25ccaa3b9e2",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT09",
+        "source_line": 847,
+        "source_end_line": 847,
+        "source_label": "外部请求超时",
+        "excerpt_sha256": "fab23291abaabe6c0498e7a805b945aaa4171b657e9235325e5174045ccb3f89",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT10",
+        "source_line": 848,
+        "source_end_line": 848,
+        "source_label": "未知结果随后确认成功",
+        "excerpt_sha256": "bdc52a861cef2a3d4ca36f21903d083a8b2fd0deb72101e1c735a26ad3c5e5ef",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT11",
+        "source_line": 849,
+        "source_end_line": 849,
+        "source_label": "未知结果随后确认失败",
+        "excerpt_sha256": "b5470a96202433064c9d0de689232116911600573739ad1d98679a196d152cae",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT12",
+        "source_line": 850,
+        "source_end_line": 850,
+        "source_label": "停止开关触发",
+        "excerpt_sha256": "9cc2900c481c1eef909975f85418955075acb4bdc0f9c909ddfb3ef0b7b3f654",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT13",
+        "source_line": 851,
+        "source_end_line": 851,
+        "source_label": "关闭子信封时仍有未知结果",
+        "excerpt_sha256": "98483ede95c5c7df277588b07d29a0982f7ba1a3022707ef515c314845e3b034",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT14",
+        "source_line": 852,
+        "source_end_line": 852,
+        "source_label": "回调试图绕过网关",
+        "excerpt_sha256": "3620717cd27096e06c2a8660035ae3eca1992af7dbe8478d1d05aa3b9941565b",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT15",
+        "source_line": 853,
+        "source_end_line": 853,
+        "source_label": "Agent 试图修改硬信封",
+        "excerpt_sha256": "a42d8f1246e90fe812d8d32052bf1bb5ead81af08a7e6cc3599eabb8e8766257",
+        "target_document": "references/blast-radius-execution-flow.md"
+      },
+      {
+        "id": "BRT16",
+        "source_line": 854,
+        "source_end_line": 854,
+        "source_label": "阶段扩大前健康指标不通过",
+        "excerpt_sha256": "9957f99c50e8004a2d98de14585a590cc39ae6cbee48a908360cc0af0b7419dd",
+        "target_document": "references/blast-radius-execution-flow.md"
+      }
+    ],
+    "probe_steps": [
+      {
+        "id": "BRP01",
+        "source_line": 333,
+        "source_end_line": 333,
+        "source_label": "1. 数据源登记",
+        "excerpt_sha256": "840e9fdba9c4b4371ec18c1386407889b353c3125a0e38b0df0e58fd3b446227",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP02",
+        "source_line": 334,
+        "source_end_line": 334,
+        "source_label": "2. 事件采集",
+        "excerpt_sha256": "0d02f0cc07dd3a32006ae067e611036425a5fb6e2e8302beb96df65bae65d251",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP03",
+        "source_line": 335,
+        "source_end_line": 335,
+        "source_label": "3. 标准化",
+        "excerpt_sha256": "02dc6af9e0194c28f5ff4e4fd4e6ec1f0f6a3d5a95565ba783303e78bd375eac",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP04",
+        "source_line": 336,
+        "source_end_line": 336,
+        "source_label": "4. 完整性检查",
+        "excerpt_sha256": "70564c6ddd3fc269bb3285c676f4f5f9c3646fc027a9fc7d57518b1e55267abd",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP05",
+        "source_line": 337,
+        "source_end_line": 337,
+        "source_label": "5. 关联",
+        "excerpt_sha256": "fae01e53cb2ffba24888d534855d49a09088548a8a07d2a314e622b1cdd7d1df",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP06",
+        "source_line": 338,
+        "source_end_line": 338,
+        "source_label": "6. 拓扑重建",
+        "excerpt_sha256": "c1c0e828148f6b8fd8f150137a3329345a2bd28459365ca089bd628cb728d072",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP07",
+        "source_line": 339,
+        "source_end_line": 339,
+        "source_label": "7. 边界校验",
+        "excerpt_sha256": "fcd55b7c275469cdd06f6590b8ecbc67b13808b386cd32b64f78a1415b5a524f",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP08",
+        "source_line": 340,
+        "source_end_line": 340,
+        "source_label": "8. 守恒校验",
+        "excerpt_sha256": "9a5da6ea2088745197ae3bd890e3b1c2241a254747ee68ddbc817e0193df294b",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP09",
+        "source_line": 341,
+        "source_end_line": 341,
+        "source_label": "9. 许可校验",
+        "excerpt_sha256": "48d935730a527d9a148af175978605d3c3aa2ea081d3319977115855a071ea38",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP10",
+        "source_line": 342,
+        "source_end_line": 342,
+        "source_label": "10. 幂等校验",
+        "excerpt_sha256": "e869b5b0d89dbcca7e0884d747f56d0a3245b569039793a65aad072d872a95a4",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP11",
+        "source_line": 343,
+        "source_end_line": 343,
+        "source_label": "11. 未知追踪",
+        "excerpt_sha256": "55d923afa98825037aaa6d395129b20b003f4870bc912bc62034b0d97b3ae51c",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP12",
+        "source_line": 344,
+        "source_end_line": 344,
+        "source_label": "12. 停止校验",
+        "excerpt_sha256": "64db11cec9a52d2031270561f64c35ba1133032299ba360db0404b2b019aebe6",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP13",
+        "source_line": 345,
+        "source_end_line": 345,
+        "source_label": "13. 数据补全",
+        "excerpt_sha256": "76fb29e173157bf06da2c315db66b2e7f8526718f28acfa4ff9e5cc9d116e919",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP14",
+        "source_line": 346,
+        "source_end_line": 346,
+        "source_label": "14. 告警与建议",
+        "excerpt_sha256": "1084af7054d6883e05c5be7451fe4d503ea4f6ad4cc80fb7ac04c040590c259e",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP15",
+        "source_line": 347,
+        "source_end_line": 347,
+        "source_label": "15. 闭环跟踪",
+        "excerpt_sha256": "274f8872741de87190de9d7bb96279dee5bddc72700e0d4a9a871f958ee3af9e",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRP16",
+        "source_line": 348,
+        "source_end_line": 348,
+        "source_label": "16. 报告",
+        "excerpt_sha256": "5125811d2683209e3b71a0c2a59cc2ad49ab939421f05b28bf4c88b5f8065163",
+        "target_document": "references/blast-radius-observability-probes.md"
+      }
+    ],
+    "components": [
+      {
+        "id": "BRC01",
+        "source_line": 352,
+        "source_end_line": 369,
+        "source_label": "12.1 数据源发现探针",
+        "excerpt_sha256": "5fdbf4696eebff254feca535a84d79656b4dc02bfaee97fe5d4a352f9ed5f14e",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC02",
+        "source_line": 370,
+        "source_end_line": 381,
+        "source_label": "12.2 边界输入完整性探针",
+        "excerpt_sha256": "9137e284c204ad933f6253ee5202618e4a9d6dd08c92b2767b26d4dc02e8fe76",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC03",
+        "source_line": 382,
+        "source_end_line": 394,
+        "source_label": "12.3 有效范围一致性探针",
+        "excerpt_sha256": "5a484b86fcd8b22e64d8a8ffce9dc847d7c23458d24f8a9cc5d9e36a65b4df5e",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC04",
+        "source_line": 395,
+        "source_end_line": 407,
+        "source_label": "12.4 根信封建立探针",
+        "excerpt_sha256": "1d478e9b51345fabc8c2df857f7d099e9982272065d65bb35d6f115c40fa8e64",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC05",
+        "source_line": 408,
+        "source_end_line": 436,
+        "source_label": "12.5 父子信封守恒探针",
+        "excerpt_sha256": "c32b439d8b996edcaef6f317c6369d879b083a377a403db7aa03eb9d9acf50ac",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC06",
+        "source_line": 437,
+        "source_end_line": 450,
+        "source_label": "12.6 并发占用探针",
+        "excerpt_sha256": "1cf6665972ddbc9b01352c33764fe6ff89b92693f71fac895a2fe321538b11d9",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC07",
+        "source_line": 451,
+        "source_end_line": 463,
+        "source_label": "12.7 效果许可生命周期探针",
+        "excerpt_sha256": "2299a5c0161bec02a5f670b4ea28ba41b55c26bd1962424ff7305951740669ac",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC08",
+        "source_line": 464,
+        "source_end_line": 476,
+        "source_label": "12.8 无许可外部效果探针",
+        "excerpt_sha256": "94aefba6f95897174a4a8ac521053c8d066cfb885c03b697527eeb23238c3faa",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC09",
+        "source_line": 477,
+        "source_end_line": 488,
+        "source_label": "12.9 幂等一致性探针",
+        "excerpt_sha256": "861b8eadb25e34eeed0de06958ae2170c6b476fd97a54f8e51f982aba36b8e43",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC10",
+        "source_line": 489,
+        "source_end_line": 500,
+        "source_label": "12.10 循环与重试累计探针",
+        "excerpt_sha256": "4ddc9bb2ee898f0253d34d752170ae84a937c2681575526bb0e62a2d427330cc",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC11",
+        "source_line": 501,
+        "source_end_line": 513,
+        "source_label": "12.11 未知结果占用探针",
+        "excerpt_sha256": "d2df81cd8f27e56f28a53e23371ced6dd32db079a67d34340e0003f0117fe577",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC12",
+        "source_line": 514,
+        "source_end_line": 526,
+        "source_label": "12.12 速率与时间窗口探针",
+        "excerpt_sha256": "67efba3772e1bc40ef2e94e7336c871d27404fe3a349033e6604ccb0087d3526",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC13",
+        "source_line": 527,
+        "source_end_line": 539,
+        "source_label": "12.13 并发与传播探针",
+        "excerpt_sha256": "8ef20a4c5af85123434ae7c830fd4f16ef4dab353acd4a4b1afdbc6a73ae72e9",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC14",
+        "source_line": 540,
+        "source_end_line": 552,
+        "source_label": "12.14 阶段推进探针",
+        "excerpt_sha256": "dd5c8f8a28b00a0625c5d30a9ba87db1b60c199a943fdbf74ff6986aede851b2",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC15",
+        "source_line": 553,
+        "source_end_line": 566,
+        "source_label": "12.15 停止开关有效性探针",
+        "excerpt_sha256": "78cd1556775832e112def36a7a5a0f703341caff2b5a84e5a5c7e0b072c58c50",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC16",
+        "source_line": 567,
+        "source_end_line": 579,
+        "source_label": "12.16 返还与关闭探针",
+        "excerpt_sha256": "a3725ab611bb869b9e2de2014a78777c72121e82ab00e9e9452cab2695bc2a2f",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC17",
+        "source_line": 580,
+        "source_end_line": 602,
+        "source_label": "12.17 数据补全探针",
+        "excerpt_sha256": "c8b16bd5f9ccce1b0df080ef55844c5a0ccb5cc16f1b324fe5f2281e2fb60e56",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRC18",
+        "source_line": 603,
+        "source_end_line": 619,
+        "source_label": "12.18 探针自观测组件",
+        "excerpt_sha256": "b4ee73f08ba5c823e667f9394df3cf4e04d2f695672d77e687d27318df3335d1",
+        "target_document": "references/blast-radius-observability-probes.md"
+      }
+    ],
+    "metrics": [
+      {
+        "id": "BRM01",
+        "source_line": 624,
+        "source_end_line": 631,
+        "source_label": "13.1.1 根信封利用率",
+        "excerpt_sha256": "bcb334f7057a9c9fc2b277f280361bb54d845b2641d17655de3f2193949ab7a7",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM02",
+        "source_line": 632,
+        "source_end_line": 638,
+        "source_label": "13.1.2 根信封占用率",
+        "excerpt_sha256": "b94e4535dfcbee73e915072ef440ecca5cb051ff1cbd444a04dc2f9449cca6b6",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM03",
+        "source_line": 639,
+        "source_end_line": 644,
+        "source_label": "13.1.3 子信封预留率",
+        "excerpt_sha256": "e91a1817ac62db6a74c63aabe19329e70c150496407e7e12c9561037da762871",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM04",
+        "source_line": 645,
+        "source_end_line": 654,
+        "source_label": "13.1.4 子信封超配率",
+        "excerpt_sha256": "c4c7cb84a91494c3aeeb81db1a0131db2485cc3c656727b2c5a5fea754acb886",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM05",
+        "source_line": 655,
+        "source_end_line": 658,
+        "source_label": "13.1.5 范围扩大差异数",
+        "excerpt_sha256": "a2929e0c7f07ed44353b34bbf98e8bd3d11e48e7ab0da8822dd879a2ed915135",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM06",
+        "source_line": 659,
+        "source_end_line": 665,
+        "source_label": "13.1.6 边界版本漂移率",
+        "excerpt_sha256": "254c6b6accc55677442366e5dd8dd4c3b865b33b82c0002b339349e309a2f201",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM07",
+        "source_line": 668,
+        "source_end_line": 675,
+        "source_label": "13.2.1 许可覆盖率",
+        "excerpt_sha256": "37a19aa32f8209302395956df589c58d300e5db21a2592316b5dfed948caae54",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM08",
+        "source_line": 676,
+        "source_end_line": 683,
+        "source_label": "13.2.2 无许可外部效果率",
+        "excerpt_sha256": "1a3f983267378b3c36386f2844826f4a319dad1e708ec2219b467a3173fa0b26",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM09",
+        "source_line": 684,
+        "source_end_line": 691,
+        "source_label": "13.2.3 许可拒绝率",
+        "excerpt_sha256": "8b7ca76c2ad12c68a401f3b60240121a798157524263c2571724139880985f2c",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM10",
+        "source_line": 692,
+        "source_end_line": 703,
+        "source_label": "13.2.4 被拦截效果量",
+        "excerpt_sha256": "6328eace35ddff78cc4d318120ea5985e5dbba158d1efbe501fa50991ac36c1a",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM11",
+        "source_line": 704,
+        "source_end_line": 709,
+        "source_label": "13.2.5 许可过期率",
+        "excerpt_sha256": "1c8097b8d79e0f9aad21de7feff5d31b52ea396fdb048948e14ede949ea495ae",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM12",
+        "source_line": 712,
+        "source_end_line": 715,
+        "source_label": "13.3.1 重复请求识别数",
+        "excerpt_sha256": "f91c75a8ee8d3d6db2c4e328c4089ea279c1548cd740cacdf42737afb6b2488e",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM13",
+        "source_line": 716,
+        "source_end_line": 721,
+        "source_label": "13.3.2 重复抑制率",
+        "excerpt_sha256": "1fdb6060e378534aca65d4dd9bb4eb036d633cbbf54e9acc6c30f04cca09fed7",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM14",
+        "source_line": 722,
+        "source_end_line": 728,
+        "source_label": "13.3.3 幂等参数冲突率",
+        "excerpt_sha256": "51399f023355668ba08702f3168656089fecad748ca3c00836c08f1b4cadc5eb",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM15",
+        "source_line": 729,
+        "source_end_line": 735,
+        "source_label": "13.3.4 换键重试率",
+        "excerpt_sha256": "0587cd1f04d7a83614451db861457be96d57f9db200aecde3928176b8c105476",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM16",
+        "source_line": 738,
+        "source_end_line": 743,
+        "source_label": "13.4.1 未知额度占比",
+        "excerpt_sha256": "246d8412173461e048274519ae770086355b548cbbb8853ac1274983c6969182",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM17",
+        "source_line": 744,
+        "source_end_line": 747,
+        "source_label": "13.4.2 未知结果数量",
+        "excerpt_sha256": "4f8ab6a6f313f03584d9006fef18ed3b77175c456f1de2f68c1acbb848a516de",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM18",
+        "source_line": 748,
+        "source_end_line": 755,
+        "source_label": "13.4.3 未知结果老化时间",
+        "excerpt_sha256": "020af3f90c67af18050bdd5690cac8c0d29b2f8a0f460f5d55dfe4fc8e73cf6a",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM19",
+        "source_line": 756,
+        "source_end_line": 761,
+        "source_label": "13.4.4 对账闭环率",
+        "excerpt_sha256": "67bf7a170a77b0fce66fe99638541c213200381128fd5a2d74a9bba0db3ada1d",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM20",
+        "source_line": 762,
+        "source_end_line": 765,
+        "source_label": "13.4.5 未知误释放数",
+        "excerpt_sha256": "e1e7bd45869a47fe2238827e5bf165a91a81eed434252744f5b5188318435121",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM21",
+        "source_line": 766,
+        "source_end_line": 772,
+        "source_label": "13.4.6 迟到回执率",
+        "excerpt_sha256": "7630edf48a4910d4c88b249307ae1fc4e376c35205aba3520c7e5d839d5e0f44",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM22",
+        "source_line": 775,
+        "source_end_line": 778,
+        "source_label": "13.5.1 峰值并发数",
+        "excerpt_sha256": "d9fcaf10134673d19aef7dcc7a1438a1495476c055f8a1333572cd555534f7ca",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM23",
+        "source_line": 779,
+        "source_end_line": 782,
+        "source_label": "13.5.2 并发超卖尝试数",
+        "excerpt_sha256": "0ba8db0b0adeae0989929c9b13292a96cf98321864392c38f96718e608b3b0b6",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM24",
+        "source_line": 783,
+        "source_end_line": 786,
+        "source_label": "13.5.3 Worker 派生数",
+        "excerpt_sha256": "148d3fd12638e8ee10b3a32949d70cf1bb652085c74971160319893bee7c7ce4",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM25",
+        "source_line": 787,
+        "source_end_line": 790,
+        "source_label": "13.5.4 层级深度",
+        "excerpt_sha256": "0defe75db05012f01c3d1f61a14bde406d84c488045d6914abc852a2ce8358e8",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM26",
+        "source_line": 791,
+        "source_end_line": 798,
+        "source_label": "13.5.5 权力复制系数",
+        "excerpt_sha256": "d2a55c8977af19c572475f9344d07cafc23814791d69efe59e9c1b84835bc09a",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM27",
+        "source_line": 799,
+        "source_end_line": 806,
+        "source_label": "13.5.6 效果传播系数",
+        "excerpt_sha256": "5b580d1a9150dc231374bf33b6cc2b1f8f8333f86ba9f474de48233fa8858893",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM28",
+        "source_line": 807,
+        "source_end_line": 812,
+        "source_label": "13.5.7 循环累计消耗率",
+        "excerpt_sha256": "aab0ce3f14aca26963da90cf397ecd837240d2de648d96aa62e82855b0554a7b",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM29",
+        "source_line": 815,
+        "source_end_line": 822,
+        "source_label": "13.6.1 停止生效延迟",
+        "excerpt_sha256": "baf065fee479d3fa4fd7330099017189f295c7baf28c2ef0383b11be3eff8a51",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM30",
+        "source_line": 823,
+        "source_end_line": 831,
+        "source_label": "13.6.2 停止后新效果数",
+        "excerpt_sha256": "fec31c3cbbc4cee0e677f90145fa94ab3d5919b793446eee7694675927630936",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM31",
+        "source_line": 832,
+        "source_end_line": 838,
+        "source_label": "13.6.3 恢复前对账完成率",
+        "excerpt_sha256": "730eec0a01c381489afd6f43702f0af19c99962afe41e7307cbe658b398f0256",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM32",
+        "source_line": 839,
+        "source_end_line": 842,
+        "source_label": "13.6.4 恢复后复发率",
+        "excerpt_sha256": "1775c8413f230634fee204925f2ca949c00b2ef0f9ae9b054d8841f3c8fb891f",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM33",
+        "source_line": 845,
+        "source_end_line": 850,
+        "source_label": "13.7.1 事件完整率",
+        "excerpt_sha256": "d84a564f7cffad96830e60b5b165645a78c741086a6a91285c3ac740a4876dd1",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM34",
+        "source_line": 851,
+        "source_end_line": 856,
+        "source_label": "13.7.2 轨迹关联率",
+        "excerpt_sha256": "9cf7038c191626994d60042a47fc1bc33ee30b73731957c0d0a399e65ea57346",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM35",
+        "source_line": 857,
+        "source_end_line": 863,
+        "source_label": "13.7.3 外部效果可追溯率",
+        "excerpt_sha256": "29c698552f441de3ca739672b6af2b73c9376937704254a2eec008f4f0fef2e9",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM36",
+        "source_line": 864,
+        "source_end_line": 869,
+        "source_label": "13.7.4 数据新鲜度",
+        "excerpt_sha256": "938185c0de2b86d8f304ddb14661121d90a6a9b150e0018337787c31b9f3cf9e",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM37",
+        "source_line": 870,
+        "source_end_line": 875,
+        "source_label": "13.7.5 补丁采纳率",
+        "excerpt_sha256": "c8e069ccbbb2fa9b0dfe93ba752a34357277cde88275fd2cc163964bbb8fe9f7",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM38",
+        "source_line": 876,
+        "source_end_line": 881,
+        "source_label": "13.7.6 告警闭环率",
+        "excerpt_sha256": "3e24cd6e54d89d8af60d261f62dc694f0ec6773b5ab6156d173769f135a0e476",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRM39",
+        "source_line": 882,
+        "source_end_line": 885,
+        "source_label": "13.7.7 探针静默时间",
+        "excerpt_sha256": "0b8d6ce7e45416a0a8d11e684d7267bf5cf82462dc09e3efa8101e7b17208f27",
+        "target_document": "references/blast-radius-observability-probes.md"
+      }
+    ],
+    "probe_cases": [
+      {
+        "id": "BRQ01",
+        "source_line": 1349,
+        "source_end_line": 1349,
+        "source_label": "子信封总和超过父级",
+        "excerpt_sha256": "65d41e1610e0a71c4e539405dce3b65b56fbcb38757679064b21f67d3b7f06f1",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ02",
+        "source_line": 1350,
+        "source_end_line": 1350,
+        "source_label": "子信封包含父级外对象",
+        "excerpt_sha256": "a28957337172dda4cdd9921ac3a41c1c0c0b7163064bb964fc76ee36bac60f26",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ03",
+        "source_line": 1351,
+        "source_end_line": 1351,
+        "source_label": "两个 Worker 基于同一余额同时通过",
+        "excerpt_sha256": "8c56c263448db6a32676cfecfc1ffecee6f5d9e33344e8509d6c1f1ff2e80762",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ04",
+        "source_line": 1352,
+        "source_end_line": 1352,
+        "source_label": "外部请求没有 permit_id",
+        "excerpt_sha256": "ec8406f438af0a32f7d53b37c98f76939baf997d9d5335840fd03592ce1cf1f9",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ05",
+        "source_line": 1353,
+        "source_end_line": 1353,
+        "source_label": "许可已过期但请求仍提交",
+        "excerpt_sha256": "71d6a691bd6dbdcca21a2edbbc7749e119d397c27d39bfe3952ea1935df4eea8",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ06",
+        "source_line": 1354,
+        "source_end_line": 1354,
+        "source_label": "同一幂等键参数不同",
+        "excerpt_sha256": "d624c3768157d39811db07d54d3b3809f11a156e1de6f716c9e9b88cb3e0f42c",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ07",
+        "source_line": 1355,
+        "source_end_line": 1355,
+        "source_label": "同一效果换新键重试",
+        "excerpt_sha256": "2f8acdfecdc799a1d393a36994e4399a3b836efb71c4797e2a2e7099dbd108d7",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ08",
+        "source_line": 1356,
+        "source_end_line": 1356,
+        "source_label": "超时后额度立即释放",
+        "excerpt_sha256": "1e3b6aef69482a76129addd9f0c156bbcf84379dd03d1ff6974b6c1c4b13e3da",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ09",
+        "source_line": 1357,
+        "source_end_line": 1357,
+        "source_label": "未知结果长期无对账",
+        "excerpt_sha256": "9388b52f51066deceb4aa4bd9add9dea79fde9dd1bf771b189df5c01f5c6203b",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ10",
+        "source_line": 1358,
+        "source_end_line": 1358,
+        "source_label": "停止后仍签发新许可",
+        "excerpt_sha256": "26143b3a6183a0ee134d1ec0a4053a53fa206ebfc16de3fb42c0d8a664b2e5cb",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ11",
+        "source_line": 1359,
+        "source_end_line": 1359,
+        "source_label": "停止前请求在停止后回执",
+        "excerpt_sha256": "8c39c0464bcd2608fceefebcdb75b0a2d234523d3fba588448b5237082a5ff46",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ12",
+        "source_line": 1360,
+        "source_end_line": 1360,
+        "source_label": "循环每轮建立新根信封",
+        "excerpt_sha256": "9e81bccd2ececfa8deb6023fd833641bd845e99d2302929af7e3c0e660eb54a4",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ13",
+        "source_line": 1361,
+        "source_end_line": 1361,
+        "source_label": "运行关闭后出现新效果",
+        "excerpt_sha256": "234b768f918722880c08315d141d4b9952162caf3203239b63fa58f6c1cfdca5",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ14",
+        "source_line": 1362,
+        "source_end_line": 1362,
+        "source_label": "缺少 parent_run_id",
+        "excerpt_sha256": "8c06be5d9a40ec70b674887d3e601c51258a3d989fe8f032eb3db7bb73b29fc4",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ15",
+        "source_line": 1363,
+        "source_end_line": 1363,
+        "source_label": "两个权威源结果冲突",
+        "excerpt_sha256": "9f7475352723ca905df2459292c39d0c8c8637b7f180f9661f7f46a9fca26e2c",
+        "target_document": "references/blast-radius-observability-probes.md"
+      },
+      {
+        "id": "BRQ16",
+        "source_line": 1364,
+        "source_end_line": 1364,
+        "source_label": "探针数据源停止更新",
+        "excerpt_sha256": "3a70aae2f6ff3dfc2f7be1d6c2d6d1aa64818be084c89b711ab0af44599dcb2a",
+        "target_document": "references/blast-radius-observability-probes.md"
+      }
+    ]
+  },
+  "interpretations": [
+    {
+      "topic": "accounting",
+      "source_sections": [
+        "execution 12, 16",
+        "probe 12.5, 13.1"
+      ],
+      "clarification_en": "Define mutually exclusive balances, include unused issued permits, count child liabilities once, distinguish exposure from unavailable capacity; use separate window/gauge semantics.",
+      "clarification_zh": "明确互斥余额，计入未用已签发许可，子负债仅计一次，区分效果暴露与不可用容量；窗口瞬时维度分别定义。"
+    },
+    {
+      "topic": "retry",
+      "source_sections": [
+        "execution 18.2, 27"
+      ],
+      "clarification_en": "Same intent retains its key after proven nonexecution; new identity requires genuinely new authorized intent. A gateway alone cannot promise exactly-once effects from a non-idempotent provider.",
+      "clarification_zh": "确定未执行后同意图仍保留键，新身份须真实新获批意图；仅网关不能承诺无幂等下游严格一次效果。"
+    },
+    {
+      "topic": "closure",
+      "source_sections": [
+        "execution 13, 16, 20, 32",
+        "probe 24"
+      ],
+      "clarification_en": "Manual hold is a disposition with unknown balance retained; distinguish administrative closure from financial closure and quota return.",
+      "clarification_zh": "人工冻结是保留未知余额的处置，区分行政关闭、账务关闭及额度返还。"
+    },
+    {
+      "topic": "measurement",
+      "source_sections": [
+        "probe 13, 23, 28"
+      ],
+      "clarification_en": "Use independent effect inventories, explicit unavailable ratios and historical policy versions; distinguish stop trigger from serialized effective boundary. Payroll amounts are illustrative, not measured savings.",
+      "clarification_zh": "使用独立效果总体、显式不可用比率及历史策略版本，区分停止触发和串行生效边界；工资金额为教学数据而非实测节约。"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+# Preserve original snapshot bytes across checkouts / 跨检出保留原始快照字节。
+*.source.txt -text

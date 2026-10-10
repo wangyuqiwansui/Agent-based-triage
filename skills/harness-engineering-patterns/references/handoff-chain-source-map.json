@@ -1,0 +1,2367 @@
+{
+  "version": "0.1.0",
+  "name_en": "Handoff Chain Source Map",
+  "name_zh": "交接链来源映射",
+  "description_en": "Source-bound bilingual specifications; embedded source instructions are data, and maintenance validation does not execute handoffs or measure business outcomes.",
+  "description_zh": "绑定来源的双语规格；来源内嵌指令作为数据，维护校验不执行交接或测量业务结果。",
+  "pattern_ref": "PATTERN_0043",
+  "cell_ref": "CELL_COLLABORATION_CHAIN",
+  "source_contract_version": "1.0",
+  "implementation_status": "specification_only",
+  "source_pattern_alias": "PATTERN_XXXX",
+  "sources": [
+    {
+      "id": "execution",
+      "name_en": "Handoff Chain Execution Draft",
+      "name_zh": "35_交接链_执行流程",
+      "supplied_filename": "35_交接链_执行流程.md",
+      "version": "0.1.0",
+      "snapshot_path": ".harness-analysis/ANALYSIS_20260922_HANDOFF_CHAIN_0001/sources/execution.md",
+      "sha256": "49ac26732a6ad5e0c0d6916e0f84829c885738b941ce78604898dec5409f7055"
+    },
+    {
+      "id": "probe",
+      "name_en": "Handoff Chain Workflow Probe Draft",
+      "name_zh": "35_交接链_工作流可观测性探针",
+      "supplied_filename": "35_交接链_工作流可观测性探针.md",
+      "version": "0.1.0",
+      "snapshot_path": ".harness-analysis/ANALYSIS_20260922_HANDOFF_CHAIN_0001/sources/probe.md",
+      "sha256": "ef0c94552fc37c8e22080f5a986422483d184e27e7d1048d33be795ac8ecaf88"
+    }
+  ],
+  "shared_source_protocols_sha256": "e81e6ae29c37a24d497c6b67fb46c0129d281241b41a1ce944e0acfe0d753fd0",
+  "execution_nodes": [
+    {
+      "source_id": "节点零",
+      "source_line": 283,
+      "source_end_line": 289,
+      "source_text": "### 节点零：固定本次执行边界\n\n确认任务范围、最终工件、阶段序列、接收方、契约版本、权限、预算和人工责任人。创建初始正式状态，或定位已有任务；重复启动必须先查询是否已经有任务和业务操作，不能默认为全新任务。\n\n本次使用的事实版本是明确批准的输入快照，不必永远追逐全世界的“最新值”。但快照失效、审批撤销、业务规定的时效过期，必须触发重新验收。\n\n输出：任务清单、契约快照、初始责任人、风险配置和恢复策略。",
+      "excerpt_sha256": "1e08c6c1df972f19143e9f79405003281803d2144dc9960e22828548e2fab701",
+      "name_zh": "固定本次执行边界",
+      "id": "HN00",
+      "source_ref": "execution",
+      "name_en": "Freeze execution scope",
+      "summary_en": "Fix task scope, final artifact, ordered stages, receiver, contract, authority, budgets and accountable human; reconcile existing tasks and operations before any restart. Freeze the approved input snapshot and revalidate revoked or expired evidence.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点一",
+      "source_line": 291,
+      "source_end_line": 297,
+      "source_text": "### 节点一：恢复正式状态并确认控制权\n\n通过可信状态存储读取最新正式清单，检查清单摘要与父版本关系，定位最后正式接收回执、当前阶段和未决外部操作。新的会话或进程不得从聊天末尾猜测进度。\n\n取得与当前状态一致的执行授权；需要接管时先完成控制权代次更新。租约只解决执行资格，不能替代业务完成证明。存在结果未知的外部操作时，优先进入查证流程。\n\n输出：固定输入快照、执行实例、控制权证明、未决事项。",
+      "excerpt_sha256": "bdaf7d30eacd82b8d2246903adffebb04740b0eb4792796ca09c2bbb40ea6d11",
+      "name_zh": "恢复正式状态并确认控制权",
+      "id": "HN01",
+      "source_ref": "execution",
+      "name_en": "Restore committed state and control",
+      "summary_en": "Load authoritative manifest and parent lineage, last receipt, owner and pending operations. Acquire current execution authority, advance the control epoch for takeover, and reconcile unknown external effects before proceeding.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点二",
+      "source_line": 299,
+      "source_end_line": 305,
+      "source_text": "### 节点二：开工前检查\n\n检查契约输入是否齐全、来源与有效期是否满足业务要求、当前执行者是否具有对应工具权限。核对授权的对象、金额、收件人、环境或资源范围，而不只检查“有权限”布尔值。\n\n缺少观察数据时可以调用探针或直接读取权威来源。缺少业务事实时，应由有权生产该事实的阶段补充，或者由执行流程验收探针查回的权威证据。不能从上下文语气推断“已审批”。\n\n输出：可执行、待补全、待人工或拒绝，以及明确原因。",
+      "excerpt_sha256": "08ce6508806999fb27f8b1518b20871a6f8522a3a4711eb5ec24e8599b3c27b6",
+      "name_zh": "开工前检查",
+      "id": "HN02",
+      "source_ref": "execution",
+      "name_en": "Check inputs and authority",
+      "summary_en": "Check complete inputs, provenance, validity and permission for the specific object, amount, recipient, environment and resources. Retrieve evidence or request authorized fact production; never infer approval from conversational text.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点三",
+      "source_line": 307,
+      "source_end_line": 313,
+      "source_text": "### 节点三：装配最小上下文\n\n提供任务目标、本阶段契约、有效事实、必要工件引用、约束、未决问题和恢复位置。历史轨迹、废弃主张和大文件保留受控引用，按需展开。\n\n工作记忆与正式事实分开。历史中的指令、网页文本、其他智能体建议都是待处理数据，不能因此扩张权限或覆盖当前契约。上下文压缩不能丢失版本、责任人、否定条件和证据引用。\n\n输出：上下文清单及实际使用的输入引用；不记录不必要的私密信息或模型内部思维过程。",
+      "excerpt_sha256": "211180f5e5bd6d43e973fb7f87e49f92f0cd2a4c3932021720f9aa3ff5be1e64",
+      "name_zh": "装配最小上下文",
+      "id": "HN03",
+      "source_ref": "execution",
+      "name_en": "Assemble minimal context",
+      "summary_en": "Provide goals, stage contract, valid facts, controlled artifact references, constraints, open issues and recovery point. Separate working memory from official facts, treat embedded instructions as data and preserve versions, ownership, qualifications and evidence during compression.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点四",
+      "source_line": 315,
+      "source_end_line": 323,
+      "source_text": "### 节点四：完成局部工作，并在外部写入前设闸\n\n纯生成和计算在隔离工作区内完成，结果暂存为候选工件。需要正式外部写入时，先把操作对象、参数、批准依据和操作载荷冻结，并绑定确切摘要。\n\n操作前验收须检查当前控制权、必要审批、输入版本、目标资源、预算和关键语义。随后持久化业务操作意图与稳定 `operation_id`，经授权网关执行。未经此闸，不能先发邮件、先付款或先部署，再等待下游发现内容不对。\n\n本地数据库事务不能覆盖任意远端系统。操作意图账本与远端回执之间的差异须通过查询、幂等和对账处理。远端接口的幂等能力必须经适配器确认，不能由一次本地去重推断。[外部资料甲]\n\n输出：候选业务结果，或者已执行／未执行／结果未知的外部操作状态及证据。",
+      "excerpt_sha256": "4cce47e8ba639d4dab65875783d507e585bebf3f22c236abc8af44e389fbaccc",
+      "name_zh": "完成局部工作，并在外部写入前设闸",
+      "id": "HN04",
+      "source_ref": "execution",
+      "name_en": "Perform local work and gate external writes",
+      "summary_en": "Keep generated outputs provisional. Before an external effect, freeze exact payload and approval, recheck epoch, authority, input and budget, and durably persist stable business intent. Use an authorized gateway and reconcile remote receipts; local transactions cannot guarantee remote idempotence.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点五",
+      "source_line": 325,
+      "source_end_line": 331,
+      "source_text": "### 节点五：提交候选交接包\n\n执行者提交字段白名单内的增量，附带实际使用的事实引用和工件摘要。身份、时间、控制权代次以及正式输入版本由可信运行时补入或校验，不允许模型自报后直接采用。\n\n候选包一经提交不可原地修改。仅网络重发同一包时沿用 `handoff_id`；修正正文、证据或接收者后新建交接包，并保留与前次拒绝的关联。\n\n输出：不可变候选包、提交事件和暂存引用。",
+      "excerpt_sha256": "b76385a94f6302e103ad66f1b2ac2fd4012942e3edead631434e1b0cf578c3ec",
+      "name_zh": "提交候选交接包",
+      "id": "HN05",
+      "source_ref": "execution",
+      "name_en": "Submit immutable handoff candidate",
+      "summary_en": "Submit only allowed fields with consumed fact references and actual artifact digests. Authenticate identity, time, epoch and input at the runtime. Reuse handoff identity only for identical transport retries; any content, evidence or receiver correction creates a new candidate linked to its rejection.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点六",
+      "source_line": 333,
+      "source_end_line": 348,
+      "source_text": "### 节点六：接收方验收\n\n| 闸门 | 检查内容 | 失败结果 |\n|---|---|---|\n| 结构闸 | 必填、类型、允许字段、协议与契约版本 | 结构拒绝 |\n| 对象闸 | 安全域、任务、阶段实例、接收者、资源范围 | 对象或接收者不匹配 |\n| 版本闸 | 输入版本、输入摘要、当前允许快照及控制权代次 | 过期输入或失效控制权 |\n| 所有权闸 | 生产者身份、字段写入范围、事实替代权限 | 越权写入 |\n| 证据闸 | 来源身份、可展开性、真实性检查、有效期与适用范围 | 证据缺失、失效或不支持 |\n| 绑定闸 | 实际内容摘要、所用事实与审批覆盖的版本 | `stale_claim_binding` 等绑定错误 |\n| 内容闸 | 标题、正文、表格、关键主张和约束是否一致 | 语义冲突或未知 |\n| 接收闸 | 接收主体可承接，下一棒前置条件成立，签收对象明确 | 暂缓接收或转人工 |\n\n验收意见至少有“通过、拒绝、未知、不适用”四种状态。不适用需要契约依据。关键条件未知时按风险策略暂停，不得用“未发现错误”替代已通过。\n\n所有验收结果均绑定同一候选工件、输入快照和规则版本。检查完成至提交之间如状态变化，必须重新检查相关条件，不能使用过期的验收票。",
+      "excerpt_sha256": "284aec4d7e69372d61037add7d4562d2ca105197a669461cbea00b723a490d38",
+      "name_zh": "接收方验收",
+      "id": "HN06",
+      "source_ref": "execution",
+      "name_en": "Receiver acceptance gates",
+      "summary_en": "Check structure, scope, version and epoch, field ownership, evidence, actual-content binding, semantic support and receiver readiness. Bind every verdict to the same candidate, input and rules. Preserve pass, reject, unknown and justified not-applicable; recheck conditions changed before commit.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点七",
+      "source_line": 350,
+      "source_end_line": 358,
+      "source_text": "### 节点七：受控原子提交\n\n接收意见通过后，由唯一状态权威完成条件式提交：预期输入版本、清单摘要、当前责任人和控制权代次仍须匹配。在同一个本地原子边界中，持久化下一版清单、正式阶段回执、责任归属变化，以及待发送通知记录。\n\n数据库内可使用条件更新和唯一约束；其他存储须提供等价的并发和持久化语义。先写入不可变大工件、再提交其引用时，失败遗留的孤立工件应由生命周期策略清理，不能把它们当作已接收输出。\n\n多系统之间不能假设共享同一事务。可先取得绑定候选包的持久接收意见，再由唯一协调权威提交并通知。接收方必须能查询正式提交结果，且只能在查询到有效提交及执行授权后启动下一棒。通知丢失可重发，但不得产生第二次责任转移。\n\n同一 `handoff_id` 的重复请求返回原回执；同一标识对应不同内容属于完整性冲突。失败时保留原正式状态，写拒绝原因。若正式审计账本无法持久化，禁止假装已经提交。",
+      "excerpt_sha256": "9550c75827d0badd4aa589554aa9aa692ccd05a5f0e9ef175478946789b7eefc",
+      "name_zh": "受控原子提交",
+      "id": "HN07",
+      "source_ref": "execution",
+      "name_en": "Conditionally commit atomically",
+      "summary_en": "The sole state authority compares input version, manifest, owner and epoch, then atomically persists next manifest, official receipt, ownership and notification outbox. Query official commit and execution authority before downstream work. Duplicate identical handoffs return their receipt; identity conflicts or unavailable audit durability block commit.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点八",
+      "source_line": 360,
+      "source_end_line": 366,
+      "source_text": "### 节点八：转移控制权，继续或结束\n\n提交成功后，下一棒获得绑定新版本的执行授权。旧执行者仍可承担交接问题的解释与修复责任，但不得继续持有该阶段的正式写入资格。\n\n终点由业务指定接收服务或人工责任人签收。最终状态须区分完成、部分完成、待查证、待人工、取消和失败；只有全部最终条件满足才标记完成。\n\n输出：最终工件、最终版本、完整接收链、外部结果证明、未决事项、责任人和恢复位置。",
+      "excerpt_sha256": "858aaf80d75e86bf4efcfed92962e3c71d99b32f63e382235652f0dbb1be9922",
+      "name_zh": "转移控制权，继续或结束",
+      "id": "HN08",
+      "source_ref": "execution",
+      "name_en": "Transfer control and finish or continue",
+      "summary_en": "Issue execution authority bound to the committed successor and revoke the old executor's write eligibility. Obtain final business acceptance; distinguish complete, partial, pending reconciliation, human review, cancellation and failure. Report artifacts, versions, acceptance chain, effect evidence, owner and recovery point.",
+      "integration_status": "pending"
+    }
+  ],
+  "gates": [
+    {
+      "source_id": "结构闸",
+      "source_line": 337,
+      "source_end_line": 337,
+      "source_text": "| 结构闸 | 必填、类型、允许字段、协议与契约版本 | 结构拒绝 |",
+      "excerpt_sha256": "62ea13e82efc74ea98cf75ca068a619c68febd1b59500ed53c5f582dbecdd149",
+      "source_cells": [
+        "结构闸",
+        "必填、类型、允许字段、协议与契约版本",
+        "结构拒绝"
+      ],
+      "name_zh": "结构闸",
+      "id": "HG01",
+      "source_ref": "execution",
+      "name_en": "Structure gate",
+      "summary_en": "Validate required fields, types, allowed output fields and protocol/contract versions; reject malformed packages.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "对象闸",
+      "source_line": 338,
+      "source_end_line": 338,
+      "source_text": "| 对象闸 | 安全域、任务、阶段实例、接收者、资源范围 | 对象或接收者不匹配 |",
+      "excerpt_sha256": "be3678f9dcc5151862cc48d65b4f244119124eb55bc01739639b941df47f7a9f",
+      "source_cells": [
+        "对象闸",
+        "安全域、任务、阶段实例、接收者、资源范围",
+        "对象或接收者不匹配"
+      ],
+      "name_zh": "对象闸",
+      "id": "HG02",
+      "source_ref": "execution",
+      "name_en": "Object and scope gate",
+      "summary_en": "Authenticate security domain, task, stage instance, receiver and resource scope; reject mismatched objects or receivers.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "版本闸",
+      "source_line": 339,
+      "source_end_line": 339,
+      "source_text": "| 版本闸 | 输入版本、输入摘要、当前允许快照及控制权代次 | 过期输入或失效控制权 |",
+      "excerpt_sha256": "c13d04ab842d399365dbec22a892aafa84f6c6e64aae30cf7880fd03d5f55ce0",
+      "source_cells": [
+        "版本闸",
+        "输入版本、输入摘要、当前允许快照及控制权代次",
+        "过期输入或失效控制权"
+      ],
+      "name_zh": "版本闸",
+      "id": "HG03",
+      "source_ref": "execution",
+      "name_en": "Version and epoch gate",
+      "summary_en": "Match input version and manifest to the allowed snapshot and current control epoch; reject stale input or expired authority.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "所有权闸",
+      "source_line": 340,
+      "source_end_line": 340,
+      "source_text": "| 所有权闸 | 生产者身份、字段写入范围、事实替代权限 | 越权写入 |",
+      "excerpt_sha256": "a5fa7eb0db5b98012daad70577722ecb078305e243d8326cd9cca5a84e8a1721",
+      "source_cells": [
+        "所有权闸",
+        "生产者身份、字段写入范围、事实替代权限",
+        "越权写入"
+      ],
+      "name_zh": "所有权闸",
+      "id": "HG04",
+      "source_ref": "execution",
+      "name_en": "Field ownership gate",
+      "summary_en": "Verify producer identity, writable fields and fact-supersession authority; reject unauthorized writes.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "证据闸",
+      "source_line": 341,
+      "source_end_line": 341,
+      "source_text": "| 证据闸 | 来源身份、可展开性、真实性检查、有效期与适用范围 | 证据缺失、失效或不支持 |",
+      "excerpt_sha256": "076164d5255292dda6320ecc4c0eea97304fec6164dc94bb1593b9686c3051f3",
+      "source_cells": [
+        "证据闸",
+        "来源身份、可展开性、真实性检查、有效期与适用范围",
+        "证据缺失、失效或不支持"
+      ],
+      "name_zh": "证据闸",
+      "id": "HG05",
+      "source_ref": "execution",
+      "name_en": "Evidence gate",
+      "summary_en": "Verify source identity, retrievability, authenticity, validity and applicability; missing, stale or unsupported evidence blocks acceptance.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "绑定闸",
+      "source_line": 342,
+      "source_end_line": 342,
+      "source_text": "| 绑定闸 | 实际内容摘要、所用事实与审批覆盖的版本 | `stale_claim_binding` 等绑定错误 |",
+      "excerpt_sha256": "6c39377ea2915ae73f7be2a7bef4cc05b0301f48d028dd90311b3bc6756f5323",
+      "source_cells": [
+        "绑定闸",
+        "实际内容摘要、所用事实与审批覆盖的版本",
+        "`stale_claim_binding` 等绑定错误"
+      ],
+      "name_zh": "绑定闸",
+      "id": "HG06",
+      "source_ref": "execution",
+      "name_en": "Actual artifact binding gate",
+      "summary_en": "Check actual content digest, consumed facts and approval coverage for the exact version; reject stale or false binding.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "内容闸",
+      "source_line": 343,
+      "source_end_line": 343,
+      "source_text": "| 内容闸 | 标题、正文、表格、关键主张和约束是否一致 | 语义冲突或未知 |",
+      "excerpt_sha256": "cd69703725727a11f2fa9e06755b1dc486f0f3eab310f40b6b4591f659cd73f2",
+      "source_cells": [
+        "内容闸",
+        "标题、正文、表格、关键主张和约束是否一致",
+        "语义冲突或未知"
+      ],
+      "name_zh": "内容闸",
+      "id": "HG07",
+      "source_ref": "execution",
+      "name_en": "Semantic content gate",
+      "summary_en": "Check title, body, tables, critical claims and qualifications for consistency; preserve semantic conflicts or unknown results.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "接收闸",
+      "source_line": 344,
+      "source_end_line": 344,
+      "source_text": "| 接收闸 | 接收主体可承接，下一棒前置条件成立，签收对象明确 | 暂缓接收或转人工 |",
+      "excerpt_sha256": "7a4cb4e5115929a8b60efdef7382ed75f642d0a1f2a30ab5b7dc8219bb718c89",
+      "source_cells": [
+        "接收闸",
+        "接收主体可承接，下一棒前置条件成立，签收对象明确",
+        "暂缓接收或转人工"
+      ],
+      "name_zh": "接收闸",
+      "id": "HG08",
+      "source_ref": "execution",
+      "name_en": "Receiver readiness gate",
+      "summary_en": "Confirm an authorized receiver can assume responsibility and the next stage's prerequisites hold; otherwise defer or escalate.",
+      "integration_status": "pending"
+    }
+  ],
+  "execution_cases": [
+    {
+      "source_id": "正常四棒交接",
+      "source_line": 570,
+      "source_end_line": 570,
+      "source_text": "| 正常四棒交接 | 正式版本有序前进，接收人与工件绑定 |",
+      "excerpt_sha256": "4d35d3a9eee8e2da569df81efc6c94775cc6a41a979f75df151abf0b763d5907",
+      "source_cells": [
+        "正常四棒交接",
+        "正式版本有序前进，接收人与工件绑定"
+      ],
+      "condition_zh": "正常四棒交接",
+      "expected_zh": "正式版本有序前进，接收人与工件绑定",
+      "id": "HET01",
+      "source_ref": "execution",
+      "name_en": "Normal four-stage handoff",
+      "summary_en": "Official versions advance in order and acceptance binds the authenticated receiver and artifact.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "少字段、非法字段、伪造生产者",
+      "source_line": 571,
+      "source_end_line": 571,
+      "source_text": "| 少字段、非法字段、伪造生产者 | 在提交前拒绝，责任与正式状态不变 |",
+      "excerpt_sha256": "69f926e7ada1aefd9975e204f4ca0a98fbffa571a485611a19190695c2d81b81",
+      "source_cells": [
+        "少字段、非法字段、伪造生产者",
+        "在提交前拒绝，责任与正式状态不变"
+      ],
+      "condition_zh": "少字段、非法字段、伪造生产者",
+      "expected_zh": "在提交前拒绝，责任与正式状态不变",
+      "id": "HET02",
+      "source_ref": "execution",
+      "name_en": "Missing or forbidden fields and forged producer",
+      "summary_en": "Reject before commit, leaving official state and responsibility unchanged.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "旧事实、旧审批、修改过的工件",
+      "source_line": 572,
+      "source_end_line": 572,
+      "source_text": "| 旧事实、旧审批、修改过的工件 | 版本或内容验收拒绝，并给出冲突对象 |",
+      "excerpt_sha256": "4c90fec21e0fed66a7230b4167721cb9b95aa4b96a21b047495ec749cc21eb3a",
+      "source_cells": [
+        "旧事实、旧审批、修改过的工件",
+        "版本或内容验收拒绝，并给出冲突对象"
+      ],
+      "condition_zh": "旧事实、旧审批、修改过的工件",
+      "expected_zh": "版本或内容验收拒绝，并给出冲突对象",
+      "id": "HET03",
+      "source_ref": "execution",
+      "name_en": "Stale facts or approvals and changed artifact",
+      "summary_en": "Reject at version or content acceptance and identify the conflicting object.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "接收失败、通知丢失、重复投递",
+      "source_line": 573,
+      "source_end_line": 573,
+      "source_text": "| 接收失败、通知丢失、重复投递 | 无静默责任丢失、无重复提交 |",
+      "excerpt_sha256": "befbae93acdf8a2f9d0b8d99a0f0d5899bc6364549837ff96d8a2317edc87aac",
+      "source_cells": [
+        "接收失败、通知丢失、重复投递",
+        "无静默责任丢失、无重复提交"
+      ],
+      "condition_zh": "接收失败、通知丢失、重复投递",
+      "expected_zh": "无静默责任丢失、无重复提交",
+      "id": "HET04",
+      "source_ref": "execution",
+      "name_en": "Failed acceptance, lost notification and duplicate delivery",
+      "summary_en": "Preserve accountable ownership and prevent duplicate commits.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "并发提交、失效租约、旧执行者晚到",
+      "source_line": 574,
+      "source_end_line": 574,
+      "source_text": "| 并发提交、失效租约、旧执行者晚到 | 状态权威和工具边界拒绝过期资格 |",
+      "excerpt_sha256": "807b5678e327889ced05093abb343b1837c60f67454bef3a752d09af5821e2c5",
+      "source_cells": [
+        "并发提交、失效租约、旧执行者晚到",
+        "状态权威和工具边界拒绝过期资格"
+      ],
+      "condition_zh": "并发提交、失效租约、旧执行者晚到",
+      "expected_zh": "状态权威和工具边界拒绝过期资格",
+      "id": "HET05",
+      "source_ref": "execution",
+      "name_en": "Concurrent commit, expired lease and late old executor",
+      "summary_en": "State authority and the tool boundary reject expired execution eligibility.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "外部成功但本地超时",
+      "source_line": 575,
+      "source_end_line": 575,
+      "source_text": "| 外部成功但本地超时 | 先查询，再补记，不产生额外副作用 |",
+      "excerpt_sha256": "b8cfcace288bdcec9b857fa51a75466db2260f5ca8e08300c78015013ffe8aa0",
+      "source_cells": [
+        "外部成功但本地超时",
+        "先查询，再补记，不产生额外副作用"
+      ],
+      "condition_zh": "外部成功但本地超时",
+      "expected_zh": "先查询，再补记，不产生额外副作用",
+      "id": "HET06",
+      "source_ref": "execution",
+      "name_en": "Remote success with local timeout",
+      "summary_en": "Query the original operation, restore its receipt and create no additional effect.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "同业务键不同载荷、幂等记录过期",
+      "source_line": 576,
+      "source_end_line": 576,
+      "source_text": "| 同业务键不同载荷、幂等记录过期 | 参数冲突或查证升级，不盲目重发 |",
+      "excerpt_sha256": "612d4697e5cfe25a2efe9d8cdac103849f31e3cdb9f0f3542673bd33ce6b8d21",
+      "source_cells": [
+        "同业务键不同载荷、幂等记录过期",
+        "参数冲突或查证升级，不盲目重发"
+      ],
+      "condition_zh": "同业务键不同载荷、幂等记录过期",
+      "expected_zh": "参数冲突或查证升级，不盲目重发",
+      "id": "HET07",
+      "source_ref": "execution",
+      "name_en": "Same business key with changed payload or expired deduplication",
+      "summary_en": "Reject conflicting parameters or escalate for reconciliation; never replay blindly.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "上游事实撤销",
+      "source_line": 577,
+      "source_end_line": 577,
+      "source_text": "| 上游事实撤销 | 受影响依赖被标记并重新验收 |",
+      "excerpt_sha256": "09c10cdfa37d4b6605bd72b638df5d8a810ef8d1e0c77bd3495fa3c268003543",
+      "source_cells": [
+        "上游事实撤销",
+        "受影响依赖被标记并重新验收"
+      ],
+      "condition_zh": "上游事实撤销",
+      "expected_zh": "受影响依赖被标记并重新验收",
+      "id": "HET08",
+      "source_ref": "execution",
+      "name_en": "Revoked upstream fact",
+      "summary_en": "Invalidate affected dependencies and require renewed acceptance.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "探针关闭",
+      "source_line": 578,
+      "source_end_line": 578,
+      "source_text": "| 探针关闭 | 执行流程基础闸门仍有效 |",
+      "excerpt_sha256": "0d32a0d74c8effbde09e8397c5265edc62e5515f025d9a60647a1ef9458a18e5",
+      "source_cells": [
+        "探针关闭",
+        "执行流程基础闸门仍有效"
+      ],
+      "condition_zh": "探针关闭",
+      "expected_zh": "执行流程基础闸门仍有效",
+      "id": "HET09",
+      "source_ref": "execution",
+      "name_en": "Probe disabled",
+      "summary_en": "Execution's baseline audit and hard gates remain effective independently.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "探针返回无来源、越权或过期补丁",
+      "source_line": 579,
+      "source_end_line": 579,
+      "source_text": "| 探针返回无来源、越权或过期补丁 | 拒绝采纳，并保留拒绝回执 |",
+      "excerpt_sha256": "26344bf9efe1d2078f52b501739460f04566420bcdf611aa111f60637c202b25",
+      "source_cells": [
+        "探针返回无来源、越权或过期补丁",
+        "拒绝采纳，并保留拒绝回执"
+      ],
+      "condition_zh": "探针返回无来源、越权或过期补丁",
+      "expected_zh": "拒绝采纳，并保留拒绝回执",
+      "id": "HET10",
+      "source_ref": "execution",
+      "name_en": "Unproven, unauthorized or stale probe patch",
+      "summary_en": "Reject adoption and retain the rejection receipt.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "探针离线发现历史违规",
+      "source_line": 580,
+      "source_end_line": 580,
+      "source_text": "| 探针离线发现历史违规 | 报告违规与发现时间，不声称当时已阻断 |",
+      "excerpt_sha256": "4a3df4326e9fcdb61ac880cbf9f66587636e0dbb4bad60d46966cb79e3287a7d",
+      "source_cells": [
+        "探针离线发现历史违规",
+        "报告违规与发现时间，不声称当时已阻断"
+      ],
+      "condition_zh": "探针离线发现历史违规",
+      "expected_zh": "报告违规与发现时间，不声称当时已阻断",
+      "id": "HET11",
+      "source_ref": "execution",
+      "name_en": "Historical violation discovered offline",
+      "summary_en": "Distinguish violation time from discovery time; do not claim earlier prevention.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "审计存储故障、取消与在途操作并发",
+      "source_line": 581,
+      "source_end_line": 581,
+      "source_text": "| 审计存储故障、取消与在途操作并发 | 禁止虚假提交；在途状态有人负责查证 |",
+      "excerpt_sha256": "5228f18510efc95a7d32965152cf501ae64488f2e069f9f50652e433b1b0c7dc",
+      "source_cells": [
+        "审计存储故障、取消与在途操作并发",
+        "禁止虚假提交；在途状态有人负责查证"
+      ],
+      "condition_zh": "审计存储故障、取消与在途操作并发",
+      "expected_zh": "禁止虚假提交；在途状态有人负责查证",
+      "id": "HET12",
+      "source_ref": "execution",
+      "name_en": "Audit failure and cancellation racing in-flight operations",
+      "summary_en": "Do not fabricate a commit; keep an accountable owner reconciling in-flight effects.",
+      "integration_status": "pending"
+    }
+  ],
+  "invariants": [
+    {
+      "source_id": "执一",
+      "source_line": 245,
+      "source_end_line": 245,
+      "source_text": "| 执一 | 只有已提交版本能成为后续业务输入 | 隔离候选状态，暂停错误消费 |",
+      "excerpt_sha256": "2d056da8930432307b1f6e4c409a3c9239d54ebc17f6822bd14226f9b3482f7c",
+      "source_cells": [
+        "执一",
+        "只有已提交版本能成为后续业务输入",
+        "隔离候选状态，暂停错误消费"
+      ],
+      "name_zh": "执一",
+      "id": "HI01",
+      "source_ref": "execution",
+      "name_en": "Committed input only",
+      "summary_en": "Only committed versions may become downstream business input; quarantine provisional state and stop invalid consumption.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "执二",
+      "source_line": 246,
+      "source_end_line": 246,
+      "source_text": "| 执二 | 新提交的输入版本和摘要必须匹配允许使用的正式头状态 | 拒绝过期提交；重新获取快照 |",
+      "excerpt_sha256": "5574621967422717f21735894ce73888dc6a114c0f944a4972345475bab286b8",
+      "source_cells": [
+        "执二",
+        "新提交的输入版本和摘要必须匹配允许使用的正式头状态",
+        "拒绝过期提交；重新获取快照"
+      ],
+      "name_zh": "执二",
+      "id": "HI02",
+      "source_ref": "execution",
+      "name_en": "Current authorized base",
+      "summary_en": "A new commit must match the permitted official input version and manifest; reject stale commits and reload state.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "执三",
+      "source_line": 247,
+      "source_end_line": 247,
+      "source_text": "| 执三 | 一次新接收只创建一个后继版本；拒绝和重复投递不推进版本 | 报告提交一致性故障 |",
+      "excerpt_sha256": "03fa0f85b46734030197d35d3da286dd15cd254f481aac9da7f08e7819c19b2a",
+      "source_cells": [
+        "执三",
+        "一次新接收只创建一个后继版本；拒绝和重复投递不推进版本",
+        "报告提交一致性故障"
+      ],
+      "name_zh": "执三",
+      "id": "HI03",
+      "source_ref": "execution",
+      "name_en": "Single successor per handoff",
+      "summary_en": "One newly accepted candidate creates exactly one successor; rejection and duplicate delivery never advance the version.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "执四",
+      "source_line": 248,
+      "source_end_line": 248,
+      "source_text": "| 执四 | 任务、安全域、接收者和控制权代次必须同时匹配 | 拒绝越域、越权或迟到执行 |",
+      "excerpt_sha256": "9db0e2b669d82566ecd086f0e66ba81a184540b70d5143cd4df667c446c54b4d",
+      "source_cells": [
+        "执四",
+        "任务、安全域、接收者和控制权代次必须同时匹配",
+        "拒绝越域、越权或迟到执行"
+      ],
+      "name_zh": "执四",
+      "id": "HI04",
+      "source_ref": "execution",
+      "name_en": "Scope and epoch agreement",
+      "summary_en": "Task, security domain, receiver and control epoch must agree; reject cross-domain, unauthorized or late execution.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "执五",
+      "source_line": 249,
+      "source_end_line": 249,
+      "source_text": "| 执五 | 阶段只提交自己有权生产的字段 | 返回字段所有权违规 |",
+      "excerpt_sha256": "deeabd624ad4604514185443ed28308124c20b9eb0045bcabd75b50d929aab13",
+      "source_cells": [
+        "执五",
+        "阶段只提交自己有权生产的字段",
+        "返回字段所有权违规"
+      ],
+      "name_zh": "执五",
+      "id": "HI05",
+      "source_ref": "execution",
+      "name_en": "Owned output fields",
+      "summary_en": "A stage may submit only fields it is authorized to produce; reject ownership violations.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "执六",
+      "source_line": 250,
+      "source_end_line": 250,
+      "source_text": "| 执六 | 工件、事实、审批与语义核验绑定实际版本和内容 | 拒绝旧审批、假绑定或内容冲突 |",
+      "excerpt_sha256": "076bdeb6a9363f9176292a2bda7407138165c6dcff64ad8d54105fdc7e2d7053",
+      "source_cells": [
+        "执六",
+        "工件、事实、审批与语义核验绑定实际版本和内容",
+        "拒绝旧审批、假绑定或内容冲突"
+      ],
+      "name_zh": "执六",
+      "id": "HI06",
+      "source_ref": "execution",
+      "name_en": "Actual-content evidence binding",
+      "summary_en": "Artifacts, facts, approvals and semantic reviews must bind real versions and content; reject stale approval, false binding or semantic conflict.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "执七",
+      "source_line": 251,
+      "source_end_line": 251,
+      "source_text": "| 执七 | 接收方验收与受控提交完成后才转移责任 | 原责任人或预设托管责任人继续负责 |",
+      "excerpt_sha256": "6736839db3ca954f830badf98840bd015bfbca589262d2664cd1c8df0dff8a60",
+      "source_cells": [
+        "执七",
+        "接收方验收与受控提交完成后才转移责任",
+        "原责任人或预设托管责任人继续负责"
+      ],
+      "name_zh": "执七",
+      "id": "HI07",
+      "source_ref": "execution",
+      "name_en": "Acceptance plus commit transfers ownership",
+      "summary_en": "Transfer responsibility only after receiver acceptance and controlled commit; retain the original or predesignated custodian until then.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "执八",
+      "source_line": 252,
+      "source_end_line": 252,
+      "source_text": "| 执八 | 外部副作用必须先经过操作前验收和授权 | 禁止“先发布再验收” |",
+      "excerpt_sha256": "86713952124c3691433a36d8a06d5c0cf3fc6ef011eee1327c9dcf0fdb70b8b2",
+      "source_cells": [
+        "执八",
+        "外部副作用必须先经过操作前验收和授权",
+        "禁止“先发布再验收”"
+      ],
+      "name_zh": "执八",
+      "id": "HI08",
+      "source_ref": "execution",
+      "name_en": "Pre-effect authorization",
+      "summary_en": "External effects require pre-operation acceptance and authorization; never publish first and check afterward.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "执九",
+      "source_line": 253,
+      "source_end_line": 253,
+      "source_text": "| 执九 | 结果未知不等于未执行；不可自动生成新业务键重发 | 先查证、再补记／重试／补偿／转人工 |",
+      "excerpt_sha256": "28d857d48e159ad2e43fad9fa78913ba498c82844343fe09324f9b95fb70cef3",
+      "source_cells": [
+        "执九",
+        "结果未知不等于未执行；不可自动生成新业务键重发",
+        "先查证、再补记／重试／补偿／转人工"
+      ],
+      "name_zh": "执九",
+      "id": "HI09",
+      "source_ref": "execution",
+      "name_en": "Unknown is not unexecuted",
+      "summary_en": "Unknown outcome does not authorize a new operation key or replay; reconcile before recording, retrying, compensating or escalating.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "执十",
+      "source_line": 254,
+      "source_end_line": 254,
+      "source_text": "| 执十 | 探针补全有来源、有目标版本、有采纳回执 | 拒绝无来源或过期补丁 |",
+      "excerpt_sha256": "b9537dfab20857e94b50c40e4e87605a7953b675f09682c03f8032b85ffcb16e",
+      "source_cells": [
+        "执十",
+        "探针补全有来源、有目标版本、有采纳回执",
+        "拒绝无来源或过期补丁"
+      ],
+      "name_zh": "执十",
+      "id": "HI10",
+      "source_ref": "execution",
+      "name_en": "Evidence-bound probe adoption",
+      "summary_en": "Probe supplements need provenance, target version and adoption receipt; reject unauthenticated or stale patches.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "执十一",
+      "source_line": 255,
+      "source_end_line": 255,
+      "source_text": "| 执十一 | 每条失败路径有恢复点、次数限制、截止时间和责任人 | 升级或有证据地终止，不无限循环 |",
+      "excerpt_sha256": "67b2c53df0aa05b1e0d26537e8d9280bdb24aa3ca2f70b815b6c606378504391",
+      "source_cells": [
+        "执十一",
+        "每条失败路径有恢复点、次数限制、截止时间和责任人",
+        "升级或有证据地终止，不无限循环"
+      ],
+      "name_zh": "执十一",
+      "id": "HI11",
+      "source_ref": "execution",
+      "name_en": "Bounded recoverable failures",
+      "summary_en": "Every failure has a recovery point, retry limit, deadline and owner; escalate or terminate with evidence instead of looping forever.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "执十二",
+      "source_line": 256,
+      "source_end_line": 256,
+      "source_text": "| 执十二 | 最终完成要求工件验收与必要外部效果均已确认 | 输出部分完成或待确认，不虚报成功 |",
+      "excerpt_sha256": "e59c3b743a4b435c5bf7618d8e6e4a1df3a25e0ba3e4e2c98342ce052bc371fa",
+      "source_cells": [
+        "执十二",
+        "最终完成要求工件验收与必要外部效果均已确认",
+        "输出部分完成或待确认，不虚报成功"
+      ],
+      "name_zh": "执十二",
+      "id": "HI12",
+      "source_ref": "execution",
+      "name_en": "Verified final completion",
+      "summary_en": "Final completion requires artifact acceptance and confirmation of required external effects; otherwise report partial or pending status.",
+      "integration_status": "pending"
+    }
+  ],
+  "recovery": [
+    {
+      "source_id": "`missing_input`",
+      "source_line": 374,
+      "source_end_line": 374,
+      "source_text": "| `missing_input` | 当前阶段的最后正式输入 | 从权威来源补齐或返回上游 | 编造必填事实 |",
+      "excerpt_sha256": "2ff3b5f1ac0200a172125f6d623f364c27e28d4603a208e3e2a325c61b916d6e",
+      "source_cells": [
+        "`missing_input`",
+        "当前阶段的最后正式输入",
+        "从权威来源补齐或返回上游",
+        "编造必填事实"
+      ],
+      "name_zh": "`missing_input`",
+      "id": "HR01",
+      "source_ref": "execution",
+      "name_en": "Missing input",
+      "summary_en": "Resume from the last official stage input, retrieve authoritative data or return upstream; never fabricate required facts.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "`stale_claim_binding`",
+      "source_line": 375,
+      "source_end_line": 375,
+      "source_text": "| `stale_claim_binding` | 当前允许使用的事实版本 | 修正实际内容和绑定，提交新候选包 | 只修改摘要字段 |",
+      "excerpt_sha256": "3bbd4ccf16286d2a4508ee4f7d19fb4088414363b410c7e3c436cb5ee469c30e",
+      "source_cells": [
+        "`stale_claim_binding`",
+        "当前允许使用的事实版本",
+        "修正实际内容和绑定，提交新候选包",
+        "只修改摘要字段"
+      ],
+      "name_zh": "`stale_claim_binding`",
+      "id": "HR02",
+      "source_ref": "execution",
+      "name_en": "Stale fact binding",
+      "summary_en": "Resume from the allowed fact version and revise actual content plus bindings in a new candidate; changing only digest fields is forbidden.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "`semantic_conflict`",
+      "source_line": 376,
+      "source_end_line": 376,
+      "source_text": "| `semantic_conflict` | 相同输入快照下的失败阶段 | 针对冲突位置修订；必要时独立复核 | 不改条件地无限重试 |",
+      "excerpt_sha256": "52eeff87bef0674814eb081a18c147fc9ab64bcd4b2acf0a694b1173403c2911",
+      "source_cells": [
+        "`semantic_conflict`",
+        "相同输入快照下的失败阶段",
+        "针对冲突位置修订；必要时独立复核",
+        "不改条件地无限重试"
+      ],
+      "name_zh": "`semantic_conflict`",
+      "id": "HR03",
+      "source_ref": "execution",
+      "name_en": "Semantic conflict",
+      "summary_en": "Revise the failed stage under the same valid input using precise conflict locations and independent review when needed; do not retry indefinitely without changing conditions.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "`version_conflict`",
+      "source_line": 377,
+      "source_end_line": 377,
+      "source_text": "| `version_conflict` | 重新读取的正式头版本 | 重算受影响输出、复核授权 | 将全局头指针回退 |",
+      "excerpt_sha256": "7307ae4a562485cd42e951d7920ae31d7453d6435cedc2d09d23cea779203bba",
+      "source_cells": [
+        "`version_conflict`",
+        "重新读取的正式头版本",
+        "重算受影响输出、复核授权",
+        "将全局头指针回退"
+      ],
+      "name_zh": "`version_conflict`",
+      "id": "HR04",
+      "source_ref": "execution",
+      "name_en": "Version conflict",
+      "summary_en": "Reload the official head, recompute affected outputs and recheck authority; never roll back the global head.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "`field_ownership_violation`",
+      "source_line": 378,
+      "source_end_line": 378,
+      "source_text": "| `field_ownership_violation` | 当前阶段 | 交回有权生产字段的主体 | 提升模型角色权限绕过 |",
+      "excerpt_sha256": "ca7201338cee7af28b187dab51ef28d75617c6d94a2f7895cf7428addf85e8b6",
+      "source_cells": [
+        "`field_ownership_violation`",
+        "当前阶段",
+        "交回有权生产字段的主体",
+        "提升模型角色权限绕过"
+      ],
+      "name_zh": "`field_ownership_violation`",
+      "id": "HR05",
+      "source_ref": "execution",
+      "name_en": "Field ownership violation",
+      "summary_en": "Return the field to its authorized producer; do not widen model permissions to bypass ownership.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "`authorization_denied`",
+      "source_line": 379,
+      "source_end_line": 379,
+      "source_text": "| `authorization_denied` | 权限确认节点 | 申请明确授权或转人工 | 自动扩大权限后重试 |",
+      "excerpt_sha256": "8554da60b25026210c57aaa4bdb9fdbd8903c1cf1d3ec12bfd15dd858565a6d8",
+      "source_cells": [
+        "`authorization_denied`",
+        "权限确认节点",
+        "申请明确授权或转人工",
+        "自动扩大权限后重试"
+      ],
+      "name_zh": "`authorization_denied`",
+      "id": "HR06",
+      "source_ref": "execution",
+      "name_en": "Authorization denied",
+      "summary_en": "Resume at authority confirmation, obtain explicit authorization or escalate; never automatically expand permissions.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "`receiver_unavailable`",
+      "source_line": 380,
+      "source_end_line": 380,
+      "source_text": "| `receiver_unavailable` | 原责任人持有的正式状态 | 重发相同包、选择已批准替代者 | 发送成功即视为接收 |",
+      "excerpt_sha256": "eb8abf50fc83219c6aaa2c9ebead59323d67e330eefd02b9f5bf635987f274c0",
+      "source_cells": [
+        "`receiver_unavailable`",
+        "原责任人持有的正式状态",
+        "重发相同包、选择已批准替代者",
+        "发送成功即视为接收"
+      ],
+      "name_zh": "`receiver_unavailable`",
+      "id": "HR07",
+      "source_ref": "execution",
+      "name_en": "Receiver unavailable",
+      "summary_en": "The original owner retains official state; resend the identical package or use an approved substitute, without equating delivery to acceptance.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "`receipt_unknown`",
+      "source_line": 381,
+      "source_end_line": 381,
+      "source_text": "| `receipt_unknown` | 交接或操作身份对应的账本记录 | 查询已提交回执并恢复本地记录 | 直接新建业务操作 |",
+      "excerpt_sha256": "882fdb9613e4d293ba244f0218df2212535b519e5416579fd6a81a5b7663a222",
+      "source_cells": [
+        "`receipt_unknown`",
+        "交接或操作身份对应的账本记录",
+        "查询已提交回执并恢复本地记录",
+        "直接新建业务操作"
+      ],
+      "name_zh": "`receipt_unknown`",
+      "id": "HR08",
+      "source_ref": "execution",
+      "name_en": "Receipt unknown",
+      "summary_en": "Query the authoritative ledger by original handoff or operation identity and restore its receipt; do not create a new business operation.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "`external_status_unknown`",
+      "source_line": 382,
+      "source_end_line": 382,
+      "source_text": "| `external_status_unknown` | 未决外部操作 | 查询远端真实状态、对账、人工处理 | 假定失败后重复执行 |",
+      "excerpt_sha256": "3d22f9e023a7fcb14c219bf81d8fa878415d4e95b9cd02dbf8850f72e7483d67",
+      "source_cells": [
+        "`external_status_unknown`",
+        "未决外部操作",
+        "查询远端真实状态、对账、人工处理",
+        "假定失败后重复执行"
+      ],
+      "name_zh": "`external_status_unknown`",
+      "id": "HR09",
+      "source_ref": "execution",
+      "name_en": "External status unknown",
+      "summary_en": "Reconcile the pending operation through authoritative remote state, accounting or human review; never infer failure and repeat the effect.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "`evidence_revoked`",
+      "source_line": 383,
+      "source_end_line": 383,
+      "source_text": "| `evidence_revoked` | 最早受影响的事实生产或核验阶段 | 标记依赖失效，局部重核 | 重用撤销前的审批 |",
+      "excerpt_sha256": "5278e7be945ecf5e609d344a57801563e276d247a4ef904e5803005947f096b8",
+      "source_cells": [
+        "`evidence_revoked`",
+        "最早受影响的事实生产或核验阶段",
+        "标记依赖失效，局部重核",
+        "重用撤销前的审批"
+      ],
+      "name_zh": "`evidence_revoked`",
+      "id": "HR10",
+      "source_ref": "execution",
+      "name_en": "Evidence revoked",
+      "summary_en": "Resume at the earliest affected fact-production or verification stage; invalidate dependencies and recheck locally, without reusing revoked approvals.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "`budget_exhausted`",
+      "source_line": 384,
+      "source_end_line": 384,
+      "source_text": "| `budget_exhausted` | 最后正式检查点 | 输出部分完成并升级 | 无限追加预算 |",
+      "excerpt_sha256": "14d82cd51bf27818e1f9efde674e98c4b56770007fb36d043498a422577e9456",
+      "source_cells": [
+        "`budget_exhausted`",
+        "最后正式检查点",
+        "输出部分完成并升级",
+        "无限追加预算"
+      ],
+      "name_zh": "`budget_exhausted`",
+      "id": "HR11",
+      "source_ref": "execution",
+      "name_en": "Budget exhausted",
+      "summary_en": "Stop at the last official checkpoint, report partial completion and escalate; never extend budgets indefinitely.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "`cancelled`",
+      "source_line": 385,
+      "source_end_line": 385,
+      "source_text": "| `cancelled` | 已确认取消边界 | 撤销未来执行资格，查清在途操作 | 假定取消已抹除远端效果 |",
+      "excerpt_sha256": "772fc88cfe2123e85b23cfbfa15d962063860af38edb2415f13679445ded35e1",
+      "source_cells": [
+        "`cancelled`",
+        "已确认取消边界",
+        "撤销未来执行资格，查清在途操作",
+        "假定取消已抹除远端效果"
+      ],
+      "name_zh": "`cancelled`",
+      "id": "HR12",
+      "source_ref": "execution",
+      "name_en": "Cancelled",
+      "summary_en": "Revoke future execution eligibility at the confirmed cancellation boundary and reconcile in-flight operations; cancellation does not erase remote effects.",
+      "integration_status": "pending"
+    }
+  ],
+  "variants": [
+    {
+      "source_id": "正文仍错误，但复制正确事实摘要字段",
+      "source_line": 559,
+      "source_end_line": 559,
+      "source_text": "| 正文仍错误，但复制正确事实摘要字段 | 内容闸拒绝，不能只看字段相等 |",
+      "excerpt_sha256": "8c822391a31c55f94fa8feda8671efa40e1e07efe23e684236d3f55b043f5359",
+      "source_cells": [
+        "正文仍错误，但复制正确事实摘要字段",
+        "内容闸拒绝，不能只看字段相等"
+      ],
+      "condition_zh": "正文仍错误，但复制正确事实摘要字段",
+      "expected_zh": "内容闸拒绝，不能只看字段相等",
+      "id": "HEV01",
+      "source_ref": "execution",
+      "name_en": "Correct digest with incorrect body",
+      "summary_en": "Reject through the content gate; equality of self-reported digest fields cannot prove the actual body is correct.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "正文正确，标题夸大已核查事实",
+      "source_line": 560,
+      "source_end_line": 560,
+      "source_text": "| 正文正确，标题夸大已核查事实 | 标题纳入内容闸，拒绝或修订 |",
+      "excerpt_sha256": "9f2b059f16a0c2eefd3ea671ca64ea28b8bed079baf16693ff92ac17a3e0f16b",
+      "source_cells": [
+        "正文正确，标题夸大已核查事实",
+        "标题纳入内容闸，拒绝或修订"
+      ],
+      "condition_zh": "正文正确，标题夸大已核查事实",
+      "expected_zh": "标题纳入内容闸，拒绝或修订",
+      "id": "HEV02",
+      "source_ref": "execution",
+      "name_en": "Correct body with exaggerated title",
+      "summary_en": "Include the title in semantic verification and reject or revise unsupported claims.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "第一次提交已成功，但发送方没收到回执",
+      "source_line": 561,
+      "source_end_line": 561,
+      "source_text": "| 第一次提交已成功，但发送方没收到回执 | 相同交接身份查询／重发返回原回执，不新建版本 |",
+      "excerpt_sha256": "062f2db9f77a61cf5bfc7182cb5f7f51fc2adff67378d5e63976751b4dbe0091",
+      "source_cells": [
+        "第一次提交已成功，但发送方没收到回执",
+        "相同交接身份查询／重发返回原回执，不新建版本"
+      ],
+      "condition_zh": "第一次提交已成功，但发送方没收到回执",
+      "expected_zh": "相同交接身份查询／重发返回原回执，不新建版本",
+      "id": "HEV03",
+      "source_ref": "execution",
+      "name_en": "Successful commit with lost sender receipt",
+      "summary_en": "Query or resend the same handoff identity and return the original receipt; never create another version.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "两个执行者都基于 v2 提交",
+      "source_line": 562,
+      "source_end_line": 562,
+      "source_text": "| 两个执行者都基于 v2 提交 | 只有满足当前状态与控制权的提交被接受 |",
+      "excerpt_sha256": "01dbc7d2909ddf290df095dc0250e248cc128a08f47f6c720788dd115b6e5b3c",
+      "source_cells": [
+        "两个执行者都基于 v2 提交",
+        "只有满足当前状态与控制权的提交被接受"
+      ],
+      "condition_zh": "两个执行者都基于 v2 提交",
+      "expected_zh": "只有满足当前状态与控制权的提交被接受",
+      "id": "HEV04",
+      "source_ref": "execution",
+      "name_en": "Concurrent candidates from version two",
+      "summary_en": "Accept only the candidate that still meets authoritative state and control-epoch conditions.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "发布已完成但回执超时",
+      "source_line": 563,
+      "source_end_line": 563,
+      "source_text": "| 发布已完成但回执超时 | 记录结果未知，查询原发布意图；不得重复发布 |",
+      "excerpt_sha256": "547fc67ae5b5ca60e1f876a2104440f392ce5827d63d5d808ee29fd35aa544d0",
+      "source_cells": [
+        "发布已完成但回执超时",
+        "记录结果未知，查询原发布意图；不得重复发布"
+      ],
+      "condition_zh": "发布已完成但回执超时",
+      "expected_zh": "记录结果未知，查询原发布意图；不得重复发布",
+      "id": "HEV05",
+      "source_ref": "execution",
+      "name_en": "Publication succeeded but receipt timed out",
+      "summary_en": "Record unknown outcome and query the original publishing intent; do not publish again.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "探针对 v2 的补丁在状态变为 v3 后返回",
+      "source_line": 564,
+      "source_end_line": 564,
+      "source_text": "| 探针对 v2 的补丁在状态变为 v3 后返回 | 当前采纳拒绝，保留旧版本审计用途 |",
+      "excerpt_sha256": "ff2e54b17596a55e4150c62ba3ae3d82c85453daa0d55a9041d64047a46b0682",
+      "source_cells": [
+        "探针对 v2 的补丁在状态变为 v3 后返回",
+        "当前采纳拒绝，保留旧版本审计用途"
+      ],
+      "condition_zh": "探针对 v2 的补丁在状态变为 v3 后返回",
+      "expected_zh": "当前采纳拒绝，保留旧版本审计用途",
+      "id": "HEV06",
+      "source_ref": "execution",
+      "name_en": "Version-two patch arrives at version three",
+      "summary_en": "Reject current adoption while preserving the patch for historical version-two audit.",
+      "integration_status": "pending"
+    }
+  ],
+  "probe_nodes": [
+    {
+      "source_id": "节点零",
+      "source_line": 219,
+      "source_end_line": 223,
+      "source_text": "### 节点零：检查观察资格\n\n固定目标安全域、任务集合、时间窗口、观察截止时间、允许来源、访问权限、脱敏策略、预算和输出目的。没有明确权限，不追踪越域引用，不抓取未知链接，不把业务凭证转交给其他模型或提供方。\n\n静态审查可从文档开始；真实观测必须注明数据来源与采集方式。遇到未知协议或无法迁移的契约，返回不支持或部分可观察，不自行猜测字段含义。",
+      "excerpt_sha256": "c3423f96b81a048c16c8eb70264576c3a3f58616aff0ad8ddd6cbad1bd306681",
+      "name_zh": "检查观察资格",
+      "id": "HP00",
+      "source_ref": "probe",
+      "name_en": "Check observation authority",
+      "summary_en": "Declare operating mode, tenant/task/window, authorized sources, observation cutoff and budgets. Check read permissions and disclose invisible material; do not infer authority from data availability. Do not follow cross-domain or unknown links without explicit authority or share business credentials with other models. Declare unsupported or partially observable when protocol semantics cannot be mapped.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点一",
+      "source_line": 225,
+      "source_end_line": 229,
+      "source_text": "### 节点一：采集与保留原始证据\n\n读取原始事件、正式回执索引、版本清单与工件引用；记录分页游标、来源水位和采集截止点，避免遗漏分页或恢复后重复计算。原始证据与归一化视图分开存储。\n\n只读适配器必须真正不产生业务副作用。查询接口若会触发重试、补单或状态迁移，就不能作为普通观察来源使用。",
+      "excerpt_sha256": "bc30728fba0e2cb6702174cceeea755ac4beb9a7ea4510a98e8d74eb87e315f8",
+      "name_zh": "采集与保留原始证据",
+      "id": "HP01",
+      "source_ref": "probe",
+      "name_en": "Collect and preserve evidence",
+      "summary_en": "Read official manifests, authenticated receipts, immutable artifacts and external evidence. Retain provenance, identity, content digests and original timestamps; mutable material must not masquerade as a historical snapshot. Preserve pagination cursors, source watermarks and cutoffs, and separate raw evidence from normalized views. A query that triggers retry, settlement or business state changes is not an admissible read-only adapter.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点二",
+      "source_line": 231,
+      "source_end_line": 237,
+      "source_text": "### 节点二：去重与时间处理\n\n按来源和 `event_id` 去重；同身份同内容是重复投递，同身份不同内容是完整性异常。业务决策按 `handoff_id` 归并，外部效果按 `operation_id` 和远端真实交易／发布身份归并，不能把多个回执副本算成多次效果。\n\n版本和因果关系优先于日志到达顺序。跨节点时间没有可信同步或误差范围时，不计算精确跨节点时延；负时延不能直接截断为零。能够使用同一可信节点或单调时钟测量时，记录所用计时方式。\n\n实时报告设置迟到容忍窗口和观察水位，未收齐的结果标为暂定。迟到事件到达后更新报告版本和变更原因，保留旧报告的观察截止点。取消、超时与长期未完成项单独统计，不能静默从分母消失。",
+      "excerpt_sha256": "5379b666e17bab4afecc4ae53abb3c1f4ae5e566436222b6de34d46488e747fa",
+      "name_zh": "去重与时间处理",
+      "id": "HP02",
+      "source_ref": "probe",
+      "name_en": "Deduplicate and handle time",
+      "summary_en": "Deduplicate by scoped event identity, flag same-ID conflicting payloads and track source watermarks. Reconstruct causal order and distinguish occurred, persisted and ingested time; incompatible clocks cannot yield invented precise latency. Retain provisional reports and late-event revisions. Cancellation, timeouts and long-running unresolved items must remain visible instead of disappearing from denominators.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点三",
+      "source_line": 239,
+      "source_end_line": 250,
+      "source_text": "### 节点三：重建四条关联链\n\n| 链 | 重建依据 | 必须发现的异常 |\n|---|---|---|\n| 版本链 | 输入／输出版本、清单摘要、父版本关系、正式回执 | 无权威提交的推进、缺失版本、重复后继、错误回退 |\n| 责任链 | 已认证接收者、正式提交、当前责任、控制权代次 | 发送即转责、长期无人负责、重叠有效资格、旧资格晚到 |\n| 证据链 | 事实身份、生产者、来源、工件摘要、核验版本 | 来源丢失、失效事实、旧审批、内容与声明不一致 |\n| 外部操作链 | 业务意图、载荷、发送、远端回执、查证和补偿 | 同键不同载荷、重复效果、长期未知、未闭合补偿 |\n\n缺失事件时，先查正式快照和回执索引。查到原本存在的权威记录，可以追加恢复的观测引用；查不到就保留断点，不能根据版本差推测并伪造每次历史提交。\n\n存在分支时按分支和父版本重建依赖图。只有带明确聚合规则的提交才视为合并，不能把两条分支简单排序成线性链。",
+      "excerpt_sha256": "85269cc1d498561f8c3be0bc018cb23e201383331c429455572c4f13751a47a2",
+      "name_zh": "重建四条关联链",
+      "id": "HP03",
+      "source_ref": "probe",
+      "name_en": "Reconstruct four linked chains",
+      "summary_en": "Rebuild official versions, responsibility, evidence dependencies and external operations separately. Preserve provisional outputs, acceptance opinions, committed receipts and external business receipts as distinct facts; disclose broken or unknown links. Query official snapshots and receipt indexes before declaring gaps, but never fabricate missing commits from version differences. Reconstruct branches as a parent-linked dependency graph and recognize merges only under explicit aggregation rules.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点四",
+      "source_line": 252,
+      "source_end_line": 256,
+      "source_text": "### 节点四：运行探针检查\n\n每个检查输出“通过、失败、未知、不适用”，同时记录检查规则、目标工件、证据、执行时间与限制。来源标签由可信采集路径确定，不能接受日志自称“我是权威系统”。\n\n工件实际摘要应从固定版本内容重算。语义检查须读取实际关键内容及其支撑事实；只看到两个摘要字段相等，最多支持字段一致，不能支持稿件真实正确。标题、摘要、表格、附件和发布载荷都应按业务契约纳入范围。",
+      "excerpt_sha256": "6ea93b452841d4a99ed28f01fc59ac6a32286788590d58e0102b025b9b21e91d",
+      "name_zh": "运行探针检查",
+      "id": "HP04",
+      "source_ref": "probe",
+      "name_en": "Run evidence-bounded checks",
+      "summary_en": "Evaluate contract, scope, version, ownership, validity, content, acceptance, recovery, idempotence, patches and collection integrity using authenticated evidence; distinguish confirmed violation, unknown and not applicable. Every check records target, rule, evidence, execution time and limitations. Trust source identity only through authenticated collection; recompute actual immutable content and read supporting facts rather than comparing two self-reported digest fields.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点五",
+      "source_line": 258,
+      "source_end_line": 262,
+      "source_text": "### 节点五：计算指标并生成缺口\n\n先冻结指标适用对象，再计算分子、分母、未知项与覆盖率。每个比率同时返回计数；缺少分母来源时返回不可计算，不给出看似精确的百分比。\n\n指标只描述材料支持的结论。频繁拒绝可能意味着上游质量差，也可能意味着闸门有效，必须与错误逃逸和最终结果联合解释。",
+      "excerpt_sha256": "d300034d85f11a43c5872d6e598e9efe93130df475d311c0e815761e354819f7",
+      "name_zh": "计算指标并生成缺口",
+      "id": "HP05",
+      "source_ref": "probe",
+      "name_en": "Compute metrics and gaps",
+      "summary_en": "Freeze scope, units, cohorts, cutoff and definitions; report numerator, denominator, unknown, pending, coverage and evidence. Unknown populations make metrics uncomputable, not zero. Interpret frequent rejection jointly with escaped errors and final outcomes: it may indicate poor upstream quality or effective gates, not a proven cause by itself.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点六",
+      "source_line": 264,
+      "source_end_line": 268,
+      "source_text": "### 节点六：有界补全\n\n按“已有账本→固定工件→权威来源只读查询→确定性派生”的顺序查证，具体来源优先级由业务契约决定。不同权威在不同字段上有不同职责；银行回执不能证明审批合规，审批票不能证明钱已到账。\n\n补全达到轮数、时间、调用数或费用限制即停止，并报告剩余缺口。冲突来源不能用多数投票硬凑成一致事实；应保留版本、时间和权威范围，交有权阶段裁定。",
+      "excerpt_sha256": "69d10ec0d002eb193efc18d74f1896b6edf8ac1dd92fcbfb06496390fcc92a20",
+      "name_zh": "有界补全",
+      "id": "HP06",
+      "source_ref": "probe",
+      "name_en": "Bounded supplementation",
+      "summary_en": "Perform only authorized read-only queries or deterministic derivation for requested fields and exact targets. Stop on deadline, cost or round limits; return evidence-backed observations or explicit unknown without business effects. Prefer existing ledgers, fixed artifacts, authorized source queries and then deterministic derivation under the business contract. Preserve conflicting sources with their versions and authority scope; neither majority voting nor one authority proves facts outside that authority.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "节点七",
+      "source_line": 270,
+      "source_end_line": 274,
+      "source_text": "### 节点七：交付并观察反馈\n\n离线模式交付报告和可复算指标；实时模式交付带观察截止点的告警；交互模式返回绑定请求的补丁。仅收到执行流程的正式采纳回执后，才统计为已采纳。\n\n执行流程如何处置，由它自己的权限和策略决定。未收到反馈应标为待确认，不写成已修复。探针发现历史错误后，修复通常需要新业务事件，而不是改写旧日志。",
+      "excerpt_sha256": "0b4b430c90b3324ec40214061502537a8f15228d306850150a93723e3e95012c",
+      "name_zh": "交付并观察反馈",
+      "id": "HP07",
+      "source_ref": "probe",
+      "name_en": "Deliver and track adoption",
+      "summary_en": "Report facts, uncertainty, hypotheses, recommendations and limitations. Bind patches to target and provenance, await execution-side adoption receipts and revise reports for late evidence; reporting or patch delivery alone proves no business repair.",
+      "integration_status": "pending"
+    }
+  ],
+  "probe_checks": [
+    {
+      "source_id": "契约完整性",
+      "source_line": 280,
+      "source_end_line": 280,
+      "source_text": "| 契约完整性 | 阶段输入、输出、接收者、失败策略 | 固定版本契约与字段所有权规则 | 边界不明、必填缺失、未知扩展 |",
+      "excerpt_sha256": "6946a1166a45089e12e70166f6cf36131d4980c5dd1611b7a304e2fd8fc6bd9b",
+      "source_cells": [
+        "契约完整性",
+        "阶段输入、输出、接收者、失败策略",
+        "固定版本契约与字段所有权规则",
+        "边界不明、必填缺失、未知扩展"
+      ],
+      "name_zh": "契约完整性",
+      "id": "HCP01",
+      "source_ref": "probe",
+      "name_en": "Contract completeness",
+      "summary_en": "Inspect fixed stage input/output, receiver and failure policy with ownership rules; identify unclear boundaries, missing mandatory fields and unknown extensions.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "作用域一致性",
+      "source_line": 281,
+      "source_end_line": 281,
+      "source_text": "| 作用域一致性 | 任务、安全域、资源、接收者 | 已认证身份与授权范围 | 跨任务拼接、越域读取或交接 |",
+      "excerpt_sha256": "7478fde20fbbde91c2826288b75cdccee52bd6f590c147eead4dd7b581a90f31",
+      "source_cells": [
+        "作用域一致性",
+        "任务、安全域、资源、接收者",
+        "已认证身份与授权范围",
+        "跨任务拼接、越域读取或交接"
+      ],
+      "name_zh": "作用域一致性",
+      "id": "HCP02",
+      "source_ref": "probe",
+      "name_en": "Scope consistency",
+      "summary_en": "Compare authenticated identity and authorization with task, security domain, resource and receiver; detect cross-task joins, cross-domain reads and handoffs.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "版本连续性",
+      "source_line": 282,
+      "source_end_line": 282,
+      "source_text": "| 版本连续性 | 候选和正式提交 | 清单摘要、父版本与权威回执 | 无依据推进、双重提交、错误回退 |",
+      "excerpt_sha256": "72b9d23fae0735d64e5f4e4e00d842b1c52d48df3f21370dc5b15e7e8e0ad70f",
+      "source_cells": [
+        "版本连续性",
+        "候选和正式提交",
+        "清单摘要、父版本与权威回执",
+        "无依据推进、双重提交、错误回退"
+      ],
+      "name_zh": "版本连续性",
+      "id": "HCP03",
+      "source_ref": "probe",
+      "name_en": "Version continuity",
+      "summary_en": "Use manifests, parent lineage and authoritative receipts to detect unsupported advancement, duplicate commit and incorrect rollback.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "字段所有权",
+      "source_line": 283,
+      "source_end_line": 283,
+      "source_text": "| 字段所有权 | 阶段增量和事实生产者 | 身份、契约、增量内容 | 编辑覆盖核查结果、伪造审批 |",
+      "excerpt_sha256": "9541fc098b8559ba0d259e44de8c0870aef33fe46c520c326a212dfb62c52044",
+      "source_cells": [
+        "字段所有权",
+        "阶段增量和事实生产者",
+        "身份、契约、增量内容",
+        "编辑覆盖核查结果、伪造审批"
+      ],
+      "name_zh": "字段所有权",
+      "id": "HCP04",
+      "source_ref": "probe",
+      "name_en": "Field ownership",
+      "summary_en": "Compare authenticated producer, stage contract and delta; detect edits overriding verified facts or fabricated approval.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "事实有效性",
+      "source_line": 284,
+      "source_end_line": 284,
+      "source_text": "| 事实有效性 | 实际消费的事实集合 | 事实版本、适用范围、撤销和替代记录 | 旧结论复活、过期事实继续使用 |",
+      "excerpt_sha256": "fbd26fbc111549753d4a7a8de036baea35d9fd2dd7820f5ab3cb04668d2cc57e",
+      "source_cells": [
+        "事实有效性",
+        "实际消费的事实集合",
+        "事实版本、适用范围、撤销和替代记录",
+        "旧结论复活、过期事实继续使用"
+      ],
+      "name_zh": "事实有效性",
+      "id": "HCP05",
+      "source_ref": "probe",
+      "name_en": "Fact validity",
+      "summary_en": "Check consumed versions, applicability, revocation and supersession records; detect obsolete or expired facts returning as current truth.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "工件完整性",
+      "source_line": 285,
+      "source_end_line": 285,
+      "source_text": "| 工件完整性 | 实际工件内容与声明摘要 | 不可变内容、重算规则和审批摘要 | 内容被替换、摘要自报未复算 |",
+      "excerpt_sha256": "f4d5b2512f39cc4899686a8be0a89e6fe8f89992c595ed564e66023417276227",
+      "source_cells": [
+        "工件完整性",
+        "实际工件内容与声明摘要",
+        "不可变内容、重算规则和审批摘要",
+        "内容被替换、摘要自报未复算"
+      ],
+      "name_zh": "工件完整性",
+      "id": "HCP06",
+      "source_ref": "probe",
+      "name_en": "Artifact integrity",
+      "summary_en": "Read immutable content and recompute under declared rules against approval digests; detect replaced content or unchecked self-reported digests.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "内容支持关系",
+      "source_line": 286,
+      "source_end_line": 286,
+      "source_text": "| 内容支持关系 | 标题、正文、表格、关键载荷 | 实际内容、支撑事实、核验范围 | 新摘要配旧正文、限定条件丢失 |",
+      "excerpt_sha256": "221169a1e7750d02dcafe8f3f148ab4d7f927b58fcc61a1e548bb2764ee59cd7",
+      "source_cells": [
+        "内容支持关系",
+        "标题、正文、表格、关键载荷",
+        "实际内容、支撑事实、核验范围",
+        "新摘要配旧正文、限定条件丢失"
+      ],
+      "name_zh": "内容支持关系",
+      "id": "HCP07",
+      "source_ref": "probe",
+      "name_en": "Content support",
+      "summary_en": "Inspect actual titles, body, tables and payload against supporting facts and review coverage; detect old content with new digest or lost qualifications.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "接收成立性",
+      "source_line": 287,
+      "source_end_line": 287,
+      "source_text": "| 接收成立性 | 接收方签收与责任转移 | 验收身份、正式提交、控制权记录 | 把发送成功当接收成功 |",
+      "excerpt_sha256": "6b0cfb113ef3dd541fcefc22e7039430bb5a67bfbc8c350d4bdf4adc74322771",
+      "source_cells": [
+        "接收成立性",
+        "接收方签收与责任转移",
+        "验收身份、正式提交、控制权记录",
+        "把发送成功当接收成功"
+      ],
+      "name_zh": "接收成立性",
+      "id": "HCP08",
+      "source_ref": "probe",
+      "name_en": "Established acceptance",
+      "summary_en": "Require authenticated acceptance, official commit and control records; distinguish successful delivery from responsibility transfer.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "恢复正确性",
+      "source_line": 288,
+      "source_end_line": 288,
+      "source_text": "| 恢复正确性 | 失败、检查点和重试范围 | 最后正式回执、证据有效性、恢复事件 | 从半成品恢复、不必要地全链重跑 |",
+      "excerpt_sha256": "2ad8d7fec4e93150c868ef3e62f327d8401c152ed013fa733e93c7512afb0d52",
+      "source_cells": [
+        "恢复正确性",
+        "失败、检查点和重试范围",
+        "最后正式回执、证据有效性、恢复事件",
+        "从半成品恢复、不必要地全链重跑"
+      ],
+      "name_zh": "恢复正确性",
+      "id": "HCP09",
+      "source_ref": "probe",
+      "name_en": "Correct recovery",
+      "summary_en": "Use the last committed receipt, still-valid evidence and recovery history; detect provisional recovery points or unnecessary full-chain reruns.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "幂等与查证",
+      "source_line": 289,
+      "source_end_line": 289,
+      "source_text": "| 幂等与查证 | 外部业务操作 | 稳定意图身份、载荷、远端效果证明 | 重复效果、同键异载荷、未知即重发 |",
+      "excerpt_sha256": "e799e1ded3ab2fcec079d8f0c0c2eee953fa76b203900bdcc646ce50c3244757",
+      "source_cells": [
+        "幂等与查证",
+        "外部业务操作",
+        "稳定意图身份、载荷、远端效果证明",
+        "重复效果、同键异载荷、未知即重发"
+      ],
+      "name_zh": "幂等与查证",
+      "id": "HCP10",
+      "source_ref": "probe",
+      "name_en": "Idempotence and reconciliation",
+      "summary_en": "Use stable business intent, payload and authoritative remote effects; detect duplicate effects, same-key changed payload or blind retry of unknown outcomes.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "补全可信性",
+      "source_line": 290,
+      "source_end_line": 290,
+      "source_text": "| 补全可信性 | 补全请求、补丁和采纳 | 来源、目标版本、字段白名单、采纳回执 | 推断冒充事实、过期补丁被接受 |",
+      "excerpt_sha256": "0af1ce711166dd44828ce8ace6e2dac17efae1d5f2b3680372392918b6c78246",
+      "source_cells": [
+        "补全可信性",
+        "补全请求、补丁和采纳",
+        "来源、目标版本、字段白名单、采纳回执",
+        "推断冒充事实、过期补丁被接受"
+      ],
+      "name_zh": "补全可信性",
+      "id": "HCP11",
+      "source_ref": "probe",
+      "name_en": "Trustworthy supplementation",
+      "summary_en": "Compare request, target version, provenance, whitelist and adoption receipt; detect inference presented as fact or adopted stale patches.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "观察完整性",
+      "source_line": 291,
+      "source_end_line": 291,
+      "source_text": "| 观察完整性 | 采集流与应有记录 | 权威索引、序号、水位、分页范围 | 事件缺失、乱序未处理、自身失明 |",
+      "excerpt_sha256": "ba0c3aaa8dfd1605e3af7e1ab09e59564418a320cf35d1b168f3de26a7a68fe7",
+      "source_cells": [
+        "观察完整性",
+        "采集流与应有记录",
+        "权威索引、序号、水位、分页范围",
+        "事件缺失、乱序未处理、自身失明"
+      ],
+      "name_zh": "观察完整性",
+      "id": "HCP12",
+      "source_ref": "probe",
+      "name_en": "Observation completeness",
+      "summary_en": "Compare collection against independent authoritative index, sequences, watermarks and page ranges; disclose lost events, untreated disorder and observer blind spots.",
+      "integration_status": "pending"
+    }
+  ],
+  "metrics": [
+    {
+      "source_id": "交接尝试接收率",
+      "source_line": 309,
+      "source_end_line": 309,
+      "source_text": "| 交接尝试接收率 | 已正式接收的唯一候选包数 ÷ 已有终局接收／拒绝决定的唯一候选包数 | 未决候选另报数量与年龄；仅有验收意见不算正式接收 |",
+      "excerpt_sha256": "727c19f7d3346ec5b04fc600075f748499b86b3d9d07cf6ef8b5ba51e424cadf",
+      "source_cells": [
+        "交接尝试接收率",
+        "已正式接收的唯一候选包数 ÷ 已有终局接收／拒绝决定的唯一候选包数",
+        "未决候选另报数量与年龄；仅有验收意见不算正式接收"
+      ],
+      "name_zh": "交接尝试接收率",
+      "formula_zh": "已正式接收的唯一候选包数 ÷ 已有终局接收／拒绝决定的唯一候选包数",
+      "boundary_zh": "未决候选另报数量与年龄；仅有验收意见不算正式接收",
+      "id": "HCM01",
+      "source_ref": "probe",
+      "name_en": "Handoff attempt acceptance rate",
+      "summary_en": "Formally accepted unique candidates / unique candidates with final accept-or-reject decisions. Report pending counts and ages separately; acceptance opinion alone is not formal acceptance.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "阶段首次交接通过率",
+      "source_line": 310,
+      "source_end_line": 310,
+      "source_text": "| 阶段首次交接通过率 | 第一份候选就被正式接收的阶段实例数 ÷ 第一份候选已有终局决定的阶段实例数 | 这是交接首过，不是包含提交前失败的整体执行首过 |",
+      "excerpt_sha256": "bc0e7b78c0fc04dd54faf80adb127717103d27c2672232922b71224d5e688006",
+      "source_cells": [
+        "阶段首次交接通过率",
+        "第一份候选就被正式接收的阶段实例数 ÷ 第一份候选已有终局决定的阶段实例数",
+        "这是交接首过，不是包含提交前失败的整体执行首过"
+      ],
+      "name_zh": "阶段首次交接通过率",
+      "formula_zh": "第一份候选就被正式接收的阶段实例数 ÷ 第一份候选已有终局决定的阶段实例数",
+      "boundary_zh": "这是交接首过，不是包含提交前失败的整体执行首过",
+      "id": "HCM02",
+      "source_ref": "probe",
+      "name_en": "Stage first-handoff pass rate",
+      "summary_en": "Stage instances whose first candidate was formally accepted / instances whose first candidate has a terminal decision. This excludes pre-submission execution failures and is not overall execution first-pass rate.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "阶段最终交接通过率",
+      "source_line": 311,
+      "source_end_line": 311,
+      "source_text": "| 阶段最终交接通过率 | 在指定结算窗口内最终被接收的阶段实例数 ÷ 应在窗口内结算的阶段实例数 | 按契约截止结算，失败和超时不能被剔除；未到期另列 |",
+      "excerpt_sha256": "770ab024ce4f419869eff03fe1dd2e7b00d0914dd811910f2a7dbda1a098c8f8",
+      "source_cells": [
+        "阶段最终交接通过率",
+        "在指定结算窗口内最终被接收的阶段实例数 ÷ 应在窗口内结算的阶段实例数",
+        "按契约截止结算，失败和超时不能被剔除；未到期另列"
+      ],
+      "name_zh": "阶段最终交接通过率",
+      "formula_zh": "在指定结算窗口内最终被接收的阶段实例数 ÷ 应在窗口内结算的阶段实例数",
+      "boundary_zh": "按契约截止结算，失败和超时不能被剔除；未到期另列",
+      "id": "HCM03",
+      "source_ref": "probe",
+      "name_en": "Stage final-handoff pass rate",
+      "summary_en": "Instances finally accepted within the settlement window / instances due to settle in that window. Keep failures and timeouts in the denominator and list not-yet-due work separately.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "交接提交放大率",
+      "source_line": 312,
+      "source_end_line": 312,
+      "source_text": "| 交接提交放大率 | 唯一候选包数 ÷ 至少提交过候选包的阶段实例数 | 不含传输重发；不能替代模型调用、算力或费用放大率 |",
+      "excerpt_sha256": "bdd7265a3184b3141c3b1ab306eb1186946f4fa3c1de053867cd5f1695001372",
+      "source_cells": [
+        "交接提交放大率",
+        "唯一候选包数 ÷ 至少提交过候选包的阶段实例数",
+        "不含传输重发；不能替代模型调用、算力或费用放大率"
+      ],
+      "name_zh": "交接提交放大率",
+      "formula_zh": "唯一候选包数 ÷ 至少提交过候选包的阶段实例数",
+      "boundary_zh": "不含传输重发；不能替代模型调用、算力或费用放大率",
+      "id": "HCM04",
+      "source_ref": "probe",
+      "name_en": "Handoff submission amplification",
+      "summary_en": "Unique candidate packages / stage instances that submitted at least one candidate. Exclude transport retries; this is not model-call, compute or financial amplification.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "过期输入拦截率",
+      "source_line": 313,
+      "source_end_line": 313,
+      "source_text": "| 过期输入拦截率 | 提交前被拦截的已确认过期候选数 ÷ 经独立核查确认过期的候选总数 | 分母同时包含已拦截与已逃逸；必须报告核查覆盖率 |",
+      "excerpt_sha256": "bedfa3b80c207b90f9c30a0546498707b3cb112703ac59b890ec48ded64fb092",
+      "source_cells": [
+        "过期输入拦截率",
+        "提交前被拦截的已确认过期候选数 ÷ 经独立核查确认过期的候选总数",
+        "分母同时包含已拦截与已逃逸；必须报告核查覆盖率"
+      ],
+      "name_zh": "过期输入拦截率",
+      "formula_zh": "提交前被拦截的已确认过期候选数 ÷ 经独立核查确认过期的候选总数",
+      "boundary_zh": "分母同时包含已拦截与已逃逸；必须报告核查覆盖率",
+      "id": "HCM05",
+      "source_ref": "probe",
+      "name_en": "Stale-input interception rate",
+      "summary_en": "Confirmed stale candidates blocked before commit / all stale candidates established by independent inspection, including escapes. Report inspection coverage.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "旧事实逃逸率",
+      "source_line": 314,
+      "source_end_line": 314,
+      "source_text": "| 旧事实逃逸率 | 正式接收后确认使用失效事实的工件数 ÷ 已完成事实有效性检查的正式工件数 | 未检查工件另列；只查摘要不能当成已完成内容检查 |",
+      "excerpt_sha256": "3bf18247dd45a2f69c12ec4e1ef54673cb628c183c17e0640706bbaff6481568",
+      "source_cells": [
+        "旧事实逃逸率",
+        "正式接收后确认使用失效事实的工件数 ÷ 已完成事实有效性检查的正式工件数",
+        "未检查工件另列；只查摘要不能当成已完成内容检查"
+      ],
+      "name_zh": "旧事实逃逸率",
+      "formula_zh": "正式接收后确认使用失效事实的工件数 ÷ 已完成事实有效性检查的正式工件数",
+      "boundary_zh": "未检查工件另列；只查摘要不能当成已完成内容检查",
+      "id": "HCM06",
+      "source_ref": "probe",
+      "name_en": "Invalid-fact escape rate",
+      "summary_en": "Accepted artifacts later confirmed to use invalid facts / accepted artifacts with completed fact-validity checks. List unchecked artifacts; digest-only checking does not establish content review.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "内容核验覆盖率",
+      "source_line": 315,
+      "source_end_line": 315,
+      "source_text": "| 内容核验覆盖率 | 已完成契约要求内容检查的关键工件数 ÷ 契约要求检查的关键工件数 | 标题、附件和载荷等须按所声明范围覆盖 |",
+      "excerpt_sha256": "ae2a99f731caadd2e3b6845dc8a23e4f9853352d531d5039e7e669b127490d48",
+      "source_cells": [
+        "内容核验覆盖率",
+        "已完成契约要求内容检查的关键工件数 ÷ 契约要求检查的关键工件数",
+        "标题、附件和载荷等须按所声明范围覆盖"
+      ],
+      "name_zh": "内容核验覆盖率",
+      "formula_zh": "已完成契约要求内容检查的关键工件数 ÷ 契约要求检查的关键工件数",
+      "boundary_zh": "标题、附件和载荷等须按所声明范围覆盖",
+      "id": "HCM07",
+      "source_ref": "probe",
+      "name_en": "Content verification coverage",
+      "summary_en": "Critical artifacts with completed contract-required content checks / critical artifacts requiring such checks. Include declared title, attachment and payload scope.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "来源链完整率",
+      "source_line": 316,
+      "source_end_line": 316,
+      "source_text": "| 来源链完整率 | 具有完整、可展开且身份可验证来源链的必需事实数 ÷ 契约要求的必需事实数 | 完整来源链不等于事实真实或内容正确 |",
+      "excerpt_sha256": "a0e814c6a108398ee7ba6eef4c9d8ce9ce5ab4e5352a395a911e288d001286c5",
+      "source_cells": [
+        "来源链完整率",
+        "具有完整、可展开且身份可验证来源链的必需事实数 ÷ 契约要求的必需事实数",
+        "完整来源链不等于事实真实或内容正确"
+      ],
+      "name_zh": "来源链完整率",
+      "formula_zh": "具有完整、可展开且身份可验证来源链的必需事实数 ÷ 契约要求的必需事实数",
+      "boundary_zh": "完整来源链不等于事实真实或内容正确",
+      "id": "HCM08",
+      "source_ref": "probe",
+      "name_en": "Provenance-chain completeness",
+      "summary_en": "Required facts with complete, expandable, authenticated provenance / contract-required facts. Complete provenance does not establish factual truth or content correctness.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "工件摘要复核覆盖率",
+      "source_line": 317,
+      "source_end_line": 317,
+      "source_text": "| 工件摘要复核覆盖率 | 从实际固定内容重算过摘要的必需工件数 ÷ 应复核的必需工件数 | 摘要相同与摘要已复核分别统计 |",
+      "excerpt_sha256": "b578ed65c8e08a3e3222bc2ad547098f6a7aa558ac1299e697ec3e14fcb051e9",
+      "source_cells": [
+        "工件摘要复核覆盖率",
+        "从实际固定内容重算过摘要的必需工件数 ÷ 应复核的必需工件数",
+        "摘要相同与摘要已复核分别统计"
+      ],
+      "name_zh": "工件摘要复核覆盖率",
+      "formula_zh": "从实际固定内容重算过摘要的必需工件数 ÷ 应复核的必需工件数",
+      "boundary_zh": "摘要相同与摘要已复核分别统计",
+      "id": "HCM09",
+      "source_ref": "probe",
+      "name_en": "Artifact digest recheck coverage",
+      "summary_en": "Required artifacts whose digest was recomputed from actual fixed content / artifacts requiring recheck. Distinguish digest equality from independent recomputation.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "局部恢复成功率",
+      "source_line": 318,
+      "source_end_line": 318,
+      "source_text": "| 局部恢复成功率 | 在时限内复用有效上游成果并只重做必要部分的恢复事件数 ÷ 已到结算期限的适用恢复事件数 | 上游已经失效的事件单独分类，不强求只重做当前一棒 |",
+      "excerpt_sha256": "8969b602a09704d2d8624c2999411f2ae46fca51f5fcdf0872f78cbdacf06cc2",
+      "source_cells": [
+        "局部恢复成功率",
+        "在时限内复用有效上游成果并只重做必要部分的恢复事件数 ÷ 已到结算期限的适用恢复事件数",
+        "上游已经失效的事件单独分类，不强求只重做当前一棒"
+      ],
+      "name_zh": "局部恢复成功率",
+      "formula_zh": "在时限内复用有效上游成果并只重做必要部分的恢复事件数 ÷ 已到结算期限的适用恢复事件数",
+      "boundary_zh": "上游已经失效的事件单独分类，不强求只重做当前一棒",
+      "id": "HCM10",
+      "source_ref": "probe",
+      "name_en": "Local recovery success rate",
+      "summary_en": "Applicable recoveries settled by deadline that reused valid upstream work and redid only necessary work / applicable recoveries due to settle. Classify invalid upstream work separately rather than requiring current-stage-only recovery.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "有效检查点复用率",
+      "source_line": 319,
+      "source_end_line": 319,
+      "source_text": "| 有效检查点复用率 | 恢复时实际复用的仍有效前序阶段数 ÷ 恢复时可复用的有效前序阶段数 | 按恢复事件记录候选集合，避免不同链长误导比较 |",
+      "excerpt_sha256": "6ed287c6ccaae2ae3196e298aec1abcfdf36c417915a770a6707b549e31cc1ed",
+      "source_cells": [
+        "有效检查点复用率",
+        "恢复时实际复用的仍有效前序阶段数 ÷ 恢复时可复用的有效前序阶段数",
+        "按恢复事件记录候选集合，避免不同链长误导比较"
+      ],
+      "name_zh": "有效检查点复用率",
+      "formula_zh": "恢复时实际复用的仍有效前序阶段数 ÷ 恢复时可复用的有效前序阶段数",
+      "boundary_zh": "按恢复事件记录候选集合，避免不同链长误导比较",
+      "id": "HCM11",
+      "source_ref": "probe",
+      "name_en": "Valid checkpoint reuse rate",
+      "summary_en": "Still-valid prior stages actually reused during recovery / valid prior stages available for reuse. Record the eligible cohort for each recovery to avoid chain-length bias.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "非法版本推进数",
+      "source_line": 327,
+      "source_end_line": 327,
+      "source_text": "| 非法版本推进数 | 确认没有合法接收与正式提交依据的版本推进数量 | 缺失日志先标未知并查账本，不直接定罪 |",
+      "excerpt_sha256": "1354c913b0d40e9ad92750136b3ab061de15a200ca851116b2d91a29a33499be",
+      "source_cells": [
+        "非法版本推进数",
+        "确认没有合法接收与正式提交依据的版本推进数量",
+        "缺失日志先标未知并查账本，不直接定罪"
+      ],
+      "name_zh": "非法版本推进数",
+      "formula_zh": "确认没有合法接收与正式提交依据的版本推进数量",
+      "boundary_zh": "缺失日志先标未知并查账本，不直接定罪",
+      "id": "HCM12",
+      "source_ref": "probe",
+      "name_en": "Illegal version advancement count",
+      "summary_en": "Count version advances confirmed to lack lawful acceptance and official commit evidence. Missing logs require unknown status and ledger lookup, not automatic conviction.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "重复正式提交数",
+      "source_line": 328,
+      "source_end_line": 328,
+      "source_text": "| 重复正式提交数 | 同一候选包对应多次正式提交的额外提交数 | 回执重复投递不算重复提交 |",
+      "excerpt_sha256": "f07bf7ad7e1ed59bf45dffe1ec9d97903a147e19719251730a9efee6e5403441",
+      "source_cells": [
+        "重复正式提交数",
+        "同一候选包对应多次正式提交的额外提交数",
+        "回执重复投递不算重复提交"
+      ],
+      "name_zh": "重复正式提交数",
+      "formula_zh": "同一候选包对应多次正式提交的额外提交数",
+      "boundary_zh": "回执重复投递不算重复提交",
+      "id": "HCM13",
+      "source_ref": "probe",
+      "name_en": "Duplicate official commit count",
+      "summary_en": "Count additional official commits for the same immutable candidate. Duplicate delivery of a receipt does not count.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "越权字段提交数",
+      "source_line": 329,
+      "source_end_line": 329,
+      "source_text": "| 越权字段提交数 | 已正式接收且确认越过字段所有权的增量数量 | 被成功拦截的尝试另计 |",
+      "excerpt_sha256": "935b7ffe75ea8a87b7147660b53e289f1e3f8709aa817531b20227897d0ffb26",
+      "source_cells": [
+        "越权字段提交数",
+        "已正式接收且确认越过字段所有权的增量数量",
+        "被成功拦截的尝试另计"
+      ],
+      "name_zh": "越权字段提交数",
+      "formula_zh": "已正式接收且确认越过字段所有权的增量数量",
+      "boundary_zh": "被成功拦截的尝试另计",
+      "id": "HCM14",
+      "source_ref": "probe",
+      "name_en": "Unauthorized field commit count",
+      "summary_en": "Count formally accepted deltas confirmed to violate field ownership. Report blocked attempts separately.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "责任转移证据完整率",
+      "source_line": 330,
+      "source_end_line": 330,
+      "source_text": "| 责任转移证据完整率 | 同时有合法验收者、提交回执和对应控制权记录的转移数 ÷ 应发生的正式转移数 | 计划接收者不能替代实际接收者 |",
+      "excerpt_sha256": "4ce4f2f4f0efbf3a8899ea915df6898835dbe0b03594c5e4273faa78affdb9e0",
+      "source_cells": [
+        "责任转移证据完整率",
+        "同时有合法验收者、提交回执和对应控制权记录的转移数 ÷ 应发生的正式转移数",
+        "计划接收者不能替代实际接收者"
+      ],
+      "name_zh": "责任转移证据完整率",
+      "formula_zh": "同时有合法验收者、提交回执和对应控制权记录的转移数 ÷ 应发生的正式转移数",
+      "boundary_zh": "计划接收者不能替代实际接收者",
+      "id": "HCM15",
+      "source_ref": "probe",
+      "name_en": "Responsibility-transfer evidence completeness",
+      "summary_en": "Transfers with lawful acceptor, official receipt and corresponding control record / formal transfers that should occur. Planned receivers cannot replace actual receivers.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "无主交接数量与最长年龄",
+      "source_line": 331,
+      "source_end_line": 331,
+      "source_text": "| 无主交接数量与最长年龄 | 超过允许等待时间且找不到有效责任归属的交接数量和持续时间 | 保留原责任人的正常等待不自动算无主 |",
+      "excerpt_sha256": "04482fdde54ae7329cd23a18732e59f4cb07b1dbbf48594626079664e663dd5d",
+      "source_cells": [
+        "无主交接数量与最长年龄",
+        "超过允许等待时间且找不到有效责任归属的交接数量和持续时间",
+        "保留原责任人的正常等待不自动算无主"
+      ],
+      "name_zh": "无主交接数量与最长年龄",
+      "formula_zh": "超过允许等待时间且找不到有效责任归属的交接数量和持续时间",
+      "boundary_zh": "保留原责任人的正常等待不自动算无主",
+      "id": "HCM16",
+      "source_ref": "probe",
+      "name_en": "Ownerless handoff count and maximum age",
+      "summary_en": "Count and age handoffs past allowed wait with no valid accountable owner. Ordinary waiting while the original owner remains responsible is not ownerlessness.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "过期资格操作数",
+      "source_line": 332,
+      "source_end_line": 332,
+      "source_text": "| 过期资格操作数 | 使用失效控制权代次仍被接收的提交或外部写入数 | 需有网关／接收端证据，不只看本地锁 |",
+      "excerpt_sha256": "b244b56205a95fa79c665f0210ef5ee2fe9a0458f0ffde72e5ee64cfa23f7b97",
+      "source_cells": [
+        "过期资格操作数",
+        "使用失效控制权代次仍被接收的提交或外部写入数",
+        "需有网关／接收端证据，不只看本地锁"
+      ],
+      "name_zh": "过期资格操作数",
+      "formula_zh": "使用失效控制权代次仍被接收的提交或外部写入数",
+      "boundary_zh": "需有网关／接收端证据，不只看本地锁",
+      "id": "HCM17",
+      "source_ref": "probe",
+      "name_en": "Expired-eligibility operation count",
+      "summary_en": "Count accepted commits or external writes under an expired control epoch. Require gateway or recipient evidence, not only a local lock.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "重复外部效果数",
+      "source_line": 333,
+      "source_end_line": 333,
+      "source_text": "| 重复外部效果数 | 对每个唯一业务意图，累计超出允许次数的已确认远端效果数 | 必须识别远端真实效果身份；多个回执副本不能重复算 |",
+      "excerpt_sha256": "0b42e63a5e2326ba777ffd2c9f07f2ab7998b19ca0eaee4129e99c6a5744e1bb",
+      "source_cells": [
+        "重复外部效果数",
+        "对每个唯一业务意图，累计超出允许次数的已确认远端效果数",
+        "必须识别远端真实效果身份；多个回执副本不能重复算"
+      ],
+      "name_zh": "重复外部效果数",
+      "formula_zh": "对每个唯一业务意图，累计超出允许次数的已确认远端效果数",
+      "boundary_zh": "必须识别远端真实效果身份；多个回执副本不能重复算",
+      "id": "HCM18",
+      "source_ref": "probe",
+      "name_en": "Duplicate external-effect count",
+      "summary_en": "For each unique business intent, count confirmed remote effects beyond its allowed count. Deduplicate by real remote effect identity, not receipt copies.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "未决外部操作数与年龄",
+      "source_line": 334,
+      "source_end_line": 334,
+      "source_text": "| 未决外部操作数与年龄 | 已发送但未确认最终效果的唯一业务操作数及等待年龄 | 结果未知不计为成功，也不自动计为未执行 |",
+      "excerpt_sha256": "6583fc2d852d75581fb7195ebd1ae1e49bf247643f65c95dac0c0158681c2fc0",
+      "source_cells": [
+        "未决外部操作数与年龄",
+        "已发送但未确认最终效果的唯一业务操作数及等待年龄",
+        "结果未知不计为成功，也不自动计为未执行"
+      ],
+      "name_zh": "未决外部操作数与年龄",
+      "formula_zh": "已发送但未确认最终效果的唯一业务操作数及等待年龄",
+      "boundary_zh": "结果未知不计为成功，也不自动计为未执行",
+      "id": "HCM19",
+      "source_ref": "probe",
+      "name_en": "Unresolved external-operation count and age",
+      "summary_en": "Count and age unique sent business operations lacking confirmed final effects. Unknown is neither success nor proven non-execution.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "查证完成时延",
+      "source_line": 335,
+      "source_end_line": 335,
+      "source_text": "| 查证完成时延 | 首次记录结果未知至权威结果被确认之间的时间 | 时钟不可比较时返回未知；未完成者报告当前年龄 |",
+      "excerpt_sha256": "7f9111446f60da4e8e8d5bb2a6efac18bda7c1a93e73b37797338e8223e073ce",
+      "source_cells": [
+        "查证完成时延",
+        "首次记录结果未知至权威结果被确认之间的时间",
+        "时钟不可比较时返回未知；未完成者报告当前年龄"
+      ],
+      "name_zh": "查证完成时延",
+      "formula_zh": "首次记录结果未知至权威结果被确认之间的时间",
+      "boundary_zh": "时钟不可比较时返回未知；未完成者报告当前年龄",
+      "id": "HCM20",
+      "source_ref": "probe",
+      "name_en": "Reconciliation completion latency",
+      "summary_en": "Measure from first recorded unknown outcome to authoritative result confirmation. Incomparable clocks yield unknown; unresolved operations retain current age.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "补偿未闭合数量与年龄",
+      "source_line": 336,
+      "source_end_line": 336,
+      "source_text": "| 补偿未闭合数量与年龄 | 已提出且必须完成、但尚无完成证据的补偿数量及年龄 | 补偿尝试完成不等于补偿效果完成 |",
+      "excerpt_sha256": "b4bb1f951e75efff00fa2b2b3cff4755618a5e5ff4609f80aab3c6ee18712b1c",
+      "source_cells": [
+        "补偿未闭合数量与年龄",
+        "已提出且必须完成、但尚无完成证据的补偿数量及年龄",
+        "补偿尝试完成不等于补偿效果完成"
+      ],
+      "name_zh": "补偿未闭合数量与年龄",
+      "formula_zh": "已提出且必须完成、但尚无完成证据的补偿数量及年龄",
+      "boundary_zh": "补偿尝试完成不等于补偿效果完成",
+      "id": "HCM21",
+      "source_ref": "probe",
+      "name_en": "Open compensation count and age",
+      "summary_en": "Count and age required compensation obligations without effect-completion evidence. A completed attempt does not prove compensation's effect.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "接收接缝时延",
+      "source_line": 344,
+      "source_end_line": 344,
+      "source_text": "| 接收接缝时延 | 候选包提交至正式接收提交的时长，报告中位数、百分之九十五分位 | 接收和拒绝分组；等待未结束者另列，不静默丢弃 |",
+      "excerpt_sha256": "e8ec7e89fc2a10e591244377e9965a0ec9f4b8d4585c38a9fc4537c27b83feff",
+      "source_cells": [
+        "接收接缝时延",
+        "候选包提交至正式接收提交的时长，报告中位数、百分之九十五分位",
+        "接收和拒绝分组；等待未结束者另列，不静默丢弃"
+      ],
+      "name_zh": "接收接缝时延",
+      "formula_zh": "候选包提交至正式接收提交的时长，报告中位数、百分之九十五分位",
+      "boundary_zh": "接收和拒绝分组；等待未结束者另列，不静默丢弃",
+      "id": "HCM22",
+      "source_ref": "probe",
+      "name_en": "Acceptance seam latency",
+      "summary_en": "Time from candidate submission to formal acceptance commit; report median and nearest-rank p95 with sample size. Separate accepted and rejected groups and retain unfinished waits.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "未决交接数量与年龄",
+      "source_line": 345,
+      "source_end_line": 345,
+      "source_text": "| 未决交接数量与年龄 | 已提交但没有终局接收／拒绝决定的唯一候选包数及年龄 | 结合观察水位判断，防止把迟到误判为丢失 |",
+      "excerpt_sha256": "848a8798c6e396e0c56bf0951008ce68b0b28b4bf341ff50d67b4e65a786a911",
+      "source_cells": [
+        "未决交接数量与年龄",
+        "已提交但没有终局接收／拒绝决定的唯一候选包数及年龄",
+        "结合观察水位判断，防止把迟到误判为丢失"
+      ],
+      "name_zh": "未决交接数量与年龄",
+      "formula_zh": "已提交但没有终局接收／拒绝决定的唯一候选包数及年龄",
+      "boundary_zh": "结合观察水位判断，防止把迟到误判为丢失",
+      "id": "HCM23",
+      "source_ref": "probe",
+      "name_en": "Pending handoff count and age",
+      "summary_en": "Count and age submitted unique candidates without terminal acceptance or rejection. Interpret against observation watermarks before alleging missing decisions.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "证据化补全完成率",
+      "source_line": 346,
+      "source_end_line": 346,
+      "source_text": "| 证据化补全完成率 | 在截止前被采纳且有合格证据的缺失观测字段数 ÷ 已到截止期限的请求缺失字段数 | 以请求最初的字段集合为准，不能补容易的新字段扩大分子 |",
+      "excerpt_sha256": "9c7e5fcbc4d02e6d81cd87e9309c9990f0f6a04aae835a8bd75d12528840cc9f",
+      "source_cells": [
+        "证据化补全完成率",
+        "在截止前被采纳且有合格证据的缺失观测字段数 ÷ 已到截止期限的请求缺失字段数",
+        "以请求最初的字段集合为准，不能补容易的新字段扩大分子"
+      ],
+      "name_zh": "证据化补全完成率",
+      "formula_zh": "在截止前被采纳且有合格证据的缺失观测字段数 ÷ 已到截止期限的请求缺失字段数",
+      "boundary_zh": "以请求最初的字段集合为准，不能补容易的新字段扩大分子",
+      "id": "HCM24",
+      "source_ref": "probe",
+      "name_en": "Evidence-backed supplement completion rate",
+      "summary_en": "Originally requested missing observation fields adopted by deadline with qualifying evidence / requested missing fields whose deadline has arrived. Do not inflate the numerator by adding easier fields.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "观测补丁采纳率",
+      "source_line": 347,
+      "source_end_line": 347,
+      "source_text": "| 观测补丁采纳率 | 已采纳或按字段统计已采纳部分的有效补丁数 ÷ 已完成评估的有效补丁数 | 单位必须固定；过期、越权、待确认分别列出 |",
+      "excerpt_sha256": "98a7992194e5ee24b5c1975e48b634b65878c6a547884cb03950fc84f0e20ca1",
+      "source_cells": [
+        "观测补丁采纳率",
+        "已采纳或按字段统计已采纳部分的有效补丁数 ÷ 已完成评估的有效补丁数",
+        "单位必须固定；过期、越权、待确认分别列出"
+      ],
+      "name_zh": "观测补丁采纳率",
+      "formula_zh": "已采纳或按字段统计已采纳部分的有效补丁数 ÷ 已完成评估的有效补丁数",
+      "boundary_zh": "单位必须固定；过期、越权、待确认分别列出",
+      "id": "HCM25",
+      "source_ref": "probe",
+      "name_en": "Observation patch adoption rate",
+      "summary_en": "Valid evaluated patches adopted, or adopted portions counted by a fixed field unit / valid patches with completed evaluation. Fix the unit and report expired, unauthorized and pending patches separately.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "非法补丁被采纳数",
+      "source_line": 348,
+      "source_end_line": 348,
+      "source_text": "| 非法补丁被采纳数 | 已确认过期、越权或无来源但仍被采纳的补丁数量 | 需要执行侧采纳回执，不能只靠探针发送日志 |",
+      "excerpt_sha256": "fddd9f90bafd4f444915f956717be646f0b3d3e6c1bdd8ef0723f0e4883093a5",
+      "source_cells": [
+        "非法补丁被采纳数",
+        "已确认过期、越权或无来源但仍被采纳的补丁数量",
+        "需要执行侧采纳回执，不能只靠探针发送日志"
+      ],
+      "name_zh": "非法补丁被采纳数",
+      "formula_zh": "已确认过期、越权或无来源但仍被采纳的补丁数量",
+      "boundary_zh": "需要执行侧采纳回执，不能只靠探针发送日志",
+      "id": "HCM26",
+      "source_ref": "probe",
+      "name_en": "Invalid adopted patch count",
+      "summary_en": "Count patches confirmed stale, unauthorized or without provenance that were nevertheless adopted. Require execution-side adoption receipts, not probe sending logs.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "事件采集覆盖率",
+      "source_line": 349,
+      "source_end_line": 349,
+      "source_text": "| 事件采集覆盖率 | 已采集且唯一匹配的应有权威记录数 ÷ 独立权威索引确定的应有记录数 | 无独立索引或完整序号范围时不可计算 |",
+      "excerpt_sha256": "e253f4597cfa90b50c00449948f2757c981e27fd70775b88c84652056c5b7d8d",
+      "source_cells": [
+        "事件采集覆盖率",
+        "已采集且唯一匹配的应有权威记录数 ÷ 独立权威索引确定的应有记录数",
+        "无独立索引或完整序号范围时不可计算"
+      ],
+      "name_zh": "事件采集覆盖率",
+      "formula_zh": "已采集且唯一匹配的应有权威记录数 ÷ 独立权威索引确定的应有记录数",
+      "boundary_zh": "无独立索引或完整序号范围时不可计算",
+      "id": "HCM27",
+      "source_ref": "probe",
+      "name_en": "Event collection coverage",
+      "summary_en": "Collected and uniquely matched expected authoritative records / expected records from an independent authoritative index. Uncomputable without an independent index or complete sequence range.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "探针阻塞开销",
+      "source_line": 350,
+      "source_end_line": 350,
+      "source_text": "| 探针阻塞开销 | 执行侧明确等待探针的时间区间之并集 | 并行请求不能简单相加；旁路耗时不全算业务阻塞 |",
+      "excerpt_sha256": "bf12f1285997b84112edf12fc90fae102b34ce604899aa05bc2195ec38819779",
+      "source_cells": [
+        "探针阻塞开销",
+        "执行侧明确等待探针的时间区间之并集",
+        "并行请求不能简单相加；旁路耗时不全算业务阻塞"
+      ],
+      "name_zh": "探针阻塞开销",
+      "formula_zh": "执行侧明确等待探针的时间区间之并集",
+      "boundary_zh": "并行请求不能简单相加；旁路耗时不全算业务阻塞",
+      "id": "HCM28",
+      "source_ref": "probe",
+      "name_en": "Probe blocking overhead",
+      "summary_en": "Measure the union of execution-side intervals explicitly waiting for probes. Do not sum overlapping waits or equate all side-channel duration with business blocking.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "探针资源成本",
+      "source_line": 351,
+      "source_end_line": 351,
+      "source_text": "| 探针资源成本 | 探针自己的查询数、读取量、计算量和计费记录 | 不与执行模型费用混算；费率缺失则金额未知 |",
+      "excerpt_sha256": "ccdec4738abe5282632f24adcf038ce286581fb4272b9ebeb7288eeda272b3fa",
+      "source_cells": [
+        "探针资源成本",
+        "探针自己的查询数、读取量、计算量和计费记录",
+        "不与执行模型费用混算；费率缺失则金额未知"
+      ],
+      "name_zh": "探针资源成本",
+      "formula_zh": "探针自己的查询数、读取量、计算量和计费记录",
+      "boundary_zh": "不与执行模型费用混算；费率缺失则金额未知",
+      "id": "HCM29",
+      "source_ref": "probe",
+      "name_en": "Probe resource cost",
+      "summary_en": "Report the probe's own queries, reads, computation and billing. Keep execution-model costs separate; missing rates mean monetary cost unknown.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    },
+    {
+      "source_id": "报告修订量",
+      "source_line": 352,
+      "source_end_line": 352,
+      "source_text": "| 报告修订量 | 因迟到证据或纠错而改变的指标／发现数量 | 每次变更记录原因与新观察截止时间 |",
+      "excerpt_sha256": "62423b6df63e93215ce3a64ebcf30df1029867776e874b44460d39f4344afc67",
+      "source_cells": [
+        "报告修订量",
+        "因迟到证据或纠错而改变的指标／发现数量",
+        "每次变更记录原因与新观察截止时间"
+      ],
+      "name_zh": "报告修订量",
+      "formula_zh": "因迟到证据或纠错而改变的指标／发现数量",
+      "boundary_zh": "每次变更记录原因与新观察截止时间",
+      "id": "HCM30",
+      "source_ref": "probe",
+      "name_en": "Report revision volume",
+      "summary_en": "Count metric or finding changes caused by late evidence or corrections. Record each reason and new observation cutoff.",
+      "integration_status": "pending",
+      "implementation": "specification_only"
+    }
+  ],
+  "probe_cases": [
+    {
+      "source_id": "无任何运行数据",
+      "source_line": 560,
+      "source_end_line": 560,
+      "source_text": "| 无任何运行数据 | 只给契约文档 | 静态审查与埋点缺口；运行指标不可计算 |",
+      "excerpt_sha256": "457424ab978d89ea28042d4a2d2aeb7d3a7a8a839d4baac22044b69144ea7c5e",
+      "source_cells": [
+        "无任何运行数据",
+        "只给契约文档",
+        "静态审查与埋点缺口；运行指标不可计算"
+      ],
+      "condition_zh": "无任何运行数据",
+      "expected_zh": "只给契约文档",
+      "id": "HPT01",
+      "source_ref": "probe",
+      "name_en": "No runtime data",
+      "summary_en": "Return static review and instrumentation gaps; runtime metrics remain uncomputable.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "重复事件",
+      "source_line": 561,
+      "source_end_line": 561,
+      "source_text": "| 重复事件 | 同一事件重复导入 | 业务计数不变，自身重复采集计数增加 |",
+      "excerpt_sha256": "45b0979d328002cb0d4cc6e0183263bbae950b4a03084880dbb7a6c0805cae92",
+      "source_cells": [
+        "重复事件",
+        "同一事件重复导入",
+        "业务计数不变，自身重复采集计数增加"
+      ],
+      "condition_zh": "重复事件",
+      "expected_zh": "同一事件重复导入",
+      "id": "HPT02",
+      "source_ref": "probe",
+      "name_en": "Duplicate event",
+      "summary_en": "Leave business counts unchanged while increasing duplicate-collection diagnostics.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "事件身份冲突",
+      "source_line": 562,
+      "source_end_line": 562,
+      "source_text": "| 事件身份冲突 | 同一事件身份包含不同内容 | 完整性告警，不任选一份静默覆盖 |",
+      "excerpt_sha256": "c53e19e754b454d59866e2463c3b82f706a17ab8dd82988fa80edac358acda5f",
+      "source_cells": [
+        "事件身份冲突",
+        "同一事件身份包含不同内容",
+        "完整性告警，不任选一份静默覆盖"
+      ],
+      "condition_zh": "事件身份冲突",
+      "expected_zh": "同一事件身份包含不同内容",
+      "id": "HPT03",
+      "source_ref": "probe",
+      "name_en": "Conflicting event identity",
+      "summary_en": "Raise an integrity finding when identical event identity has differing content; never silently choose one.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "日志乱序与迟到",
+      "source_line": 563,
+      "source_end_line": 563,
+      "source_text": "| 日志乱序与迟到 | 拒绝事件晚于重试成功抵达 | 按版本和因果重建；报告带修订记录 |",
+      "excerpt_sha256": "b3cb920d86c3cefb380224480834a71dc8ca98d8e984b74fc3444bc9212726ca",
+      "source_cells": [
+        "日志乱序与迟到",
+        "拒绝事件晚于重试成功抵达",
+        "按版本和因果重建；报告带修订记录"
+      ],
+      "condition_zh": "日志乱序与迟到",
+      "expected_zh": "拒绝事件晚于重试成功抵达",
+      "id": "HPT04",
+      "source_ref": "probe",
+      "name_en": "Out-of-order and late logs",
+      "summary_en": "Reconstruct by version and causality, including a rejection arriving after retry success; preserve report revision history.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "缺失正式回执",
+      "source_line": 564,
+      "source_end_line": 564,
+      "source_text": "| 缺失正式回执 | 有验收意见，没有提交证明 | 接收状态未知，触发只读查证 |",
+      "excerpt_sha256": "3ddb0121dff81ce87555ae069e9d2c439ab2f575cccf0f23c73ae62b549adaf1",
+      "source_cells": [
+        "缺失正式回执",
+        "有验收意见，没有提交证明",
+        "接收状态未知，触发只读查证"
+      ],
+      "condition_zh": "缺失正式回执",
+      "expected_zh": "有验收意见，没有提交证明",
+      "id": "HPT05",
+      "source_ref": "probe",
+      "name_en": "Missing official receipt",
+      "summary_en": "Acceptance opinion without commit proof leaves acceptance unknown and triggers read-only reconciliation.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "伪造权威来源",
+      "source_line": 565,
+      "source_end_line": 565,
+      "source_text": "| 伪造权威来源 | 日志自称已审批，无认证凭据 | 不承认其权威性，保留证据缺口 |",
+      "excerpt_sha256": "c40b77a313c30ad48350fcd951cdbf5528b287a73e2e79fc34af620b0a73ca44",
+      "source_cells": [
+        "伪造权威来源",
+        "日志自称已审批，无认证凭据",
+        "不承认其权威性，保留证据缺口"
+      ],
+      "condition_zh": "伪造权威来源",
+      "expected_zh": "日志自称已审批，无认证凭据",
+      "id": "HPT06",
+      "source_ref": "probe",
+      "name_en": "Claimed authority without authentication",
+      "summary_en": "Reject log claims of approval as authority when authentication is absent and retain the evidence gap.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "摘要造假",
+      "source_line": 566,
+      "source_end_line": 566,
+      "source_text": "| 摘要造假 | 新摘要字段配旧正文 | 内容检查失败；若不能读取正文则未知 |",
+      "excerpt_sha256": "c5738eddab8720e67f5dec0175e5e504b768fbd8f6e64527e1be088b48aa2734",
+      "source_cells": [
+        "摘要造假",
+        "新摘要字段配旧正文",
+        "内容检查失败；若不能读取正文则未知"
+      ],
+      "condition_zh": "摘要造假",
+      "expected_zh": "新摘要字段配旧正文",
+      "id": "HPT07",
+      "source_ref": "probe",
+      "name_en": "Forged digest",
+      "summary_en": "New digest with stale body fails content validation; inaccessible content leaves the result unknown.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "并发版本变化",
+      "source_line": 567,
+      "source_end_line": 567,
+      "source_text": "| 并发版本变化 | 旧尝试拒绝时头版本已前进 | 不误判应将全局头回退 |",
+      "excerpt_sha256": "1c2c80ec266872d06f6fa018d825921af273af996c571875adca3ed86a83d2be",
+      "source_cells": [
+        "并发版本变化",
+        "旧尝试拒绝时头版本已前进",
+        "不误判应将全局头回退"
+      ],
+      "condition_zh": "并发版本变化",
+      "expected_zh": "旧尝试拒绝时头版本已前进",
+      "id": "HPT08",
+      "source_ref": "probe",
+      "name_en": "Concurrent head advance",
+      "summary_en": "A stale attempt rejected after the head advanced does not imply that the global head should roll back.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "外部成功、本地超时",
+      "source_line": 568,
+      "source_end_line": 568,
+      "source_text": "| 外部成功、本地超时 | 有原意图和远端成功证明 | 识别需要补记回执，不建议重复执行 |",
+      "excerpt_sha256": "3a4f0fed043439535423874bd76e01afb3e04de7b2cca5a7c890493c6414ba95",
+      "source_cells": [
+        "外部成功、本地超时",
+        "有原意图和远端成功证明",
+        "识别需要补记回执，不建议重复执行"
+      ],
+      "condition_zh": "外部成功、本地超时",
+      "expected_zh": "有原意图和远端成功证明",
+      "id": "HPT09",
+      "source_ref": "probe",
+      "name_en": "Remote success with local timeout",
+      "summary_en": "Recognize that the original intent needs receipt repair from authoritative success evidence; do not recommend re-execution.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "远端未找到但存在索引延迟",
+      "source_line": 569,
+      "source_end_line": 569,
+      "source_text": "| 远端未找到但存在索引延迟 | 查询契约不支持立即确定未执行 | 保留未知，不准把未找到当成可重发证据 |",
+      "excerpt_sha256": "70585a6ffbff08b2408e4d8c927ab0071b084772d4d376e554a21dc12b3f0c1b",
+      "source_cells": [
+        "远端未找到但存在索引延迟",
+        "查询契约不支持立即确定未执行",
+        "保留未知，不准把未找到当成可重发证据"
+      ],
+      "condition_zh": "远端未找到但存在索引延迟",
+      "expected_zh": "查询契约不支持立即确定未执行",
+      "id": "HPT10",
+      "source_ref": "probe",
+      "name_en": "Remote not-found with indexing delay",
+      "summary_en": "Retain unknown when the remote contract cannot confirm immediate non-execution; not-found is not retry evidence.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "相同效果多个回执副本",
+      "source_line": 570,
+      "source_end_line": 570,
+      "source_text": "| 相同效果多个回执副本 | 同一远端效果重复出现 | 不增加重复业务效果数 |",
+      "excerpt_sha256": "4e00d2c7fbb70a6363865f87431e0ebddabaf1f23b5def07c39eabe653964650",
+      "source_cells": [
+        "相同效果多个回执副本",
+        "同一远端效果重复出现",
+        "不增加重复业务效果数"
+      ],
+      "condition_zh": "相同效果多个回执副本",
+      "expected_zh": "同一远端效果重复出现",
+      "id": "HPT11",
+      "source_ref": "probe",
+      "name_en": "Multiple receipt copies for one effect",
+      "summary_en": "Do not increase duplicate-effect counts for repeated evidence of the same real remote effect.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "过期观测补丁",
+      "source_line": 571,
+      "source_end_line": 571,
+      "source_text": "| 过期观测补丁 | 目标工件或正式版本已变化 | 建议拒绝采纳；不得迁移成当前事实 |",
+      "excerpt_sha256": "d2846ff95186d51ea58e4ed9b1b98f7d4465da5739fdf302718cf4267ab63450",
+      "source_cells": [
+        "过期观测补丁",
+        "目标工件或正式版本已变化",
+        "建议拒绝采纳；不得迁移成当前事实"
+      ],
+      "condition_zh": "过期观测补丁",
+      "expected_zh": "目标工件或正式版本已变化",
+      "id": "HPT12",
+      "source_ref": "probe",
+      "name_en": "Stale observation patch",
+      "summary_en": "Recommend rejection when target version or artifact changed; never migrate old observations into current business fact.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "部分可见数据",
+      "source_line": 572,
+      "source_end_line": 572,
+      "source_text": "| 部分可见数据 | 只能读取一部分必需工件 | 报告覆盖率、未知项与权限限制 |",
+      "excerpt_sha256": "41c00bb4844f17c29668e245c87b8ae11a4abccf4cee6f206efd09a28d714db5",
+      "source_cells": [
+        "部分可见数据",
+        "只能读取一部分必需工件",
+        "报告覆盖率、未知项与权限限制"
+      ],
+      "condition_zh": "部分可见数据",
+      "expected_zh": "只能读取一部分必需工件",
+      "id": "HPT13",
+      "source_ref": "probe",
+      "name_en": "Partially visible data",
+      "summary_en": "Report coverage, unknown objects and permission limits when only part of required artifacts is readable.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "不可比较的时钟",
+      "source_line": 573,
+      "source_end_line": 573,
+      "source_text": "| 不可比较的时钟 | 跨主机时间偏移产生负时延 | 时延未知或区间估计，不能截断成零 |",
+      "excerpt_sha256": "69db740e48fb50577b9c1b325db0e8dd09ae303349774899e2555f45f9315523",
+      "source_cells": [
+        "不可比较的时钟",
+        "跨主机时间偏移产生负时延",
+        "时延未知或区间估计，不能截断成零"
+      ],
+      "condition_zh": "不可比较的时钟",
+      "expected_zh": "跨主机时间偏移产生负时延",
+      "id": "HPT14",
+      "source_ref": "probe",
+      "name_en": "Incomparable clocks",
+      "summary_en": "Return unknown latency or a supported interval estimate for cross-host skew; do not clamp negative latency to zero.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "补全预算耗尽",
+      "source_line": 574,
+      "source_end_line": 574,
+      "source_text": "| 补全预算耗尽 | 继续查询才能填满字段 | 停止，输出未解决字段和责任人 |",
+      "excerpt_sha256": "03d4b9b1a89b426fd48e6bed4b08f51c685e7325a3eec9991ebd0c3a090fbb9f",
+      "source_cells": [
+        "补全预算耗尽",
+        "继续查询才能填满字段",
+        "停止，输出未解决字段和责任人"
+      ],
+      "condition_zh": "补全预算耗尽",
+      "expected_zh": "继续查询才能填满字段",
+      "id": "HPT15",
+      "source_ref": "probe",
+      "name_en": "Supplement budget exhausted",
+      "summary_en": "Stop querying and report unresolved fields plus accountable owner.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "旁路发现严重历史违规",
+      "source_line": 575,
+      "source_end_line": 575,
+      "source_text": "| 旁路发现严重历史违规 | 违规早于告警时间 | 明确发现与违规时间，不声称事先阻断 |",
+      "excerpt_sha256": "95ac5d1b5e2b88c25785644253532ee6ed8dcc403f23e32a67b306d0b39f0c60",
+      "source_cells": [
+        "旁路发现严重历史违规",
+        "违规早于告警时间",
+        "明确发现与违规时间，不声称事先阻断"
+      ],
+      "condition_zh": "旁路发现严重历史违规",
+      "expected_zh": "违规早于告警时间",
+      "id": "HPT16",
+      "source_ref": "probe",
+      "name_en": "Historical serious violation discovered later",
+      "summary_en": "Distinguish violation and discovery timestamps; do not claim the probe prevented it beforehand.",
+      "integration_status": "pending"
+    },
+    {
+      "source_id": "执行侧拒绝补丁",
+      "source_line": 576,
+      "source_end_line": 576,
+      "source_text": "| 执行侧拒绝补丁 | 返回正式拒绝回执 | 不统计为已修复；记录拒绝原因 |",
+      "excerpt_sha256": "447fe5831a95b874b397c0ffd1e29b9f99d8df63d17598d20dd4361e94a4410f",
+      "source_cells": [
+        "执行侧拒绝补丁",
+        "返回正式拒绝回执",
+        "不统计为已修复；记录拒绝原因"
+      ],
+      "condition_zh": "执行侧拒绝补丁",
+      "expected_zh": "返回正式拒绝回执",
+      "id": "HPT17",
+      "source_ref": "probe",
+      "name_en": "Execution rejects patch",
+      "summary_en": "Do not count repair as complete; record the authoritative rejection reason.",
+      "integration_status": "pending"
+    }
+  ]
+}

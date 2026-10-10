@@ -1,0 +1,37 @@
+trace_id: TRACE_20260922_GOVERNANCE_0001
+analysis_id: ANALYSIS_20260922_GOVERNANCE_0001
+event_time: "2026-09-22T09:56:01Z"
+status: draft
+scope:
+  project_scope: Agent-based-triage
+  tenant_scope: none
+  environment_scope: local
+  task_scope: "Governance pattern specification maintenance / 治理工程模式规格维护"
+sensitivity: internal
+source_revision: d36c2b240d085a1b8a6eea57a58dabb3f773a0f4
+subject:
+  subject_type: skill
+  subject_ref: harness-engineering-patterns
+  cell_refs: [CELL_GOVERNANCE_CHAIN, CELL_GOVERNANCE_ROUTING, CELL_GOVERNANCE_PARALLEL, CELL_GOVERNANCE_ORCHESTRATION, CELL_GOVERNANCE_LOOP, CELL_GOVERNANCE_HIERARCHY]
+  pattern_refs: [PATTERN_0047, PATTERN_0048, PATTERN_0049, PATTERN_0050]
+observation:
+  trigger: "User asked to improve governance engineering patterns using two supplied documents / 用户要求结合两份资料完善治理工程模式"
+  before: "Six existing cards lacked a shared source-backed execution and observation contract; some outage guidance conflated optional probes with mandatory local controls / 六张现有卡片缺少统一来源执行与观测契约，部分故障指导混淆可选探针和必要本地控制"
+  adjustment: "Preserve taxonomy; add bilingual execution, probes and GOV_BOUNDARY_OBS 1.0.0 specifications, immutable source snapshots, definition inventory validation and navigation / 保留分类，补充双语执行、探针与共享协议规格、不可变来源快照、定义清单校验和导航"
+  outcome: "Governance assets validated; isolated full regression: 849 passed, 243 subtests passed, 3 PostgreSQL integration skips; 54 business acceptance scenarios remain unexecuted / 治理资产校验通过；隔离全量回归849项及243子测试通过，3项数据库集成跳过；54项业务验收场景仍未执行"
+  validity: observed
+evidence_refs:
+  - "repo:skills/harness-engineering-patterns/references/governance-source-map.json"
+  - "repo:skills/harness-engineering-patterns/references/governance-execution-flow.md"
+  - "repo:skills/harness-engineering-patterns/references/governance-observability-probes.md"
+  - "repo:skills/harness-engineering-patterns/references/governance-contract.md"
+  - "repo:.harness-analysis/ANALYSIS_20260922_GOVERNANCE_0001/validation-summary.json"
+  - "repo:.harness-analysis/ANALYSIS_20260922_GOVERNANCE_0001/assembly-manifest.json"
+verification_tasks: []
+follow_up:
+  - "If runtime implementation is requested, supply authenticated host adapters and execute the documented acceptance scenarios / 后续如需运行时实现，接入可信宿主适配器并运行文档验收场景"
+owner: Codex
+retention:
+  policy: project
+  expires_at: null
+  deletion_or_archive_rule: "Archive when superseded by reviewed evidence / 经过审阅的新证据替代后归档"

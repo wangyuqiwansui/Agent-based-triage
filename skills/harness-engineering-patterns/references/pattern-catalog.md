@@ -10,12 +10,15 @@ Each detailed pattern has two Markdown files: `<cell-key>.md` for `Design Patter
 
 ## Cross-Cutting Runtime Protocols / 跨单元运行协议
 
-These local draft patterns coordinate several matrix cells without changing cell identity or promoting an extension candidate. Their source-draft IDs collided with existing stable registry IDs, so the registry assigns new IDs and preserves the original values only as provenance. / 以下本地草案模式协调多个矩阵单元，但不改变单元身份，也不自动晋升扩展候选。来源草案 ID 与既有稳定注册表 ID 冲突，因此注册表分配新 ID，并仅将原值作为来源信息保留。
+Composition entrypoint / 组合入口: [selection card](pattern-selection-card.md), [execution](pattern-selection-execution-flow.md), [probes](pattern-selection-observability-probes.md), [exchange contract](pattern-selection-contract.md). This source-backed selection procedure is specification-only and preserves existing pattern IDs and matrix maturity; choose no additional pattern when the baseline suffices. / 有来源的选型规程仅为规格，保留现有模式身份和矩阵成熟度；基线足够时不新增模式。
+
+These local draft patterns coordinate several matrix cells without changing cell identity or promoting an extension candidate. The registry assigns stable local IDs and preserves supplied draft IDs as provenance; the original reasoning and probe drafts had collided with existing IDs. / 以下本地草案模式协调多个矩阵单元，但不改变单元身份，也不自动晋升扩展候选。注册表分配稳定本地 ID 并保留来源草案标识；最初推理与探针草案曾与既有 ID 冲突。
 
 | Pattern ID / 模式 ID | Pattern / 模式 | Use / 用途 | Reference / 参考 |
 | --- | --- | --- | --- |
 | `PATTERN_0051` | Reasoning Execution Flow / 推理执行流程 | Route work into direct, chain, parallel, or iterative execution under machine-readable identity, budget, validation, switching, stopping, replay, and audit contracts, with a deterministic router and executable reference kernel. / 在机器可读的标识、预算、验证、换路、停止、回放和审计契约下，将工作路由到直接、链式、并行或迭代执行，并提供确定性路由器与可执行参考内核。 | [reasoning-execution-flow.md](reasoning-execution-flow.md) |
 | `PATTERN_0052` | Workflow Observability Probes / 工作流可观测性探针 | Deploy stable probes with a versioned event schema, mode-probe dependency matrix, field-level provenance, reproducible metric registry, and fail-closed protected transitions. / 使用版本化事件 Schema、模式—探针依赖矩阵、字段级来源、可复现指标注册表和默认阻断的受保护转换部署稳定探针。 | [workflow-observability-probes.md](workflow-observability-probes.md) |
+| `PATTERN_0053` | Pattern Combination Execution Flow / 模式组合执行流程 | Compose existing patterns through versioned connections, dependencies, shared budgets, recovery and five acceptance gates; independent probes remain report-only by default. Specification only. / 通过版本化连接、依赖、共享预算、恢复及五道验收门组合既有模式，独立探针默认仅报告；当前仅为规范。 | [Execution / 执行](pattern-combination-execution-flow.md) · [Probes / 探针](pattern-combination-observability-probes.md) · [Contract / 契约](pattern-combination-contract.md) |
 
 ## Adversarial Review Specification / 对抗评审专用规格
 
@@ -47,14 +50,14 @@ These local draft patterns coordinate several matrix cells without changing cell
 | reflection-routing / 反思 x 路由 | Skill Package / 技能包 | Use when reflection routes work to packaged evaluators, repair skills, or review routines. / 当反思需要路由到封装评估器、修复技能或评审例程时使用。 |
 | reflection-loop / 反思 x 循环 | Self-Heal Loop / 自愈循环 | Use when verification failure should drive repair until an external check passes. / 当验证失败应驱动修复直到外部检查通过时使用。 |
 | reflection-hierarchy / 反思 x 层级 | Experience Replay / 经验回放 | Use when cross-run lessons must be recalled, filtered, evidenced as adopted, linked to external outcomes, and lifecycle-managed without replacing current truth. / 当跨运行经验必须被召回、过滤、以证据证明已采用、绑定外部结果并管理生命周期，且不得替代当前真值时使用。 |
-| collaboration-chain / 协作 x 链式 | Handoff Chain / 交接链 | Use when work passes through ordered actors or roles. / 当工作按顺序经过多个参与者或角色时使用。 |
+| collaboration-chain / 协作 x 链式 | Handoff Chain / 交接链 | Use when ordered roles must transfer committed state, responsibility and evidence with verifiable acceptance and bounded recovery. / 当有序角色须通过可验证验收与有界恢复，一并交接正式状态、责任和证据时使用。 |
 | collaboration-parallel / 协作 x 并行 | Fan-Out/Gather / 扇出汇聚 | Use when several contributors can work independently before synthesis. / 当多个贡献者可独立工作后再综合时使用。 |
 | collaboration-loop / 协作 x 循环 | Adversarial Review / 对抗评审 | Use when independent, evidence-backed objections must constrain approval of a specific artifact version. / 当有证据的独立异议必须约束具体工件版本的批准时使用。 |
 | collaboration-hierarchy / 协作 x 层级 | Hierarchical Delegation / 层级委派 | Use when work should be delegated from high-level goals to subteams or subagents. / 当工作应从高层目标委派到子团队或子 Agent 时使用。 |
-| governance-routing / 治理 x 路由 | Approval Gate / 审批门禁 | Use when risk or permission determines whether work can continue. / 当风险或权限决定工作能否继续时使用。 |
-| governance-parallel / 治理 x 并行 | Progressive Commitment / 渐进承诺 | Use when commitments should be staged and checked in parallel with execution evidence. / 当承诺需要分阶段并与执行证据并行检查时使用。 |
-| governance-orchestration / 治理 x 编排 | Observability Harness / 可观测性框架 | Use when governance requires coordinated evidence, traces, metrics, and review. / 当治理需要协调证据、追踪、指标和评审时使用。 |
-| governance-hierarchy / 治理 x 层级 | Blast Radius Control / 爆炸半径控制 | Use when permissions, rollout, or impact must be limited by level. / 当权限、发布或影响范围必须按层级限制时使用。 |
+| governance-routing / 治理 x 路由 | Approval Gate / 审批门禁 | Use when reviewable proposals need scoped approval, durable waiting, revalidation and accountable effect reconciliation. / 当可审提案需要受限审批、持久等待、执行前重检及可追责的效果核对时使用。 |
+| governance-parallel / 治理 x 并行 | Progressive Commitment / 渐进承诺 | Use when scoped capability authority must grow through verified evidence, independent checks and approved promotion, with fast revocation. / 当范围明确的能力权限需要通过核验证据、独立检查和获批晋级逐步扩大，并能快速收权时使用。 |
+| governance-orchestration / 治理 x 编排 | Observability Harness / 可观测性框架 | Use when workflows must prove business outcomes, preserve raw state, reconcile asynchronous effects and bind public claims to auditable evidence. / 当工作流需要证明业务结果、保留原始状态、对账异步副作用，并把对外承诺绑定到可审计证据时使用。 |
+| governance-hierarchy / 治理 x 层级 | Blast Radius Control / 爆炸半径控制 | Use when external effects need shared cumulative limits, conserved child reservations, bound permits and unknown-result reconciliation. / 当外部效果需要共享累计限额、守恒子预留、绑定许可及未知结果对账时使用。 |
 
 ## Cross-Domain Tiers / 跨域分级
 
@@ -66,6 +69,8 @@ The article validates the catalog on four domains (financial lending, legal due 
 | Conditional / 条件 | Blast Radius Control / 爆炸半径控制, Fan-Out/Gather / 扇出汇聚 | Triggered by environment: action authority motivates blast-radius control; independent obligations and measured throughput needs motivate fan-out (see Environmental Constraint Laws / 环境约束定律 in `diagnosis-method.md`). / 由环境触发：行动权限要求控制爆炸半径，独立责任及实测吞吐需求支持扇出（见 `diagnosis-method.md` 环境约束定律）。 |
 
 ## Empty Or Exploratory Cells / 空白或探索单元
+
+For governance, combine the existing approval, progressive commitment, observability and blast-radius patterns using the [module execution flow](governance-execution-flow.md), [36 probe metrics](governance-observability-probes.md#metric-catalog) and [shared contract](governance-contract.md). The supplied composite and probe IDs are source aliases; governance-chain and governance-loop remain extension candidates. / 治理任务通过模块执行流程、36 项探针指标和共享契约，组合已有审批、渐进承诺、可观测与爆炸半径模式；附件中的组合及探针编号仅为来源别名，治理链式和循环仍是扩展候选。
 
 The paper leaves 14 intersections structurally redundant or not yet observed in practice. This Skill locally promotes perception-loop and memory-hierarchy, leaving these 12 as extension candidates: / 论文将 14 个交织点保留为空白或未观察单元。本 Skill 在本地晋升 perception-loop 与 memory-hierarchy，剩余以下 12 个扩展候选：
 
@@ -81,3 +86,11 @@ The paper leaves 14 intersections structurally redundant or not yet observed in 
 - collaboration-orchestration / 协作 x 编排
 - governance-chain / 治理 x 链式
 - governance-loop / 治理 x 循环
+
+For `PATTERN_0050`, use the dedicated [Blast Radius Control execution](blast-radius-execution-flow.md), [probes and metrics](blast-radius-observability-probes.md), and [shared contract](blast-radius-contract.md) for conserved envelopes, permits, unknown reconciliation and live stops. Source aliases do not add a new pattern or change maturity. / 对爆炸半径控制，使用专用执行、探针指标及共享契约，覆盖信封守恒、许可、未知对账及实时停止；来源别名不新增模式或改变成熟度。
+
+## Observability Harness supplement / 可观测性框架扩展
+
+For `PATTERN_0049`, use [13 execution stages](observability-execution-flow.md#execution-steps), [45 dedicated probes and 50 OBM definitions](observability-probes.md), and [the shared contract](observability-contract.md). Confirm business outcomes independently of interface success, reconcile unknown effects, validate public claims and bind evidence completion to source/version/receiver receipts. Source aliases do not add patterns; shared `PATTERN_0052` remains unchanged. / 可观测性框架使用专用执行、探针指标及共享契约；业务结果独立于接口成功确认，未知效果先对账，对外承诺核验，证据补全绑定来源版本及接收回执。来源别名不新增模式，共享探针模式保持不变。
+
+Progressive Commitment / 渐进承诺 uses the dedicated [execution](progressive-commitment-execution-flow.md), [114-metric probe catalog](progressive-commitment-observability-probes.md#metric-catalog) and [authority contract](progressive-commitment-contract.md) for separate task/authority clocks, evidence-bound issuance and rapid scoped revocation. This remains a draft specification on `PATTERN_0048`. / 渐进承诺通过专用执行、114 项指标探针及权限契约，分开任务与权限钟表，绑定证据签发并快速精准收权；仍是现有模式上的草案规范。

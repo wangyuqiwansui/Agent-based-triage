@@ -1,0 +1,38 @@
+trace_id: TRACE_20261010_APPROVAL_GATE_0001
+analysis_id: ANALYSIS_20261010_APPROVAL_GATE_0001
+event_time: "2026-10-10T10:33:23+08:00"
+status: draft
+scope:
+  project_scope: Agent-based-triage
+  tenant_scope: none
+  environment_scope: local
+  task_scope: "Approval Gate specification integration / 审批门规格整合"
+sensitivity: internal
+source_revision: "d36c2b240d085a1b8a6eea57a58dabb3f773a0f4 plus existing working-tree changes / 加现有工作区修改"
+subject:
+  subject_type: pattern
+  subject_ref: PATTERN_0047
+  cell_refs: [CELL_GOVERNANCE_ROUTING]
+  pattern_refs: [PATTERN_0047]
+observation:
+  trigger: "User requested improvements using two supplied approval documents / 用户要求结合两份审批资料完善项目"
+  before: "Routing card and shared governance attachment lacked dedicated approval lifecycle and probe inventories / 原有路由卡与通用治理挂载缺少专用审批生命周期及探针清单"
+  adjustment: "Added bilingual execution/probe/contract references, immutable source mapping, guarded synchronization and validation / 增加双语执行探针契约、不可变来源映射、有校验的同步及验证"
+  outcome: "Specification only: 20 stages, 28 probes, 50 metrics, 55 unexecuted integration requirements; existing maturity and evidence counts preserved / 仅规格：20 阶段、28 探针、50 指标、55 项未执行集成要求；保持成熟度及证据计数"
+  validity: proposed
+evidence_refs:
+  - "external: skills/harness-engineering-patterns/references/approval-gate-source-map.json"
+  - "external: skills/harness-engineering-patterns/references/sources/approval-gate/execution.source.txt"
+  - "external: skills/harness-engineering-patterns/references/sources/approval-gate/probe.source.txt"
+  - "external: tests/test_approval_gate_docs.py"
+  - "external: .harness-analysis/ANALYSIS_20261010_APPROVAL_GATE_0001/verification.json"
+verification_tasks:
+  - "Adopting host must implement identity/signature adapters and exercise AGET01–27 and AGPT01–28 / 采用方须实现身份签名适配器并执行全部业务集成验收"
+  - "Verify atomic consumption, restart/crash recovery and destination reconciliation with real storage/adapters / 使用真实存储及适配器验证原子消费、重启崩溃恢复和目的端对账"
+follow_up:
+  - "Do not treat document integrity tests as production approval evidence / 不把文档完整性测试作为生产审批证据"
+owner: "Project adopter / 项目采用方"
+retention:
+  policy: project
+  expires_at: null
+  deletion_or_archive_rule: "Archive when the specification is superseded / 规格替代后归档"

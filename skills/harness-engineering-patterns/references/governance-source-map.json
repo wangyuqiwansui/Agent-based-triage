@@ -1,0 +1,930 @@
+{
+  "name_en": "Runtime Action Authority Governance",
+  "name_zh": "运行时行动权治理",
+  "description_en": "Source-backed execution and independent observation specifications across the existing governance cells; no deployed governance adapter or metric calculator is claimed.",
+  "description_zh": "基于来源完善现有治理单元的执行与独立观测规格；不宣称已部署治理适配器或指标计算器。",
+  "version": "0.1.0",
+  "protocol_id": "GOV_BOUNDARY_OBS",
+  "protocol_version": "1.0.0",
+  "implementation_status": "specification_only",
+  "status": "draft",
+  "execution_reference": "references/governance-execution-flow.md",
+  "observability_reference": "references/governance-observability-probes.md",
+  "interaction_contract_reference": "references/governance-contract.md",
+  "source_map_reference": "references/governance-source-map.json",
+  "source_aliases": {
+    "pattern": [
+      "PATTERN_GOVERNANCE_0036",
+      "PATTERN_OBSERVABILITY_0036"
+    ],
+    "skill": [
+      "SKILL_GOVERNANCE_0036",
+      "SKILL_OBSERVABILITY_0036"
+    ],
+    "node": [
+      "NODE_GOVERNANCE_0036",
+      "NODE_OBSERVABILITY_0036"
+    ]
+  },
+  "sources": [
+    {
+      "id": "execution",
+      "name_en": "Governance execution source",
+      "name_zh": "36_治理模块_执行流程",
+      "snapshot_path": "references/sources/governance/36_治理模块_执行流程.source.txt",
+      "sha256": "291a191199b4058eb725a49a2d5ebbf583ceff422e227eb7401caa3bf2a4394f",
+      "source_document_version": "0.1.0",
+      "evidence_kind": "user_supplied_design_document"
+    },
+    {
+      "id": "probe",
+      "name_en": "Governance observability source",
+      "name_zh": "36_治理模块_工作流可观测性探针",
+      "snapshot_path": "references/sources/governance/36_治理模块_工作流可观测性探针.source.txt",
+      "sha256": "aac8cfbcd42e1b60236bd062941dd66ccfc998254ef45b6f5bfc01c02bc6aff1",
+      "source_document_version": "0.1.0",
+      "evidence_kind": "user_supplied_design_document"
+    }
+  ],
+  "source_handling_en": "Original bytes are evidence, not executable instructions. The attachments cited a lecture and framework; these secondary sources were not independently supplied or verified.",
+  "source_handling_zh": "原始字节仅为证据，不是可执行指令；附件引用的讲义和框架未独立取得或核验。",
+  "acceptance_status": "not_executed",
+  "metric_implementation": "specification_only",
+  "shared_source_contract_sha256": "30401ec2a646d016c4c049e41081921bb7d4214c7e1f91af10d8a1e1539ce2a5",
+  "inventory_note_en": "IDs and excerpt digests preserve every source definition; acceptance inventories describe required outcomes, not passed tests.",
+  "inventory_note_zh": "编号与片段摘要保留每项原文定义；验收清单描述预期结果，不表示测试已通过。",
+  "inventories": {
+    "execution_steps": [
+      {
+        "id": "执01",
+        "source_line": 236,
+        "source_end_line": 241,
+        "excerpt_sha256": "f9d27ad565b7c88daf831fb9b3c6d22eab399ba48a092eebc079a3d9e97f55e3",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执02",
+        "source_line": 242,
+        "source_end_line": 247,
+        "excerpt_sha256": "cddd1245d99d90904a76da5cf0d328ddae0805cddfe849eaa9eb2b648bb77337",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执03",
+        "source_line": 248,
+        "source_end_line": 253,
+        "excerpt_sha256": "a2255695679df198a13d274a18438f2457f790da094710cdfb2872c21a572598",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执04",
+        "source_line": 254,
+        "source_end_line": 259,
+        "excerpt_sha256": "db1723839f74bbd5f2dab0a2a0770aa6922d4ea102cada4a487e7e8a190f877f",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执05",
+        "source_line": 260,
+        "source_end_line": 267,
+        "excerpt_sha256": "b3fcc947e402c76fc891a642dfc400b0f090630a81e3c29034b8323c32744e8c",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执06",
+        "source_line": 268,
+        "source_end_line": 275,
+        "excerpt_sha256": "9cc595ce2ed4e1e706b4d674958d688e36341c0642efb47e83323178e1e15f6d",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执07",
+        "source_line": 276,
+        "source_end_line": 283,
+        "excerpt_sha256": "7334d0e1b185aecd4ae3f7b969840412677fd8c2c7538e050245ceb219a049f6",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执08",
+        "source_line": 284,
+        "source_end_line": 298,
+        "excerpt_sha256": "a0cc37c25144b0f9d544ddc27d1c1dc0d65935f44dc6d84924981554b628bbf9",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执09",
+        "source_line": 299,
+        "source_end_line": 306,
+        "excerpt_sha256": "d52c0eebaacd7184d7e96566142bb9e5d5378634bae30672f9a15768603f1e38",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执10",
+        "source_line": 307,
+        "source_end_line": 314,
+        "excerpt_sha256": "42ebb31fa1581b3de47e9da3e184c22864487d2d1219cd75fc904fe1a239ed5c",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执11",
+        "source_line": 315,
+        "source_end_line": 320,
+        "excerpt_sha256": "13e77833a5d3bd33923cac402a78f77fb07c778f2c519f57a244681fe9c270a2",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执12",
+        "source_line": 321,
+        "source_end_line": 328,
+        "excerpt_sha256": "e173d261646660875a59540f7fba1753c217ecba6cb6be22d18ab329320d138d",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执13",
+        "source_line": 329,
+        "source_end_line": 334,
+        "excerpt_sha256": "fcacf5b49048b4cffe60c9ba2305b25fc1d8d8a6f0df6fbf6296068c30aac279",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执14",
+        "source_line": 335,
+        "source_end_line": 340,
+        "excerpt_sha256": "18d6d2e68f3bc10037897277da6f1f0f9f9c14c764428d0f4f306cb0282f40d1",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执15",
+        "source_line": 341,
+        "source_end_line": 346,
+        "excerpt_sha256": "68409aee05a0e04ee449910c894cdc1ecb0dbf03e5b6ceb8b90070b60f83c125",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执16",
+        "source_line": 347,
+        "source_end_line": 352,
+        "excerpt_sha256": "1de44e6fb9d9232146e473730ea621b929c7984f34be9f2306b6fae87ffc29df",
+        "target_document": "references/governance-execution-flow.md"
+      }
+    ],
+    "probe_steps": [
+      {
+        "id": "探01",
+        "source_line": 232,
+        "source_end_line": 237,
+        "excerpt_sha256": "7a5a12a0febbe83698b240f7e672831c20a80b29548e9067546f2564d2d23538",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探02",
+        "source_line": 238,
+        "source_end_line": 243,
+        "excerpt_sha256": "9f5a87e455755ded7ba6841d00393fd87ababa5c5ffcbc9be88eb5eb19ac3c52",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探03",
+        "source_line": 244,
+        "source_end_line": 249,
+        "excerpt_sha256": "7aa1b379b6bfa7e81e02e51b4e11ce886f9edc45e2de3a576ca263fe5833fa6c",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探04",
+        "source_line": 250,
+        "source_end_line": 255,
+        "excerpt_sha256": "5f2fe61703f57c81224793982c2ced3c32e81b587c8b2b9c9e466e3c4fde6206",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探05",
+        "source_line": 256,
+        "source_end_line": 263,
+        "excerpt_sha256": "06059ebf78b1237ecc6cab74ca4adb4037d1f03e445b9121c53e393dba6f624c",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探06",
+        "source_line": 264,
+        "source_end_line": 271,
+        "excerpt_sha256": "4d0f0fb56b915e70316a6c3655c6166d25c64412cc8c56c58b148c99a38b2227",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探07",
+        "source_line": 272,
+        "source_end_line": 284,
+        "excerpt_sha256": "effd08c547263853dccb7f384f4dcffd5a6a32e253432d5b86c96f9b9b79538f",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探08",
+        "source_line": 285,
+        "source_end_line": 290,
+        "excerpt_sha256": "924dd5aaea4fda53d303e8238d9c0b1ece1f5015e5fa3ad50420568754d74500",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探09",
+        "source_line": 291,
+        "source_end_line": 298,
+        "excerpt_sha256": "59dcec696363cef153ea815ce8d8d4602930b13ef3841819519fda25b549869a",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探10",
+        "source_line": 299,
+        "source_end_line": 304,
+        "excerpt_sha256": "d20c79401648084f631fac3123c437eb92431b0988ffb2edb80f45dc12caecd7",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探11",
+        "source_line": 305,
+        "source_end_line": 310,
+        "excerpt_sha256": "b3972c3e47c6657b58b2de1c153fce8b51d2b1765cf0684bd52781a9368b9b44",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探12",
+        "source_line": 311,
+        "source_end_line": 316,
+        "excerpt_sha256": "83208d006309ad652c1c30028e123db7acc762a7faf3bc5d87293110e722d5fd",
+        "target_document": "references/governance-observability-probes.md"
+      }
+    ],
+    "metrics": [
+      {
+        "id": "指01",
+        "source_line": 418,
+        "source_end_line": 418,
+        "excerpt_sha256": "e9bf634069bb534beafacd2a8cb7cf2ddc9f8b1b798d8cd61c05f12292aa7706",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_01"
+      },
+      {
+        "id": "指02",
+        "source_line": 419,
+        "source_end_line": 419,
+        "excerpt_sha256": "f70fab74a3cc6f6f1686f38ba699e655865908ec00a886d5935c8ccc32b0b7e1",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_02"
+      },
+      {
+        "id": "指03",
+        "source_line": 420,
+        "source_end_line": 420,
+        "excerpt_sha256": "bf147e0038b72dda9b395a55a9f665aac6f46ddb9cece736f303ce16426144a5",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_03"
+      },
+      {
+        "id": "指04",
+        "source_line": 421,
+        "source_end_line": 421,
+        "excerpt_sha256": "c972e989c0cc4846b505ceb3ef20a9eb813a2f333e532efb974bd28a6f4d7193",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_04"
+      },
+      {
+        "id": "指05",
+        "source_line": 422,
+        "source_end_line": 422,
+        "excerpt_sha256": "a68062075444a593afaf6d83642ffbc8b3531c7444c638a2172de39948178e38",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_05"
+      },
+      {
+        "id": "指06",
+        "source_line": 423,
+        "source_end_line": 423,
+        "excerpt_sha256": "14ca04e87e59185aea6add7ffb7b91543264977eeb9298ffbec869cd98b8e3c6",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_06"
+      },
+      {
+        "id": "指07",
+        "source_line": 424,
+        "source_end_line": 424,
+        "excerpt_sha256": "6a5ccd5bc371f5fcae4450eca7f7d99d14a7e246393ede2b8d58696e3e7f82cd",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_07"
+      },
+      {
+        "id": "指08",
+        "source_line": 425,
+        "source_end_line": 425,
+        "excerpt_sha256": "ed0e2f746200fe9d898209e702ad8c9a4b79155034fc9007e1de5755d0c7610f",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_08"
+      },
+      {
+        "id": "指09",
+        "source_line": 426,
+        "source_end_line": 426,
+        "excerpt_sha256": "61087834c5121e221433eff289de2351fb4d2e62afca1b86c5637ca677accb92",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_09"
+      },
+      {
+        "id": "指10",
+        "source_line": 427,
+        "source_end_line": 427,
+        "excerpt_sha256": "52c8c369e131d5a65fdd41dafeb8c3b723f193284c2f7e0da4f13a529261b5a9",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_10"
+      },
+      {
+        "id": "指11",
+        "source_line": 428,
+        "source_end_line": 428,
+        "excerpt_sha256": "eff6d43d46557ac72bda072ce46e4fb4f78d71bc9fd4b8b68117f2e3400e7dd8",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_11"
+      },
+      {
+        "id": "指12",
+        "source_line": 429,
+        "source_end_line": 429,
+        "excerpt_sha256": "a0be2490fa2dc880ede8ca10a5c1132c4db4564fd7ef513d6d44e6d679ca7fd5",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_12"
+      },
+      {
+        "id": "指13",
+        "source_line": 430,
+        "source_end_line": 430,
+        "excerpt_sha256": "8e5d6cccf89faeb630ccac04b7894dbbde6d82624a4446f3b63febe6d48586b1",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_13"
+      },
+      {
+        "id": "指14",
+        "source_line": 431,
+        "source_end_line": 431,
+        "excerpt_sha256": "f8143ca55d801d389c921915d93edd323e96b8bd2ab740e29fe5c502d2b6f2d3",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_14"
+      },
+      {
+        "id": "指15",
+        "source_line": 432,
+        "source_end_line": 432,
+        "excerpt_sha256": "6628f9892466702b9d65c33771f54b464e2f49524d937a8a07377df6b354de89",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_15"
+      },
+      {
+        "id": "指16",
+        "source_line": 433,
+        "source_end_line": 433,
+        "excerpt_sha256": "5133bf08443fdcc9ec46d10120f336f5ef4baee529c6fc1049fb9619a6089480",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_16"
+      },
+      {
+        "id": "指17",
+        "source_line": 434,
+        "source_end_line": 434,
+        "excerpt_sha256": "1c30dcb6a71d0ff11bc77477d062a640f3264031d09b4303b50e1034402c1501",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_17"
+      },
+      {
+        "id": "指18",
+        "source_line": 435,
+        "source_end_line": 435,
+        "excerpt_sha256": "52b4f0fdccfd29524253ccce87d04048d44b3d4b2358c85876bb7f5efeaf9945",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_18"
+      },
+      {
+        "id": "指19",
+        "source_line": 441,
+        "source_end_line": 441,
+        "excerpt_sha256": "08daa11852f5cbbdd3280953c872bee6dcefdd99d500f14247640d64f06b26fa",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_19"
+      },
+      {
+        "id": "指20",
+        "source_line": 442,
+        "source_end_line": 442,
+        "excerpt_sha256": "2905c44eb50bb7ffc38094d85ec2c2bd132cc840516b72dd06b7fc30b291bcdd",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_20"
+      },
+      {
+        "id": "指21",
+        "source_line": 443,
+        "source_end_line": 443,
+        "excerpt_sha256": "ff1c6b107c957178034c631c3437aab5da9442585ec6cf3d5c5cd186fe6dfefc",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_21"
+      },
+      {
+        "id": "指22",
+        "source_line": 444,
+        "source_end_line": 444,
+        "excerpt_sha256": "9ee925fe860d106e61bc3d40ab6f4bbd74902e03a3f00a614f822dba9059e43e",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_22"
+      },
+      {
+        "id": "指23",
+        "source_line": 445,
+        "source_end_line": 445,
+        "excerpt_sha256": "17d8e2e770595f3f9cae1503bc1abb8f7d30cc274fe1038175cb243dc912d008",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_23"
+      },
+      {
+        "id": "指24",
+        "source_line": 446,
+        "source_end_line": 446,
+        "excerpt_sha256": "5ee9335ce7235bf7be864086d1487b57db5664f6772058bfec8600cc177ae968",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_24"
+      },
+      {
+        "id": "指25",
+        "source_line": 447,
+        "source_end_line": 447,
+        "excerpt_sha256": "15b2d1ff3de7b21245e430906d0b7f4c9544d1b4eb3fe01ec43dd603815b8a0b",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_25"
+      },
+      {
+        "id": "指26",
+        "source_line": 448,
+        "source_end_line": 448,
+        "excerpt_sha256": "0f721f29714f1909ed2e4d3468bf6ab6bd4693c581849e510e026732c0cda893",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_26"
+      },
+      {
+        "id": "指27",
+        "source_line": 449,
+        "source_end_line": 449,
+        "excerpt_sha256": "666b3e7fec2a859ba5b85c12decc4184900636d0a8e5cab33da67453a974f906",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_27"
+      },
+      {
+        "id": "指28",
+        "source_line": 450,
+        "source_end_line": 450,
+        "excerpt_sha256": "ed2b20c7719a5ca75a1c3ffd58389d6bb6aa0378e7f27d478e044155c852fbba",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_28"
+      },
+      {
+        "id": "指29",
+        "source_line": 451,
+        "source_end_line": 451,
+        "excerpt_sha256": "f5602e3fcb822782e0d70c3ee2f324e106039e05d502ecebf3451f2e7b26dad6",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_29"
+      },
+      {
+        "id": "指30",
+        "source_line": 452,
+        "source_end_line": 452,
+        "excerpt_sha256": "0301a8f17d0de613f8900a169de0ab39f344f63acd7b9f68028163c7153165bc",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_30"
+      },
+      {
+        "id": "指31",
+        "source_line": 458,
+        "source_end_line": 458,
+        "excerpt_sha256": "342ee69a3448382e984be98a520537fd2012590b3620f167419652f65b8b0bf2",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_31"
+      },
+      {
+        "id": "指32",
+        "source_line": 459,
+        "source_end_line": 459,
+        "excerpt_sha256": "3c6cadb5afc615f041a5c81c2ec1ec40a574a7c3a713ac6f171d7ff97d6f57b3",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_32"
+      },
+      {
+        "id": "指33",
+        "source_line": 460,
+        "source_end_line": 460,
+        "excerpt_sha256": "bea7bd02944ac220ac32f57553cb40828a73c15ae0b52bb9c1136089eb25aff7",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_33"
+      },
+      {
+        "id": "指34",
+        "source_line": 461,
+        "source_end_line": 461,
+        "excerpt_sha256": "084d3160964ef3724c8e18227e8e88eb6fc4e2d43161e5eacf1b762b9b6d2f2d",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_34"
+      },
+      {
+        "id": "指35",
+        "source_line": 462,
+        "source_end_line": 462,
+        "excerpt_sha256": "aece666b141368825531ba1b7521c275ab204c9d60d7f98123306e82b91046ae",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_35"
+      },
+      {
+        "id": "指36",
+        "source_line": 463,
+        "source_end_line": 463,
+        "excerpt_sha256": "aac1e46c6552969e16d003872766faf39ef1be3de2107adff88c038bfeb939a3",
+        "target_document": "references/governance-observability-probes.md",
+        "metric_id": "MET_GOV_36"
+      }
+    ],
+    "execution_cases": [
+      {
+        "id": "执验01",
+        "source_line": 416,
+        "source_end_line": 416,
+        "excerpt_sha256": "5283f20bb9afe49fc49b18b0e3128b4d60a3bd467fbb1da550502811d6155cb9",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验02",
+        "source_line": 417,
+        "source_end_line": 417,
+        "excerpt_sha256": "cb823542410fa7d3261989d1975421a043ffda34bd89c499286b4ca7171b2c83",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验03",
+        "source_line": 418,
+        "source_end_line": 418,
+        "excerpt_sha256": "9be4c1d1d6270f46f044f6cd57879c0c66a6c37d9f503a8dfd83f31cbae2d4e2",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验04",
+        "source_line": 419,
+        "source_end_line": 419,
+        "excerpt_sha256": "8d6a128896d803e872507163acbed45b65369ec97c288224d16a08dea5ecbc62",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验05",
+        "source_line": 420,
+        "source_end_line": 420,
+        "excerpt_sha256": "c4c76124f4967415051c69a232f7d0f3bad582e5a9fe150c94d63c48ecb5158c",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验06",
+        "source_line": 421,
+        "source_end_line": 421,
+        "excerpt_sha256": "8e03664e7d11d31c3946008c8b8173f1d347b6231388164237e95999b4461011",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验07",
+        "source_line": 422,
+        "source_end_line": 422,
+        "excerpt_sha256": "43a7f51210e9b1448b0c4d3daf3c1253f1b11a169be212a59ab742fab9a6fdf1",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验08",
+        "source_line": 423,
+        "source_end_line": 423,
+        "excerpt_sha256": "699ecde986fe724b06e039e1162ac5e0e778275e9f9fa8953273ae8ef0cc925c",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验09",
+        "source_line": 424,
+        "source_end_line": 424,
+        "excerpt_sha256": "2b32704a140dc971fa09360f29620a8a49b17c49a7a7d28eb3edd4ae4d875428",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验10",
+        "source_line": 425,
+        "source_end_line": 425,
+        "excerpt_sha256": "90bfc436cc9337f846e642b8f6b2a025bae28369d4b9ae237a03357c72371189",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验11",
+        "source_line": 426,
+        "source_end_line": 426,
+        "excerpt_sha256": "f37c8186fc738d1a85e1c1235d60ed1f6a5967f04c0ae7d0c9565752851dd707",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验12",
+        "source_line": 427,
+        "source_end_line": 427,
+        "excerpt_sha256": "460467563249c499222c3501ec30999aca49b0470f7c689ada3723e80d944421",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验13",
+        "source_line": 428,
+        "source_end_line": 428,
+        "excerpt_sha256": "6e02e236b480f7e6830d7d225d17cd0ca52b0eb559b4a25f1ac3bdab23d53f51",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验14",
+        "source_line": 429,
+        "source_end_line": 429,
+        "excerpt_sha256": "99025d4dfc4a2d7c9a4df22f5f6feb6c891b67b7bf1cb1eed55bed4e83952f86",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验15",
+        "source_line": 430,
+        "source_end_line": 430,
+        "excerpt_sha256": "3ca9b3f5ad9f2a64f96f4b5379bd8219fe6ca9a557bcb7758a512d9396964155",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验16",
+        "source_line": 431,
+        "source_end_line": 431,
+        "excerpt_sha256": "5cea152429ac72c0020a0e1e2d9e15b975516fd454884703c8d65103f1a388fa",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验17",
+        "source_line": 432,
+        "source_end_line": 432,
+        "excerpt_sha256": "45dc72416f90218270946a43d335eb802de8cc220aa2de8062a597835d1fa91a",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验18",
+        "source_line": 433,
+        "source_end_line": 433,
+        "excerpt_sha256": "e860e4f66a1abefe57605e09c06e5792173b0e8b66610ad5801f1eed3b77421a",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验19",
+        "source_line": 434,
+        "source_end_line": 434,
+        "excerpt_sha256": "0b3551ed47099512562a0674c5a8610a9927db70998d49c1dc417f2f7b9cfa1c",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验20",
+        "source_line": 435,
+        "source_end_line": 435,
+        "excerpt_sha256": "7ab383a7b7c065432936fdf825dc39e6f441bda4916754e960de1849efd7e914",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验21",
+        "source_line": 436,
+        "source_end_line": 436,
+        "excerpt_sha256": "94b69ebb4c26d59d9a0e6b795aa53530623813f92dcd713749a7aca87a3c8337",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验22",
+        "source_line": 437,
+        "source_end_line": 437,
+        "excerpt_sha256": "55206251cdcc301156a8d3e1597c7f6990fb74bb0cbd87512e5dc868d6185c07",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验23",
+        "source_line": 438,
+        "source_end_line": 438,
+        "excerpt_sha256": "796e09a33b9738ef3357a7288a3e72ecc8a0e4903ff17309456bffa81fb427da",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验24",
+        "source_line": 439,
+        "source_end_line": 439,
+        "excerpt_sha256": "8635dfad07881b0a333bb9b4cfedb57c4580dd5daff466cfe9b16b4cc6c6d603",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验25",
+        "source_line": 440,
+        "source_end_line": 440,
+        "excerpt_sha256": "6cca268ebc991c3be7492b083bd464c77b6c55b3c90adab25b0ed1d0e5ca82e1",
+        "target_document": "references/governance-execution-flow.md"
+      },
+      {
+        "id": "执验26",
+        "source_line": 441,
+        "source_end_line": 441,
+        "excerpt_sha256": "994c05d036765472ed170ab02337c0d5c3719abf16db11aa222a8b6e08b21bfb",
+        "target_document": "references/governance-execution-flow.md"
+      }
+    ],
+    "probe_cases": [
+      {
+        "id": "探验01",
+        "source_line": 477,
+        "source_end_line": 477,
+        "excerpt_sha256": "b92fe4d5c133ec6569c92ce3ce5b4b9e06c39c4ea03c06b3fbde8fd161b5c142",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验02",
+        "source_line": 478,
+        "source_end_line": 478,
+        "excerpt_sha256": "8ec693ecde18cf39a38fe9c29023b56051be4a80d4d0518d9b26b3bf80867e8e",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验03",
+        "source_line": 479,
+        "source_end_line": 479,
+        "excerpt_sha256": "26a3f72e0883e4d0da2c779b5b0c284c6b60829373743bf363d906e6de1d80f1",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验04",
+        "source_line": 480,
+        "source_end_line": 480,
+        "excerpt_sha256": "f1703b78e18959e0787998d1aaee2ac796f2a52655144629e52983a8e8dde2fd",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验05",
+        "source_line": 481,
+        "source_end_line": 481,
+        "excerpt_sha256": "70fbf751e24755e7d16a8b468654b96496a0834e3ca6bc918eba17fbd9eb5e55",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验06",
+        "source_line": 482,
+        "source_end_line": 482,
+        "excerpt_sha256": "996674a401d7f1e2f8b1329bb0e4062564654c493ba3cb3a34a4304f9f19460c",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验07",
+        "source_line": 483,
+        "source_end_line": 483,
+        "excerpt_sha256": "9db0ee477f6a05ff9e8309378222d1ab20734214f54d7a1eb188b622c5d99efc",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验08",
+        "source_line": 484,
+        "source_end_line": 484,
+        "excerpt_sha256": "bb7fca0d53007fe770544848c07efc3d1646a75f176cf19b91bdff70d0ea55bc",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验09",
+        "source_line": 485,
+        "source_end_line": 485,
+        "excerpt_sha256": "b8a891eb8220c188c8d649a24e39fe89917ff227662b48c11ac52c73170660c1",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验10",
+        "source_line": 486,
+        "source_end_line": 486,
+        "excerpt_sha256": "9557b324ff891d86d2465a22903111eb7bf45de1fe704ea99a9cda88ec6cfe12",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验11",
+        "source_line": 487,
+        "source_end_line": 487,
+        "excerpt_sha256": "18a6e87c7694e0458f6752424009f67fdc9f50f4c64ee97ff5739979421ec01b",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验12",
+        "source_line": 488,
+        "source_end_line": 488,
+        "excerpt_sha256": "85c6e341afdb845899e73d0e8232478a3a6e59e14f36de818ac623400684400b",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验13",
+        "source_line": 489,
+        "source_end_line": 489,
+        "excerpt_sha256": "ee10f0c5255a0046c9045ed7e06a8d419d5c243105fc9169badabee0c7006871",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验14",
+        "source_line": 490,
+        "source_end_line": 490,
+        "excerpt_sha256": "53fb7f71195cef3460db2645c7cd1183c88a92e8e71fd767cdb8f2124f508cea",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验15",
+        "source_line": 491,
+        "source_end_line": 491,
+        "excerpt_sha256": "37a5aba621ca5018db323e9a3dda0e91b9dac4c412b594f23b36287b7a6db3d9",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验16",
+        "source_line": 492,
+        "source_end_line": 492,
+        "excerpt_sha256": "40d15216d5597d48709b03a88b5209273778ce947c37ceaebc980829e1dd8870",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验17",
+        "source_line": 493,
+        "source_end_line": 493,
+        "excerpt_sha256": "6214e4923e7977ff9f4318c8bf003ce925a2dde14187087e360dde8c329e97b7",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验18",
+        "source_line": 494,
+        "source_end_line": 494,
+        "excerpt_sha256": "f07b02973062dc6c11eebedb9901f16d751888520055057f764b903e3826db4d",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验19",
+        "source_line": 495,
+        "source_end_line": 495,
+        "excerpt_sha256": "0b2ec87754661cbb4eb1c35c842f98840baf25ae5e23718d202aeff1c7216cb5",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验20",
+        "source_line": 496,
+        "source_end_line": 496,
+        "excerpt_sha256": "6a4bfa87709a24d471bdf84e429bc182f6874d7f837c51863f788d4107e0295d",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验21",
+        "source_line": 497,
+        "source_end_line": 497,
+        "excerpt_sha256": "33c2299a93589800ab543a2deea6b4ac315cb2067620002945b93524e8c35c3d",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验22",
+        "source_line": 498,
+        "source_end_line": 498,
+        "excerpt_sha256": "f7e4bb15357018f6d06f36b0baac05549c9b4e63ed86f21cb3e2078bd8c78ddb",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验23",
+        "source_line": 499,
+        "source_end_line": 499,
+        "excerpt_sha256": "6c9c9cd16a6fa8ac1fb4c6fc69e2576eedd73490492cbe5add54ad4bcbd80479",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验24",
+        "source_line": 500,
+        "source_end_line": 500,
+        "excerpt_sha256": "b8f18194da40a72f73559c59f1f22bcc57220dba41ba111d8f6bf8e17702ef34",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验25",
+        "source_line": 501,
+        "source_end_line": 501,
+        "excerpt_sha256": "48bf776cedc6a7694126b1a3949816cbc84a6d4b61428b5a098ac42df1fede1f",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验26",
+        "source_line": 502,
+        "source_end_line": 502,
+        "excerpt_sha256": "f6301eb92aca0e794d9762e17bdd8025e477870b2c1d8e8f927209a28464f23a",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验27",
+        "source_line": 503,
+        "source_end_line": 503,
+        "excerpt_sha256": "90a634eb00e869cb8de63851ad46f5ecd57e155638da29bc278731eaa06d0c91",
+        "target_document": "references/governance-observability-probes.md"
+      },
+      {
+        "id": "探验28",
+        "source_line": 504,
+        "source_end_line": 504,
+        "excerpt_sha256": "9cc27922b34eb6f18bf8081f4b11c570151e6129064f2f178daf6d72e4bdfd97",
+        "target_document": "references/governance-observability-probes.md"
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "checked_at": "2026-09-22T10:07:31.903450+00:00",
+  "scope": "specification_and_maintenance_tools",
+  "source_requirements": 126,
+  "source_metrics": 30,
+  "focused_tests": {
+    "command": "python -m pytest tests/test_handoff_chain_docs.py -q",
+    "passed": 48,
+    "duration_seconds": 4.85
+  },
+  "full_regression": {
+    "command": "python -m pytest -q -rs",
+    "passed": 897,
+    "skipped": 3,
+    "subtests_passed": 243,
+    "duration_seconds": 94.37,
+    "skip_reason": "HARNESS_POSTGRES_DSN is not configured"
+  },
+  "skill_validation": {
+    "errors": 0,
+    "warnings": 18
+  },
+  "quick_validate": "passed",
+  "source_and_contract_validation": "passed",
+  "html_source_consistency": "passed",
+  "diff_check": "passed",
+  "reviewed_assets_sha256": {
+    "skills/harness-engineering-patterns/references/patterns/collaboration/collaboration-chain.md": "ca0e72a229a3a65c6a9fe1ed03d1ee21c624d0024d49de25c0056a40abad8d91",
+    "skills/harness-engineering-patterns/references/patterns/collaboration/collaboration-chain-observability.md": "68c562e1ee195f8958ba670d10c9b74241629bd3d092164ac748fb35f39fc55a",
+    "skills/harness-engineering-patterns/references/handoff-chain-contract.md": "be81a48ad85301acd59c202195dea3ae2adf7e01c6ad29647620c61b6a289e07",
+    "skills/harness-engineering-patterns/references/handoff-chain-source-map.json": "83506088815dc00724daa0bfd4d48b25f90241d475607d20c9ecea37feb5bb8c",
+    "skills/harness-engineering-patterns/scripts/sync_handoff_chain_docs.py": "e67e824df1c26cf7f9a9ff024ef6bc2a6d94536390ec98c59a5d18d58d1ae288",
+    "tests/test_handoff_chain_docs.py": "8832d5d68404b9ddd60bb5a93289fe420b49ba9654c942be5f8cb42936c89fea"
+  },
+  "dedicated_business_integration": "pending",
+  "deployed": false,
+  "parallel_work_note": "Unrelated governance changes in the shared working tree were preserved; full regression reflects that shared snapshot."
+}

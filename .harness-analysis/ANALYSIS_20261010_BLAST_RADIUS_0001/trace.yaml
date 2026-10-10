@@ -1,0 +1,34 @@
+trace_id: TRACE_BLAST_RADIUS_20261010_0001
+analysis_id: ANALYSIS_20261010_BLAST_RADIUS_0001
+event_time: 2026-10-10T02:33:05.318983+00:00
+status: verified
+scope:
+  project_scope: Agent-based-triage
+  tenant_scope: none
+  environment_scope: local
+  task_scope: blast-radius specification assets and provenance validation
+sensitivity: internal
+source_revision: "d36c2b240d085a1b8a6eea57a58dabb3f773a0f4 + working-tree changes"
+subject:
+  subject_type: pattern
+  subject_ref: PATTERN_0050
+  cell_refs: [CELL_GOVERNANCE_HIERARCHY]
+  pattern_refs: [PATTERN_0050]
+observation:
+  trigger: "User requested improving Blast Radius Control with two supplied documents / 用户要求结合两份资料完善爆炸半径控制"
+  before: "Nested containment card and generic module attachment / 嵌套遏制卡片及通用模块挂载"
+  adjustment: "Bilingual execution, probes, shared contract, source mapping and integrity checks / 双语执行探针共享契约、来源映射及完整性检查"
+  outcome: "Asset checks pass; one unrelated concurrent approval spelling test remains failed; no production execution claimed / 资产检查通过，另一组审批文档仍有一处拼写测试失败，不宣称生产执行"
+  validity: verified
+evidence_refs:
+  - "external:skills/harness-engineering-patterns/references/blast-radius-source-map.json"
+  - "external:tests/test_blast_radius_docs.py"
+  - "external:.harness-analysis/ANALYSIS_20261010_BLAST_RADIUS_0001/validation-summary.json"
+verification_tasks: []
+follow_up:
+  - "Adopting systems must implement and run the 32 business integration scenarios / 采用方需实现并运行32个业务集成场景"
+owner: Codex
+retention:
+  policy: project
+  expires_at: null
+  deletion_or_archive_rule: archive when superseded

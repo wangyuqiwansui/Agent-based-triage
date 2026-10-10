@@ -1,0 +1,1371 @@
+{
+  "name_en": "Pattern Combination Execution and Independent Probes",
+  "name_zh": "模式组合执行与独立探针",
+  "description_en": "Source-backed composition of existing patterns with dependency, version, budget, recovery, evidence and acceptance contracts.",
+  "description_zh": "基于来源组合既有模式，明确依赖、版本、预算、恢复、证据及验收契约。",
+  "version": "0.1.0",
+  "status": "draft",
+  "implementation_status": "specification_only",
+  "pattern_ref": "PATTERN_0053",
+  "shared_probe_pattern_ref": "PATTERN_0052",
+  "shared_probe_version": "0.8.0",
+  "execution_reference": "references/pattern-combination-execution-flow.md",
+  "observability_reference": "references/pattern-combination-observability-probes.md",
+  "interaction_contract_reference": "references/pattern-combination-contract.md",
+  "source_map_reference": "references/pattern-combination-source-map.json",
+  "source_aliases": {
+    "PATTERN_COMBINATION_0001": "PATTERN_0053",
+    "PATTERN_OBSERVABILITY_PROBE_0001": "PATTERN_0052"
+  },
+  "acceptance_status": "not_executed",
+  "metric_implementation": "specification_only",
+  "probe_namespace": "pattern_combination/0.1.0",
+  "sources": [
+    {
+      "id": "execution",
+      "original_filename": "模式组合_执行流程_v0.1.md",
+      "snapshot_path": "references/sources/pattern-combination/execution.source.txt",
+      "sha256": "d97598b686b7636f7be96cd5804c9fa84e5b970c506aba1a6e1929a36fa2286a",
+      "role_en": "Unmodified original-language evidence, not executable instructions",
+      "role_zh": "未改动的原语言证据，不是执行指令"
+    },
+    {
+      "id": "probe",
+      "original_filename": "模式组合_工作流可观测性探针_v0.1.md",
+      "snapshot_path": "references/sources/pattern-combination/probe.source.txt",
+      "sha256": "b614d92c69f9cc50b7937f0a621aa689cf290704c6ee092deb81ec9f0379a19a",
+      "role_en": "Unmodified original-language evidence, not executable instructions",
+      "role_zh": "未改动的原语言证据，不是执行指令"
+    }
+  ],
+  "inventories": {
+    "execution_chapters": [
+      {
+        "id": "execution-chapter-1",
+        "source_id": "execution",
+        "source_line": 42,
+        "source_end_line": 58,
+        "source_label": "文档定位",
+        "excerpt_sha256": "da35506a1668cc26385b85722e1fac4aa8ab67cf5840ca3abd443880ac5bebeb",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-2",
+        "source_id": "execution",
+        "source_line": 59,
+        "source_end_line": 84,
+        "source_label": "设计目标",
+        "excerpt_sha256": "8d127ea16bd2f0b79ca0995b29e8c746c2e7edc969a05f44d432f4589d8395ea",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-3",
+        "source_id": "execution",
+        "source_line": 85,
+        "source_end_line": 121,
+        "source_label": "与 Hanerss Skill Framework 的对应关系",
+        "excerpt_sha256": "764871131ce7d88a722f56d7f2804cdc7ddc2cf5cd264ad8814ae50c98c50edc",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-4",
+        "source_id": "execution",
+        "source_line": 122,
+        "source_end_line": 159,
+        "source_label": "运行方式",
+        "excerpt_sha256": "a9bf0b9dc496a5fd8d81122c8d1cfee2c1ebb2a6e24b4160658fce4c3560ede6",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-5",
+        "source_id": "execution",
+        "source_line": 160,
+        "source_end_line": 203,
+        "source_label": "输入契约",
+        "excerpt_sha256": "586ec4098a5de26cedc84e97932ead5a66215a17f04cdfb6b393bd906117f394",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-6",
+        "source_id": "execution",
+        "source_line": 204,
+        "source_end_line": 221,
+        "source_label": "输出契约",
+        "excerpt_sha256": "20fc0d357444d8a5b69c3defacac312935fe12aeeb6d8def1c3738ba607468e8",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-7",
+        "source_id": "execution",
+        "source_line": 222,
+        "source_end_line": 243,
+        "source_label": "核心运行对象",
+        "excerpt_sha256": "717b7eafac34f440a2884df636a333fd1b1d82e2abdb38d6dc2e56b1e808c393",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-8",
+        "source_id": "execution",
+        "source_line": 244,
+        "source_end_line": 272,
+        "source_label": "状态机",
+        "excerpt_sha256": "02bb82adfb55b0ab06b5f42e01a1c98497a16e4c7976b9e10ebd9f7926e1b822",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-9",
+        "source_id": "execution",
+        "source_line": 273,
+        "source_end_line": 628,
+        "source_label": "通用执行流程",
+        "excerpt_sha256": "d632db9ae18ef6cfc147b7c64063c9dd39a35aa508f7e0297362abc1367fcbd4",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-10",
+        "source_id": "execution",
+        "source_line": 629,
+        "source_end_line": 643,
+        "source_label": "场景选型表",
+        "excerpt_sha256": "943ebad07c75b983a9f9e0f41bba7e46531d2d6000ebeb94d9d672cc215df69a",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-11",
+        "source_id": "execution",
+        "source_line": 644,
+        "source_end_line": 779,
+        "source_label": "三类通用场景适配器",
+        "excerpt_sha256": "09484aa1f346713f492dcfc23a0f9412bf27cad07e37809cec12de1cda7db5a2",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-12",
+        "source_id": "execution",
+        "source_line": 780,
+        "source_end_line": 817,
+        "source_label": "预算与停止条件",
+        "excerpt_sha256": "94d7cdae2a999f893138f964c6450e40bf9aaf9d9247b878af3bc9ad099d94b4",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-13",
+        "source_id": "execution",
+        "source_line": 818,
+        "source_end_line": 836,
+        "source_label": "失败分类与恢复矩阵",
+        "excerpt_sha256": "224c52934330145326443ab07e56bb52e3f64dc995f84103388e5858044dccbb",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-14",
+        "source_id": "execution",
+        "source_line": 837,
+        "source_end_line": 848,
+        "source_label": "共享状态和版本规则",
+        "excerpt_sha256": "8e97184503e5ad48dec2eefd3e5b9306a41b0f324a48c0046b136297e6d9f6e8",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-15",
+        "source_id": "execution",
+        "source_line": 849,
+        "source_end_line": 910,
+        "source_label": "与工作流可观测性探针的交互契约",
+        "excerpt_sha256": "9a869d883961e075ef246e8cb6810a69ca904e2e45bb121d853f61feb2aab259",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-16",
+        "source_id": "execution",
+        "source_line": 911,
+        "source_end_line": 929,
+        "source_label": "最小可用实现",
+        "excerpt_sha256": "fca4f434d5b9594e31e386d3838c9353281e071af123c7504d6baf6569bc7b83",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-17",
+        "source_id": "execution",
+        "source_line": 930,
+        "source_end_line": 981,
+        "source_label": "配置模板",
+        "excerpt_sha256": "5a38127fa2ab4670b54e4c1ec2002b7fa186986412b5f3a667b3726962e728f8",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-18",
+        "source_id": "execution",
+        "source_line": 982,
+        "source_end_line": 1033,
+        "source_label": "评估用例",
+        "excerpt_sha256": "ca0273bbfc6d63c9140091e3b93aa01d3072f24adb8c3d2910d6d04e740bb1d5",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-19",
+        "source_id": "execution",
+        "source_line": 1034,
+        "source_end_line": 1050,
+        "source_label": "常见反模式",
+        "excerpt_sha256": "130f21b7a2cea70b789d440f2ea7fc0a385b0f09ef5dda2b1937484538bd3955",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-20",
+        "source_id": "execution",
+        "source_line": 1051,
+        "source_end_line": 1068,
+        "source_label": "完成定义",
+        "excerpt_sha256": "a953e20677d63d328cc26b515b9305aa774a95c37aa7077ddbbfa26c2f05ea3d",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "execution-chapter-21",
+        "source_id": "execution",
+        "source_line": 1069,
+        "source_end_line": 1079,
+        "source_label": "框架挂载建议",
+        "excerpt_sha256": "2fe5086616a7ef909b3fdec7db1b722723f4ecc49bbb4d97123529a7fe64cd33",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      }
+    ],
+    "probe_chapters": [
+      {
+        "id": "probe-chapter-1",
+        "source_id": "probe",
+        "source_line": 40,
+        "source_end_line": 58,
+        "source_label": "文档定位",
+        "excerpt_sha256": "70d047e7dcb354b8c021cf3186576ba56d1117ea550b835fa24d282878f13ec3",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-2",
+        "source_id": "probe",
+        "source_line": 59,
+        "source_end_line": 86,
+        "source_label": "设计目标",
+        "excerpt_sha256": "d6baa5b7bb398fc77ca248b499c669d71bb3f2ac396d5d80cb32723162906476",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-3",
+        "source_id": "probe",
+        "source_line": 87,
+        "source_end_line": 126,
+        "source_label": "与 Hanerss Skill Framework 的对应关系",
+        "excerpt_sha256": "68f319fc4d06efa0d3990415b517ca0406833e046ae172ff579bd8328aa83174",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-4",
+        "source_id": "probe",
+        "source_line": 127,
+        "source_end_line": 185,
+        "source_label": "运行方式",
+        "excerpt_sha256": "e5535a01fb98fd76881b6739c8e603fe3830cf57e0aa5809314b49263ecb9eec",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-5",
+        "source_id": "probe",
+        "source_line": 186,
+        "source_end_line": 204,
+        "source_label": "观察模型",
+        "excerpt_sha256": "60ef419d0e174070b5f2ca14cbf1ed8241746b963fd4107f2bd34f0c3c4f456a",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-6",
+        "source_id": "probe",
+        "source_line": 205,
+        "source_end_line": 234,
+        "source_label": "数据来源与置信等级",
+        "excerpt_sha256": "170fc93e6899eba32e0257db7ae3b03a4fa251eb25d7c2523877e82f82df671f",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-7",
+        "source_id": "probe",
+        "source_line": 235,
+        "source_end_line": 282,
+        "source_label": "标识与关联规则",
+        "excerpt_sha256": "a1eedf6a607fc7a7ffad8629127711e19a8ff0cace1c4c5eb1b4abb43c82abda",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-8",
+        "source_id": "probe",
+        "source_line": 283,
+        "source_end_line": 349,
+        "source_label": "统一事件信封",
+        "excerpt_sha256": "7a03cfaad229f0bfba1e45d75e28d3561902cc62bd9924d379407ee3d5165807",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-9",
+        "source_id": "probe",
+        "source_line": 350,
+        "source_end_line": 457,
+        "source_label": "事件类型",
+        "excerpt_sha256": "409cc1e8956ab50f13d2509818cc613e77caecd4e8ebc1d4fa78707205c3e0d4",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-10",
+        "source_id": "probe",
+        "source_line": 458,
+        "source_end_line": 502,
+        "source_label": "探针注册结构",
+        "excerpt_sha256": "0fa2f42950cc5510e92b93b3374e3dc8429c6db08a8dfeb835e6b8dd48543ff1",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-11",
+        "source_id": "probe",
+        "source_line": 503,
+        "source_end_line": 1109,
+        "source_label": "核心探针目录",
+        "excerpt_sha256": "ff9fb108690f0db9c3d0364214d616ececdeea8e8a99f8300fee41259579232c",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-12",
+        "source_id": "probe",
+        "source_line": 1110,
+        "source_end_line": 1179,
+        "source_label": "数据补全机制",
+        "excerpt_sha256": "9cb58dad0228f20115cf66e5f5f5cc5a5c093968b3a15661a36faefce69891ac",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-13",
+        "source_id": "probe",
+        "source_line": 1180,
+        "source_end_line": 1247,
+        "source_label": "与执行流程的交互协议",
+        "excerpt_sha256": "4113f4e390172908e851c638a4c4a730ca13bd759bbab4efe1a57ff318685e2d",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-14",
+        "source_id": "probe",
+        "source_line": 1248,
+        "source_end_line": 1330,
+        "source_label": "不同拓扑的探针布置",
+        "excerpt_sha256": "aa6820eb39f7c193d4f20e408b5436759a6c3d74eabf908fce52c926cd009097",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-15",
+        "source_id": "probe",
+        "source_line": 1331,
+        "source_end_line": 1443,
+        "source_label": "场景探针组合",
+        "excerpt_sha256": "9fc0233aa11afdad51a459b794b140f733f200cf965134451c8936622fbb460f",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-16",
+        "source_id": "probe",
+        "source_line": 1444,
+        "source_end_line": 1539,
+        "source_label": "报告结构",
+        "excerpt_sha256": "16802754fa0cce1f664121a86cece261230c4630bc2fdc7bebc1333ec6c01d13",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-17",
+        "source_id": "probe",
+        "source_line": 1540,
+        "source_end_line": 1576,
+        "source_label": "存储、顺序与一致性",
+        "excerpt_sha256": "674f30428d2a6f5f1439a439bc9991b91cbec6d4ea92e1dd49bbb7f05f322468",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-18",
+        "source_id": "probe",
+        "source_line": 1577,
+        "source_end_line": 1591,
+        "source_label": "安全、隐私与数据最小化",
+        "excerpt_sha256": "78f9b924fa5ce1ae6096ff401940ede41cb075801837579c820ad1748afc0b62",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-19",
+        "source_id": "probe",
+        "source_line": 1592,
+        "source_end_line": 1623,
+        "source_label": "采样策略",
+        "excerpt_sha256": "cb6ac2b50907f9e91a8196ef15e79b7787a53b6056cd8a7c663d8dcbd20d52f1",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-20",
+        "source_id": "probe",
+        "source_line": 1624,
+        "source_end_line": 1641,
+        "source_label": "阈值与严重程度配置",
+        "excerpt_sha256": "6e6348928f04fd074c8aa1555b843f9bf96c7faaec3b0073756a3db1d3d94d4b",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-21",
+        "source_id": "probe",
+        "source_line": 1642,
+        "source_end_line": 1660,
+        "source_label": "最小可用实现",
+        "excerpt_sha256": "d6fd91158610f3b70dd767c3ccf1307db12820ad3ace7fd3a487cd5e59621956",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-22",
+        "source_id": "probe",
+        "source_line": 1661,
+        "source_end_line": 1719,
+        "source_label": "配置模板",
+        "excerpt_sha256": "1f88126f0c8137b49ef600cded54366df14f5e3fbff8b48ca49847d752a3ed62",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-23",
+        "source_id": "probe",
+        "source_line": 1720,
+        "source_end_line": 1795,
+        "source_label": "评估用例",
+        "excerpt_sha256": "be62b0725c3f038c50608d1b85d1c61f8611d7ac541be0df09f4d5d47cbe78cb",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-24",
+        "source_id": "probe",
+        "source_line": 1796,
+        "source_end_line": 1815,
+        "source_label": "常见反模式",
+        "excerpt_sha256": "30f75aaefa5437bf7c0a1c0dde14122ab3a38cefae698dcbcb9cf38ab7b44fa3",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-25",
+        "source_id": "probe",
+        "source_line": 1816,
+        "source_end_line": 1834,
+        "source_label": "完成定义",
+        "excerpt_sha256": "5d5e8e857721ede7a868a02527dfae2b5299e5a19fb333a38a4f74b5bbd731b0",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "probe-chapter-26",
+        "source_id": "probe",
+        "source_line": 1835,
+        "source_end_line": 1846,
+        "source_label": "框架挂载建议",
+        "excerpt_sha256": "0c1637a607a75e98a9c7cf3f04d87ed9128513ad57d3c591c95a38cda6162534",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      }
+    ],
+    "execution_stages": [
+      {
+        "id": "PCF-01",
+        "source_id": "execution",
+        "source_line": 275,
+        "source_end_line": 298,
+        "source_label": "阶段一：建立任务边界",
+        "excerpt_sha256": "e1734cc3ccbec794dc88b4ea4be06d71542e53dd6d554aee3b3afb76881ca76f",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCF-02",
+        "source_id": "execution",
+        "source_line": 299,
+        "source_end_line": 316,
+        "source_label": "阶段二：判断是否需要模式组合",
+        "excerpt_sha256": "066d04c7c5b0638d334653849e086d6b1faaa5a8d557cf618324de063d96d995",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCF-03",
+        "source_id": "execution",
+        "source_line": 317,
+        "source_end_line": 340,
+        "source_label": "阶段三：绘制任务地形",
+        "excerpt_sha256": "831b58606c985a1db47e1c61b3e329b6b39d2c3aa663f03a9da7605308677949",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCF-04",
+        "source_id": "execution",
+        "source_line": 341,
+        "source_end_line": 382,
+        "source_label": "阶段四：选择拓扑",
+        "excerpt_sha256": "0ae29426bb92f8bb345c08b670025a7b97c348e4809b465da5f672385e1dc443",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCF-05",
+        "source_id": "execution",
+        "source_line": 383,
+        "source_end_line": 413,
+        "source_label": "阶段五：选择工程模式并定义组合关系",
+        "excerpt_sha256": "9a394abc544473d73627d9bc1bb6aed6a1a892d7964dada5ca09934282c65a02",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCF-06",
+        "source_id": "execution",
+        "source_line": 414,
+        "source_end_line": 441,
+        "source_label": "阶段六：建立计划与节点契约",
+        "excerpt_sha256": "acaf80adb7a9ac88ec5e6697da2dfdddaee21c72fd8f531a519116887cb88b2d",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCF-07",
+        "source_id": "execution",
+        "source_line": 442,
+        "source_end_line": 487,
+        "source_label": "阶段七：调度和执行",
+        "excerpt_sha256": "c90761c5552b37bcc5aa8f26653b961d89dec702a70018634bd7a6b648e05528",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCF-08",
+        "source_id": "execution",
+        "source_line": 488,
+        "source_end_line": 524,
+        "source_label": "阶段八：处理循环、修订和重新规划",
+        "excerpt_sha256": "b679529eb5ce3a27eb5b84be6d5ee8d10a2807f11e6af74e98c16cde67bbd226",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCF-09",
+        "source_id": "execution",
+        "source_line": 525,
+        "source_end_line": 562,
+        "source_label": "阶段九：治理真实动作",
+        "excerpt_sha256": "74736dcc96ab878b19c9f395c6d4b387f5bea062b1eca29dba15e705801a9bfc",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCF-10",
+        "source_id": "execution",
+        "source_line": 563,
+        "source_end_line": 589,
+        "source_label": "阶段十：聚合与验收",
+        "excerpt_sha256": "f196883a604411957c96e452cd41ccea734c0a07608692b134113e4c1997b03f",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCF-11",
+        "source_id": "execution",
+        "source_line": 590,
+        "source_end_line": 628,
+        "source_label": "阶段十一：交接、归档和复用",
+        "excerpt_sha256": "6aaa51d8a9e798d552c69682b9319f086bad9f5a04398b0fa291ea6668f9adca",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      }
+    ],
+    "probes": [
+      {
+        "id": "PROBE_TASK_001",
+        "source_id": "probe",
+        "source_line": 509,
+        "source_end_line": 549,
+        "source_label": "任务边界与交付完整性探针",
+        "excerpt_sha256": "a34fbb95294d786761b84dd5d066b0e71a36d8ad525cb00e0bc3e35ac8336a4c",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PROBE_TOPOLOGY_001",
+        "source_id": "probe",
+        "source_line": 550,
+        "source_end_line": 590,
+        "source_label": "链路、分支与聚合完整性探针",
+        "excerpt_sha256": "5c9c24a2972950122a57214b69bc04e0fb478fc842371d92a04ca186b34e8ed8",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PROBE_STATE_001",
+        "source_id": "probe",
+        "source_line": 591,
+        "source_end_line": 633,
+        "source_label": "状态一致性与可恢复性探针",
+        "excerpt_sha256": "f3af16cc0e61df5cf1decfcc3d11af4c5e5c6af26510c7eaa132fc8d237965c9",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PROBE_DEPENDENCY_001",
+        "source_id": "probe",
+        "source_line": 634,
+        "source_end_line": 675,
+        "source_label": "依赖满足与非法跨步探针",
+        "excerpt_sha256": "f43b9a3a7aef37b9e2f42b34081d9b7b35b81079f64e508603b43134f0e10d45",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PROBE_EVIDENCE_001",
+        "source_id": "probe",
+        "source_line": 676,
+        "source_end_line": 717,
+        "source_label": "证据覆盖与原文回溯探针",
+        "excerpt_sha256": "1ce8d6d472158aa4af5bcc7e7728e9f70237d2aa9682248f7a31964901e468fb",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PROBE_COMPRESSION_001",
+        "source_id": "probe",
+        "source_line": 718,
+        "source_end_line": 757,
+        "source_label": "压缩损失与例外保留探针",
+        "excerpt_sha256": "35f439b7962ac15bbbdb9aee568836925b1469b7ff65bd30be623d8ececcfb17",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PROBE_HYPOTHESIS_001",
+        "source_id": "probe",
+        "source_line": 758,
+        "source_end_line": 798,
+        "source_label": "假设验证与调查转向探针",
+        "excerpt_sha256": "0568cbb58b7df88c858c769d501c22842bcde2ac6dc4134c7c2a5afd716c05a6",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PROBE_LOOP_001",
+        "source_id": "probe",
+        "source_line": 799,
+        "source_end_line": 844,
+        "source_label": "循环、重试与预算探针",
+        "excerpt_sha256": "aea44fb8062cad1a719c1325f45478c6e6adce944d19079566a619343213f9e9",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PROBE_ACTION_001",
+        "source_id": "probe",
+        "source_line": 845,
+        "source_end_line": 888,
+        "source_label": "动作前置条件与结果核验探针",
+        "excerpt_sha256": "5c23d5d366f74c5c562800f5b4838d00837d482bf978d59a1cb5c1f07518e99a",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PROBE_GOVERNANCE_001",
+        "source_id": "probe",
+        "source_line": 889,
+        "source_end_line": 934,
+        "source_label": "审批、权限与爆炸半径探针",
+        "excerpt_sha256": "41940431e143ffb50a3c1bf4647b32efa9b5d0dcceac78213e6ed059b7a99ee5",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PROBE_REVIEW_001",
+        "source_id": "probe",
+        "source_line": 935,
+        "source_end_line": 979,
+        "source_label": "评审覆盖与问题闭环探针",
+        "excerpt_sha256": "3841d394077afff405fe9c5c7c107388023e01fb893475d33e6ab4640e7edd6c",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PROBE_HANDOFF_001",
+        "source_id": "probe",
+        "source_line": 980,
+        "source_end_line": 1025,
+        "source_label": "交接责任与版本完整性探针",
+        "excerpt_sha256": "0908e90f5ae1db4ae4506fc46418bb19c412cd61b805251b622cb7f8b97ad13d",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PROBE_ACCEPTANCE_001",
+        "source_id": "probe",
+        "source_line": 1026,
+        "source_end_line": 1065,
+        "source_label": "终态验收与完成真实性探针",
+        "excerpt_sha256": "c30f2ebe1af9a6e0df7bf924ebd1a243ab46bc27b036af2ae1189bbe52cf6f99",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PROBE_EFFICIENCY_001",
+        "source_id": "probe",
+        "source_line": 1066,
+        "source_end_line": 1109,
+        "source_label": "成本、时延与人工接管价值探针",
+        "excerpt_sha256": "58821694072e7b4d26b5c87d2ad52f13fe3796a8f5cb172cb108a8eefe1bec0b",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      }
+    ],
+    "metrics": [
+      {
+        "id": "PCM-01",
+        "source_id": "probe",
+        "source_line": 529,
+        "source_end_line": 529,
+        "source_label": "交付覆盖率 = 已满足的必需交付项数量 ÷ 必需交付项总数",
+        "excerpt_sha256": "afd15663e0e0410f0ee7730564fd34a347673351faab76647fe0a577a0ab0e59",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-02",
+        "source_id": "probe",
+        "source_line": 530,
+        "source_end_line": 530,
+        "source_label": "验收覆盖率 = 已有明确结论的强制验收项数量 ÷ 强制验收项总数",
+        "excerpt_sha256": "135213d519390a54a6221b8b63df77f935bcd584aa84882aa65135db1f2cdde5",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-03",
+        "source_id": "probe",
+        "source_line": 531,
+        "source_end_line": 531,
+        "source_label": "未说明缺口数 = 缺失且未给出原因的必需项数量",
+        "excerpt_sha256": "7505ed2a788fcf189cd041ab52f88ae3d32d65ae6a2707827f16439000678287",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-04",
+        "source_id": "probe",
+        "source_line": 569,
+        "source_end_line": 569,
+        "source_label": "分支回收率 = 已形成可聚合结果的必需分支数量 ÷ 已启动的必需分支数量",
+        "excerpt_sha256": "f67fb4337ec6219150b9f07c7599618b41ff50bb713937a072734110f492aebe",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-05",
+        "source_id": "probe",
+        "source_line": 570,
+        "source_end_line": 570,
+        "source_label": "孤立节点数 = 无有效父节点、无入口或无出口的节点数量",
+        "excerpt_sha256": "cc219521c38cebac25c0f67e8e6f5e88002ffafddb6040f0df5888413deca00e",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-06",
+        "source_id": "probe",
+        "source_line": 571,
+        "source_end_line": 571,
+        "source_label": "聚合缺口数 = 聚合清单中缺少的必需分支数量",
+        "excerpt_sha256": "6f52f74a323c29cbee321605714c1877b895bf6741f113e3f299fac3404d2bf5",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-07",
+        "source_id": "probe",
+        "source_line": 572,
+        "source_end_line": 572,
+        "source_label": "重复分支率 = 语义上重复且未产生新增价值的分支数量 ÷ 总分支数量",
+        "excerpt_sha256": "7ba44e11922c1833ff5c3cb98b886d8a7e7638132ea710f09a0d73fc23ce4e5f",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-08",
+        "source_id": "probe",
+        "source_line": 611,
+        "source_end_line": 611,
+        "source_label": "状态一致率 = 一致的状态读取次数 ÷ 总状态读取次数",
+        "excerpt_sha256": "6a0d6fb167d61227bcee426a29a6bc1078befeac676fc24a337b278ce1473c63",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-09",
+        "source_id": "probe",
+        "source_line": 612,
+        "source_end_line": 612,
+        "source_label": "版本冲突数 = 写入时发现读取版本已过期的次数",
+        "excerpt_sha256": "6a59e5f17c38cd6f80da07c839ef473aa54d414dc2a25990ae8445458cac9d10",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-10",
+        "source_id": "probe",
+        "source_line": 613,
+        "source_end_line": 613,
+        "source_label": "可恢复节点率 = 具有有效恢复点的长时节点数量 ÷ 长时节点总数",
+        "excerpt_sha256": "5756f15ba7522083540f43919e97d94bd91d7708817868626f110d7f5ffaeb7f",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-11",
+        "source_id": "probe",
+        "source_line": 614,
+        "source_end_line": 614,
+        "source_label": "重复执行风险数 = 恢复后可能再次产生相同外部效果的节点数量",
+        "excerpt_sha256": "37ec5dafbc19253ef423fc0d4a78e140ea684f6e5f6b38256cb68947a0198c77",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-12",
+        "source_id": "probe",
+        "source_line": 654,
+        "source_end_line": 654,
+        "source_label": "依赖违规次数 = 未满足必需依赖却启动节点的次数",
+        "excerpt_sha256": "72e531b02de686efa378bbaa74b34596b231f94fe28785910ee58ab1775b99b1",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-13",
+        "source_id": "probe",
+        "source_line": 655,
+        "source_end_line": 655,
+        "source_label": "就绪误判率 = 被标记就绪但实际缺少条件的节点数量 ÷ 就绪节点数量",
+        "excerpt_sha256": "028a9ce90bf134c425a12304f33a4d5c4eb0e3aa85804d15cfca13c60daf79b0",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-14",
+        "source_id": "probe",
+        "source_line": 656,
+        "source_end_line": 656,
+        "source_label": "跨步次数 = 跳过必需节点直接执行后续动作的次数",
+        "excerpt_sha256": "7daa5d0c8c941e01862af8e2ac0050aefa79e6b3fbe7a861774d373a7c55744d",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-15",
+        "source_id": "probe",
+        "source_line": 695,
+        "source_end_line": 695,
+        "source_label": "证据覆盖率 = 有有效证据支持的关键结论数量 ÷ 关键结论总数",
+        "excerpt_sha256": "231a2937f584ec849b79e4f3ebcd7dd4a9e76fabfb6a46220d5ed3f7e182e5b4",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-16",
+        "source_id": "probe",
+        "source_line": 696,
+        "source_end_line": 696,
+        "source_label": "原文回溯率 = 可定位到原始片段的关键结论数量 ÷ 关键结论总数",
+        "excerpt_sha256": "f7ffea86c3c71518f38013d513046851e3c6c2b0d52ba3a30971f70137c5de3c",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-17",
+        "source_id": "probe",
+        "source_line": 697,
+        "source_end_line": 697,
+        "source_label": "失效证据占比 = 已失效证据引用数量 ÷ 总证据引用数量",
+        "excerpt_sha256": "0e844487995e2ab04d5b3db5e9910890bd3cba83dbdb361768bd599b4db1a885",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-18",
+        "source_id": "probe",
+        "source_line": 698,
+        "source_end_line": 698,
+        "source_label": "单源依赖率 = 仅由单一来源支持的高风险结论数量 ÷ 高风险结论数量",
+        "excerpt_sha256": "bcd12d1a52bc0879ab8d89ab53c5771342d561d34ed4b57ccca7212ffb3166e9",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-19",
+        "source_id": "probe",
+        "source_line": 737,
+        "source_end_line": 737,
+        "source_label": "例外保留率 = 摘要中保留的关键例外数量 ÷ 原文关键例外总数",
+        "excerpt_sha256": "b41191121d112c3ca79ee2815aa4f9a992c58637845afc02ce3f51d49b789c3a",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-20",
+        "source_id": "probe",
+        "source_line": 738,
+        "source_end_line": 738,
+        "source_label": "限定条件保留率 = 摘要中保留的适用范围、日期和条件数量 ÷ 原文对应数量",
+        "excerpt_sha256": "3019a3aa22c7a1fb8b295efbea96ba2314c8b346e649722cb55bdef666539545",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-21",
+        "source_id": "probe",
+        "source_line": 739,
+        "source_end_line": 739,
+        "source_label": "关键事实差异数 = 原文与摘要在对象、数值、日期、否定和条件上的差异数量",
+        "excerpt_sha256": "e42d4411505d6a05ef2771743230a33a64c52e0aa44929598ee645593f163b29",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-22",
+        "source_id": "probe",
+        "source_line": 778,
+        "source_end_line": 778,
+        "source_label": "有效检查率 = 能区分至少两个候选解释的检查数量 ÷ 总检查数量",
+        "excerpt_sha256": "f6f74f33b8e24c2e1a5775ee624737f5a4b4888908ab02e9b8d143e0e7245a17",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-23",
+        "source_id": "probe",
+        "source_line": 779,
+        "source_end_line": 779,
+        "source_label": "假设更新及时率 = 否定证据后在下一步更新假设的次数 ÷ 否定证据次数",
+        "excerpt_sha256": "179c12f921a25582d2a930ea06044d2e927e6c96bfbd978a5383a1ed3fc085a2",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-24",
+        "source_id": "probe",
+        "source_line": 780,
+        "source_end_line": 780,
+        "source_label": "无关检查率 = 与当前候选原因无明显关系的检查数量 ÷ 总检查数量",
+        "excerpt_sha256": "97ec1a5ada3a9d369ad14b3afb1fe699e7fb32cde252ae76a0e75d47b38a62fd",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-25",
+        "source_id": "probe",
+        "source_line": 821,
+        "source_end_line": 821,
+        "source_label": "预算消耗率 = 已消耗预算 ÷ 可用预算",
+        "excerpt_sha256": "c3e08a637aa9f2545529e0db53c67ac7040833ebd10783959cf346e0536a18e0",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-26",
+        "source_id": "probe",
+        "source_line": 822,
+        "source_end_line": 822,
+        "source_label": "重复尝试率 = 输入、参数和动作近似相同的尝试数量 ÷ 总尝试数量",
+        "excerpt_sha256": "aa54f758f80c249bf88655b026f140a6ad76970eaed97a25e8502fa529b365a3",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-27",
+        "source_id": "probe",
+        "source_line": 823,
+        "source_end_line": 823,
+        "source_label": "信息增益停滞轮数 = 连续没有新增证据、状态变化或有效差异的轮数",
+        "excerpt_sha256": "e84ecba21131fcba7623a4b3f1778626cac8e0a1efe0590a2dac068680de4822",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-28",
+        "source_id": "probe",
+        "source_line": 824,
+        "source_end_line": 824,
+        "source_label": "重试收益率 = 成功解决局部问题的重试数量 ÷ 总重试数量",
+        "excerpt_sha256": "691e8cb8aba664147292ebf962f1acdbefc8acc4e69ff55006d89b61b6b16816",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-29",
+        "source_id": "probe",
+        "source_line": 825,
+        "source_end_line": 825,
+        "source_label": "嵌套放大倍数 = 实际总尝试数量 ÷ 外层声明的最大尝试数量",
+        "excerpt_sha256": "6cd8c3aeeeb467def4ce36d718b4130fd9db4588b5a357aac22424627b5bd3e2",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-30",
+        "source_id": "probe",
+        "source_line": 867,
+        "source_end_line": 867,
+        "source_label": "前置检查覆盖率 = 已完成的必需前置检查数量 ÷ 必需前置检查总数",
+        "excerpt_sha256": "7afb5c3803455fc37e4fa72d8292ea66aa70075f0045e4762832143ad9230d09",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-31",
+        "source_id": "probe",
+        "source_line": 868,
+        "source_end_line": 868,
+        "source_label": "后置核验率 = 已进行独立结果核验的真实动作数量 ÷ 真实动作总数",
+        "excerpt_sha256": "f305c4ec807dfd423ae916173ed2e0ee70fd300685cafa69c8bcc3eb1fd4d0f1",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-32",
+        "source_id": "probe",
+        "source_line": 869,
+        "source_end_line": 869,
+        "source_label": "接口成功但业务失败数 = 工具返回成功但业务验收失败的动作数量",
+        "excerpt_sha256": "14db72fc9b17034fadff6d4b2895bd1f0e860870276c7c3ce113931b425f8386",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-33",
+        "source_id": "probe",
+        "source_line": 870,
+        "source_end_line": 870,
+        "source_label": "可补偿覆盖率 = 具有明确补偿路径的高风险动作数量 ÷ 高风险动作数量",
+        "excerpt_sha256": "16dd411a8e0d2647926762bf4718c560ef7e481ded2d6addc2e9cb77443c69ac",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-34",
+        "source_id": "probe",
+        "source_line": 911,
+        "source_end_line": 911,
+        "source_label": "审批匹配率 = 与审批对象、版本和范围完全匹配的动作数量 ÷ 需审批动作数量",
+        "excerpt_sha256": "6afeab2891337cc7b77f5485e9f72f085a4a51175242fe69df4973177ee3f2a2",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-35",
+        "source_id": "probe",
+        "source_line": 912,
+        "source_end_line": 912,
+        "source_label": "未授权动作数 = 没有有效审批或权限的真实动作数量",
+        "excerpt_sha256": "c91fd0e52e9a7d4e57d00e74d62ec34df841096b4a2d2382f6cdcf259c8131e8",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-36",
+        "source_id": "probe",
+        "source_line": 913,
+        "source_end_line": 913,
+        "source_label": "实际影响比 = 实际影响对象数量 ÷ 批准对象上限",
+        "excerpt_sha256": "207999f6ea27a30af6309cd43640587b6cae06c4db1ac9b252882c3134b520e7",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-37",
+        "source_id": "probe",
+        "source_line": 914,
+        "source_end_line": 914,
+        "source_label": "范围越界数 = 实际影响但未被批准的对象数量",
+        "excerpt_sha256": "7c8f3d78e08105c1db924f25adf6d75fc2e76d95c1c8c9b86142ad15bd6e3220",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-38",
+        "source_id": "probe",
+        "source_line": 915,
+        "source_end_line": 915,
+        "source_label": "过期审批使用数 = 使用已过期审批的动作数量",
+        "excerpt_sha256": "dfac12fe4e4cc7bc54772e23581738d1b4c474d05a8a482850cbcc35ad5bc3ef",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-39",
+        "source_id": "probe",
+        "source_line": 957,
+        "source_end_line": 957,
+        "source_label": "评审覆盖率 = 已被评审的强制对象数量 ÷ 强制评审对象总数",
+        "excerpt_sha256": "52f939a34eb5a544423a079cbffe80d5ed40edb89ede17cf6eb67d95797d9bdb",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-40",
+        "source_id": "probe",
+        "source_line": 958,
+        "source_end_line": 958,
+        "source_label": "问题闭环率 = 已验证关闭的问题数量 ÷ 评审问题总数",
+        "excerpt_sha256": "8886e80ec10fd5c9bc6da5b318ddc062680f18a7fbe70cd8f97be78c1e0f1fb9",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-41",
+        "source_id": "probe",
+        "source_line": 959,
+        "source_end_line": 959,
+        "source_label": "旧版评审沿用数 = 工件变化后仍使用旧评审结论的次数",
+        "excerpt_sha256": "101d7ab451298e1010326a0774a72ed776a5fdd5115123f2ab6dcd2bb1ee7e40",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-42",
+        "source_id": "probe",
+        "source_line": 960,
+        "source_end_line": 960,
+        "source_label": "证据独立率 = 能独立回取原始证据的评审数量 ÷ 评审总数",
+        "excerpt_sha256": "3c72db1be517b4ef9a25c230ed470dd3e81029d422859a3b1be44b1367a49c11",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-43",
+        "source_id": "probe",
+        "source_line": 1003,
+        "source_end_line": 1003,
+        "source_label": "交接完整率 = 已填写的必需交接字段数量 ÷ 必需字段总数",
+        "excerpt_sha256": "8e782c70c0bcda7ec79c50cf543855f598e90ca81aefb94899598932c83ab2f0",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-44",
+        "source_id": "probe",
+        "source_line": 1004,
+        "source_end_line": 1004,
+        "source_label": "接收确认率 = 已明确接收的交接数量 ÷ 交接总数",
+        "excerpt_sha256": "49ad9d657252d2dd70c9c2408b12148ce5395ab3da38c5c457e039910ce48617",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-45",
+        "source_id": "probe",
+        "source_line": 1005,
+        "source_end_line": 1005,
+        "source_label": "错误版本交接数 = 接收者使用的版本与交接版本不一致的次数",
+        "excerpt_sha256": "6fddae9dd1dbe11f9b670e62a8a84d262e2ba8d141f9f57bfb4a72887ab237c8",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-46",
+        "source_id": "probe",
+        "source_line": 1006,
+        "source_end_line": 1006,
+        "source_label": "责任悬空数 = 交接后没有明确责任人的事项数量",
+        "excerpt_sha256": "8e6c0650814ec75a6294f15016fe75ac1f18e2bc5ba7a49cee2445663e91ff41",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-47",
+        "source_id": "probe",
+        "source_line": 1045,
+        "source_end_line": 1045,
+        "source_label": "强制验收通过率 = 已通过的强制验收项数量 ÷ 强制验收项总数",
+        "excerpt_sha256": "8a00d81b854046ce11dd07346f6957391aaf8f81c07b5c575b5313fbc790188f",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-48",
+        "source_id": "probe",
+        "source_line": 1046,
+        "source_end_line": 1046,
+        "source_label": "完成声明真实性 = 完成声明与实际验收结果是否一致",
+        "excerpt_sha256": "033cb3baee3d60b6c2533f25f293906080de042831d38d55efdc359ef8de5e3b",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-49",
+        "source_id": "probe",
+        "source_line": 1047,
+        "source_end_line": 1047,
+        "source_label": "未解决高风险问题数 = 完成时仍未关闭的高风险问题数量",
+        "excerpt_sha256": "39c860d74acf00cd2c81715e3adb2e139f8c39b3efa02104395b64c8cdf8c11e",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-50",
+        "source_id": "probe",
+        "source_line": 1087,
+        "source_end_line": 1087,
+        "source_label": "单位成功成本 = 总成本 ÷ 通过验收的任务数量",
+        "excerpt_sha256": "5d04498380f637adefbff5a2f86bd88137874eea8fce06af74878cf437cfb57f",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-51",
+        "source_id": "probe",
+        "source_line": 1088,
+        "source_end_line": 1088,
+        "source_label": "返工率 = 进入修订或重做的任务数量 ÷ 总任务数量",
+        "excerpt_sha256": "639cbfd76d68a3af81a65f5d7db829f61eae9a66439bae9c4718fb1c41b58c33",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-52",
+        "source_id": "probe",
+        "source_line": 1089,
+        "source_end_line": 1089,
+        "source_label": "人工接管率 = 需要人工接管的任务数量 ÷ 总任务数量",
+        "excerpt_sha256": "8c7d381e94716ff25cba1d81896a22b888304d43eea67934bbfeb084e2e41394",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-53",
+        "source_id": "probe",
+        "source_line": 1090,
+        "source_end_line": 1090,
+        "source_label": "早期接管收益 = 早期停止避免的后续成本和风险",
+        "excerpt_sha256": "cd352670d29b674728294bd140783ec006794fc9395ecaa2ba632689539a78b2",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCM-54",
+        "source_id": "probe",
+        "source_line": 1091,
+        "source_end_line": 1091,
+        "source_label": "组件净收益 = 组件带来的质量或风险改善减去时延、费用和维护成本",
+        "excerpt_sha256": "45c8bd75b2d8022ed4ba33d179b784123faa95a6e4b71b526d583a50b5e12700",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      }
+    ],
+    "execution_cases": [
+      {
+        "id": "PCE-01",
+        "source_id": "execution",
+        "source_line": 984,
+        "source_end_line": 989,
+        "source_label": "用例一：短任务不过度设计",
+        "excerpt_sha256": "ad4eb5dcb3d329835f8704f36deb2ad0c9af9188bc8c904d7057a7c1fd5bebb7",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCE-02",
+        "source_id": "execution",
+        "source_line": 990,
+        "source_end_line": 995,
+        "source_label": "用例二：并行研究缺少一个分支",
+        "excerpt_sha256": "059b236dd08dde45358419d36ce8c60a5fa7ac22ba57b2d9b2e0601ce86babc0",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCE-03",
+        "source_id": "execution",
+        "source_line": 996,
+        "source_end_line": 1001,
+        "source_label": "用例三：摘要遗漏例外",
+        "excerpt_sha256": "e72a24829f3812dae692f0176574a74c95ff423a30aa92a58cdf65db05b9ba14",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCE-04",
+        "source_id": "execution",
+        "source_line": 1002,
+        "source_end_line": 1007,
+        "source_label": "用例四：故障排查假设被推翻",
+        "excerpt_sha256": "4d867e33039ade800959d654cdf4a2e88c5f234d4b07c9224d9d977d3dfa4009",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCE-05",
+        "source_id": "execution",
+        "source_line": 1008,
+        "source_end_line": 1013,
+        "source_label": "用例五：修复循环失控",
+        "excerpt_sha256": "5fd273e383fedad1b72f5bf8ecea472f7629a0e42efe6c531e3c0d1bf7c2ef93",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCE-06",
+        "source_id": "execution",
+        "source_line": 1014,
+        "source_end_line": 1019,
+        "source_label": "用例六：审批范围不一致",
+        "excerpt_sha256": "05e5311f2ebeb7b330684dc6a5006d0b2bb280a8d1ed5b201a18d3a0c43d4885",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCE-07",
+        "source_id": "execution",
+        "source_line": 1020,
+        "source_end_line": 1025,
+        "source_label": "用例七：接口返回成功但业务未生效",
+        "excerpt_sha256": "ed242c863c6a6473fb5807165f0512ac903084ba4d93f128887ec787548077b1",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      },
+      {
+        "id": "PCE-08",
+        "source_id": "execution",
+        "source_line": 1026,
+        "source_end_line": 1033,
+        "source_label": "用例八：中断后恢复",
+        "excerpt_sha256": "d84ff13e417b61818f067bb562ec533b7b1a33745d20416885502a2fb861a435",
+        "target_document": "references/pattern-combination-execution-flow.md"
+      }
+    ],
+    "probe_cases": [
+      {
+        "id": "PCQ-01",
+        "source_id": "probe",
+        "source_line": 1722,
+        "source_end_line": 1727,
+        "source_label": "用例一：缺失分支",
+        "excerpt_sha256": "c5cc43850588a4c750ca1215a3908f1b58bb3a027fe2e315d2a607d6f7d68fbc",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCQ-02",
+        "source_id": "probe",
+        "source_line": 1728,
+        "source_end_line": 1733,
+        "source_label": "用例二：摘要遗漏例外",
+        "excerpt_sha256": "5c23a80714fba29ba08a9d20601d548fd04e73312a79f9108f07425b7b311a14",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCQ-03",
+        "source_id": "probe",
+        "source_line": 1734,
+        "source_end_line": 1739,
+        "source_label": "用例三：非法跨步",
+        "excerpt_sha256": "be4d5595bdd55a36e472572cfe43b9f2f0ffcda39f1bc72e27d9cc7b6c4c9e6a",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCQ-04",
+        "source_id": "probe",
+        "source_line": 1740,
+        "source_end_line": 1745,
+        "source_label": "用例四：假设未转向",
+        "excerpt_sha256": "a3d08337c3fdb73fdb005df6475ddda605ef109652a464bea44a5844f209e893",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCQ-05",
+        "source_id": "probe",
+        "source_line": 1746,
+        "source_end_line": 1751,
+        "source_label": "用例五：嵌套循环失控",
+        "excerpt_sha256": "f53c6f25a7fad009da1caa1af7495408c44a619b8b5e4276ed7e031cbc3e333b",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCQ-06",
+        "source_id": "probe",
+        "source_line": 1752,
+        "source_end_line": 1757,
+        "source_label": "用例六：审批失配",
+        "excerpt_sha256": "65b4078b3758243e7375885a174bf5fb706f8a489728f6cb1b95ffa93870461f",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCQ-07",
+        "source_id": "probe",
+        "source_line": 1758,
+        "source_end_line": 1763,
+        "source_label": "用例七：范围越界",
+        "excerpt_sha256": "89b39a655da3c347888034351259311e2152a5ce371a4505d6749063685373cc",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCQ-08",
+        "source_id": "probe",
+        "source_line": 1764,
+        "source_end_line": 1769,
+        "source_label": "用例八：技术成功、业务失败",
+        "excerpt_sha256": "cf25de30075f52a21ba6e0205dd101303f7168c25ffd6de7098ca193d28930cb",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCQ-09",
+        "source_id": "probe",
+        "source_line": 1770,
+        "source_end_line": 1775,
+        "source_label": "用例九：错误版本交接",
+        "excerpt_sha256": "4aa050bf7e5aad856dbd33d1b8b9302d5530d1df99a0688290b35ac6c6e10ec3",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCQ-10",
+        "source_id": "probe",
+        "source_line": 1776,
+        "source_end_line": 1781,
+        "source_label": "用例十：无标准事件的旧系统",
+        "excerpt_sha256": "9f30f1e60ceeb9e18911941ad814d727cf4a479c06881d804313ade0799df303",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCQ-11",
+        "source_id": "probe",
+        "source_line": 1782,
+        "source_end_line": 1787,
+        "source_label": "用例十一：数据不可获得",
+        "excerpt_sha256": "849a8ed3a1860d07886b6e5a05bd160f359957043b39253dd414b7900f328e72",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      },
+      {
+        "id": "PCQ-12",
+        "source_id": "probe",
+        "source_line": 1788,
+        "source_end_line": 1795,
+        "source_label": "用例十二：评审层不值得保留",
+        "excerpt_sha256": "0e77070ad803218875abb3965ae94faf02e6e99e0cdef79cd028cf69f594e4af",
+        "target_document": "references/pattern-combination-observability-probes.md"
+      }
+    ]
+  }
+}

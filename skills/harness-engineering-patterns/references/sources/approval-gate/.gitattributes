@@ -1,0 +1,2 @@
+# Preserve supplied evidence bytes / 保留用户提供的证据字节。
+*.source.txt -text

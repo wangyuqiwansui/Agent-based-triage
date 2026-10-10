@@ -2946,6 +2946,62 @@ def validate_skill(skill_dir: pathlib.Path) -> ValidationReport:
         validate_review = runpy.run_path(str(review_validator))["validate_review_assets"]
         for error in validate_review(skill_dir, registry):
             report.error("review_specification", error, "对抗评审来源或视图校验失败")
+    handoff_validator = skill_dir / "scripts/sync_handoff_chain_docs.py"
+    if not handoff_validator.is_file():
+        report.error("handoff_specification", "missing handoff specification validator", "缺少交接链规格校验器")
+    else:
+        validate_handoff = runpy.run_path(str(handoff_validator))["validate_handoff_assets"]
+        for error in validate_handoff(skill_dir, registry):
+            report.error("handoff_specification", error, "交接链来源或视图校验失败")
+    governance_validator = skill_dir / "scripts/validate_governance_docs.py"
+    if not governance_validator.is_file():
+        report.error("governance_specification", "missing governance specification validator", "缺少治理规格校验器")
+    else:
+        validate_governance = runpy.run_path(str(governance_validator))["validate_governance_assets"]
+        for error in validate_governance(skill_dir, registry):
+            report.error("governance_specification", error, "治理来源或规格校验失败")
+    blast_radius_validator = skill_dir / "scripts/validate_blast_radius_docs.py"
+    if not blast_radius_validator.is_file():
+        report.error("blast_radius_specification", "missing blast radius validator", "缺少爆炸半径规格校验器")
+    else:
+        validate_blast_radius = runpy.run_path(str(blast_radius_validator))["validate_blast_radius_assets"]
+        for error in validate_blast_radius(skill_dir, registry):
+            report.error("blast_radius_specification", error, "爆炸半径来源或规格校验失败")
+    observability_validator = skill_dir / "scripts/validate_observability_docs.py"
+    if not observability_validator.is_file():
+        report.error("observability_specification", "missing observability validator", "缺少可观测性规格校验器")
+    else:
+        validate_observability = runpy.run_path(str(observability_validator))["validate_observability_assets"]
+        for error in validate_observability(skill_dir, registry):
+            report.error("observability_specification", error, "可观测性来源或规格校验失败")
+    approval_validator = skill_dir / "scripts/sync_approval_gate_docs.py"
+    if not approval_validator.is_file():
+        report.error("approval_specification", "missing approval specification validator", "缺少审批门规格校验器")
+    else:
+        validate_approval = runpy.run_path(str(approval_validator))["validate_approval_assets"]
+        for error in validate_approval(skill_dir, registry):
+            report.error("approval_specification", error, "审批门来源或规格校验失败")
+    progressive_validator = skill_dir / "scripts/validate_progressive_commitment_docs.py"
+    if not progressive_validator.is_file():
+        report.error("progressive_commitment_specification", "missing progressive commitment validator", "缺少渐进承诺规格校验器")
+    else:
+        validate_progressive = runpy.run_path(str(progressive_validator))["validate_progressive_commitment_assets"]
+        for error in validate_progressive(skill_dir, registry):
+            report.error("progressive_commitment_specification", error, "渐进承诺来源或规格校验失败")
+    combination_validator = skill_dir / "scripts/validate_pattern_combination_docs.py"
+    if not combination_validator.is_file():
+        report.error("pattern_combination_specification", "missing pattern combination validator", "缺少模式组合规格校验器")
+    else:
+        validate_combination = runpy.run_path(str(combination_validator))["validate_pattern_combination_assets"]
+        for error in validate_combination(skill_dir, registry):
+            report.error("pattern_combination_specification", error, "模式组合来源或规格校验失败")
+    selection_validator = skill_dir / "scripts/validate_pattern_selection_docs.py"
+    if not selection_validator.is_file():
+        report.error("pattern_selection_specification", "missing pattern selection validator", "缺少模式选型规格校验器")
+    else:
+        validate_selection = runpy.run_path(str(selection_validator))["validate_pattern_selection_assets"]
+        for error in validate_selection(skill_dir, registry):
+            report.error("pattern_selection_specification", error, "模式选型来源或规格校验失败")
     validate_navigation(skill_dir, report)
     return report
 

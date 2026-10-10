@@ -1,0 +1,1055 @@
+{
+  "name_en": "Observability Harness Execution and Probes",
+  "name_zh": "可观测性框架执行与探针",
+  "description_en": "Source-backed business outcome, state fidelity, evidence completion and replay specifications.",
+  "description_zh": "有来源的业务结果、状态保真、证据补全与重放规格。",
+  "version": "0.1.0",
+  "status": "draft",
+  "implementation_status": "specification_only",
+  "pattern_ref": "PATTERN_0049",
+  "cell_ref": "CELL_GOVERNANCE_ORCHESTRATION",
+  "execution_reference": "references/observability-execution-flow.md",
+  "observability_reference": "references/observability-probes.md",
+  "interaction_contract_reference": "references/observability-contract.md",
+  "source_map_reference": "references/observability-source-map.json",
+  "shared_probe_pattern_ref": "PATTERN_0052",
+  "shared_probe_version": "0.8.0",
+  "source_aliases": {
+    "pattern": [
+      "PATTERN_OBSERVABILITY_0001",
+      "PATTERN_OBSERVABILITY_0002"
+    ],
+    "skill": [
+      "SKILL_OBSERVABILITY_EXECUTION_0001",
+      "SKILL_OBSERVABILITY_PROBE_0001"
+    ]
+  },
+  "acceptance_status": "not_executed",
+  "metric_implementation": "specification_only",
+  "sources": [
+    {
+      "id": "execution",
+      "original_filename": "可观测性执行流程.md",
+      "snapshot_path": "references/sources/observability/execution.source.txt",
+      "sha256": "677b99a60d43e8b57ca84e5fd59fab836a4dd03122a256384a5447d18be7ee0a",
+      "role_en": "Unmodified source evidence; not executable instructions",
+      "role_zh": "未修改的来源证据，不是可执行指令"
+    },
+    {
+      "id": "probe",
+      "original_filename": "工作流可观测性探针.md",
+      "snapshot_path": "references/sources/observability/probe.source.txt",
+      "sha256": "3b11b9595dda3491604e9c771813b9b4b55fbd70334bbd788297a77fbdfcff66",
+      "role_en": "Unmodified source evidence; not executable instructions",
+      "role_zh": "未修改的来源证据，不是可执行指令"
+    }
+  ],
+  "inventories": {
+    "execution_steps": [
+      {
+        "id": "OBE01",
+        "source_line": 339,
+        "source_end_line": 363,
+        "source_label": "阶段 0：建立任务基线",
+        "excerpt_sha256": "3ce4a36589a4802b680d89ff968868ebb1410c398cda512e621634e208f2a47e",
+        "target_document": "references/observability-execution-flow.md"
+      },
+      {
+        "id": "OBE02",
+        "source_line": 364,
+        "source_end_line": 387,
+        "source_label": "阶段 1：固定运行上下文",
+        "excerpt_sha256": "47e6cb6a9b3a592a67d9eb47f78ceae35b3e96b619289b124252ba300cec9955",
+        "target_document": "references/observability-execution-flow.md"
+      },
+      {
+        "id": "OBE03",
+        "source_line": 388,
+        "source_end_line": 412,
+        "source_label": "阶段 2：形成提案与执行计划",
+        "excerpt_sha256": "999970b74d88d9e3e4cc794e7cd42520b1e759cb53bd92b5b91d63ee11a9c3d5",
+        "target_document": "references/observability-execution-flow.md"
+      },
+      {
+        "id": "OBE04",
+        "source_line": 413,
+        "source_end_line": 445,
+        "source_label": "阶段 3：执行治理控制",
+        "excerpt_sha256": "414a0e6c3eb2b4eea93018e7144c6b9f6dfff8a0d4101e32076a68793ccbd758",
+        "target_document": "references/observability-execution-flow.md"
+      },
+      {
+        "id": "OBE05",
+        "source_line": 446,
+        "source_end_line": 470,
+        "source_label": "阶段 4：执行前校验",
+        "excerpt_sha256": "7ae8f09ff851c12ba75bf41f011173d02605837bd2c2004c8f915c7b364d6fe3",
+        "target_document": "references/observability-execution-flow.md"
+      },
+      {
+        "id": "OBE06",
+        "source_line": 471,
+        "source_end_line": 503,
+        "source_label": "阶段 5：调用工具或服务",
+        "excerpt_sha256": "d330c2528ac03cd2df26d6dcf0315f31eb61a15e454c80ee7bcc26ad10348f50",
+        "target_document": "references/observability-execution-flow.md"
+      },
+      {
+        "id": "OBE07",
+        "source_line": 504,
+        "source_end_line": 528,
+        "source_label": "阶段 6：解释技术结果与业务状态",
+        "excerpt_sha256": "2a77e6319876fba7267a437acfcfa6a48f23fb48a3ceffecdc6653e83f8635af",
+        "target_document": "references/observability-execution-flow.md"
+      },
+      {
+        "id": "OBE08",
+        "source_line": 529,
+        "source_end_line": 554,
+        "source_label": "阶段 7：等待、回调与跨运行接续",
+        "excerpt_sha256": "a5fb4cf51be9514416ce0b2bbb3b8f93f787e9410b273127a5488b52d9bd8a6c",
+        "target_document": "references/observability-execution-flow.md"
+      },
+      {
+        "id": "OBE09",
+        "source_line": 555,
+        "source_end_line": 581,
+        "source_label": "阶段 8：确认最终业务结果",
+        "excerpt_sha256": "2d26045c5b4c148169021380fc482380018b0389e56916ecde79b230b96d9f75",
+        "target_document": "references/observability-execution-flow.md"
+      },
+      {
+        "id": "OBE10",
+        "source_line": 582,
+        "source_end_line": 605,
+        "source_label": "阶段 9：生成对外答复或交付物",
+        "excerpt_sha256": "f7822096c4e2b6e5d5c23b6b6ce62b2c7cc27eb5d049aad8ebdb23440224fae4",
+        "target_document": "references/observability-execution-flow.md"
+      },
+      {
+        "id": "OBE11",
+        "source_line": 606,
+        "source_end_line": 635,
+        "source_label": "阶段 10：关闭运行并形成证据包",
+        "excerpt_sha256": "ca7266173ef3ed643daac6183d292d65fe1be8dc8c4a44a1e866d375def6fa06",
+        "target_document": "references/observability-execution-flow.md"
+      },
+      {
+        "id": "OBE12",
+        "source_line": 636,
+        "source_end_line": 657,
+        "source_label": "阶段 11：评测、修复与回归验证",
+        "excerpt_sha256": "58ef04d54f840c7654af0b1c226ef700a02fb589efb941dd204a4b5520a54343",
+        "target_document": "references/observability-execution-flow.md"
+      },
+      {
+        "id": "OBE13",
+        "source_line": 658,
+        "source_end_line": 680,
+        "source_label": "阶段 12：反馈到治理调整",
+        "excerpt_sha256": "b3726d9ac7a099b79bcc043159de0900d727201c704cebac3959ad2162dc2eb6",
+        "target_document": "references/observability-execution-flow.md"
+      }
+    ],
+    "probes": [
+      {
+        "id": "PROBE_RUN_001",
+        "source_line": 403,
+        "source_end_line": 403,
+        "source_label": "运行身份连续性",
+        "excerpt_sha256": "f421f0dcd0679e4cbc2e6cc6115fdcfd05e1dab45258b895eae0db00f55a60e7",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_CTX_001",
+        "source_line": 404,
+        "source_end_line": 404,
+        "source_label": "输入工件版本",
+        "excerpt_sha256": "a379a2948d3d1d58195411a71e4a3d5078ec92b0b37adb17a29d88ede98f5f17",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_CTX_002",
+        "source_line": 405,
+        "source_end_line": 405,
+        "source_label": "模型与提示版本",
+        "excerpt_sha256": "6aba5fb562ed8b1f4fbc31206fd1bf00d8a841583c4f18006731fff0653c42b9",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_CTX_003",
+        "source_line": 406,
+        "source_end_line": 406,
+        "source_label": "工具可见性快照",
+        "excerpt_sha256": "ce9a1521361d911f2da43267f87d1db8976279ba8cb618b51b2f3a80ea53550b",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_CTX_004",
+        "source_line": 407,
+        "source_end_line": 407,
+        "source_label": "规则与权限快照",
+        "excerpt_sha256": "a2fde0d5b6e5b1834e0488a94127a5a913eaca38da2e596f8303dbca15b85c64",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_PLAN_001",
+        "source_line": 413,
+        "source_end_line": 413,
+        "source_label": "提案版本绑定",
+        "excerpt_sha256": "7cf6fee866766bf6b3b32acfd6910a1bfdd1e7198d570d1ae1e899e5928dc24f",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_PLAN_002",
+        "source_line": 414,
+        "source_end_line": 414,
+        "source_label": "路由决策",
+        "excerpt_sha256": "6e3d28ec830666d90e24e9006b5c2241c39c88ee343152b7711a8877c20301e3",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_PLAN_003",
+        "source_line": 415,
+        "source_end_line": 415,
+        "source_label": "并行分支登记",
+        "excerpt_sha256": "b8fb1ac0dbdef7153ba4915cbd02ecc09a8e4a227f83ac012ac963854b1c2fcb",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_PLAN_004",
+        "source_line": 416,
+        "source_end_line": 416,
+        "source_label": "循环终止条件",
+        "excerpt_sha256": "5f0999b82e4a4fb8bf911d66abbd52ba17bd3364429932bc733ca59a3ea6a004",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_PLAN_005",
+        "source_line": 417,
+        "source_end_line": 417,
+        "source_label": "层级委派边界",
+        "excerpt_sha256": "f52039a58e1371fd268e6b2fd6069ee362ebad90ee772b0e36ec9f288433030e",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_GOV_001",
+        "source_line": 423,
+        "source_end_line": 423,
+        "source_label": "批准证据匹配",
+        "excerpt_sha256": "54e19fe558dbf89b0ad587fa5d33e6b86ec7455687f71f20f11aa978cfc0eccb",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_GOV_002",
+        "source_line": 424,
+        "source_end_line": 424,
+        "source_label": "额度预留与消费",
+        "excerpt_sha256": "f98dedce779ced015995975432a5d3fe32d5c1619aae0c24d47ca2d94085436e",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_GOV_003",
+        "source_line": 425,
+        "source_end_line": 425,
+        "source_label": "实际执行身份",
+        "excerpt_sha256": "b704187cc30abe880c7abfef3386cba6f876d594335be8b43176c50055e98278",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_GOV_004",
+        "source_line": 426,
+        "source_end_line": 426,
+        "source_label": "权限边界",
+        "excerpt_sha256": "fefac35c61beb44258c4b3074edcc0f4e1f6e9a31acdd5df154e4dc521c111ce",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_GOV_005",
+        "source_line": 427,
+        "source_end_line": 427,
+        "source_label": "自治等级适配",
+        "excerpt_sha256": "584a208683bf30432a928b909a4b94afccfcc359f9a9468042f2531c0e59e7e0",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_GOV_006",
+        "source_line": 428,
+        "source_end_line": 428,
+        "source_label": "控制绕过检测",
+        "excerpt_sha256": "361604c09478d23732f32b911d1b0358f8adac0154956e5ffcbe084a676d004a",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_TOOL_001",
+        "source_line": 434,
+        "source_end_line": 434,
+        "source_label": "工具请求响应完整性",
+        "excerpt_sha256": "3e439bb43c8655328c0f5dc8e8757e0aedb703c0b15b6443aa54291804910d59",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_TOOL_002",
+        "source_line": 435,
+        "source_end_line": 435,
+        "source_label": "业务状态保真",
+        "excerpt_sha256": "3382fb323019c78470b408ff271e9ab433b999758d058b9fe89f156137098072",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_TOOL_003",
+        "source_line": 436,
+        "source_end_line": 436,
+        "source_label": "幂等与重复副作用",
+        "excerpt_sha256": "b4071b03a2583160fa1e145e4d2f7e9e66c877330dfa9db0a3f281fc33cd598a",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_TOOL_004",
+        "source_line": 437,
+        "source_end_line": 437,
+        "source_label": "参数与批准一致性",
+        "excerpt_sha256": "4ae9b21057cfb467a654d314cf05911c138e57509da742441919812c586056a2",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_TOOL_005",
+        "source_line": 438,
+        "source_end_line": 438,
+        "source_label": "工具结构漂移",
+        "excerpt_sha256": "432958dcd4859a2b9f972ff86ef35bfb6adc41fcefc59c5da1b54dfad6601bc7",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_TOOL_006",
+        "source_line": 439,
+        "source_end_line": 439,
+        "source_label": "回退与替代工具",
+        "excerpt_sha256": "1f7b8c4c4f4a2081ed05a342dacd28adf319bded958b1394305f08bbf0ea7271",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_ASYNC_001",
+        "source_line": 445,
+        "source_end_line": 445,
+        "source_label": "业务申请号稳定性",
+        "excerpt_sha256": "a098a90d7dccf015ba1516eec7a4ec4b1d25af29b56995edac0b24c7a062200b",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_ASYNC_002",
+        "source_line": 446,
+        "source_end_line": 446,
+        "source_label": "回调关联",
+        "excerpt_sha256": "9e9a068aa0aad08c6537e84f9bf0a1a27027340d7aea5008d193783800ce971a",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_ASYNC_003",
+        "source_line": 447,
+        "source_end_line": 447,
+        "source_label": "超时查询",
+        "excerpt_sha256": "3a9ecb228fb915f2ca8b8a82a53479db7e14642cce9f184b09e0c2c3963fc841",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_ASYNC_004",
+        "source_line": 448,
+        "source_end_line": 448,
+        "source_label": "跨运行恢复",
+        "excerpt_sha256": "ef7a3d4ae3a19efcf72d9548bd5df683f38e97fb805798a19bfe30ead1f7dd98",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_ASYNC_005",
+        "source_line": 449,
+        "source_end_line": 449,
+        "source_label": "交接工件验收",
+        "excerpt_sha256": "2d5af884b2c1c1be39406ab75a469d6dd024d6e88a0e8c0e5b3b851092c9f91f",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_RESULT_001",
+        "source_line": 455,
+        "source_end_line": 455,
+        "source_label": "权威结果确认",
+        "excerpt_sha256": "f0d28608794e6c3cbb53638d5c102de41083e25f63e36f9bfff1a41201089eab",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_RESULT_002",
+        "source_line": 456,
+        "source_end_line": 456,
+        "source_label": "期望与实际差异",
+        "excerpt_sha256": "b6b10a67ceef191c715285c04599026a4fbd662d4b996c3e376880990ffc8ea8",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_RESULT_003",
+        "source_line": 457,
+        "source_end_line": 457,
+        "source_label": "接口成功但任务未完成",
+        "excerpt_sha256": "118058945c713cc685f596cb680c085aee9a1ba80ebea4d3ee9903511a7788b6",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_RESULT_004",
+        "source_line": 458,
+        "source_end_line": 458,
+        "source_label": "结果未知保护",
+        "excerpt_sha256": "d1663236349800ea3a4721ae0e74dcc9ddcc383feeddd136b265e6d8896f4801",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_COMMIT_001",
+        "source_line": 459,
+        "source_end_line": 459,
+        "source_label": "对外承诺一致性",
+        "excerpt_sha256": "8ccfcff643644219ef2042eed99493161dd5ee9eb70077eeae50b305dbd77e73",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_COMMIT_002",
+        "source_line": 460,
+        "source_end_line": 460,
+        "source_label": "工件采用与验收",
+        "excerpt_sha256": "cb687a70427b734f982864ace58df7dd7d341df38f447117d6f13ae0e1bd8488",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_FB_001",
+        "source_line": 466,
+        "source_end_line": 466,
+        "source_label": "用户反馈关联",
+        "excerpt_sha256": "715b12232edd993813a20571fbd092582bfb976f708a790b4f725d1e197e7de3",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_FB_002",
+        "source_line": 467,
+        "source_end_line": 467,
+        "source_label": "失败样本入集",
+        "excerpt_sha256": "f652c39efe895596920965a79d7472a66a213b52a73658807fbe52e89efaf0ec",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_EVAL_001",
+        "source_line": 468,
+        "source_end_line": 468,
+        "source_label": "回归重放",
+        "excerpt_sha256": "a92150972a3b3065216f345791e88de6584ec6d6dea2e60256c86154e33f3bc4",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_EVOLVE_001",
+        "source_line": 469,
+        "source_end_line": 469,
+        "source_label": "规则调整因果",
+        "excerpt_sha256": "091220e0fe6cef43c8e8b1b805226ad0e505e14acae12d5f2a24c850b106bd0d",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_EVOLVE_002",
+        "source_line": 470,
+        "source_end_line": 470,
+        "source_label": "调整后效果",
+        "excerpt_sha256": "6dc466ab4906793f03ff265eb6ee86573596c18c898d820fb66366ae152f0b3e",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_REC_001",
+        "source_line": 476,
+        "source_end_line": 476,
+        "source_label": "必需事件完整性",
+        "excerpt_sha256": "dbd77a2eb84c535d3e66d9b13825e5683b756c990bd454a5670e4c54c9f24758",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_REC_002",
+        "source_line": 477,
+        "source_end_line": 477,
+        "source_label": "顺序与因果一致性",
+        "excerpt_sha256": "2534159b04f824579512b08f0eee0740fe3c1d5b457bb44b1992e7eadc1db203",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_REC_003",
+        "source_line": 478,
+        "source_end_line": 478,
+        "source_label": "防篡改与更正链",
+        "excerpt_sha256": "e00f3ca587bf69df3334e16a97739b3f8fc28b60c2dfff8cac1dec7485b39945",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_REC_004",
+        "source_line": 479,
+        "source_end_line": 479,
+        "source_label": "敏感信息泄露",
+        "excerpt_sha256": "2c352bd6ad88d052d3d5437df296dbe91d8cf5bfe524bf5c1c76ed6b0014b3db",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_REC_005",
+        "source_line": 480,
+        "source_end_line": 480,
+        "source_label": "访问权限",
+        "excerpt_sha256": "f7fb4ac4f7655168b02f390be3dba2daeb34b0269946e90429ab21fbbe782a54",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_REC_006",
+        "source_line": 481,
+        "source_end_line": 481,
+        "source_label": "保留期限",
+        "excerpt_sha256": "b6928ed2ed51a5ce8bda9916843e390a1a598346837beed336cd9f0f4e16e226",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "PROBE_REC_007",
+        "source_line": 482,
+        "source_end_line": 482,
+        "source_label": "采集器健康",
+        "excerpt_sha256": "c0d74e5b33d50179915056f38424dff8fc67c25f320af130f5bd745073e19cbf",
+        "target_document": "references/observability-probes.md"
+      }
+    ],
+    "metrics": [
+      {
+        "id": "OBM01",
+        "source_line": 675,
+        "source_end_line": 675,
+        "source_label": "真实完成率",
+        "excerpt_sha256": "45a9e054e73d86c19f271c3cfec28c37c8a94b1b60c20d09886b3bf8571548c9",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM02",
+        "source_line": 676,
+        "source_end_line": 676,
+        "source_label": "结果未知率",
+        "excerpt_sha256": "36d6e93d2a32c62a7183ab3f0e4a52d6ea916c1b9faf549f6716ba7e2adb134c",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM03",
+        "source_line": 677,
+        "source_end_line": 677,
+        "source_label": "部分完成率",
+        "excerpt_sha256": "b9c834033f5a41347f9920ad35e24f2a1bf52b65cc45c036404ab5f64aca7def",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM04",
+        "source_line": 678,
+        "source_end_line": 678,
+        "source_label": "接口成功但任务未完成率",
+        "excerpt_sha256": "9f224bfce4cae18cfa9c7d277bb6ae9df973bc9b8a5b5e098b23575543616065",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM05",
+        "source_line": 679,
+        "source_end_line": 679,
+        "source_label": "过度承诺率",
+        "excerpt_sha256": "234302e3a13bde1e6050df301d725a82fb35a7c55170269d7a8c17bc057ced4b",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM06",
+        "source_line": 680,
+        "source_end_line": 680,
+        "source_label": "补偿率",
+        "excerpt_sha256": "b9015f6898d25424777025a40c1f7c7cfe3485aa09e403f2a06b9068327ec083",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM07",
+        "source_line": 681,
+        "source_end_line": 681,
+        "source_label": "业务采用率",
+        "excerpt_sha256": "bef9ea81ac43d95c70c5bf503486766f2a1585a75d096b559ca7f4b4beaced9c",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM08",
+        "source_line": 687,
+        "source_end_line": 687,
+        "source_label": "必需事件完整率",
+        "excerpt_sha256": "f6df972bfce65daa4b89140f0cf60fb9b6b2e8231a8cd145f186c2312611d3ab",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM09",
+        "source_line": 688,
+        "source_end_line": 688,
+        "source_label": "因果链完整率",
+        "excerpt_sha256": "01a2f4f400558a47eb7e8a41f7461bdd8cf173dbed3dd2b78f70a3c16a878777",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM10",
+        "source_line": 689,
+        "source_end_line": 689,
+        "source_label": "追踪上下文连续率",
+        "excerpt_sha256": "e04927e8d9dc2676f2cf850966ca0ded3ba629fb6b3dfeae53ca0e04fb57627e",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM11",
+        "source_line": 690,
+        "source_end_line": 690,
+        "source_label": "业务申请号覆盖率",
+        "excerpt_sha256": "28854f39a39bfa5e472f86c669e76cb47b588f23d2e30088a5ee0d7e73a9a136",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM12",
+        "source_line": 691,
+        "source_end_line": 691,
+        "source_label": "版本快照覆盖率",
+        "excerpt_sha256": "b05908308fccff91830f68e369d0ddd8b6fba8cb91c44664d07cdc8838b5a285",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM13",
+        "source_line": 692,
+        "source_end_line": 692,
+        "source_label": "工具状态保真率",
+        "excerpt_sha256": "7b6dbac30a84bbc39832fbf79dcf11f26616225c45421f29672171efd50f04a5",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM14",
+        "source_line": 693,
+        "source_end_line": 693,
+        "source_label": "对外答复可追溯率",
+        "excerpt_sha256": "0dc0dea1466224767fbe8f477ef7efcbb9590205caca68f4f9b239a9d6e6cdf7",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM15",
+        "source_line": 699,
+        "source_end_line": 699,
+        "source_label": "批准证据匹配率",
+        "excerpt_sha256": "69253e32af01e50ce4415cb3ee87b10c9b6aa38db8e6f0e2ca083dd5c72408e7",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM16",
+        "source_line": 700,
+        "source_end_line": 700,
+        "source_label": "额度闭环率",
+        "excerpt_sha256": "ec058f4a32f54d029ccf30e98abe65a6ac716361601e0117c944a6d7b96cc9bf",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM17",
+        "source_line": 701,
+        "source_end_line": 701,
+        "source_label": "权限快照覆盖率",
+        "excerpt_sha256": "cd1cf20785d826a7275ee2ca0d3365042659f336b1751bdb3721c5c396d53e88",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM18",
+        "source_line": 702,
+        "source_end_line": 702,
+        "source_label": "控制绕过率",
+        "excerpt_sha256": "b29fef5bf5c317fa46185270fd867b2688bfa507ff4a903f45aacb697cdb5c3d",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM19",
+        "source_line": 703,
+        "source_end_line": 703,
+        "source_label": "自治等级越界率",
+        "excerpt_sha256": "52748c5e1e1c914213b2b4de0a63c08e70d4b69caa9548d9c0479b376f51992e",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM20",
+        "source_line": 704,
+        "source_end_line": 704,
+        "source_label": "规则调整可追溯率",
+        "excerpt_sha256": "3ee2a9f4dec6695c32a9aff0f267bb3d277e7f6994119dfdf6ceebe6277e96cd",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM21",
+        "source_line": 710,
+        "source_end_line": 710,
+        "source_label": "重试率",
+        "excerpt_sha256": "77bf41d8ff170fbaae8c8f1868e548f72f85049f64903ee38c87c8113e82b728",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM22",
+        "source_line": 711,
+        "source_end_line": 711,
+        "source_label": "重复副作用率",
+        "excerpt_sha256": "8ddc92892dd781bd323e20037d3d1bdea24b40f7bd14a58c40ff556022b9d099",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM23",
+        "source_line": 712,
+        "source_end_line": 712,
+        "source_label": "回调关联成功率",
+        "excerpt_sha256": "2129cb166270bd214fed71a60004874efd18f41a28206e6c7fbd714ed076d2fa",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM24",
+        "source_line": 713,
+        "source_end_line": 713,
+        "source_label": "恢复成功率",
+        "excerpt_sha256": "47294ef33c3cc7bbbb712ec7b112513ead86f26a94f1c2d55036ebf525df606d",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM25",
+        "source_line": 714,
+        "source_end_line": 714,
+        "source_label": "平均定位时间",
+        "excerpt_sha256": "d7c3b01477cc881147ec90623bd91d746fcfad27328abc1baeb907ee7468e62c",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM26",
+        "source_line": 715,
+        "source_end_line": 715,
+        "source_label": "一次定位率",
+        "excerpt_sha256": "b1e4d7a6cbb0dcd2555dba3558f5fd7d4007ed6224381cb34004152839117649",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM27",
+        "source_line": 721,
+        "source_end_line": 721,
+        "source_label": "人工纠正率",
+        "excerpt_sha256": "4fc4416eee1734c72376b2cff7691282bd1ce850aa681430c087d35f2ad2c099",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM28",
+        "source_line": 722,
+        "source_end_line": 722,
+        "source_label": "回归通过率",
+        "excerpt_sha256": "10bce46a3139d002aa20fb8ffc7e53bc5ae1dfc47ead5b3fc634037bf53190c5",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM29",
+        "source_line": 723,
+        "source_end_line": 723,
+        "source_label": "失败复现率",
+        "excerpt_sha256": "20fe53e4cf0a8f42fe7f6fa6e3308a7988281796bb7f18ec2a254397ee4248ab",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM30",
+        "source_line": 724,
+        "source_end_line": 724,
+        "source_label": "根因确认率",
+        "excerpt_sha256": "8f013b451e33140b8abe30d9cd39f50a80234d1ed62e7928bdb96791c94b9997",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM31",
+        "source_line": 725,
+        "source_end_line": 725,
+        "source_label": "反馈关联率",
+        "excerpt_sha256": "b797630c591be21dca77eb1d08551a7bd32300d42887977722917fa3cd385f7c",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM32",
+        "source_line": 731,
+        "source_end_line": 731,
+        "source_label": "成功任务单位令牌成本",
+        "excerpt_sha256": "20c157cffd999fd44e2d68ba7828a17a359db2a75e4233e32e66215cb2b4f5c5",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM33",
+        "source_line": 732,
+        "source_end_line": 732,
+        "source_label": "成功任务单位计算成本",
+        "excerpt_sha256": "b668778c9ac47bd424de055933113cf31986c2c6f20cc64cee1d61ec05398422",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM34",
+        "source_line": 733,
+        "source_end_line": 733,
+        "source_label": "成功任务端到端耗时",
+        "excerpt_sha256": "010a8701b8be2483a5a8d1c923ab50cfdbb1e46b95a7e63de8010e45725a33db",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM35",
+        "source_line": 734,
+        "source_end_line": 734,
+        "source_label": "失败任务耗时",
+        "excerpt_sha256": "c789972193b8aa6b1f28040a4d5f00e61c0fc37cb2ebdb9d64e119ae7ebd2686",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM36",
+        "source_line": 735,
+        "source_end_line": 735,
+        "source_label": "探针延迟开销",
+        "excerpt_sha256": "1ed03ef0aff230da991dce1491f4ad959e0e74128380880b6a20e21ff36e1669",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM37",
+        "source_line": 736,
+        "source_end_line": 736,
+        "source_label": "探针存储成本",
+        "excerpt_sha256": "ea0d02e984036edc95c6e52167395fdc697818e716ae7637e6a2793082c96572",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM38",
+        "source_line": 742,
+        "source_end_line": 742,
+        "source_label": "敏感字段拦截率",
+        "excerpt_sha256": "c7cb99b8002af37155ae6406d7aff2f78eccbb292c813a7390d27f97a11be062",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM39",
+        "source_line": 743,
+        "source_end_line": 743,
+        "source_label": "未授权访问率",
+        "excerpt_sha256": "e60ac6302c1bef172f0f55cf22b0d718072e75ae91182313a56f7ebe66d6a23e",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM40",
+        "source_line": 744,
+        "source_end_line": 744,
+        "source_label": "采集丢失率",
+        "excerpt_sha256": "5f5f3bf89e3fd5f7aacd873c0aec0698d081cee38c1f280ca315a10af13c8780",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM41",
+        "source_line": 745,
+        "source_end_line": 745,
+        "source_label": "采集延迟",
+        "excerpt_sha256": "2f7cb207d89cfefd953daa5ce418dd7e9b187594b114f3db8c0cc75dfd645bc1",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM42",
+        "source_line": 746,
+        "source_end_line": 746,
+        "source_label": "更正链完整率",
+        "excerpt_sha256": "0e944d905cf09e7219eb7f1871291e591a6773b85cffd430c58250eaad3cdc13",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM43",
+        "source_line": 1065,
+        "source_end_line": 1065,
+        "source_label": "缺口发现率",
+        "excerpt_sha256": "1e0599c263280e572f200eb53eb36f6d9d150ce2e9038f6deb3a502b779c4647",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM44",
+        "source_line": 1066,
+        "source_end_line": 1066,
+        "source_label": "误报率",
+        "excerpt_sha256": "ca93dd8d29d96aa516888278c0d335f4117bfca7ce5449e3540aab2ba5cfdfde",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM45",
+        "source_line": 1067,
+        "source_end_line": 1067,
+        "source_label": "补全成功率",
+        "excerpt_sha256": "3450ac488090563ea085d07dc3e5cd8c844b44ea2bbabcf65c7b11550cdb1e54",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM46",
+        "source_line": 1068,
+        "source_end_line": 1068,
+        "source_label": "关联准确率",
+        "excerpt_sha256": "dcc4341b131bd2bc2e4429632aef535e7bc9d8a13c798dbaf4fb88cc841990b7",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM47",
+        "source_line": 1069,
+        "source_end_line": 1069,
+        "source_label": "调查缩短时间",
+        "excerpt_sha256": "f6d13987da26118f6d5ce421a6fad6b42ece04257ed818fbc9aa5c38f492b9b5",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM48",
+        "source_line": 1070,
+        "source_end_line": 1070,
+        "source_label": "重放可用率",
+        "excerpt_sha256": "dbe19035b3ca7f96e68fc10c6a3baf223a3250e88db25791158ce4c6e4e899e0",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM49",
+        "source_line": 1071,
+        "source_end_line": 1071,
+        "source_label": "探针开销",
+        "excerpt_sha256": "35f3ed3e2529044ed2b5752acb3ad9bfd0e480a373b8415dd1dc4956c8c44c79",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBM50",
+        "source_line": 1072,
+        "source_end_line": 1072,
+        "source_label": "隐私事件数",
+        "excerpt_sha256": "835230c9921dda42b99fe13293839e03e842717e4203e33eec6e487cc92b49c1",
+        "target_document": "references/observability-probes.md"
+      }
+    ],
+    "acceptance_cases": [
+      {
+        "id": "OBT01",
+        "source_line": 1078,
+        "source_end_line": 1078,
+        "source_label": "正常完成",
+        "excerpt_sha256": "bf2c30c95c4ad90b18c3ba7fbee1c132e705697ff0995d342b49c9467f955b92",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBT02",
+        "source_line": 1079,
+        "source_end_line": 1079,
+        "source_label": "等待审核",
+        "excerpt_sha256": "32bc30af3a27137d50fd7bcb684c73b89919d6e299ad16c291609fcb63cded83",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBT03",
+        "source_line": 1080,
+        "source_end_line": 1080,
+        "source_label": "明确拒绝",
+        "excerpt_sha256": "01527c440cdf67349d30a27e2cdbb62c0e0813714f0ad12e20f8250960ae5664",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBT04",
+        "source_line": 1081,
+        "source_end_line": 1081,
+        "source_label": "工具超时但业务成功",
+        "excerpt_sha256": "970f32e5d102dc6ce169c9b4f996263b902053294490890222a8f1541fce6646",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBT05",
+        "source_line": 1082,
+        "source_end_line": 1082,
+        "source_label": "工具超时且业务未生效",
+        "excerpt_sha256": "d84cb340f06db523e6aab7961a91ea8118b163d04e34c5eee37721de8cd19cb9",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBT06",
+        "source_line": 1083,
+        "source_end_line": 1083,
+        "source_label": "重复回调",
+        "excerpt_sha256": "16c1fb040a6757a46caba9bdd8f5b792c5de0998731a81c3afe5a7b803b6a770",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBT07",
+        "source_line": 1084,
+        "source_end_line": 1084,
+        "source_label": "工件版本错误",
+        "excerpt_sha256": "c7944f88d5fbb01569c531efc71c9c477e322862d37bb62c89c9c849f0341a3d",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBT08",
+        "source_line": 1085,
+        "source_end_line": 1085,
+        "source_label": "批准票错版",
+        "excerpt_sha256": "42d277754bd2d4e8bce4c0a701dd8b3b81096cad0d52bc0f2159483caf27be17",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBT09",
+        "source_line": 1086,
+        "source_end_line": 1086,
+        "source_label": "额度不足",
+        "excerpt_sha256": "52cec376de3e8efeb796c17840697ac7a663337d758f8b0a7c4b8451b85bbaba",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBT10",
+        "source_line": 1087,
+        "source_end_line": 1087,
+        "source_label": "权限不足",
+        "excerpt_sha256": "2610bfca2399b62e9101782068a9914193b4d907b822f05990412796e0c26ca9",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBT11",
+        "source_line": 1088,
+        "source_end_line": 1088,
+        "source_label": "记录器故障",
+        "excerpt_sha256": "bd4eb7efa76c95e47f5c999d2f26a4deb1db2e7c100ff50032e03a24aa692108",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBT12",
+        "source_line": 1089,
+        "source_end_line": 1089,
+        "source_label": "敏感字段误写",
+        "excerpt_sha256": "3f29e74586c3596e61e88481eac08553586bc70290fb97c0e53c4ea4de78e861",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBT13",
+        "source_line": 1090,
+        "source_end_line": 1090,
+        "source_label": "对外答复过度承诺",
+        "excerpt_sha256": "2d56b3f5bc1dcf4511784eb1c1d4911bf2fed13dc4df7b534694ece970641531",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBT14",
+        "source_line": 1091,
+        "source_end_line": 1091,
+        "source_label": "跨运行恢复",
+        "excerpt_sha256": "6ba735474a0755b2d2d6c7ff269e899e4c80a316892d07931bda369414fb7f0b",
+        "target_document": "references/observability-probes.md"
+      },
+      {
+        "id": "OBT15",
+        "source_line": 1092,
+        "source_end_line": 1092,
+        "source_label": "重放隔离",
+        "excerpt_sha256": "738904be97086dd5119efea547b31b75d755f87a434d9c50c3382d08c9400d3a",
+        "target_document": "references/observability-probes.md"
+      }
+    ]
+  },
+  "local_acceptance_ids": [
+    "OBX01",
+    "OBX02",
+    "OBX03",
+    "OBX04",
+    "OBX05",
+    "OBX06",
+    "OBX07",
+    "OBX08",
+    "OBX09",
+    "OBX10",
+    "OBX11",
+    "OBX12"
+  ]
+}
