@@ -22,6 +22,10 @@ Start composition with the [selection card](pattern-selection-card.md) and [S0�
 
 Use [Pattern Combination / 模式组合](pattern-combination-execution-flow.md) (`PATTERN_0053`) to connect existing cells with explicit evidence, versions, dependencies, budgets and acceptance. Its [14 independent probes / 十四类独立探针](pattern-combination-observability-probes.md) extend the usage of `PATTERN_0052` without replacing the shared runtime protocol. A composition facet may reference an extension candidate without naming or promoting that cell. / 使用模式组合连接既有单元，明确证据、版本、依赖、预算及验收。配套探针扩展既有模式的用法，不替换共享运行协议；组合视角引用扩展候选不代表命名或晋升该单元。
 
+## Cross-Cell Architecture Evolution / 跨单元架构演化
+
+Use [Architecture Evolution / 架构演化](architecture-evolution-execution-flow.md) (`PATTERN_0054`) when changing an existing design across versions. Its [probes](architecture-evolution-observability-probes.md) compare business outcomes and evidence coverage; its [contract](architecture-evolution-contract.md) separates design decisions, release authority and recovery. Coordinates describe participating capabilities and topologies, not new cell identities or maturity promotions. / 跨版本调整既有设计时使用架构演化，配套探针对照业务结果与证据覆盖，契约分开设计决定、发布权限和恢复。坐标表示参与能力与拓扑，不新增单元身份或晋升成熟度。
+
 ## Reading A Cell / 阅读单元格
 
 The governance row shares a [source-backed execution flow](governance-execution-flow.md), [independent probe catalog](governance-observability-probes.md) and [exchange contract](governance-contract.md). These are draft specifications for the existing cells, not additional named patterns or deployed controls. / 治理行共用有来源的执行流程、独立探针目录与交互契约；它们是现有单元的草案规格，不新增命名模式，也不代表控制已经部署。

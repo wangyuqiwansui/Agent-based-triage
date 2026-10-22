@@ -164,6 +164,12 @@ Require authority-confirmed outcomes, scoped authenticated correlation, reviewed
 
 The [composition contract](pattern-combination-contract.md) and [source map](pattern-combination-source-map.json) retain 11 stages, 14 probes, 54 formulas and 20 source cases, with seven additional host-integration scenarios. All business scenarios remain unexecuted. Evaluate never-started mandatory branches, shared-budget races, unknown external effects, late/duplicate/conflicting events, cross-task enrichment, empty or sampled populations and optional probe failure. Document validation is not evidence of a working scheduler, calculator or business acceptance. / 组合契约与来源映射保留 11 阶段、14 探针、54 公式及 20 来源场景，另含七项宿主接入场景，业务场景均未执行。应评估未启动必需分支、共享预算竞争、未知效果、迟到重复冲突事件、跨任务补数、空或采样总体及可选探针故障；文档校验不证明调度器、计算器或业务验收已实现。
 
+## Architecture Evolution Evidence Boundary / 架构演化证据边界
+
+The [evolution contract](architecture-evolution-contract.md) requires a frozen baseline/candidate pair, evaluation population, rules, thresholds and evidence window. Incomparable inputs, missing required evidence or immature outcomes yield an inconclusive evaluation; a high observed success rate cannot replace acceptance coverage or critical-error checks. An updated candidate invalidates earlier version-bound validation and release authority. / 演化契约要求冻结基线候选对、评价总体、规则、阈值与证据窗口。输入不可比、缺必需证据或结果未成熟时，验证结论为证据不足；高观测成功率不能替代验收覆盖及关键错误检查。候选更新使先前版本绑定的验证与发布权限失效。
+
+The [source-backed specification](architecture-evolution-source-map.json) and AET scenarios are `specification_only` / `not_executed`. Local asset, provenance and navigation checks do not establish a working deployment gate, successful rollback or business acceptance. / 有来源的规格及 AET 场景分别标为仅规格与未执行；本地资产、来源和导航检查不证明发布门已实现、回滚成功或业务验收通过。
+
 ## Progressive Commitment Evidence Boundary / 渐进承诺证据边界
 
 The [progressive commitment contract](progressive-commitment-contract.md) is specification-only. Its [source map](progressive-commitment-source-map.json) binds 15 execution nodes, 13 probe nodes, 20 specialized probes, 114 metric definitions and 60 source cases; 8 additional execution cases target concurrency and authority boundaries. None is a passed business test until an adopting implementation supplies input, expected/actual outcome and independent evidence. Source/hash/navigation validation does not promote pattern maturity or prove enforcement. / 渐进承诺契约仅为规范；来源映射绑定 15 执行节点、13 探针节点、20 专项探针、114 指标及 60 来源场景，另有 8 项并发权限边界场景。在采用实现提供输入、预期实际结果及独立证据前，均不能称为业务测试通过。来源哈希导航校验不晋升模式成熟度，也不证明控制已生效。

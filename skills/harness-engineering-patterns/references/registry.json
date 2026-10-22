@@ -974,6 +974,50 @@
         "PATTERN_0051",
         "PATTERN_0052"
       ]
+    },
+    {
+      "id": "PATTERN_0054",
+      "name_en": "Architecture Evolution",
+      "name_zh": "架构演化",
+      "source_kind": "local_seed",
+      "aliases_en": [
+        "Evidence-Based Architecture Evolution"
+      ],
+      "aliases_zh": [
+        "基于证据的架构演化"
+      ],
+      "status": "draft",
+      "reference": "references/architecture-evolution-execution-flow.md",
+      "observability_reference": "references/architecture-evolution-observability-probes.md",
+      "source_version": "0.1.0",
+      "specification_version": "0.2.0",
+      "cognition_refs": [
+        "COG_MEMORY",
+        "COG_REASONING",
+        "COG_ACTION",
+        "COG_REFLECTION",
+        "COG_GOVERNANCE"
+      ],
+      "topology_refs": [
+        "TOP_CHAIN",
+        "TOP_ROUTING",
+        "TOP_PARALLEL",
+        "TOP_ORCHESTRATION",
+        "TOP_LOOP",
+        "TOP_HIERARCHY"
+      ],
+      "matrix_coordinates": [
+        "COG_MEMORY__TOP_ORCHESTRATION",
+        "COG_REASONING__TOP_LOOP",
+        "COG_ACTION__TOP_ORCHESTRATION",
+        "COG_REFLECTION__TOP_LOOP",
+        "COG_GOVERNANCE__TOP_HIERARCHY"
+      ],
+      "related_pattern_refs": [
+        "PATTERN_0049",
+        "PATTERN_0052",
+        "PATTERN_0053"
+      ]
     }
   ],
   "module_protocols": [
@@ -2117,5 +2161,21 @@
     "observability_reference": "references/pattern-combination-observability-probes.md",
     "interaction_contract_reference": "references/pattern-combination-contract.md",
     "source_map_reference": "references/pattern-combination-source-map.json"
+  },
+  "architecture_evolution_specification": {
+    "name_en": "Architecture Evolution Execution and Independent Probes",
+    "name_zh": "架构演化执行与独立探针",
+    "description_en": "Evolve existing workflow architectures through frozen baselines, comparable evidence, bounded releases and explicit recovery decisions.",
+    "description_zh": "通过冻结基线、可比证据、限定发布和明确恢复决定，演化既有工作流架构。",
+    "version": "0.2.0",
+    "status": "draft",
+    "implementation_status": "specification_only",
+    "pattern_ref": "PATTERN_0054",
+    "shared_probe_pattern_ref": "PATTERN_0052",
+    "shared_probe_version": "0.8.0",
+    "execution_reference": "references/architecture-evolution-execution-flow.md",
+    "observability_reference": "references/architecture-evolution-observability-probes.md",
+    "interaction_contract_reference": "references/architecture-evolution-contract.md",
+    "source_map_reference": "references/architecture-evolution-source-map.json"
   }
 }

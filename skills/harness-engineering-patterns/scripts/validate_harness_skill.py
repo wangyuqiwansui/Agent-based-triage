@@ -3002,6 +3002,13 @@ def validate_skill(skill_dir: pathlib.Path) -> ValidationReport:
         validate_selection = runpy.run_path(str(selection_validator))["validate_pattern_selection_assets"]
         for error in validate_selection(skill_dir, registry):
             report.error("pattern_selection_specification", error, "模式选型来源或规格校验失败")
+    evolution_validator = skill_dir / "scripts/validate_architecture_evolution_docs.py"
+    if not evolution_validator.is_file():
+        report.error("architecture_evolution_specification", "missing architecture evolution validator", "缺少架构演化规格校验器")
+    else:
+        validate_evolution = runpy.run_path(str(evolution_validator))["validate_architecture_evolution_assets"]
+        for error in validate_evolution(skill_dir, registry):
+            report.error("architecture_evolution_specification", error, "架构演化来源或规格校验失败")
     validate_navigation(skill_dir, report)
     return report
 

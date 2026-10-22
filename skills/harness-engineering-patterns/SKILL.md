@@ -3,7 +3,7 @@ name: harness-engineering-patterns
 metadata:
   name_en: Harness Engineering Patterns
   name_zh: Harness 工程模式
-description: Use when a request explicitly needs Agent Harness architecture analysis, cognition x topology mapping, workflow or engineering node diagnosis, evidence-based pattern composition and selection, recoverable Plan-and-Execute, governed reasoning, reflection, collaboration or tool dispatch, workflow observability probes, pattern governance, evidence-backed EIR, or Skillization decisions. / 当请求明确需要 Agent Harness 架构分析、认知 x 拓扑映射、工作流或工程节点诊断、基于证据的组合设计与模式选型、可恢复的计划并执行、受治理的推理、反思、协作或工具调度、工作流可观测性探针、模式治理、有证据的 EIR 或 Skill 化决策时使用。
+description: Use when a request explicitly needs Agent Harness architecture analysis or evolution, cognition x topology mapping, workflow or engineering node diagnosis, evidence-based pattern composition and selection, recoverable Plan-and-Execute, governed reasoning, reflection, collaboration or tool dispatch, workflow observability probes, pattern governance, evidence-backed EIR, or Skillization decisions. / 当请求明确需要 Agent Harness 架构分析或演化、认知 x 拓扑映射、工作流或工程节点诊断、基于证据的组合设计与模式选型、可恢复的计划并执行、受治理的推理、反思、协作或工具调度、工作流可观测性探针、模式治理、有证据的 EIR 或 Skill 化决策时使用。
 ---
 
 # Harness Engineering Patterns / Harness 工程模式
@@ -159,6 +159,12 @@ The [source map](references/progressive-commitment-source-map.json) retains 15 e
 For workflows combining existing patterns, start with the [composition execution flow](references/pattern-combination-execution-flow.md), [independent probe profile](references/pattern-combination-observability-probes.md) and [exchange contract](references/pattern-combination-contract.md). Prefer the smallest adequate program, call or topology; bind every connection to input versions, evidence, ownership, dependencies and shared budgets. Distinguish local retry, refuted-hypothesis investigation, replanning and approval wait; accept only against the frozen task's five gates. / 组合既有模式时先读组合执行流程、独立探针配置及交互契约。优先足够的最小程序、调用或拓扑，每条连接绑定输入版本、证据、责任、依赖与共享预算。区分局部重试、假设被否后的调查、重规划及审批等待，按冻结任务的五道门验收。
 
 `PATTERN_0053` is a cross-cell draft; `PATTERN_0052` and its shared `0.8.0` protocol remain intact. The [source map](references/pattern-combination-source-map.json) preserves 11 stages, 14 probes, 54 formulas and 20 unexecuted source cases; these specifications do not deploy a composition scheduler or metric calculators. Probe enrichment appends evidence only; actual control remains with separately authorized execution/governance. After edits run `scripts/validate_pattern_combination_docs.py`, the full Skill validator and relevant tests, then regenerate the repository HTML. / 新模式为跨单元草案，保留既有探针标识与协议；来源映射保存 11 阶段、14 探针、54 公式和 20 个未执行业务场景，不代表组合调度器或计算器已部署。补全只追加证据，真实控制仍由独立授权的执行治理入口承担。修改后运行专用校验、完整 Skill 校验及相关测试，再生成仓库 HTML。
+
+## Architecture Evolution / 架构演化
+
+For evidence-backed changes to an existing workflow architecture, read the [evolution execution flow](references/architecture-evolution-execution-flow.md), [independent probes](references/architecture-evolution-observability-probes.md) and [exchange contract](references/architecture-evolution-contract.md). Separate the execution loop from the design-change loop: freeze the baseline, locate the first evidenced deviation, test a minimal candidate on comparable cases, then use scoped rollout, observation and recovery before recording an adoption decision. / 对现有工作流架构进行证据驱动的调整时，读取演化执行流程、独立探针与交互契约。分开任务执行内环与设计变更外环：冻结基线、定位首个已证实偏差，以可比案例验证最小候选，再经限定发布、观察与恢复形成采用决定。
+
+`PATTERN_0054` and profile `architecture_evolution/0.2.0` are draft specifications. The [source map](references/architecture-evolution-source-map.json) preserves the two supplied v0.1.0 documents and identifies local refinements. Keep shared `PATTERN_0052` at `0.8.0` and matrix identities unchanged. Business success, diagnosis completeness, evaluation and release outcomes are separate; unknown effects require reconciliation, and observation cannot grant authority. After edits run `scripts/validate_architecture_evolution_docs.py`, the full Skill validator and relevant tests, then regenerate the HTML. / 新模式与专用配置为草案规格；来源映射保留两份 v0.1.0 原文并标出本地细化。保留共享探针版本与矩阵身份。分开业务成功、诊断完整度、验证和发布结果；未知效果先核对，观测不能授权。修改后运行专用校验、完整 Skill 校验及相关测试，再生成 HTML。
 
 ## Runtime Trace / 运行 Trace
 

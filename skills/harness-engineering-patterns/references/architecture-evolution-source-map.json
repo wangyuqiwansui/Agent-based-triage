@@ -1,0 +1,430 @@
+{
+  "name_en": "Architecture Evolution Execution and Independent Probes",
+  "name_zh": "架构演化执行与独立探针",
+  "description_en": "Evolve existing workflow architectures through frozen baselines, comparable evidence, bounded releases and explicit recovery decisions.",
+  "description_zh": "通过冻结基线、可比证据、限定发布和明确恢复决定，演化既有工作流架构。",
+  "version": "0.2.0",
+  "status": "draft",
+  "implementation_status": "specification_only",
+  "pattern_ref": "PATTERN_0054",
+  "shared_probe_pattern_ref": "PATTERN_0052",
+  "shared_probe_version": "0.8.0",
+  "execution_reference": "references/architecture-evolution-execution-flow.md",
+  "observability_reference": "references/architecture-evolution-observability-probes.md",
+  "interaction_contract_reference": "references/architecture-evolution-contract.md",
+  "source_map_reference": "references/architecture-evolution-source-map.json",
+  "source_version": "0.1.0",
+  "probe_namespace": "architecture_evolution/0.2.0",
+  "acceptance_status": "not_executed",
+  "metric_implementation": "specification_only",
+  "sources": [
+    {
+      "id": "execution",
+      "original_filename": "执行流程.md",
+      "supplied_filename": "%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B.md",
+      "snapshot_path": "references/sources/architecture-evolution/execution.source.txt",
+      "sha256": "e75f0dc5a3a67ce449fe56a6c105a6e342c05d224368411a3dd0b12dace6711f",
+      "source_version": "0.1.0",
+      "role_en": "Unmodified original-language evidence, not executable instructions",
+      "role_zh": "未改动的原语言证据，不是执行指令"
+    },
+    {
+      "id": "probe",
+      "original_filename": "工作流可观测性探针.md",
+      "supplied_filename": "%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7%E6%8E%A2%E9%92%88.md",
+      "snapshot_path": "references/sources/architecture-evolution/probe.source.txt",
+      "sha256": "62fd8a63b1f4d057152c04e3d8d9cf0f3f02f84c087e7d66c346530bf62118e6",
+      "source_version": "0.1.0",
+      "role_en": "Unmodified original-language evidence, not executable instructions",
+      "role_zh": "未改动的原语言证据，不是执行指令"
+    }
+  ],
+  "inventories": {
+    "execution_chapters": [
+      {
+        "id": "execution-chapters-01",
+        "source_id": "execution",
+        "source_line": 5,
+        "source_end_line": 14,
+        "source_label": "目标与原则",
+        "excerpt_sha256": "b6ac31e6660729f3b5476597c108669fe46bc3b3b5d75b786153619031f53ca7",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-chapters-02",
+        "source_id": "execution",
+        "source_line": 15,
+        "source_end_line": 23,
+        "source_label": "核心对象",
+        "excerpt_sha256": "d34cd004dcdaf014d11e0d82e72fc348dbc335d5419fbc30c71625fa567cc957",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-chapters-03",
+        "source_id": "execution",
+        "source_line": 24,
+        "source_end_line": 129,
+        "source_label": "通用执行步骤",
+        "excerpt_sha256": "5c447ebdb84b39d08206f9dbaf5a5637db896e421a16615e397f3ae6b84fc5aa",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-chapters-04",
+        "source_id": "execution",
+        "source_line": 130,
+        "source_end_line": 143,
+        "source_label": "工作流可观测性探针的接入点",
+        "excerpt_sha256": "6e71f07cb8ddad14b9b0216e7cdd8312c58b70199e8db7414133601a5f9b1113",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-chapters-05",
+        "source_id": "execution",
+        "source_line": 144,
+        "source_end_line": 152,
+        "source_label": "场景配置清单",
+        "excerpt_sha256": "becb34f780a9eed07bb7561c9090afea0e8819ddfa011e92e371a2b4c8d1f689",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-chapters-06",
+        "source_id": "execution",
+        "source_line": 153,
+        "source_end_line": 164,
+        "source_label": "与框架基座的挂载",
+        "excerpt_sha256": "ce20dceebba2f01c78f30da97491d3a10724280dbdd653ed93ed8549bcfd31f0",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-chapters-07",
+        "source_id": "execution",
+        "source_line": 165,
+        "source_end_line": 202,
+        "source_label": "运行记录模板",
+        "excerpt_sha256": "e32096e6a3f87b831e99020952ecbf20bc6196871da8d10c9487dbdafea6a457",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-chapters-08",
+        "source_id": "execution",
+        "source_line": 203,
+        "source_end_line": 207,
+        "source_label": "完成标准",
+        "excerpt_sha256": "3fbe1571f8d6b1882d03499f23a963aed73ebf5c21d606112617e7a4fb27667f",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      }
+    ],
+    "execution_steps": [
+      {
+        "id": "execution-steps-01",
+        "source_id": "execution",
+        "source_line": 26,
+        "source_end_line": 31,
+        "source_label": "界定任务",
+        "excerpt_sha256": "d9160ed0075a6966c31289d14b051fb89935aaaa738e44ec010869fb14ad1208",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-steps-02",
+        "source_id": "execution",
+        "source_line": 32,
+        "source_end_line": 39,
+        "source_label": "整理输入与证据",
+        "excerpt_sha256": "4acb6d96b2f128d4f00c68f30648b51ee359295de2ee341a12b728c9cba7c048",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-steps-03",
+        "source_id": "execution",
+        "source_line": 40,
+        "source_end_line": 59,
+        "source_label": "选择最小可行结构",
+        "excerpt_sha256": "10199cad33a1a96f025ca94370c174bcd2486673bc52540c75aeeb9439313856",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-steps-04",
+        "source_id": "execution",
+        "source_line": 60,
+        "source_end_line": 68,
+        "source_label": "划分模型判断与程序约束",
+        "excerpt_sha256": "28aa5d4a9139dd714664c1890850c07969b4866f70492275e5f9305668e8e2cd",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-steps-05",
+        "source_id": "execution",
+        "source_line": 69,
+        "source_end_line": 78,
+        "source_label": "定义节点契约",
+        "excerpt_sha256": "8e36b69356b02db21693c9321d0ab303fca055ec8587a9d9eac31f7f3881e064",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-steps-06",
+        "source_id": "execution",
+        "source_line": 79,
+        "source_end_line": 84,
+        "source_label": "执行与状态管理",
+        "excerpt_sha256": "2ddfb635354a134a6c49a4d3d6c2570bb3fd5c0ea8a25ed62c0e22f519db6660",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-steps-07",
+        "source_id": "execution",
+        "source_line": 85,
+        "source_end_line": 100,
+        "source_label": "按异常类型处理",
+        "excerpt_sha256": "d7b0ab5158f3f7e318fe839923a02b3205fb1640898ad8dfffea0425c8b02b05",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-steps-08",
+        "source_id": "execution",
+        "source_line": 101,
+        "source_end_line": 108,
+        "source_label": "业务验收",
+        "excerpt_sha256": "29295ef50dff8e2a88acd6c5aa849010c5a58ddceeb4df3aae991dc426ba27cd",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-steps-09",
+        "source_id": "execution",
+        "source_line": 109,
+        "source_end_line": 114,
+        "source_label": "输出与交接",
+        "excerpt_sha256": "99bac0b23bc7c20e471a27469cb5480c77137708d212defb2b22e2173709c6c2",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      },
+      {
+        "id": "execution-steps-10",
+        "source_id": "execution",
+        "source_line": 115,
+        "source_end_line": 129,
+        "source_label": "基于证据演化",
+        "excerpt_sha256": "d807785bbdee08d18038b0ce25f8f85c742c6726de3c188dc7f6603ae1bd17b6",
+        "target_document": "references/architecture-evolution-execution-flow.md"
+      }
+    ],
+    "probe_chapters": [
+      {
+        "id": "probe-chapters-01",
+        "source_id": "probe",
+        "source_line": 5,
+        "source_end_line": 11,
+        "source_label": "目标与边界",
+        "excerpt_sha256": "227ace596a5c2c22bdb2db935af4acf7cf3b7e9317b4bfbd5ea412bc83c626dd",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-chapters-02",
+        "source_id": "probe",
+        "source_line": 12,
+        "source_end_line": 23,
+        "source_label": "两种运行方式",
+        "excerpt_sha256": "6f74d31642c7434edae14426a74329bc78c9ff4ae94046f808b0bf1555f3307b",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-chapters-03",
+        "source_id": "probe",
+        "source_line": 24,
+        "source_end_line": 47,
+        "source_label": "最小事件模型",
+        "excerpt_sha256": "55e6d5da366494ca09861e24254ca0e296be7879c545d3a4ee53c18ace66d41a",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-chapters-04",
+        "source_id": "probe",
+        "source_line": 48,
+        "source_end_line": 100,
+        "source_label": "探针执行步骤",
+        "excerpt_sha256": "66239b0e3fce3c71e20fb3c901b95d9b6d5b56d91ade6268a614e118184cc36a",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-chapters-05",
+        "source_id": "probe",
+        "source_line": 101,
+        "source_end_line": 176,
+        "source_label": "指标目录",
+        "excerpt_sha256": "16b86e3b6eb21aed57d4246538c8defec82c07a200eeb20459afb5327e139a7e",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-chapters-06",
+        "source_id": "probe",
+        "source_line": 177,
+        "source_end_line": 200,
+        "source_label": "诊断规则：指标异常不等于根因",
+        "excerpt_sha256": "f9c05ce3936a28d7c7e4c27c1672c7d5b83ceebc9f42bed0797bd1dcd4fdfa00",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-chapters-07",
+        "source_id": "probe",
+        "source_line": 201,
+        "source_end_line": 214,
+        "source_label": "对照验证与架构演化",
+        "excerpt_sha256": "d502e2e07a5126f3d7a1e825b25b5a1fd441b3a3f1cd0ea623e94769638734b5",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-chapters-08",
+        "source_id": "probe",
+        "source_line": 215,
+        "source_end_line": 263,
+        "source_label": "与执行流程的交互协议",
+        "excerpt_sha256": "dda401c3d4ef538631b42e68e865e920df2557321e30e326469ff261b70d90e8",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-chapters-09",
+        "source_id": "probe",
+        "source_line": 264,
+        "source_end_line": 274,
+        "source_label": "安全、隐私和数据质量",
+        "excerpt_sha256": "936fe041aa97d29e737b484778e3f7dd4132bdf84cf94b239c89f44d34acf488",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-chapters-10",
+        "source_id": "probe",
+        "source_line": 275,
+        "source_end_line": 291,
+        "source_label": "可复用的探针检查单",
+        "excerpt_sha256": "dfb0d04ba965d71254e9a7edd9c4bf43b6002ceb1a5abca1c0473c2bc5896439",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-chapters-11",
+        "source_id": "probe",
+        "source_line": 292,
+        "source_end_line": 296,
+        "source_label": "完成标准",
+        "excerpt_sha256": "e6a1372472e85360b1c9b8d981aeefdd09a950e9769cb0408c7c4622494f6a54",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      }
+    ],
+    "probe_steps": [
+      {
+        "id": "probe-steps-01",
+        "source_id": "probe",
+        "source_line": 50,
+        "source_end_line": 53,
+        "source_label": "确定观测对象",
+        "excerpt_sha256": "6283affb0adc100ed058573e3e5daaa10bca5ac6fb3f9c9bd73428696ebf46b5",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-steps-02",
+        "source_id": "probe",
+        "source_line": 54,
+        "source_end_line": 63,
+        "source_label": "盘点已有证据",
+        "excerpt_sha256": "6d532983a06b2b2147bdff179aa20ac072c6590ff8259bebef5a5e4e9416d12b",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-steps-03",
+        "source_id": "probe",
+        "source_line": 64,
+        "source_end_line": 72,
+        "source_label": "重建时间线",
+        "excerpt_sha256": "d87e47f8da58d707705462e085528bf987086470396fd1d225c9f41af76a6966",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-steps-04",
+        "source_id": "probe",
+        "source_line": 73,
+        "source_end_line": 81,
+        "source_label": "定位首个偏差",
+        "excerpt_sha256": "9537c73c2282e1aadb52a50379eeb1394280c8b7a45687fab370d7c90220b409",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-steps-05",
+        "source_id": "probe",
+        "source_line": 82,
+        "source_end_line": 90,
+        "source_label": "补全证据",
+        "excerpt_sha256": "b00c88575e1e3264a88bdd7aa8fa67d71a837ab3565a477754a502917d87a4d4",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-steps-06",
+        "source_id": "probe",
+        "source_line": 91,
+        "source_end_line": 94,
+        "source_label": "计算指标并解释",
+        "excerpt_sha256": "5dc38ece945783726e0e2ab63d766be86841b7038111a81da4df55ea8662d189",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      },
+      {
+        "id": "probe-steps-07",
+        "source_id": "probe",
+        "source_line": 95,
+        "source_end_line": 100,
+        "source_label": "输出诊断包",
+        "excerpt_sha256": "1f0cc16431560d9fb117c83e3fae90b66e4205735c3ef128d0c1694b7fb3d46e",
+        "target_document": "references/architecture-evolution-observability-probes.md"
+      }
+    ]
+  },
+  "provenance_note_en": "Source documents contain no pattern ID. PATTERN_0054 and the evolution profile are local refinements, not source aliases.",
+  "provenance_note_zh": "来源文档不含模式编号。PATTERN_0054 及演化配置为本地细化，不是来源别名。",
+  "refinements": [
+    {
+      "id": "AE-R01",
+      "source_refs": [
+        "execution-chapters-03",
+        "execution-chapters-08"
+      ],
+      "name_en": "Separate execution, business, handoff, evaluation and release outcomes",
+      "name_zh": "分离执行、业务、交接、验证与发布结果",
+      "target_document": "references/architecture-evolution-contract.md"
+    },
+    {
+      "id": "AE-R02",
+      "source_refs": [
+        "execution-steps-10",
+        "probe-chapters-07"
+      ],
+      "name_en": "Freeze version-bound hypotheses, comparisons, release and recovery",
+      "name_zh": "冻结版本绑定的假设、对照、发布与恢复",
+      "target_document": "references/architecture-evolution-execution-flow.md"
+    },
+    {
+      "id": "AE-R03",
+      "source_refs": [
+        "probe-chapters-03",
+        "probe-steps-03"
+      ],
+      "name_en": "Reconstruct causality with event identity and observed time",
+      "name_zh": "用事件身份与采集时间重建因果关系",
+      "target_document": "references/architecture-evolution-observability-probes.md"
+    },
+    {
+      "id": "AE-R04",
+      "source_refs": [
+        "probe-chapters-05",
+        "probe-steps-06"
+      ],
+      "name_en": "Qualify denominators, maturity, coverage and uncertainty",
+      "name_zh": "限定分母、成熟窗口、覆盖率与不确定性",
+      "target_document": "references/architecture-evolution-observability-probes.md"
+    },
+    {
+      "id": "AE-R05",
+      "source_refs": [
+        "probe-chapters-08",
+        "execution-chapters-04"
+      ],
+      "name_en": "Bind report-only probes without granting execution authority",
+      "name_zh": "绑定仅报告探针且不赋予执行权限",
+      "target_document": "references/architecture-evolution-contract.md"
+    }
+  ]
+}

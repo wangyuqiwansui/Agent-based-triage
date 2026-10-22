@@ -318,10 +318,12 @@ def source_files(skill_dir: pathlib.Path) -> list[pathlib.Path]:
         references / "pattern-selection-contract.md",
         references / "pattern-selection-source-map.json",
     ]
-    combination = load_registry(skill_dir).get("pattern_combination_specification", {})
-    files.extend(skill_dir / combination[key] for key in (
-        "execution_reference", "observability_reference", "interaction_contract_reference", "source_map_reference"
-    ) if key in combination)
+    registry = load_registry(skill_dir)
+    for specification in ("pattern_combination_specification", "architecture_evolution_specification"):
+        record = registry.get(specification, {})
+        files.extend(skill_dir / record[key] for key in (
+            "execution_reference", "observability_reference", "interaction_contract_reference", "source_map_reference"
+        ) if key in record)
     files.extend(sorted((references / "patterns").glob("*/*.md")))
     return files
 
@@ -394,6 +396,7 @@ def render_html(data: dict[str, Any]) -> str:
     mode_cards = "\n".join(render_mode_card(mode) for mode in horizontal_axes)
     selection_flow = render_selection_flow(data["selection_card"])
     combination = render_combination_card(data["registry"])
+    evolution = render_evolution_card(data["registry"])
     matrix_rows = "\n".join(
         render_matrix_row(axis, horizontal_axes, matrix_by_axis) for axis in vertical_axes
     )
@@ -669,6 +672,8 @@ def render_html(data: dict[str, Any]) -> str:
 
     {combination}
 
+    {evolution}
+
     <h2>Vertical Capabilities / 纵轴能力</h2>
     <section class="grid">{axis_cards}</section>
 
@@ -716,6 +721,33 @@ def render_combination_card(registry: dict[str, Any]) -> str:
     <section class="selection-flow" aria-label="Pattern combination">
       <div>
         <p class="flow-title">Task contract → Minimum composition → Governed execution → Five acceptance gates<br>任务契约 → 最小组合 → 受治理执行 → 五道验收门</p>
+        <p class="flow-copy">{escape(record['description_en'])} / {escape(record['description_zh'])}</p>
+        <p class="flow-copy">Draft specification / 草案规格 · Business scenarios not executed / 业务场景未执行</p>
+        <p>{links}</p>
+      </div>
+    </section>"""
+
+
+def render_evolution_card(registry: dict[str, Any]) -> str:
+    """Expose the architecture change lifecycle / 展示架构变更生命周期。"""
+    record = registry.get("architecture_evolution_specification")
+    if not record:
+        return ""
+    labels = (
+        ("execution_reference", "Execution / 执行流程"),
+        ("observability_reference", "Independent probes / 独立探针"),
+        ("interaction_contract_reference", "Exchange contract / 交互契约"),
+        ("source_map_reference", "Source evidence / 来源证据"),
+    )
+    links = " · ".join(
+        f'<a href="skills/harness-engineering-patterns/{escape_attr(record[key])}">{escape(label)}</a>'
+        for key, label in labels
+    )
+    return f"""
+    <h2>Architecture Evolution / 架构演化</h2>
+    <section class="selection-flow" aria-label="Architecture evolution">
+      <div>
+        <p class="flow-title">Baseline → First deviation → Minimal candidate → Comparison → Rollout → Decision<br>冻结基线 → 首个偏差 → 最小候选 → 对照验证 → 发布观察 → 演化决定</p>
         <p class="flow-copy">{escape(record['description_en'])} / {escape(record['description_zh'])}</p>
         <p class="flow-copy">Draft specification / 草案规格 · Business scenarios not executed / 业务场景未执行</p>
         <p>{links}</p>
