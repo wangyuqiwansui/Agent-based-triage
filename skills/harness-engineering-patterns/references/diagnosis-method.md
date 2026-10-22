@@ -2,20 +2,28 @@
 
 Use this file to move from classification to workflow modification. / 使用本文档从分类推进到工作流修改。
 
+For whole-project or all-node audits, first use [the audit playbook](workflow-audit-playbook.md) to establish coverage and evidence states, [the checklist](node-gap-checklist.md) to inspect nodes and edges, and [the report template](../assets/workflow-audit-report-template.md) to close findings into remedies and acceptance. This file supplies diagnosis and pattern selection within that flow. / 全项目或全节点审计先用审计流程建立覆盖与证据状态，用检查表核验节点和连线，用报告模板把发现闭合为补救与验收；本文提供该流程中的诊断和模式选择方法。
+
+## Quick Navigation / 快速导航
+
+Start with Diagnostic Flow and Trace Insert; use the selection laws only when changing a pattern, then the problem types and recommendation shape to make the remedy actionable. / 先读诊断流程与 Trace 插入，仅在改选模式时使用选型规律，再以问题类型和建议格式形成可执行弥补措施。
+
 ## Automatic Engineering Node Analysis / 工程节点自动分析
 
 When the user asks to analyze an engineering node, automatically run Trace Insert / 自动运行 Trace 插入, then use Pattern Selection Card / 模式选型卡 to define correctness and evaluate the minimum baseline. Final adoption requires evidence; preliminary diagnosis can expose gaps earlier. / 当用户要求分析工程节点时，自动运行 Trace 插入，再用模式选型卡定义正确性并评估最小基线。最终采用须有证据，初步诊断可先暴露缺口。
 
 This automatic flow applies even when the user names only one node and does not explicitly mention ASSESS, ROUTE, SELECT, matrix, or Trace. / 即使用户只给出一个节点，未显式提到 ASSESS、ROUTE、SELECT、矩阵或 Trace，也适用该自动流程。
 
+For a workflow audit, reuse the selection card's evidence, correctness and baseline sections first. Its pattern-adoption readiness gate applies only when proposing a pattern change; it does not require an adequate node to exhibit a fault, nor make matrix mapping mandatory for a simple procedural repair. / 工作流审计先复用选型卡的证据、正确性及基线部分。模式采用就绪门仅在建议模式变更时适用，不要求已足够节点必须出现故障，也不要求简单流程修正必须做矩阵映射。
+
 ## Diagnostic Flow / 诊断流程
 
-1. Describe the current workflow in 3-7 steps. / 用 3-7 步描述当前工作流。
-2. Split those steps into business nodes from `workflow-nodes.md`. / 使用 `workflow-nodes.md` 将步骤拆成业务节点。
+1. Summarize the current workflow in 3-7 stages when useful, then inventory every in-scope node and transition; the summary is not a coverage limit. / 可用 3-7 个阶段概括当前工作流，再逐一列出范围内的所有节点和转移；概述不是覆盖数量上限。
+2. Split responsibilities using `workflow-nodes.md`; discover project-specific nodes and check applicability rather than forcing the initial twelve categories onto every project. / 使用节点指南按职责拆分，发现项目特有节点并判断适用性，不把初始十二类硬套到所有项目。
 3. Apply Trace Insert / Trace 插入 to collect complete node evidence before selection. / 应用 Trace Insert / Trace 插入，在选型前采集完整节点证据。
 4. Run the Pattern Selection Card / 模式选型卡 and [selection workflow](pattern-selection-execution-flow.md): contract, baseline, concrete difficulties and model/program/human boundaries. Retain a sufficient baseline without additional patterns. / 运行模式选型卡及选型流程，先明确契约、基线、具体困难和模型程序人工边界；基线足够则保留，不新增模式。
-5. Map each node to one primary capability and one primary orchestration mode through ASSESS / 评估 and ROUTE / 判拓扑. / 通过 ASSESS / 评估 与 ROUTE / 判拓扑，为每个节点映射一个主要能力和一个主要编排模式。
-6. Inspect the matrix cell through SELECT / 查矩阵 and compare current behavior against fit signals. / 通过 SELECT / 查矩阵 检查交织点，并将当前行为与适配信号比较。
+5. When a remaining gap warrants a pattern change or architecture mapping is requested, map the affected node to one primary capability and orchestration mode through ASSESS / 评估 and ROUTE / 判拓扑. / 当剩余缺口确需模式变更，或用户要求架构映射时，通过评估与判拓扑，为受影响节点映射主要能力和编排模式。
+6. For those candidates, inspect the matrix cell through SELECT / 查矩阵 and compare current behavior against fit signals; adequate nodes and sufficient simple repairs may skip selection. / 对这些候选通过查矩阵检查交织点并对比适配信号；已足够节点及充分的简单修复可跳过选型。
 7. Identify whether the issue is missing node, wrong mode, weak capability, missing loop, poor handoff, missing memory, or weak governance. / 识别问题属于节点缺失、模式错误、能力薄弱、循环缺失、交接不良、记忆缺失或治理薄弱。
 8. Recommend a concrete adjustment that changes workflow behavior. / 推荐能改变工作流行为的具体调整。
 9. Define verification and observation points, then propose the Trace update. / 定义验证方式和观察点，并提出 Trace 更新。
@@ -90,10 +98,10 @@ arXiv:2605.13850 derives five empirical laws from four cross-domain case studies
 
 For every recommended change, include: / 每条修改建议包含：
 
-- What to change / 改什么
-- Why it is needed / 为什么需要
-- How to modify the workflow / 如何修改工作流
-- Affected nodes and matrix cells / 影响的节点和交织点
-- Observability metrics / 可观测性指标
-- Verification method / 验证方式
-- Risk or tradeoff / 风险或取舍
+- Finding ID, affected node or edge, evidence and confidence / 发现编号、影响节点或连线、证据及置信程度
+- Current behavior, required behavior and causal explanation (label hypotheses) / 当前行为、应有行为及因果解释（标明假设）
+- Minimal remedy, concrete change location and retained working controls / 最小补救、具体修改位置和保留的有效控制
+- Priority rationale, dependencies, owner role and effort basis / 优先级理由、依赖、责任角色和工作量依据
+- Applicable matrix cells and pattern selection only when needed / 按需提供适用矩阵单元与模式选择
+- Observable acceptance, comparable baseline, relevant failure case and verification status / 可观察验收、可比基线、相关失败场景及验证状态
+- Risk or tradeoff, rollout and recovery where relevant / 风险或取舍，以及适用时的实施及恢复方案

@@ -81,6 +81,7 @@ If evidence is missing, mark the claim as unsupported and convert it into an obs
 
 ## Reference Routing / 参考路由
 
+- For project-wide or node-by-node shortcomings and remedies, use [the audit playbook](workflow-audit-playbook.md), [node checklist](node-gap-checklist.md), and [report template](../assets/workflow-audit-report-template.md). Keep findings analysis-local; no registry or runtime schema change is required. / 全项目或逐节点不足及弥补分析使用审计流程、节点检查表与报告模板；发现记录留在分析内，无需改动注册表或运行时 Schema。
 - Use `workflow-nodes.md` for business node splitting. / 使用 `workflow-nodes.md` 拆分业务节点。
 - Use `harness-source-analysis.md` for source repository reverse engineering. / 使用 `harness-source-analysis.md` 进行源码仓库逆向分析。
 - Use `axes.md`, `matrix-index.md`, and `pattern-selection-card.md` for matrix mapping. / 使用 `axes.md`、`matrix-index.md` 和 `pattern-selection-card.md` 做矩阵映射。

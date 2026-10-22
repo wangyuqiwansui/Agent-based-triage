@@ -3,7 +3,7 @@ name: harness-engineering-patterns
 metadata:
   name_en: Harness Engineering Patterns
   name_zh: Harness 工程模式
-description: Use when a request explicitly needs Agent Harness architecture analysis or evolution, cognition x topology mapping, workflow or engineering node diagnosis, evidence-based pattern composition and selection, recoverable Plan-and-Execute, governed reasoning, reflection, collaboration or tool dispatch, workflow observability probes, pattern governance, evidence-backed EIR, or Skillization decisions. / 当请求明确需要 Agent Harness 架构分析或演化、认知 x 拓扑映射、工作流或工程节点诊断、基于证据的组合设计与模式选型、可恢复的计划并执行、受治理的推理、反思、协作或工具调度、工作流可观测性探针、模式治理、有证据的 EIR 或 Skill 化决策时使用。
+description: Analyze project workflows and each process node for evidence-backed gaps, missing responsibilities, handoff failures, remedies, priorities and acceptance checks. Use for end-to-end workflow audits, engineering node diagnosis, Agent Harness architecture or evolution, cognition x topology mapping, pattern selection, recoverable execution, governed reasoning, reflection, collaboration, tool dispatch and observability. / 分析项目工作流及每个流程节点的不足、职责缺失、交接问题与弥补点，给出证据、优先级和验收闭环。用于全流程审计、工程节点诊断、Agent Harness 架构及演化、认知与拓扑映射、模式选型、可恢复执行、受治理的推理反思协作、工具调度和可观测性。
 ---
 
 # Harness Engineering Patterns / Harness 工程模式
@@ -14,12 +14,19 @@ Compile a Workflow / Harness Source / 工作流程 / Harness 源码 into an Engi
 
 Treat `references/registry.json` as the authoritative structural source. Treat the matrix, catalog, cell guides, design files, observability files, and HTML as maintained views or detailed guidance. / 将 `references/registry.json` 视为权威结构数据源；将矩阵、目录、纵轴导论、设计文件、可观测性文件和 HTML 视为维护视图或详细指导。
 
+## Portable Use / 跨项目使用
+
+- Resolve this Skill's `references/`, `assets/`, `schemas/`, `runtime/` and `scripts/` from the directory containing this `SKILL.md`, including when installed globally. / 包括全局安装时，本 Skill 的参考、模板、Schema、运行时及脚本均相对于本 `SKILL.md` 所在目录解析。
+- The analysis target is the user's current or explicitly selected project, not the Skill installation directory or its authoring repository. Read that project's instructions and write reports and Trace only to the selected project or user-requested destination. / 分析对象是用户当前或明确指定的项目，不是 Skill 安装目录或其创作仓库；读取目标项目约束，报告及 Trace 仅写入目标项目或用户指定位置。
+- Repository maintenance commands, source-snapshot checks, full asset validation and HTML regeneration belong to the Skill's source repository. Some depend on its historical `.harness-analysis` evidence and repository tests; they are not prerequisites for using a global installation to audit another project. Do not copy historical evidence into the target project to satisfy a maintenance check. / 仓库维护命令、来源快照检查、完整资产校验及 HTML 再生成应在 Skill 源仓库执行；部分依赖其中历史分析证据和仓库测试，不是全局安装用于其他项目审计的前置条件。不得为满足维护检查而把历史证据复制进目标项目。
+
 ## When To Use / 适用场景
 
 - Analyze an Agent Harness repository, runtime, tool system, memory system, sandbox, permission layer, subagent system, or event log. / 分析 Agent Harness 仓库、runtime、工具系统、记忆系统、沙箱、权限层、子 Agent 系统或事件日志。
 - Design or verify Action → Tool Dispatch with capability frontiers, execution admission, durable idempotency, result certainty, and lifecycle observability. / 设计或验证具备能力前沿、执行准入、持久幂等、结果确定性和生命周期可观测性的“行动 → 工具调度”。
 - Design or verify governed reflection with explicit admission, a frozen baseline, scoped authorization, independent revalidation, regression protection, anti-gaming, bounded stopping, and evidence-backed learning promotion. / 设计或验证具备明确准入、冻结基线、受限授权、独立复验、回归保护、反投机、有界停止与证据化学习晋升的受治理反思。
 - Diagnose a workflow or engineering node whose capability, topology, feedback, memory, ownership, or governance is unclear. / 诊断能力、拓扑、反馈、记忆、归属或治理不清的工作流或工程节点。
+- Audit every in-scope project process node and handoff, explain evidenced shortcomings and practical remedies, and produce a prioritized improvement backlog with acceptance checks. / 审计范围内的每个项目流程节点和交接，说明有依据的不足及可执行弥补点，产出带验收标准的分级改进清单。
 - Produce an EIR, matrix mapping, pattern card, evidence table, governance gap, evaluation, or Skillization decision. / 生成 EIR、矩阵映射、模式卡、证据表、治理缺口、评价或 Skill 化决策。
 - Evaluate whether repeated workflow evidence justifies promoting an extension candidate into a named pattern. / 评价反复工作流证据是否足以把扩展候选晋升为命名模式。
 
@@ -27,10 +34,30 @@ Treat `references/registry.json` as the authoritative structural source. Treat t
 
 - Ordinary code review that does not need Harness architecture mapping. / 不需要 Harness 架构映射的普通代码评审。
 - Isolated bug diagnosis where the task is to find one root cause, not classify a workflow. / 只需定位单一根因、不需要工作流分类的单点缺陷诊断。
-- General product or UX workflow critique that does not need the cognition x topology matrix. / 不需要认知 x 拓扑矩阵的通用产品或 UX 流程评审。
+- Pure visual or interaction critique without engineering responsibilities, process evidence, or workflow remediation. / 不涉及工程职责、流程证据或流程改进的纯视觉或交互评审。
 - Simple implementation, rewriting, formatting, or factual questions with no reusable pattern decision. / 不涉及可复用模式决策的简单实现、改写、格式调整或事实问答。
 
 Use the focused domain Skill instead when another Skill directly covers the task. / 当其他领域 Skill 能直接覆盖任务时，使用更聚焦的领域 Skill。
+
+## Workflow Audit Entry / 工作流审计入口
+
+For “analyze this project/workflow”, “each node's shortcomings and remedies”, or “complete process review”, start here. This is an analysis mode of this Skill, not a new runtime or pattern. / 对“分析当前项目或工作流”“每个节点的不足和弥补点”“完整流程审查”等请求，从此入口开始。这是本 Skill 的分析模式，不是新增运行时或模式。
+
+1. Read [the audit playbook](references/workflow-audit-playbook.md); establish the requested scope, source revision, business success criteria and available evidence. Infer what the repository establishes before asking for missing business facts. / 读取审计流程，明确范围、来源版本、业务成功标准与可用证据；先从仓库确认信息，再询问缺失的关键业务事实。
+2. Reconstruct the actual nodes and transitions using [workflow nodes](references/workflow-nodes.md). Cover the complete in-scope graph, including branches, failure exits, recovery and cross-node handoffs; a short overview does not replace this inventory. / 按节点职责重建实际节点与转移，覆盖范围内的完整流程图，包括分支、异常出口、恢复及跨节点交接；简短概述不能替代完整清单。
+3. Apply [the node gap checklist](references/node-gap-checklist.md) to each applicable responsibility. Keep `confirmed_gap`, `suspected_gap`, `adequate`, `unknown` and `not_applicable` distinct; do not invent a defect for every node. / 按节点检查表核验适用职责，区分已确认不足、疑似不足、已足够、未知及不适用，不为每个节点硬造问题。
+4. Use [diagnosis and selection](references/diagnosis-method.md) only after recording evidence and comparing the smallest adequate baseline. A procedural clarification, deterministic check, or retained baseline may be the complete remedy. / 先记录证据并对比最小充分基线，再进行诊断与选型；澄清流程、增加确定性检查或保留基线均可成为完整结论。
+5. Produce the [audit report and remediation backlog](assets/workflow-audit-report-template.md). Link each finding to a node or edge, evidence, an implementable remedy, priority rationale, owner role and observable acceptance; disclose unreviewed areas. / 使用审计报告及改进清单模板，将每项发现关联到节点或连线、证据、可实施补救、优先级理由、责任角色及可观察验收，并披露未审范围。
+
+Use `full` for requests covering every node, `standard` for a bounded workflow, and `quick` for one node. Scope controls coverage; profile controls detail. Mark a review partial when any in-scope node or transition remains unreviewed. / “每个节点”默认使用完整档位，限定工作流使用标准档位，单节点使用快速档位。范围决定覆盖，档位决定详略；范围内仍有未审节点或转移时标为部分完成。
+
+For diagnosis-only requests, this audit entry and its scoped references are the primary path. Read execution-module details below when selecting, implementing or verifying that module's actual protocol, not merely because a symptom resembles its topic. A bounded state or handoff repair does not require every observability/probe document. Use the compiler spine for architecture compilation or execution work. Preserve existing authorization: analysis does not itself authorize deployment or external changes, and already authorized local fixes need no repeated confirmation. / 仅诊断请求以本审计入口及其范围内参考为主路径。只有选用、实现或核验某模块实际协议时才读下方执行细节，不因症状与模块主题相似就展开全部资料。有界状态或交接修正无需读取整套观测探针文档。架构编译或执行任务才走编译主线。遵循已有授权：分析本身不授权部署或外部修改，已获授权的本地修复无需重复确认。
+
+Example request / 调用示例:
+
+> 使用 $harness-engineering-patterns 分析当前项目所有工作流和每个流程节点的不足、弥补点、优先级与验收标准；区分已确认问题和缺失证据。
+>
+> Use $harness-engineering-patterns to audit every workflow node and handoff in this project, with evidence, remedies, priorities and acceptance checks; distinguish confirmed gaps from missing evidence.
 
 ## Compiler Spine / 编译主线
 
@@ -105,6 +132,8 @@ The [source map](references/pattern-selection-source-map.json) retains two draft
 
 ## Automatic Engineering Node Analysis / 工程节点自动分析
 
+For complete workflow coverage, follow [the workflow audit playbook](references/workflow-audit-playbook.md) and [report template](assets/workflow-audit-report-template.md); retain per-node dispositions and transition coverage even when the overview is short. / 完整流程分析遵循工作流审计流程与报告模板；即使概览简短，也保留逐节点结论及转移覆盖。
+
 When the request is to analyze an engineering node, automatically run Trace Insert / 自动运行 Trace 插入 before any matrix decision. / 当请求是分析工程节点时，在任何矩阵决策前自动运行 Trace 插入。
 
 Collect the node responsibility, owner, boundary, trigger, inputs, outputs, current behavior, failure signals, risk, and available evidence. Define task correctness and test baseline sufficiency, then run ASSESS / 评估, ROUTE / 判拓扑, and SELECT / 查矩阵 for remaining gaps using `references/pattern-selection-card.md`. / 采集节点职责、负责人、边界、触发、输入、输出、当前行为、失败信号、风险和可用证据；定义任务正确性并检验基线是否足够，再对剩余缺口使用模式选型卡执行评估、判拓扑和查矩阵。
@@ -130,6 +159,8 @@ If evidence is incomplete, return a preliminary / 初步 result with gaps and ve
 
 Choose the smallest profile that satisfies the request. / 选择能满足请求的最小档位。
 
+For workflow audits, apply the audit entry's coverage rule and report template at every profile. Never replace a requested all-node audit with a few representative findings. / 工作流审计在所有档位均遵循审计入口的覆盖规则与报告模板；不得以少数典型问题替代用户要求的全节点审计。
+
 ### quick / 快速
 
 Return coordinate, evidence, diagnosed problem, practical adjustment, risk, and verification. / 输出坐标、证据、诊断问题、可执行调整、风险和验证方式。
@@ -140,7 +171,7 @@ Return an EIR slice, node or component map, ASSESS / ROUTE / SELECT result, sele
 
 ### full / 完整
 
-Return the complete compiler output: scope, main flow, EIR, noise filter, matrix mapping, pattern and Skillization candidates, evidence verification, evaluation scores, governance gaps, failure modes, extension analysis, and implementation plan. / 输出完整编译结果：范围、主流程、EIR、噪声过滤、矩阵映射、模式与 Skill 化候选、证据验证、评价分数、治理缺口、失败模式、扩展分析和实施规划。
+For an all-node audit, return the complete node/edge coverage, finding cards, evidence, remedies, priority/dependency backlog, acceptance checks and open verification tasks from the audit template. For a full architecture compilation, also include relevant EIR, noise filter, matrix mapping, pattern and Skillization candidates, governance gaps, failure modes and extension analysis. Include scores only when requested with an explicit rubric and evidence. / 全节点审计按模板输出完整节点连线覆盖、发现卡、证据、弥补方案、优先级依赖清单、验收及待核实任务。完整架构编译另附相关 EIR、噪声过滤、矩阵映射、模式及 Skill 化候选、治理缺口、失败模式和扩展分析。仅在用户需要且有明确标准及证据时评分。
 
 ## Blast Radius Control / 爆炸半径控制
 

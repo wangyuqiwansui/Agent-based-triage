@@ -1,4 +1,4 @@
 interface:
   display_name: "Harness Engineering Patterns / Harness 工程模式"
-  short_description: "Govern recoverable Harness execution and reflection / 治理可恢复 Harness 执行与反思"
-  default_prompt: "Use $harness-engineering-patterns to analyze or implement recoverable Plan-and-Execute, governed reasoning, reflection, Skill Package lifecycle, tool dispatch, or workflow observability with evidence and project-local Trace output. / 使用 $harness-engineering-patterns，以证据和项目本地 Trace 分析或实现可恢复的计划并执行、受治理推理、反思、技能包生命周期、工具分派或工作流可观测性。"
+  short_description: "Audit workflow nodes and remedies / 分析流程节点不足与弥补点"
+  default_prompt: "使用 $harness-engineering-patterns 分析当前项目所有工作流、节点和交接，给出证据、已确认不足、待核实项、最小弥补方案、优先级和验收标准。 / Use $harness-engineering-patterns to audit this project's workflows, nodes and handoffs with evidence, confirmed gaps, open questions, minimal remedies, priorities and acceptance checks."

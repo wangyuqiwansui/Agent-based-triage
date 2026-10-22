@@ -37,9 +37,11 @@ Collect these fields before ASSESS, ROUTE, and SELECT: / 在 ASSESS、ROUTE、SE
 
 ## Readiness Gate / 就绪门
 
+This gate governs proposed pattern adoption, not whether a node can be reviewed. A workflow audit may use the evidence, correctness and baseline sections and retain an adequate node without entering selection. Static evidence can establish a concrete mismatch without a live incident; label the proof and do not infer observed frequency or runtime validation from it. / 此门判断拟采用模式是否就绪，不判断节点能否接受审查。工作流审计可使用证据、正确性及基线部分，直接保留已足够节点而不进入选型。静态证据可以在没有线上事故时证明具体偏差，但须注明证明性质，不能据此推断实际发生频率或运行验证结果。
+
 Finalize only when the node has enough evidence to compare current behavior with candidate fit and acceptance criteria. / 只有节点证据足以比较当前行为、候选适配及验收标准时，才能定稿。
 
-- Ready / 已就绪: node responsibility, inputs, outputs, risk, and at least one observed symptom are known. / 已知节点职责、输入、输出、风险和至少一个已观察症状。
+- Ready / 已就绪: node responsibility, inputs, outputs, risk, and at least one observed symptom or demonstrated behavioral mismatch are known. / 已知节点职责、输入、输出、风险，以及至少一个已观察症状或已证明的行为偏差。
 - Not ready / 未就绪: collect missing data and label recommendations preliminary; do not claim successful validation. / 缺少节点数据时补采并将建议标为初步，不宣称验证成功。
 - Initial planning / 初次规划: no historical Trace or observed symptom is required to propose a design; disclose assumptions and create a baseline validation task before adoption. / 初步设计不要求已有历史 Trace 或故障症状；披露假设，并在采用前建立基线验证任务。
 

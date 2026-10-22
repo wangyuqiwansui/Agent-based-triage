@@ -2,6 +2,10 @@
 
 Use this file before finalizing quality, evidence, governance, risk, or verification sections for a workflow or Harness analysis. / 在最终确定工作流或 Harness 分析的质量、证据、治理、风险或验证章节前使用本文档。
 
+## Quick Navigation / 快速导航
+
+For node-by-node findings use [the audit playbook](workflow-audit-playbook.md). Read Quality Evaluation and Scoring Anchors only when a scored assessment is needed, Evidence Priority to match claims to sources, and Governance Checklist / Evaluation Output for applicable controls and reporting. / 逐节点发现使用审计流程。需要评分时读取质量评估与评分锚点，按证据优先级匹配判断和来源，再以治理清单及评估输出处理适用控制与报告。
+
 ## Quality Evaluation / 质量评估
 
 Score qualitatively when exact metrics are unavailable. / 没有精确指标时使用定性评分。
@@ -18,7 +22,7 @@ Score qualitatively when exact metrics are unavailable. / 没有精确指标时�
 
 ## Scoring Anchors / 评分锚点
 
-Score each dimension 0-100 using these bands. Anchors make scores comparable across analyses and reviewers; without them a score is an opinion. / 每个维度按 0-100 打分并使用以下分段。锚点让分数在不同分析和评审者之间可比；没有锚点的分数只是观点。
+When scoring is requested, use these 0-100 bands as a declared qualitative rubric, not a measured operational success rate. Use a band rather than an exact number when finer precision lacks evidence, and keep unassessed dimensions explicitly unknown. / 用户需要评分时，将以下 0-100 分段作为明示的定性标准，不视为实测运行成功率。证据不支持更细精度时使用区间而非精确分数，未评估维度明确保留未知。
 
 | Band / 分段 | Label / 标签 | Criteria / 判据 |
 | --- | --- | --- |
@@ -36,12 +40,9 @@ Anchor rules / 锚点规则:
 
 ## Evidence Priority / 证据优先级
 
-Prefer direct evidence over descriptive evidence. / 优先直接证据，而不是描述性证据。
+Match evidence to the claim rather than imposing a universal source ranking. Requirements establish intended obligations; code and configuration establish static paths; executed tests establish behavior in their recorded conditions; authoritative runtime records establish observed effects for their version and environment. README text is a discovery aid, not proof of enforcement. / 按判断类型选择证据，不设一刀切的来源排名。需求确定预期义务，源码与配置确定静态路径，已执行测试证明其记录条件下的行为，权威运行记录证明相应版本环境的已观察效果。README 用于发现线索，不能证明控制已落实。
 
-```text
-source code > tests > official docs > config > runtime logs > README
-源码 > 测试 > 官方文档 > 配置 > 运行日志 > README
-```
+Use the [audit evidence ledger](workflow-audit-playbook.md) to preserve source revision, environment, conflicts and limitations. Test source alone is not a passing test; a source implementation does not overrule a contradictory deployed outcome without investigating version and path differences. / 使用审计证据台账保留来源版本、环境、冲突及局限。测试源码不等于测试已通过；未经调查版本与路径差异，不得以源码实现直接否定相冲突的部署结果。
 
 Unsupported claims should be marked as assumptions, hypotheses, or verification tasks. / 无证据判断应标记为假设、假说或验证任务。
 

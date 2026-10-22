@@ -2,6 +2,8 @@
 
 Use this file to split the current workflow into analyzable business nodes before mapping axes. / 使用本文档先将当前工作流拆成可分析的业务节点，再进行轴映射。
 
+For exhaustive audits, pair this inventory with [the audit playbook](workflow-audit-playbook.md) and [node gap checklist](node-gap-checklist.md). The initial categories are discovery prompts, not a mandatory lifecycle or proof that a missing category is a defect. / 完整审计结合审计流程及节点不足检查表使用；初始分类仅是发现线索，不是强制生命周期，缺少某个分类本身不证明存在缺陷。
+
 ## Initial Node Set / 初始节点集
 
 | Key | 中文 | English | Typical Capability / 常见能力 | Typical Mode / 常见模式 |
@@ -25,6 +27,9 @@ Use this file to split the current workflow into analyzable business nodes befor
 - Keep a node if it has a distinct input, output, owner, decision, or risk. / 若节点有独立输入、输出、负责人、决策或风险，则保留。
 - Merge steps that are only mechanical details of the same responsibility. / 若步骤只是同一职责的机械细节，则合并。
 - Mark missing nodes explicitly when the current workflow skips necessary feedback, memory, verification, or governance. / 当当前工作流跳过必要反馈、记忆、验证或治理时，明确标记缺失节点。
+- Preserve actual ordering, conditional branches, parallel joins, loops and failure exits; record who accepts responsibility on each transition. / 保留实际顺序、条件分支、并行汇合、循环及异常出口，记录每次转移由谁接收责任。
+- Separate review coverage from quality: `reviewed`, `partial`, `unreviewed`, `out_of_scope`; an investigated node with missing evidence remains `unknown`, not automatically defective. / 将审查覆盖与质量分开：已审、部分、未审、范围外；已调查但缺证的节点仍是未知，不自动成为缺陷。
+- Preserve adequate nodes with supporting evidence and unknown nodes with a collection task; one shared root cause may affect multiple nodes without duplicating the same remediation ticket. / 为已足够节点保留依据，为未知节点建立补证任务；一个共同根因可影响多个节点，无需重复创建同一整改事项。
 
 ## Node Output Shape / 节点输出格式
 
